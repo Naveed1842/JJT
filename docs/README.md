@@ -29,6 +29,7 @@ This folder is the single source of truth for Phase-1.
 - `api/sponsor-children-list.md`
 - `api/sponsor-child-detail.md`
 - `api/error-codes.md`
+- `brd.md`
 
 ## Decisions (ADRs)
 - `adr/README.md`
