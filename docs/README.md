@@ -36,3 +36,6 @@ This folder is the single source of truth for Phase-1.
 - `adr/0000-template.md`
 - `adr/0001-modular-monolith.md`
 - `adr/0002-append-only-ledger.md`
+
+## Wiki (summaries)
+- https://github.com/Naveed1842/JJT/wiki
