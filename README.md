@@ -49,4 +49,6 @@ Start here:
 - `docs/workflows.md`
 - `docs/api/README.md`
 - `docs/adr/README.md`
-# JJT
+
+## Wiki
+For quick, Phase-1 summaries, see the wiki: https://github.com/Naveed1842/JJT/wiki
