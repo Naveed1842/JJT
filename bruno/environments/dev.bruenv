@@ -1,0 +1,13 @@
+{
+  "baseUrl": "http://localhost:8080",
+  "previousMonth": "2026-01",
+  "currentMonth": "2026-02",
+  "nextMonth": "2026-03",
+  "adminRole": "JJT_ADMIN",
+  "orgRole": "ORG_ADMIN",
+  "sponsorRole": "SPONSOR",
+  "orgId": "ORG-001",
+  "sponsorId": "SPONSOR-001",
+  "childA": "CHILD-001",
+  "childB": "CHILD-002"
+}

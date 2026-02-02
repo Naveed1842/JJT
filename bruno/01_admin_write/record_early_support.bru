@@ -1,0 +1,26 @@
+meta:
+  name: record_early_support
+  type: http
+
+request:
+  url: {{baseUrl}}/api/admin/early-support
+  method: POST
+  headers:
+    X-ROLE: {{adminRole}}
+  body:
+    mode: raw
+    raw: |
+      {
+        "childId": "{{childA}}",
+        "month": "{{nextMonth}}",
+        "educationAmount": "120.00",
+        "educationCurrency": "USD"
+      }
+
+tests:
+  - name: created
+    script: |
+      expect(response.status).toBe(201);
+      const body = response.json();
+      expect(body.ledgerEntryId).toBeDefined();
+      expect(body.month).toBe("{{nextMonth}}");

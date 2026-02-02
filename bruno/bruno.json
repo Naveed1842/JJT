@@ -1,0 +1,11 @@
+{
+  "version": "1",
+  "name": "JJT Phase-1",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git",
+    ".DS_Store"
+  ],
+  "description": "Phase-1 read/write API validation for JJT (dev profile)."
+}

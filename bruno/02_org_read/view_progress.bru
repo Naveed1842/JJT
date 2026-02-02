@@ -1,0 +1,16 @@
+meta:
+  name: org_view_progress
+  type: http
+
+request:
+  url: {{baseUrl}}/api/org/children/{{childA}}/progress
+  method: GET
+  headers:
+    X-ROLE: {{orgRole}}
+
+tests:
+  - name: ok
+    script: |
+      expect(response.status).toBe(200);
+      const body = response.json();
+      expect(Array.isArray(body)).toBe(true);

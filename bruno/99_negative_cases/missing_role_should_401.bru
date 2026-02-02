@@ -1,0 +1,12 @@
+meta:
+  name: missing_role_should_401
+  type: http
+
+request:
+  url: {{baseUrl}}/api/org/children
+  method: GET
+
+tests:
+  - name: unauthorized
+    script: |
+      expect(response.status).toBe(401);

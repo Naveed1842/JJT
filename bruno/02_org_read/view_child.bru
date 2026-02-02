@@ -1,0 +1,16 @@
+meta:
+  name: org_view_child
+  type: http
+
+request:
+  url: {{baseUrl}}/api/org/children/{{childA}}
+  method: GET
+  headers:
+    X-ROLE: {{orgRole}}
+
+tests:
+  - name: ok
+    script: |
+      expect(response.status).toBe(200);
+      const body = response.json();
+      expect(body.id).toBe("{{childA}}");

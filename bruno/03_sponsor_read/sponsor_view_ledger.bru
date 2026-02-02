@@ -1,0 +1,17 @@
+meta:
+  name: sponsor_view_ledger
+  type: http
+
+request:
+  url: {{baseUrl}}/api/sponsor/children/{{childB}}/ledger
+  method: GET
+  headers:
+    X-ROLE: {{sponsorRole}}
+    X-SPONSOR-ID: {{sponsorId}}
+
+tests:
+  - name: ok
+    script: |
+      expect(response.status).toBe(200);
+      const body = response.json();
+      expect(body.childId).toBe("{{childB}}");

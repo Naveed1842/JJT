@@ -1,0 +1,25 @@
+meta:
+  name: add_progress
+  type: http
+
+request:
+  url: {{baseUrl}}/api/admin/children/{{childA}}/progress
+  method: POST
+  headers:
+    X-ROLE: {{adminRole}}
+  body:
+    mode: raw
+    raw: |
+      {
+        "month": "{{currentMonth}}",
+        "summary": "Progress note via API seed",
+        "progressUpdateId": null
+      }
+
+tests:
+  - name: created
+    script: |
+      expect(response.status).toBe(201);
+      const body = response.json();
+      expect(body.progressUpdateId).toBeDefined();
+      expect(body.childId).toBe("{{childA}}");

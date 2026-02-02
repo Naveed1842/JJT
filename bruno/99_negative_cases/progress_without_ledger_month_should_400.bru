@@ -1,0 +1,22 @@
+meta:
+  name: progress_without_ledger_month_should_400
+  type: http
+
+request:
+  url: {{baseUrl}}/api/admin/children/{{childA}}/progress
+  method: POST
+  headers:
+    X-ROLE: {{adminRole}}
+  body:
+    mode: raw
+    raw: |
+      {
+        "month": "2099-12",
+        "summary": "Should fail because ledger month missing",
+        "progressUpdateId": null
+      }
+
+tests:
+  - name: bad_request
+    script: |
+      expect(response.status).toBe(400);

@@ -1,0 +1,25 @@
+meta:
+  name: create_child
+  type: http
+
+request:
+  url: {{baseUrl}}/api/admin/children
+  method: POST
+  headers:
+    X-ROLE: {{adminRole}}
+  body:
+    mode: raw
+    raw: |
+      {
+        "fullName": "Test Child (API)",
+        "educationAmount": "150.00",
+        "educationCurrency": "USD"
+      }
+
+tests:
+  - name: created
+    script: |
+      expect(response.status).toBe(201);
+      const body = response.json();
+      expect(body.childId).toBeDefined();
+      expect(body.ledgerId).toBeDefined();
