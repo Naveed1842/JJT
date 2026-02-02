@@ -4,6 +4,8 @@ import com.jjt.platform.api.common.dto.ChildDto;
 import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
 import com.jjt.platform.api.common.mapper.DtoMapper;
+import com.jjt.platform.api.common.security.AccessGuard;
+import com.jjt.platform.config.security.Role;
 import com.jjt.platform.core.domain.entity.Child;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
@@ -53,6 +55,7 @@ public class OrgChildrenController {
 
     @GetMapping("/children")
     public List<ChildDto> listChildren() {
+        AccessGuard.requireRole(Role.ORG_ADMIN);
         return childRepo.findAll().stream()
                 .map(ChildMapper::toDomain)
                 .map(DtoMapper::toChildDto)
@@ -61,6 +64,7 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}")
     public ResponseEntity<ChildDto> getChild(@PathVariable UUID childId) {
+        AccessGuard.requireRole(Role.ORG_ADMIN);
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
                 .map(DtoMapper::toChildDto)
@@ -70,6 +74,7 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}/ledger")
     public ResponseEntity<LedgerDto> getChildLedger(@PathVariable UUID childId) {
+        AccessGuard.requireRole(Role.ORG_ADMIN);
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
                 .map(DtoMapper::toLedgerDto)
@@ -79,6 +84,7 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}/progress")
     public ResponseEntity<List<ProgressUpdateDto>> getChildProgress(@PathVariable UUID childId) {
+        AccessGuard.requireRole(Role.ORG_ADMIN);
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
                 .map(ledger -> {

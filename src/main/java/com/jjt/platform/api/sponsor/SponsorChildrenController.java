@@ -4,6 +4,9 @@ import com.jjt.platform.api.common.dto.ChildDto;
 import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
 import com.jjt.platform.api.common.mapper.DtoMapper;
+import com.jjt.platform.api.common.security.AccessGuard;
+import com.jjt.platform.api.common.security.SecurityContext;
+import com.jjt.platform.config.security.Role;
 import com.jjt.platform.core.domain.entity.Child;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
@@ -25,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,10 +58,10 @@ public class SponsorChildrenController {
         this.progressRepo = progressRepo;
     }
 
-    // Placeholder: caller must supply sponsorId header; real security to be added later.
-
     @GetMapping("/children")
-    public ResponseEntity<List<ChildDto>> listSponsorChildren(@RequestHeader("X-Sponsor-Id") UUID sponsorId) {
+    public ResponseEntity<List<ChildDto>> listSponsorChildren() {
+        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
+        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         List<UUID> childIds = sponsoredChildIds(sponsorId);
         List<ChildDto> result = childRepo.findAllById(childIds).stream()
                 .map(ChildMapper::toDomain)
@@ -69,8 +71,9 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}")
-    public ResponseEntity<ChildDto> getChild(@RequestHeader("X-Sponsor-Id") UUID sponsorId,
-                                             @PathVariable UUID childId) {
+    public ResponseEntity<ChildDto> getChild(@PathVariable UUID childId) {
+        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
+        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         if (!isChildSponsoredBy(sponsorId, childId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -82,8 +85,9 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}/ledger")
-    public ResponseEntity<LedgerDto> getLedger(@RequestHeader("X-Sponsor-Id") UUID sponsorId,
-                                               @PathVariable UUID childId) {
+    public ResponseEntity<LedgerDto> getLedger(@PathVariable UUID childId) {
+        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
+        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         if (!isChildSponsoredBy(sponsorId, childId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -95,8 +99,9 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}/progress")
-    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@RequestHeader("X-Sponsor-Id") UUID sponsorId,
-                                                               @PathVariable UUID childId) {
+    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@PathVariable UUID childId) {
+        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
+        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         if (!isChildSponsoredBy(sponsorId, childId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
