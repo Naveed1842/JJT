@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface ProgressUpdateRepository extends CrudRepository<ProgressUpdateEntity, UUID> {
     Optional<ProgressUpdateEntity> findByChildIdAndUpdateMonth(UUID childId, String updateMonth);
+    java.util.List<ProgressUpdateEntity> findByChildIdOrderByUpdateMonth(UUID childId);
 }
