@@ -1,0 +1,422 @@
+{
+  "info": {
+    "name": "JJT Phase-1",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Phase-1 read/write API validation for JJT (dev profile)."
+  },
+  "item": [
+    {
+      "name": "00_health",
+      "item": [
+        {
+          "name": "health_check",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{orgRole}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/actuator/health", "host": ["{{baseUrl}}"], "path": ["actuator", "health"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('has status', function () { pm.expect(pm.response.json().status).to.exist; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01_admin_write",
+      "item": [
+        {
+          "name": "create_child",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{adminRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Test Child (API)\",\n  \"educationAmount\": \"150.00\",\n  \"educationCurrency\": \"USD\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/children", "host": ["{{baseUrl}}"], "path": ["api", "admin", "children"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('has ids', function () { const b = pm.response.json(); pm.expect(b.childId).to.exist; pm.expect(b.ledgerId).to.exist; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "record_early_support",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{adminRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"childId\": \"{{childA}}\",\n  \"month\": \"{{nextMonth}}\",\n  \"educationAmount\": \"120.00\",\n  \"educationCurrency\": \"USD\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/early-support", "host": ["{{baseUrl}}"], "path": ["api", "admin", "early-support"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('has ledgerEntryId', function () { pm.expect(pm.response.json().ledgerEntryId).to.exist; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "add_progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{adminRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"month\": \"{{currentMonth}}\",\n  \"summary\": \"Progress note via API seed\",\n  \"progressUpdateId\": null\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/children/{{childA}}/progress", "host": ["{{baseUrl}}"], "path": ["api", "admin", "children", "{{childA}}", "progress"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('has progressUpdateId', function () { pm.expect(pm.response.json().progressUpdateId).to.exist; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "commit_sponsorship",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{adminRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sponsorId\": \"{{sponsorId}}\",\n  \"childId\": \"{{childB}}\",\n  \"startMonth\": \"{{nextMonth}}\",\n  \"sponsorshipId\": null\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/sponsorships", "host": ["{{baseUrl}}"], "path": ["api", "admin", "sponsorships"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('has sponsorshipId', function () { pm.expect(pm.response.json().sponsorshipId).to.exist; });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02_org_read",
+      "item": [
+        {
+          "name": "list_children",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{orgRole}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/org/children", "host": ["{{baseUrl}}"], "path": ["api", "org", "children"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('is array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "view_child",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{orgRole}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/org/children/{{childA}}", "host": ["{{baseUrl}}"], "path": ["api", "org", "children", "{{childA}}"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('child id matches', function () { pm.expect(pm.response.json().id).to.eql(pm.environment.get('childA')); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "view_ledger",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{orgRole}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/org/children/{{childA}}/ledger", "host": ["{{baseUrl}}"], "path": ["api", "org", "children", "{{childA}}", "ledger"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('entries array', function () { pm.expect(pm.response.json().entries).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "view_progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{orgRole}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/org/children/{{childA}}/progress", "host": ["{{baseUrl}}"], "path": ["api", "org", "children", "{{childA}}", "progress"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('is array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03_sponsor_read",
+      "item": [
+        {
+          "name": "sponsor_list_children",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{sponsorRole}}" },
+              { "key": "X-SPONSOR-ID", "value": "{{sponsorId}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/sponsor/children", "host": ["{{baseUrl}}"], "path": ["api", "sponsor", "children"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('only childB', function () { const ids = pm.response.json().map(c => c.id); pm.expect(ids.every(id => id === pm.environment.get('childB'))).to.be.true; });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "sponsor_view_ledger",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{sponsorRole}}" },
+              { "key": "X-SPONSOR-ID", "value": "{{sponsorId}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/sponsor/children/{{childB}}/ledger", "host": ["{{baseUrl}}"], "path": ["api", "sponsor", "children", "{{childB}}", "ledger"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('childId matches', function () { pm.expect(pm.response.json().childId).to.eql(pm.environment.get('childB')); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "sponsor_view_progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{sponsorRole}}" },
+              { "key": "X-SPONSOR-ID", "value": "{{sponsorId}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/sponsor/children/{{childB}}/progress", "host": ["{{baseUrl}}"], "path": ["api", "sponsor", "children", "{{childB}}", "progress"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('is array', function () { pm.expect(pm.response.json()).to.be.an('array'); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "99_negative_cases",
+      "item": [
+        {
+          "name": "missing_role_should_401",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/org/children", "host": ["{{baseUrl}}"], "path": ["api", "org", "children"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 401', function () { pm.response.to.have.status(401); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "wrong_role_should_403",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{sponsorRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Unauthorized Child\",\n  \"educationAmount\": \"100.00\",\n  \"educationCurrency\": \"USD\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/children", "host": ["{{baseUrl}}"], "path": ["api", "admin", "children"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "sponsor_access_other_child_forbidden",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-ROLE", "value": "{{sponsorRole}}" },
+              { "key": "X-SPONSOR-ID", "value": "{{sponsorId}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/api/sponsor/children/{{childA}}/ledger", "host": ["{{baseUrl}}"], "path": ["api", "sponsor", "children", "{{childA}}", "ledger"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "duplicate_ledger_month_should_409",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{adminRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"childId\": \"{{childA}}\",\n  \"month\": \"{{previousMonth}}\",\n  \"educationAmount\": \"120.00\",\n  \"educationCurrency\": \"USD\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/early-support", "host": ["{{baseUrl}}"], "path": ["api", "admin", "early-support"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 409', function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "progress_without_ledger_month_should_400",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-ROLE", "value": "{{adminRole}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"month\": \"2099-12\",\n  \"summary\": \"Should fail because ledger month missing\",\n  \"progressUpdateId\": null\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/admin/children/{{childA}}/progress", "host": ["{{baseUrl}}"], "path": ["api", "admin", "children", "{{childA}}", "progress"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
