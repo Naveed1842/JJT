@@ -1,0 +1,31 @@
+body {
+  font-family: 'Crimson Pro', serif;
+  background-color: #f4f1ea;
+  margin: 0;
+  padding: 0;
+}
+
+.paper-texture {
+  background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+}
+
+.hero-bg {
+  background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://placehold.co/1920x1080/444/fff?text=Young+boy+carrying+heavy+sack+of+garbage+in+dusty+environment');
+  background-size: cover;
+  background-position: center;
+}
+
+.btn-orange {
+  background-color: #d95f23;
+  transition: background-color 0.3s;
+}
+
+.btn-orange:hover {
+  background-color: #b84d1a;
+}
+
+.divider-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #ccc, transparent);
+  width: 100%;
+}

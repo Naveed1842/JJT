@@ -3,11 +3,13 @@ package com.jjt.platform.api.admin.service;
 import com.jjt.platform.application.usecase.AddMonthlyProgressUseCase;
 import com.jjt.platform.application.usecase.CommitFutureSponsorshipUseCase;
 import com.jjt.platform.application.usecase.CreateChildUseCase;
+import com.jjt.platform.application.usecase.CreateSponsorUseCase;
 import com.jjt.platform.application.usecase.RecordEarlySupportUseCase;
 import com.jjt.platform.core.domain.entity.Child;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
+import com.jjt.platform.core.domain.entity.Sponsor;
 import com.jjt.platform.core.domain.entity.Sponsorship;
 import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.value.Money;
@@ -44,6 +46,7 @@ public class AdminCommandService {
     private final RecordEarlySupportUseCase recordEarlySupportUseCase = new RecordEarlySupportUseCase();
     private final AddMonthlyProgressUseCase addMonthlyProgressUseCase = new AddMonthlyProgressUseCase();
     private final CommitFutureSponsorshipUseCase commitFutureSponsorshipUseCase = new CommitFutureSponsorshipUseCase();
+    private final CreateSponsorUseCase createSponsorUseCase = new CreateSponsorUseCase();
 
     private final ChildJpaRepository childRepo;
     private final EducationSupportLedgerJpaRepository ledgerRepo;
@@ -97,6 +100,14 @@ public class AdminCommandService {
         ProgressUpdateEntity entity = ProgressUpdateMapper.toEntity(progress);
         progressRepo.save(entity);
         return progress;
+    }
+
+    @Transactional
+    public Sponsor createSponsor(String displayName, String contactEmail, UUID sponsorId) {
+        Sponsor sponsor = createSponsorUseCase.create(new CreateSponsorUseCase.Command(sponsorId, displayName, contactEmail));
+        SponsorEntity entity = SponsorMapper.toEntity(sponsor);
+        sponsorRepo.save(entity);
+        return sponsor;
     }
 
     @Transactional

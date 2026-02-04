@@ -1,0 +1,396 @@
+{
+	"info": {
+		"_postman_id": "jjt-platform-collection",
+		"name": "JJT Platform API",
+		"description": "Complete API collection for JJT Early Education Support Platform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": ["{{base_url}}"],
+							"path": ["actuator", "health"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Write Operations",
+			"item": [
+				{
+					"name": "Create Child",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Role",
+								"value": "JJT_ADMIN"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Sarah Ahmed\",\n  \"educationAmount\": \"120.00\",\n  \"educationCurrency\": \"USD\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/children",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "children"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Sponsor",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Role",
+								"value": "JJT_ADMIN"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"displayName\": \"John Smith\",\n  \"contactEmail\": \"john.smith@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/sponsors",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "sponsors"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Record Early Support",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Role",
+								"value": "JJT_ADMIN"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"childId\": \"{{child_id}}\",\n  \"month\": \"2026-02\",\n  \"educationAmount\": \"120.00\",\n  \"educationCurrency\": \"USD\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/early-support",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "early-support"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Progress Update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Role",
+								"value": "JJT_ADMIN"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"month\": \"2026-02\",\n  \"summary\": \"Attended all classes, excellent progress in mathematics\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/children/{{child_id}}/progress",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "children", "{{child_id}}", "progress"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Commit Sponsorship",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Role",
+								"value": "JJT_ADMIN"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sponsorId\": \"{{sponsor_id}}\",\n  \"childId\": \"{{child_id}}\",\n  \"startMonth\": \"2026-03\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/sponsorships",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "sponsorships"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Org - Read Operations",
+			"item": [
+				{
+					"name": "List Children",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "ORG_VIEWER"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/children",
+							"host": ["{{base_url}}"],
+							"path": ["api", "org", "children"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Child",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "ORG_VIEWER"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/children/{{child_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "org", "children", "{{child_id}}"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Child Ledger",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "ORG_VIEWER"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/children/{{child_id}}/ledger",
+							"host": ["{{base_url}}"],
+							"path": ["api", "org", "children", "{{child_id}}", "ledger"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Child Progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "ORG_VIEWER"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/children/{{child_id}}/progress",
+							"host": ["{{base_url}}"],
+							"path": ["api", "org", "children", "{{child_id}}", "progress"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sponsor - Read Operations",
+			"item": [
+				{
+					"name": "Sponsor List Children",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "SPONSOR"
+							},
+							{
+								"key": "X-Sponsor-Id",
+								"value": "{{sponsor_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sponsor/children",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sponsor", "children"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sponsor View Ledger",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "SPONSOR"
+							},
+							{
+								"key": "X-Sponsor-Id",
+								"value": "{{sponsor_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sponsor/children/{{child_id}}/ledger",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sponsor", "children", "{{child_id}}", "ledger"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sponsor View Progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "SPONSOR"
+							},
+							{
+								"key": "X-Sponsor-Id",
+								"value": "{{sponsor_id}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sponsor/children/{{child_id}}/progress",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sponsor", "children", "{{child_id}}", "progress"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Test Data Examples",
+			"item": [
+				{
+					"name": "Use Test Child A",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "ORG_VIEWER"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/children/1f0464a8-7b42-3c1d-9fca-526bc4f21265",
+							"host": ["{{base_url}}"],
+							"path": ["api", "org", "children", "1f0464a8-7b42-3c1d-9fca-526bc4f21265"]
+						},
+						"description": "Child A from test data (Early Support)"
+					},
+					"response": []
+				},
+				{
+					"name": "Use Test Child B",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "ORG_VIEWER"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/org/children/3096dee8-0986-39e2-a381-cb0ad8af1860",
+							"host": ["{{base_url}}"],
+							"path": ["api", "org", "children", "3096dee8-0986-39e2-a381-cb0ad8af1860"]
+						},
+						"description": "Child B from test data (Sponsored)"
+					},
+					"response": []
+				},
+				{
+					"name": "Use Test Sponsor",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Role",
+								"value": "SPONSOR"
+							},
+							{
+								"key": "X-Sponsor-Id",
+								"value": "7ba67472-9df7-3bde-a2f5-fd2083a31f0a"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/sponsor/children",
+							"host": ["{{base_url}}"],
+							"path": ["api", "sponsor", "children"]
+						},
+						"description": "Using test sponsor from seed data"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "child_id",
+			"value": "1f0464a8-7b42-3c1d-9fca-526bc4f21265",
+			"type": "string",
+			"description": "Test Child A ID"
+		},
+		{
+			"key": "sponsor_id",
+			"value": "7ba67472-9df7-3bde-a2f5-fd2083a31f0a",
+			"type": "string",
+			"description": "Test Sponsor ID"
+		}
+	]
+}

@@ -47,6 +47,18 @@ public class AdminController {
                 .body(new CreateChildResponse(result.child().getId(), result.ledger().getId()));
     }
 
+    @PostMapping("/sponsors")
+    public ResponseEntity<CreateSponsorResponse> createSponsor(@RequestBody CreateSponsorRequest request) {
+        AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
+        var sponsor = adminService.createSponsor(
+                request.displayName(),
+                request.contactEmail(),
+                request.sponsorId()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new CreateSponsorResponse(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail()));
+    }
+
     @PostMapping("/early-support")
     public ResponseEntity<RecordEarlySupportResponse> recordEarlySupport(@RequestBody RecordEarlySupportRequest request) {
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
