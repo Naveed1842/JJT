@@ -54,19 +54,23 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Child</h2>
       <form (ngSubmit)="createChild()" class="space-y-4">
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Name</label>
-          <input [(ngModel)]="childForm.name" name="name" type="text" required
+          <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+          <input [(ngModel)]="childForm.fullName" name="fullName" type="text" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Birth Date</label>
-          <input [(ngModel)]="childForm.birthDate" name="birthDate" type="date" required
+          <label class="block text-gray-700 font-semibold mb-2">Education Amount</label>
+          <input [(ngModel)]="childForm.educationAmount" name="educationAmount" type="number" step="0.01" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Current Grade</label>
-          <input [(ngModel)]="childForm.currentGrade" name="currentGrade" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+          <label class="block text-gray-700 font-semibold mb-2">Currency</label>
+          <select [(ngModel)]="childForm.educationCurrency" name="educationCurrency" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <option value="USD">USD</option>
+            <option value="PKR">PKR</option>
+            <option value="EUR">EUR</option>
+          </select>
         </div>
         <button type="submit" class="btn-orange w-full">Create Child</button>
       </form>
@@ -77,18 +81,13 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Sponsor</h2>
       <form (ngSubmit)="createSponsor()" class="space-y-4">
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Name</label>
-          <input [(ngModel)]="sponsorForm.name" name="name" type="text" required
+          <label class="block text-gray-700 font-semibold mb-2">Display Name</label>
+          <input [(ngModel)]="sponsorForm.displayName" name="displayName" type="text" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Email</label>
-          <input [(ngModel)]="sponsorForm.email" name="email" type="email" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Phone</label>
-          <input [(ngModel)]="sponsorForm.phone" name="phone" type="tel" required
+          <label class="block text-gray-700 font-semibold mb-2">Contact Email</label>
+          <input [(ngModel)]="sponsorForm.contactEmail" name="contactEmail" type="email" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <button type="submit" class="btn-orange w-full">Create Sponsor</button>
@@ -105,19 +104,23 @@
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Amount (in cents)</label>
-          <input [(ngModel)]="earlySupportForm.amountInCents" name="amountInCents" type="number" required
+          <label class="block text-gray-700 font-semibold mb-2">Month (YYYY-MM)</label>
+          <input [(ngModel)]="earlySupportForm.month" name="month" type="month" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Description</label>
-          <textarea [(ngModel)]="earlySupportForm.description" name="description" required rows="3"
-                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+          <label class="block text-gray-700 font-semibold mb-2">Education Amount</label>
+          <input [(ngModel)]="earlySupportForm.educationAmount" name="educationAmount" type="number" step="0.01" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Support Date</label>
-          <input [(ngModel)]="earlySupportForm.supportDate" name="supportDate" type="date" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+          <label class="block text-gray-700 font-semibold mb-2">Currency</label>
+          <select [(ngModel)]="earlySupportForm.educationCurrency" name="educationCurrency" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <option value="USD">USD</option>
+            <option value="PKR">PKR</option>
+            <option value="EUR">EUR</option>
+          </select>
         </div>
         <button type="submit" class="btn-orange w-full">Record Support</button>
       </form>
@@ -133,13 +136,13 @@
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Milestone</label>
-          <input [(ngModel)]="progressForm.milestone" name="milestone" type="text" required
+          <label class="block text-gray-700 font-semibold mb-2">Month (YYYY-MM)</label>
+          <input [(ngModel)]="progressForm.month" name="month" type="month" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Comments</label>
-          <textarea [(ngModel)]="progressForm.comments" name="comments" required rows="4"
+          <label class="block text-gray-700 font-semibold mb-2">Summary</label>
+          <textarea [(ngModel)]="progressForm.summary" name="summary" required rows="4"
                     class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
         </div>
         <button type="submit" class="btn-orange w-full">Add Progress</button>
@@ -161,8 +164,8 @@
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
-          <label class="block text-gray-700 font-semibold mb-2">Start Date</label>
-          <input [(ngModel)]="sponsorshipForm.startDate" name="startDate" type="date" required
+          <label class="block text-gray-700 font-semibold mb-2">Start Month (YYYY-MM)</label>
+          <input [(ngModel)]="sponsorshipForm.startMonth" name="startMonth" type="month" required
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <button type="submit" class="btn-orange w-full">Commit Sponsorship</button>

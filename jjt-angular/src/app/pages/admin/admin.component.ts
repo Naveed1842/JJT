@@ -17,38 +17,37 @@ export class AdminComponent {
 
   // Create Child Form
   childForm = {
-    name: '',
-    birthDate: '',
-    currentGrade: ''
+    fullName: '',
+    educationAmount: '120.00',
+    educationCurrency: 'USD'
   };
 
   // Create Sponsor Form
   sponsorForm = {
-    name: '',
-    email: '',
-    phone: ''
+    displayName: '',
+    contactEmail: ''
   };
 
   // Record Early Support Form
   earlySupportForm = {
     childId: '',
-    amountInCents: 0,
-    description: '',
-    supportDate: ''
+    month: '',
+    educationAmount: '120.00',
+    educationCurrency: 'USD'
   };
 
   // Add Progress Form
   progressForm = {
     childId: '',
-    milestone: '',
-    comments: ''
+    month: '',
+    summary: ''
   };
 
   // Commit Sponsorship Form
   sponsorshipForm = {
-    childId: '',
     sponsorId: '',
-    startDate: ''
+    childId: '',
+    startMonth: ''
   };
 
   constructor(private http: HttpClient) {}
@@ -69,7 +68,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Child created successfully!';
-          this.childForm = { name: '', birthDate: '', currentGrade: '' };
+          this.childForm = { fullName: '', educationAmount: '120.00', educationCurrency: 'USD' };
         },
         error: (err) => {
           this.errorMessage = 'Failed to create child';
@@ -84,7 +83,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsor created successfully!';
-          this.sponsorForm = { name: '', email: '', phone: '' };
+          this.sponsorForm = { displayName: '', contactEmail: '' };
         },
         error: (err) => {
           this.errorMessage = 'Failed to create sponsor';
@@ -95,17 +94,14 @@ export class AdminComponent {
 
   recordEarlySupport() {
     this.clearMessages();
+    const { childId, ...requestBody } = this.earlySupportForm;
     this.http.post(
-      `http://localhost:8080/api/admin/children/${this.earlySupportForm.childId}/early-support`,
-      {
-        amountInCents: this.earlySupportForm.amountInCents,
-        description: this.earlySupportForm.description,
-        supportDate: this.earlySupportForm.supportDate
-      }
+      `http://localhost:8080/api/admin/children/${childId}/early-support`,
+      requestBody
     ).subscribe({
       next: () => {
         this.successMessage = 'Early support recorded successfully!';
-        this.earlySupportForm = { childId: '', amountInCents: 0, description: '', supportDate: '' };
+        this.earlySupportForm = { childId: '', month: '', educationAmount: '120.00', educationCurrency: 'USD' };
       },
       error: (err) => {
         this.errorMessage = 'Failed to record early support';
@@ -116,16 +112,14 @@ export class AdminComponent {
 
   addProgress() {
     this.clearMessages();
+    const { childId, ...requestBody } = this.progressForm;
     this.http.post(
-      `http://localhost:8080/api/admin/children/${this.progressForm.childId}/progress`,
-      {
-        milestone: this.progressForm.milestone,
-        comments: this.progressForm.comments
-      }
+      `http://localhost:8080/api/admin/children/${childId}/progress`,
+      requestBody
     ).subscribe({
       next: () => {
         this.successMessage = 'Progress update added successfully!';
-        this.progressForm = { childId: '', milestone: '', comments: '' };
+        this.progressForm = { childId: '', month: '', summary: '' };
       },
       error: (err) => {
         this.errorMessage = 'Failed to add progress update';
@@ -140,7 +134,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsorship committed successfully!';
-          this.sponsorshipForm = { childId: '', sponsorId: '', startDate: '' };
+          this.sponsorshipForm = { sponsorId: '', childId: '', startMonth: '' };
         },
         error: (err) => {
           this.errorMessage = 'Failed to commit sponsorship';

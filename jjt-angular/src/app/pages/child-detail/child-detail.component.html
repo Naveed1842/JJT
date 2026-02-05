@@ -13,20 +13,11 @@
     <div *ngIf="!loading && child">
       <!-- Child Info Card -->
       <div class="paper-texture p-8 rounded-lg shadow-lg mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4 font-serif">{{ child.name }}</h1>
+        <h1 class="text-4xl font-bold text-gray-800 mb-4 font-serif">{{ child.fullName }}</h1>
         <div class="grid md:grid-cols-2 gap-4 text-gray-700">
           <div>
-            <p class="mb-2"><span class="font-semibold">Child ID:</span> {{ child.childId }}</p>
-            <p class="mb-2"><span class="font-semibold">Birth Date:</span> {{ child.birthDate }}</p>
-          </div>
-          <div>
-            <p class="mb-2"><span class="font-semibold">Current Grade:</span> {{ child.currentGrade }}</p>
-            <p class="mb-2"><span class="font-semibold">Status:</span> 
-              <span class="px-2 py-1 rounded text-sm ml-2"
-                    [ngClass]="child.sponsorshipStatus === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
-                {{ child.sponsorshipStatus }}
-              </span>
-            </p>
+            <p class="mb-2"><span class="font-semibold">Child ID:</span> {{ child.id }}</p>
+            <p class="mb-2"><span class="font-semibold">Education Amount:</span> {{ child.educationAmount }} {{ child.educationCurrency }}</p>
           </div>
         </div>
       </div>
@@ -41,16 +32,16 @@
           <table class="min-w-full">
             <thead class="bg-gray-100">
               <tr>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Month/Year</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Month</th>
                 <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Amount</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Description</th>
+                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Currency</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
               <tr *ngFor="let entry of ledgerEntries" class="hover:bg-gray-50">
-                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.monthYear }}</td>
-                <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ formatCurrency(entry.totalInCents) }}</td>
-                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.description }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.month }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ entry.educationAmount }}</td>
+                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.educationCurrency }}</td>
               </tr>
             </tbody>
           </table>
@@ -67,10 +58,9 @@
           <div *ngFor="let update of progressUpdates" 
                class="bg-white p-6 rounded-lg border border-gray-200">
             <div class="flex justify-between items-start mb-2">
-              <h3 class="text-xl font-bold text-gray-800">{{ update.milestone }}</h3>
-              <span class="text-sm text-gray-500">{{ formatDate(update.reportedAt) }}</span>
+              <h3 class="text-xl font-bold text-gray-800">{{ update.month }}</h3>
             </div>
-            <p class="text-gray-700">{{ update.comments }}</p>
+            <p class="text-gray-700">{{ update.summary }}</p>
           </div>
         </div>
       </div>

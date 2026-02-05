@@ -12,7 +12,7 @@ import { RoleService, UserRole } from '../../services/role.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  currentRole: UserRole = 'ORG';
+  currentRole: UserRole = 'ORG_ADMIN';
 
   constructor(private roleService: RoleService) {}
 

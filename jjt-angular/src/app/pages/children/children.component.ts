@@ -4,11 +4,10 @@ import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 interface Child {
-  childId: string;
-  name: string;
-  birthDate: string;
-  currentGrade: string;
-  sponsorshipStatus: string;
+  id: string;
+  fullName: string;
+  educationAmount: string;
+  educationCurrency: string;
 }
 
 @Component({

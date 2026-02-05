@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export type UserRole = 'ADMIN' | 'ORG' | 'SPONSOR';
+export type UserRole = 'JJT_ADMIN' | 'ORG_ADMIN' | 'SPONSOR';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class RoleService {
 
   private getStoredRole(): UserRole {
     const stored = localStorage.getItem('userRole');
-    return (stored as UserRole) || 'ORG';
+    return (stored as UserRole) || 'ORG_ADMIN';
   }
 
   setRole(role: UserRole) {

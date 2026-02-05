@@ -4,23 +4,28 @@ import { ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 interface ChildDetail {
-  childId: string;
-  name: string;
-  birthDate: string;
-  currentGrade: string;
-  sponsorshipStatus: string;
+  id: string;
+  fullName: string;
+  educationAmount: string;
+  educationCurrency: string;
 }
 
 interface LedgerEntry {
-  monthYear: string;
-  totalInCents: number;
-  description: string;
+  id: string;
+  month: string;
+  educationAmount: string;
+  educationCurrency: string;
+}
+
+interface Ledger {
+  childId: string;
+  entries: LedgerEntry[];
 }
 
 interface ProgressUpdate {
-  reportedAt: string;
-  milestone: string;
-  comments: string;
+  id: string;
+  month: string;
+  summary: string;
 }
 
 @Component({
@@ -69,9 +74,9 @@ export class ChildDetailComponent implements OnInit {
   }
 
   loadLedger() {
-    this.http.get<LedgerEntry[]>(`http://localhost:8080/api/org/children/${this.childId}/ledger`)
+    this.http.get<Ledger>(`http://localhost:8080/api/org/children/${this.childId}/ledger`)
       .subscribe({
-        next: (data) => this.ledgerEntries = data,
+        next: (data) => this.ledgerEntries = data.entries || [],
         error: (err) => console.error('Error loading ledger:', err)
       });
   }
@@ -88,13 +93,5 @@ export class ChildDetailComponent implements OnInit {
           this.loading = false;
         }
       });
-  }
-
-  formatCurrency(cents: number): string {
-    return `$${(cents / 100).toFixed(2)}`;
-  }
-
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString();
   }
 }
