@@ -1,0 +1,172 @@
+<div class="min-h-screen bg-amber-50 py-12">
+  <div class="max-w-4xl mx-auto px-4">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8 font-serif">Admin Dashboard</h1>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Form Selection Tabs -->
+    <div class="mb-6 flex flex-wrap gap-2">
+      <button (click)="setActiveForm('child')" 
+              [class.bg-orange-500]="activeForm === 'child'"
+              [class.text-white]="activeForm === 'child'"
+              [class.bg-gray-200]="activeForm !== 'child'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Create Child
+      </button>
+      <button (click)="setActiveForm('sponsor')"
+              [class.bg-orange-500]="activeForm === 'sponsor'"
+              [class.text-white]="activeForm === 'sponsor'"
+              [class.bg-gray-200]="activeForm !== 'sponsor'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Create Sponsor
+      </button>
+      <button (click)="setActiveForm('earlySupport')"
+              [class.bg-orange-500]="activeForm === 'earlySupport'"
+              [class.text-white]="activeForm === 'earlySupport'"
+              [class.bg-gray-200]="activeForm !== 'earlySupport'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Record Early Support
+      </button>
+      <button (click)="setActiveForm('progress')"
+              [class.bg-orange-500]="activeForm === 'progress'"
+              [class.text-white]="activeForm === 'progress'"
+              [class.bg-gray-200]="activeForm !== 'progress'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Add Progress
+      </button>
+      <button (click)="setActiveForm('sponsorship')"
+              [class.bg-orange-500]="activeForm === 'sponsorship'"
+              [class.text-white]="activeForm === 'sponsorship'"
+              [class.bg-gray-200]="activeForm !== 'sponsorship'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Commit Sponsorship
+      </button>
+    </div>
+
+    <!-- Create Child Form -->
+    <div *ngIf="activeForm === 'child'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Child</h2>
+      <form (ngSubmit)="createChild()" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Name</label>
+          <input [(ngModel)]="childForm.name" name="name" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Birth Date</label>
+          <input [(ngModel)]="childForm.birthDate" name="birthDate" type="date" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Current Grade</label>
+          <input [(ngModel)]="childForm.currentGrade" name="currentGrade" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <button type="submit" class="btn-orange w-full">Create Child</button>
+      </form>
+    </div>
+
+    <!-- Create Sponsor Form -->
+    <div *ngIf="activeForm === 'sponsor'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Sponsor</h2>
+      <form (ngSubmit)="createSponsor()" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Name</label>
+          <input [(ngModel)]="sponsorForm.name" name="name" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Email</label>
+          <input [(ngModel)]="sponsorForm.email" name="email" type="email" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Phone</label>
+          <input [(ngModel)]="sponsorForm.phone" name="phone" type="tel" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <button type="submit" class="btn-orange w-full">Create Sponsor</button>
+      </form>
+    </div>
+
+    <!-- Record Early Support Form -->
+    <div *ngIf="activeForm === 'earlySupport'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Record Early Support</h2>
+      <form (ngSubmit)="recordEarlySupport()" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Child ID</label>
+          <input [(ngModel)]="earlySupportForm.childId" name="childId" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Amount (in cents)</label>
+          <input [(ngModel)]="earlySupportForm.amountInCents" name="amountInCents" type="number" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Description</label>
+          <textarea [(ngModel)]="earlySupportForm.description" name="description" required rows="3"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Support Date</label>
+          <input [(ngModel)]="earlySupportForm.supportDate" name="supportDate" type="date" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <button type="submit" class="btn-orange w-full">Record Support</button>
+      </form>
+    </div>
+
+    <!-- Add Progress Form -->
+    <div *ngIf="activeForm === 'progress'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Add Progress Update</h2>
+      <form (ngSubmit)="addProgress()" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Child ID</label>
+          <input [(ngModel)]="progressForm.childId" name="childId" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Milestone</label>
+          <input [(ngModel)]="progressForm.milestone" name="milestone" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Comments</label>
+          <textarea [(ngModel)]="progressForm.comments" name="comments" required rows="4"
+                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+        </div>
+        <button type="submit" class="btn-orange w-full">Add Progress</button>
+      </form>
+    </div>
+
+    <!-- Commit Sponsorship Form -->
+    <div *ngIf="activeForm === 'sponsorship'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Commit Sponsorship</h2>
+      <form (ngSubmit)="commitSponsorship()" class="space-y-4">
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Child ID</label>
+          <input [(ngModel)]="sponsorshipForm.childId" name="childId" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Sponsor ID</label>
+          <input [(ngModel)]="sponsorshipForm.sponsorId" name="sponsorId" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Start Date</label>
+          <input [(ngModel)]="sponsorshipForm.startDate" name="startDate" type="date" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <button type="submit" class="btn-orange w-full">Commit Sponsorship</button>
+      </form>
+    </div>
+  </div>
+</div>
