@@ -1,68 +1,64 @@
-<div class="min-h-screen bg-amber-50 py-12">
-  <div class="max-w-6xl mx-auto px-4">
-    
-    <div *ngIf="loading" class="text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-      <p class="mt-4 text-gray-600">Loading details...</p>
+<div class="min-h-screen bg-slate-50 py-12">
+  <div class="mx-auto max-w-6xl px-4">
+    <a routerLink="/children" class="text-sm font-semibold text-slate-600 underline">← Back to list</a>
+
+    <div *ngIf="loading" class="py-12 text-center">
+      <div class="inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-slate-900"></div>
+      <p class="mt-4 text-slate-600">Loading details...</p>
     </div>
 
-    <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    <div *ngIf="error" class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
       {{ error }}
     </div>
 
-    <div *ngIf="!loading && child">
-      <!-- Child Info Card -->
-      <div class="paper-texture p-8 rounded-lg shadow-lg mb-8">
-        <h1 class="text-4xl font-bold text-gray-800 mb-4 font-serif">{{ child.fullName }}</h1>
-        <div class="grid md:grid-cols-2 gap-4 text-gray-700">
-          <div>
-            <p class="mb-2"><span class="font-semibold">Child ID:</span> {{ child.id }}</p>
-            <p class="mb-2"><span class="font-semibold">Education Amount:</span> {{ child.educationAmount }} {{ child.educationCurrency }}</p>
-          </div>
+    <div *ngIf="!loading && !error">
+      <header class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <h1 class="text-2xl font-semibold text-slate-900">{{ childName }}</h1>
+        <p class="mt-2 text-sm text-slate-600">Child ID: {{ childId }}</p>
+        <span
+          class="mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold"
+          [ngClass]="{
+            'bg-amber-100 text-amber-800': supportStatus === 'AVAILABLE',
+            'bg-emerald-100 text-emerald-800': supportStatus === 'EARLY_SUPPORTED',
+            'bg-slate-200 text-slate-700': supportStatus === 'SPONSORED'
+          }"
+        >
+          {{
+            supportStatus === 'AVAILABLE'
+              ? 'Available'
+              : supportStatus === 'EARLY_SUPPORTED'
+                ? 'Early Supported'
+                : 'Sponsored'
+          }}
+        </span>
+        <div class="mt-4">
+          <a
+            [routerLink]="['/children', childId, 'sponsor']"
+            class="inline-flex rounded bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
+            [class.pointer-events-none]="supportStatus === 'SPONSORED'"
+            [class.opacity-50]="supportStatus === 'SPONSORED'"
+            [attr.aria-disabled]="supportStatus === 'SPONSORED'"
+          >
+            Commit to sponsorship
+          </a>
+          <p *ngIf="supportStatus === 'SPONSORED'" class="mt-2 text-xs text-slate-600">
+            This child already has an active sponsorship.
+          </p>
         </div>
+      </header>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-3">
+        <app-child-snapshot
+          [age]="age"
+          [grade]="grade"
+          [monthlyCost]="monthlyCost"
+          class="lg:col-span-1"
+        />
+        <app-ledger-table class="lg:col-span-2" [entries]="ledgerEntries" />
       </div>
 
-      <!-- Ledger Section -->
-      <div class="paper-texture p-8 rounded-lg shadow-lg mb-8">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 font-serif">Financial Ledger</h2>
-        <div *ngIf="ledgerEntries.length === 0" class="text-gray-600">
-          No ledger entries yet.
-        </div>
-        <div *ngIf="ledgerEntries.length > 0" class="overflow-x-auto">
-          <table class="min-w-full">
-            <thead class="bg-gray-100">
-              <tr>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Month</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Amount</th>
-                <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Currency</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <tr *ngFor="let entry of ledgerEntries" class="hover:bg-gray-50">
-                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.month }}</td>
-                <td class="px-6 py-4 text-sm text-gray-700 font-semibold">{{ entry.educationAmount }}</td>
-                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.educationCurrency }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Progress Updates Section -->
-      <div class="paper-texture p-8 rounded-lg shadow-lg">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 font-serif">Progress Updates</h2>
-        <div *ngIf="progressUpdates.length === 0" class="text-gray-600">
-          No progress updates yet.
-        </div>
-        <div *ngIf="progressUpdates.length > 0" class="space-y-4">
-          <div *ngFor="let update of progressUpdates" 
-               class="bg-white p-6 rounded-lg border border-gray-200">
-            <div class="flex justify-between items-start mb-2">
-              <h3 class="text-xl font-bold text-gray-800">{{ update.month }}</h3>
-            </div>
-            <p class="text-gray-700">{{ update.summary }}</p>
-          </div>
-        </div>
+      <div class="mt-6">
+        <app-progress-list [updates]="progressUpdates" />
       </div>
     </div>
   </div>

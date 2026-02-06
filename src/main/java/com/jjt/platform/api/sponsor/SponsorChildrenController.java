@@ -3,15 +3,14 @@ package com.jjt.platform.api.sponsor;
 import com.jjt.platform.api.common.dto.ChildDto;
 import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
+import com.jjt.platform.api.common.dto.SupportStatus;
 import com.jjt.platform.api.common.mapper.DtoMapper;
 import com.jjt.platform.api.common.security.AccessGuard;
 import com.jjt.platform.api.common.security.SecurityContext;
 import com.jjt.platform.config.security.Role;
-import com.jjt.platform.core.domain.entity.Child;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
-import com.jjt.platform.infrastructure.persistence.entity.ChildEntity;
 import com.jjt.platform.infrastructure.persistence.entity.EducationSupportLedgerEntity;
 import com.jjt.platform.infrastructure.persistence.entity.LedgerEntryEntity;
 import com.jjt.platform.infrastructure.persistence.entity.ProgressUpdateEntity;
@@ -31,8 +30,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.YearMonth;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -65,13 +64,13 @@ public class SponsorChildrenController {
         List<UUID> childIds = sponsoredChildIds(sponsorId);
         List<ChildDto> result = childRepo.findAllById(childIds).stream()
                 .map(ChildMapper::toDomain)
-                .map(DtoMapper::toChildDto)
+                .map(child -> DtoMapper.toChildDto(child, deriveStatus(child.getId())))
                 .toList();
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/children/{childId}")
-    public ResponseEntity<ChildDto> getChild(@PathVariable UUID childId) {
+    public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
         SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
         UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         if (!isChildSponsoredBy(sponsorId, childId)) {
@@ -79,13 +78,13 @@ public class SponsorChildrenController {
         }
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
-                .map(DtoMapper::toChildDto)
+                .map(child -> DtoMapper.toChildDto(child, deriveStatus(child.getId())))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/children/{childId}/ledger")
-    public ResponseEntity<LedgerDto> getLedger(@PathVariable UUID childId) {
+    public ResponseEntity<LedgerDto> getLedger(@PathVariable("childId") UUID childId) {
         SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
         UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         if (!isChildSponsoredBy(sponsorId, childId)) {
@@ -99,7 +98,7 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}/progress")
-    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@PathVariable UUID childId) {
+    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@PathVariable("childId") UUID childId) {
         SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
         UUID sponsorId = AccessGuard.requireSponsorId(ctx);
         if (!isChildSponsoredBy(sponsorId, childId)) {
@@ -138,5 +137,18 @@ public class SponsorChildrenController {
             ledger = ledger.appendEntry(entry);
         }
         return ledger;
+    }
+
+    private SupportStatus deriveStatus(UUID childId) {
+        String currentMonth = YearMonth.now().toString();
+        boolean hasActiveSponsorship = sponsorshipRepo.existsActiveByChildId(childId, currentMonth);
+        if (hasActiveSponsorship) {
+            return SupportStatus.SPONSORED;
+        }
+        boolean hasCurrentLedgerEntry = ledgerRepo.findByChild_Id(childId)
+                .map(ledger -> ledgerEntryRepo.findByLedger_IdOrderByEntryMonth(ledger.getId()))
+                .map(entries -> entries.stream().anyMatch(e -> currentMonth.equals(e.getEntryMonth())))
+                .orElse(false);
+        return hasCurrentLedgerEntry ? SupportStatus.EARLY_SUPPORTED : SupportStatus.AVAILABLE;
     }
 }

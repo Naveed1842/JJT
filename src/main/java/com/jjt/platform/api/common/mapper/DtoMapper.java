@@ -4,6 +4,7 @@ import com.jjt.platform.api.common.dto.ChildDto;
 import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.LedgerEntryDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
+import com.jjt.platform.api.common.dto.SupportStatus;
 import com.jjt.platform.core.domain.entity.Child;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
@@ -16,12 +17,13 @@ public final class DtoMapper {
 
     private DtoMapper() {}
 
-    public static ChildDto toChildDto(Child child) {
+    public static ChildDto toChildDto(Child child, SupportStatus supportStatus) {
         return new ChildDto(
                 child.getId(),
                 child.getFullName(),
                 child.getEducationCost().getAmount().toPlainString(),
-                child.getEducationCost().getCurrency().getCurrencyCode()
+                child.getEducationCost().getCurrency().getCurrencyCode(),
+                supportStatus
         );
     }
 

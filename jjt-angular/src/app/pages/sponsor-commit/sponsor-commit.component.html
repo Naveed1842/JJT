@@ -1,0 +1,73 @@
+<div class="min-h-screen bg-slate-50 py-12">
+  <div class="mx-auto max-w-4xl px-4">
+    <a [routerLink]="['/children', childId]" class="text-sm font-semibold text-slate-600 underline">
+      ← Back to child details
+    </a>
+
+    <header class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <h1 class="text-2xl font-semibold text-slate-900">Sponsor this child</h1>
+      <p class="mt-2 text-sm text-slate-600">Child: {{ childName || 'Loading...' }}</p>
+      <p class="mt-1 text-sm text-slate-600">Monthly cost: {{ monthlyCost }}</p>
+      <p class="mt-2 text-sm text-slate-600">Status: {{ supportStatus }}</p>
+      <p *ngIf="supportStatus === 'SPONSORED'" class="mt-2 text-sm text-amber-700">
+        This child already has an active sponsorship.
+      </p>
+    </header>
+
+    <section class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-base font-semibold text-slate-900">Choose your sponsorship</h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        <label class="cursor-pointer rounded border border-slate-200 p-4" [class.border-slate-900]="commitmentType === 'MONTHLY'">
+          <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="MONTHLY" />
+          <span class="text-sm font-semibold text-slate-900">Monthly sponsorship</span>
+          <p class="mt-2 text-sm text-slate-600">2,000 PKR / month</p>
+        </label>
+        <label class="cursor-pointer rounded border border-slate-200 p-4" [class.border-slate-900]="commitmentType === 'YEARLY'">
+          <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="YEARLY" />
+          <span class="text-sm font-semibold text-slate-900">Yearly sponsorship</span>
+          <p class="mt-2 text-sm text-slate-600">24,000 PKR (12 months)</p>
+        </label>
+      </div>
+    </section>
+
+    <section class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 class="text-base font-semibold text-slate-900">Your details</h2>
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Sponsor name</label>
+          <input
+            class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            type="text"
+            [(ngModel)]="sponsorName"
+            placeholder="Full name"
+          />
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Email</label>
+          <input
+            class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            type="email"
+            [(ngModel)]="email"
+            placeholder="name@example.com"
+          />
+        </div>
+      </div>
+
+      <p class="mt-4 text-sm text-slate-600">
+        Manual payment notice: Our team will contact you to complete the process.
+      </p>
+
+      <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        {{ error }}
+      </div>
+
+      <button
+        class="mt-6 rounded bg-slate-900 px-6 py-2 text-sm font-semibold text-white disabled:opacity-60"
+        (click)="submit()"
+        [disabled]="loading || supportStatus === 'SPONSORED'"
+      >
+        {{ loading ? 'Submitting...' : 'Commit to sponsorship' }}
+      </button>
+    </section>
+  </div>
+</div>

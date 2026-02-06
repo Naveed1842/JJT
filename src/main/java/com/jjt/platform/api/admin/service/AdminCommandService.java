@@ -116,8 +116,10 @@ public class AdminCommandService {
         if (childRepo.findById(childId).isEmpty()) {
             throw new DomainException("Child not found");
         }
+        String currentMonth = java.time.YearMonth.now().toString();
+        boolean hasActiveSponsorship = sponsorshipRepo.existsActiveByChildId(childId, currentMonth);
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
-                new CommitFutureSponsorshipUseCase.Command(sponsorshipId, sponsorId, childId, startMonth));
+                new CommitFutureSponsorshipUseCase.Command(sponsorshipId, sponsorId, childId, startMonth, hasActiveSponsorship));
         SponsorshipEntity entity = SponsorshipMapper.toEntity(sponsorship, sponsor);
         sponsorshipRepo.save(entity);
         return sponsorship;

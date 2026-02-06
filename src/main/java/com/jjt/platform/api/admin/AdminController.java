@@ -8,8 +8,10 @@ import com.jjt.platform.api.common.security.AccessGuard;
 import com.jjt.platform.config.security.Role;
 import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.exceptions.LedgerInvariantViolationException;
+import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -89,7 +91,7 @@ public class AdminController {
 
     @PostMapping("/sponsorships")
     public ResponseEntity<CommitSponsorshipResponse> commitSponsorship(@RequestBody CommitSponsorshipRequest request) {
-        AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
+        AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN, Role.SPONSOR);
         var sponsorship = adminService.commitSponsorship(
                 request.sponsorId(),
                 request.childId(),
@@ -110,6 +112,11 @@ public class AdminController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    @ExceptionHandler(SponsorshipInvariantViolationException.class)
+    public ResponseEntity<String> handleSponsorshipConflict(SponsorshipInvariantViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<String> handleDomain(DomainException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -118,5 +125,10 @@ public class AdminController {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleBadRequest(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleConstraintViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Sponsorship already exists for sponsor, child, and start month.");
     }
 }

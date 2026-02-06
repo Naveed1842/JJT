@@ -1,6 +1,7 @@
 package com.jjt.platform.application.usecase;
 
 import com.jjt.platform.core.domain.entity.Sponsorship;
+import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import com.jjt.platform.core.domain.value.YearMonthValue;
 
 import java.util.Objects;
@@ -13,12 +14,15 @@ public class CommitFutureSponsorshipUseCase {
 
     public Sponsorship commit(Command command) {
         Objects.requireNonNull(command, "command must not be null");
+        if (command.hasActiveSponsorship) {
+            throw new SponsorshipInvariantViolationException("Child already has an active sponsorship.");
+        }
         UUID sponsorshipId = command.sponsorshipId != null ? command.sponsorshipId : UUID.randomUUID();
         return Sponsorship.create(sponsorshipId, command.sponsorId, command.childId, command.startMonth);
     }
 
     /** Input for creating a future sponsorship commitment. */
-    public record Command(UUID sponsorshipId, UUID sponsorId, UUID childId, YearMonthValue startMonth) {
+    public record Command(UUID sponsorshipId, UUID sponsorId, UUID childId, YearMonthValue startMonth, boolean hasActiveSponsorship) {
         public Command {
             Objects.requireNonNull(sponsorId, "sponsorId must not be null");
             Objects.requireNonNull(childId, "childId must not be null");

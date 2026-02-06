@@ -1,45 +1,44 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-
-interface Child {
-  id: string;
-  fullName: string;
-  educationAmount: string;
-  educationCurrency: string;
-}
+import { ChildCardComponent, ChildCardView } from '../../components/child-card/child-card.component';
+import { SponsorService } from '../../services/sponsor.service';
 
 @Component({
   selector: 'app-children',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, ChildCardComponent],
   templateUrl: './children.component.html',
   styleUrl: './children.component.css'
 })
 export class ChildrenComponent implements OnInit {
-  children: Child[] = [];
+  children: ChildCardView[] = [];
   loading = true;
   error: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private sponsorService: SponsorService) {}
 
   ngOnInit() {
     this.loadChildren();
   }
 
   loadChildren() {
-    this.http.get<Child[]>('http://localhost:8080/api/org/children')
-      .subscribe({
-        next: (data) => {
-          this.children = data;
-          this.loading = false;
-        },
-        error: (err) => {
-          this.error = 'Failed to load children';
-          this.loading = false;
-          console.error('Error loading children:', err);
-        }
-      });
+    this.sponsorService.getChildren().subscribe({
+      next: (data) => {
+        this.children = data.map((child, index) => ({
+          id: child.id,
+          name: child.fullName,
+          age: index % 2 === 0 ? 8 : 10,
+          grade: index % 2 === 0 ? 'Grade 3' : 'Grade 5',
+          monthlyCost: '2,000 PKR',
+          status: child.supportStatus
+        }));
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Failed to load children.';
+        this.loading = false;
+        console.error('Error loading children:', err);
+      }
+    });
   }
 }

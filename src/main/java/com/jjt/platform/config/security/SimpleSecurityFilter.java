@@ -25,6 +25,11 @@ public class SimpleSecurityFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+
+        if (isPublicRequest(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         
         try {
             SecurityContext context = resolveContext(request);
@@ -56,5 +61,10 @@ public class SimpleSecurityFilter extends OncePerRequestFilter {
         } catch (IllegalArgumentException ex) {
             return null;
         }
+    }
+
+    private boolean isPublicRequest(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path != null && path.startsWith("/api/public/");
     }
 }
