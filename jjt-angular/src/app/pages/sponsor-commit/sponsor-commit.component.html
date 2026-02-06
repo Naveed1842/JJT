@@ -21,6 +21,10 @@
 
     <section class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
       <h2 class="text-base font-semibold text-slate-900">Choose your sponsorship</h2>
+      <p class="mt-2 text-sm text-slate-600">Sponsorship starts from the upcoming month.</p>
+      <p class="mt-1 text-sm font-semibold text-slate-700">
+        This is a sponsorship commitment. Payments are completed manually after confirmation.
+      </p>
       <div class="mt-4 grid gap-4 md:grid-cols-2">
         <label class="cursor-pointer rounded border border-slate-200 p-4" [class.border-slate-900]="commitmentType === 'MONTHLY'">
           <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="MONTHLY" />
@@ -29,7 +33,7 @@
         </label>
         <label class="cursor-pointer rounded border border-slate-200 p-4" [class.border-slate-900]="commitmentType === 'YEARLY'">
           <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="YEARLY" />
-          <span class="text-sm font-semibold text-slate-900">Yearly sponsorship</span>
+          <span class="text-sm font-semibold text-slate-900">Yearly commitment (12 months)</span>
           <p class="mt-2 text-sm text-slate-600">24,000 PKR (12 months)</p>
         </label>
       </div>
@@ -70,6 +74,13 @@
       <p class="mt-4 text-sm text-slate-600">
         Manual payment notice: Our team will contact you to complete the process.
       </p>
+
+      <div class="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800">
+        <p class="font-semibold text-slate-900">Confirmation</p>
+        <p class="mt-1">• Child: {{ childName || 'Loading...' }}</p>
+        <p>• Commitment: {{ commitmentType === 'YEARLY' ? 'Yearly (12 months)' : 'Monthly' }}</p>
+        <p>• Monthly cost: {{ monthlyCost || '—' }}</p>
+      </div>
 
       <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
         {{ error }}
