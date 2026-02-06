@@ -20,9 +20,11 @@ public final class Sponsorship {
     private final SponsorshipStatus status;
     private final Instant createdAt;
     private final Instant expiresAt;
+    private final CommitmentType commitmentType;
 
     private Sponsorship(UUID id, UUID sponsorId, UUID childId, YearMonthValue startMonth,
-                        SponsorshipStatus status, Instant createdAt, Instant expiresAt) {
+                        SponsorshipStatus status, Instant createdAt, Instant expiresAt,
+                        CommitmentType commitmentType) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.sponsorId = Objects.requireNonNull(sponsorId, "sponsorId must not be null");
         this.childId = Objects.requireNonNull(childId, "childId must not be null");
@@ -30,17 +32,20 @@ public final class Sponsorship {
         this.status = Objects.requireNonNull(status, "status must not be null");
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt must not be null");
         this.expiresAt = expiresAt;
+        this.commitmentType = Objects.requireNonNull(commitmentType, "commitmentType must not be null");
     }
 
-    public static Sponsorship createPending(UUID id, UUID sponsorId, UUID childId, YearMonthValue startMonth, Instant now, Instant expiresAt) {
+    public static Sponsorship createPending(UUID id, UUID sponsorId, UUID childId, YearMonthValue startMonth, Instant now, Instant expiresAt,
+                                            CommitmentType commitmentType) {
         validateFutureStart(startMonth);
-        return new Sponsorship(id, sponsorId, childId, startMonth, SponsorshipStatus.PENDING, now, expiresAt);
+        return new Sponsorship(id, sponsorId, childId, startMonth, SponsorshipStatus.PENDING, now, expiresAt, commitmentType);
     }
 
     public static Sponsorship create(UUID id, UUID sponsorId, UUID childId, YearMonthValue startMonth,
-                                     SponsorshipStatus status, Instant createdAt, Instant expiresAt) {
+                                     SponsorshipStatus status, Instant createdAt, Instant expiresAt,
+                                     CommitmentType commitmentType) {
         validateFutureStart(startMonth);
-        return new Sponsorship(id, sponsorId, childId, startMonth, status, createdAt, expiresAt);
+        return new Sponsorship(id, sponsorId, childId, startMonth, status, createdAt, expiresAt, commitmentType);
     }
 
     private static void validateFutureStart(YearMonthValue startMonth) {
@@ -78,8 +83,12 @@ public final class Sponsorship {
         return expiresAt;
     }
 
+    public CommitmentType getCommitmentType() {
+        return commitmentType;
+    }
+
     public Sponsorship withStatus(SponsorshipStatus newStatus) {
-        return new Sponsorship(this.id, this.sponsorId, this.childId, this.startMonth, newStatus, this.createdAt, this.expiresAt);
+        return new Sponsorship(this.id, this.sponsorId, this.childId, this.startMonth, newStatus, this.createdAt, this.expiresAt, this.commitmentType);
     }
 
     @Override

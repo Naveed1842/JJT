@@ -54,7 +54,8 @@ export class AdminComponent {
   sponsorshipForm = {
     sponsorId: '',
     childId: '',
-    startMonth: ''
+    startMonth: '',
+    commitmentType: 'MONTHLY'
   };
 
   pendingSponsorships: any[] = [];
@@ -150,7 +151,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsorship committed successfully!';
-          this.sponsorshipForm = { sponsorId: '', childId: '', startMonth: '' };
+          this.sponsorshipForm = { sponsorId: '', childId: '', startMonth: '', commitmentType: 'MONTHLY' };
         },
         error: (err) => {
           this.errorMessage = 'Failed to commit sponsorship';

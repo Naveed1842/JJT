@@ -106,7 +106,8 @@ public class AdminController {
                 request.sponsorId(),
                 request.childId(),
                 YearMonthValue.of(YearMonth.parse(request.startMonth())),
-                request.sponsorshipId()
+                request.sponsorshipId(),
+                request.commitmentType()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CommitSponsorshipResponse(
@@ -129,6 +130,7 @@ public class AdminController {
                         s.getSponsor().getDisplayName(),
                         s.getSponsor().getContactEmail(),
                         s.getSponsor().getPhone(),
+                        s.getCommitmentType().name(),
                         s.getStartMonth(),
                         s.getStatus().name(),
                         s.getCreatedAt()))
@@ -170,6 +172,7 @@ public class AdminController {
                         s.getSponsor().getDisplayName(),
                         s.getSponsor().getContactEmail(),
                         s.getSponsor().getPhone(),
+                        s.getCommitmentType().name(),
                         s.getStartMonth(),
                         s.getStatus().name(),
                         s.getCreatedAt()))

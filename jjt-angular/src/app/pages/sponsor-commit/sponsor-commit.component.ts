@@ -70,6 +70,7 @@ export class SponsorCommitComponent implements OnInit {
     this.loading = true;
     this.sponsorService.commitSponsorship({
       childId: this.childId,
+      commitmentType: this.commitmentType,
       sponsor: {
         name: this.sponsorName,
         email: this.email,

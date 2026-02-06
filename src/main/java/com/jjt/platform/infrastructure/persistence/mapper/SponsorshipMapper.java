@@ -2,6 +2,7 @@ package com.jjt.platform.infrastructure.persistence.mapper;
 
 import com.jjt.platform.core.domain.entity.Sponsorship;
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
+import com.jjt.platform.core.domain.entity.CommitmentType;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorshipEntity;
 
@@ -20,7 +21,8 @@ public final class SponsorshipMapper {
                 YearMonthMapper.toDomain(entity.getStartMonth()),
                 entity.getStatus(),
                 entity.getCreatedAt(),
-                entity.getExpiresAt()
+                entity.getExpiresAt(),
+                entity.getCommitmentType()
         );
     }
 
@@ -34,7 +36,8 @@ public final class SponsorshipMapper {
                 YearMonthMapper.toString(sponsorship.getStartMonth()),
                 sponsorship.getStatus(),
                 sponsorship.getCreatedAt(),
-                sponsorship.getExpiresAt()
+                sponsorship.getExpiresAt(),
+                sponsorship.getCommitmentType()
         );
     }
 }

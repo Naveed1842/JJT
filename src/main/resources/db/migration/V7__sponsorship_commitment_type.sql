@@ -1,0 +1,2 @@
+ALTER TABLE sponsorships
+    ADD COLUMN IF NOT EXISTS commitment_type VARCHAR(20) NOT NULL DEFAULT 'MONTHLY';

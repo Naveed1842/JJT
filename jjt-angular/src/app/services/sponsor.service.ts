@@ -38,6 +38,7 @@ export interface ProgressUpdateDto {
 
 export interface SponsorshipCommitRequest {
   childId: string;
+  commitmentType: CommitmentType;
   sponsor: PublicSponsorInfo;
 }
 

@@ -114,7 +114,8 @@ public class AdminCommandService {
     }
 
     @Transactional
-    public Sponsorship commitSponsorship(UUID sponsorId, UUID childId, YearMonthValue startMonth, UUID sponsorshipId) {
+    public Sponsorship commitSponsorship(UUID sponsorId, UUID childId, YearMonthValue startMonth, UUID sponsorshipId,
+                                         com.jjt.platform.core.domain.entity.CommitmentType commitmentType) {
         SponsorEntity sponsor = sponsorRepo.findById(sponsorId).orElseThrow(() -> new DomainException("Sponsor not found"));
         if (childRepo.findById(childId).isEmpty()) {
             throw new DomainException("Child not found");
@@ -123,7 +124,7 @@ public class AdminCommandService {
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
                 new CommitFutureSponsorshipUseCase.Command(sponsorshipId, sponsorId, childId, startMonth,
                         hasActive, com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING,
-                        java.time.Instant.now(), null));
+                        java.time.Instant.now(), null, commitmentType != null ? commitmentType : com.jjt.platform.core.domain.entity.CommitmentType.MONTHLY));
         SponsorshipEntity entity = SponsorshipMapper.toEntity(sponsorship, sponsor);
         sponsorshipRepo.save(entity);
         return sponsorship;

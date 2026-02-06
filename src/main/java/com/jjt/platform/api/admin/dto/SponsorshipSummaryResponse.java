@@ -9,6 +9,7 @@ public record SponsorshipSummaryResponse(UUID sponsorshipId,
                                          String sponsorName,
                                          String sponsorEmail,
                                          String sponsorPhone,
+                                         String commitmentType,
                                          String startMonth,
                                          String status,
                                          Instant createdAt) {

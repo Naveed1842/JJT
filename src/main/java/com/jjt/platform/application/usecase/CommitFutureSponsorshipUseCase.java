@@ -2,6 +2,7 @@ package com.jjt.platform.application.usecase;
 
 import com.jjt.platform.core.domain.entity.Sponsorship;
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
+import com.jjt.platform.core.domain.entity.CommitmentType;
 import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import com.jjt.platform.core.domain.value.YearMonthValue;
 
@@ -22,7 +23,7 @@ public class CommitFutureSponsorshipUseCase {
         UUID sponsorshipId = command.sponsorshipId != null ? command.sponsorshipId : UUID.randomUUID();
         Instant createdAt = command.createdAt != null ? command.createdAt : Instant.now();
         return Sponsorship.create(sponsorshipId, command.sponsorId, command.childId, command.startMonth,
-                command.status, createdAt, command.expiresAt);
+                command.status, createdAt, command.expiresAt, command.commitmentType);
     }
 
     /** Input for creating a future sponsorship commitment. */
@@ -33,12 +34,14 @@ public class CommitFutureSponsorshipUseCase {
                           boolean hasActiveSponsorship,
                           SponsorshipStatus status,
                           Instant createdAt,
-                          Instant expiresAt) {
+                          Instant expiresAt,
+                          CommitmentType commitmentType) {
         public Command {
             Objects.requireNonNull(sponsorId, "sponsorId must not be null");
             Objects.requireNonNull(childId, "childId must not be null");
             Objects.requireNonNull(startMonth, "startMonth must not be null");
             Objects.requireNonNull(status, "status must not be null");
+            Objects.requireNonNull(commitmentType, "commitmentType must not be null");
         }
     }
 }

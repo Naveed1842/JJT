@@ -1,6 +1,7 @@
 package com.jjt.platform.infrastructure.persistence.entity;
 
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
+import com.jjt.platform.core.domain.entity.CommitmentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,11 +43,16 @@ public class SponsorshipEntity {
     @Column(name = "expires_at")
     private Instant expiresAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "commitment_type", nullable = false, length = 20)
+    private CommitmentType commitmentType;
+
     protected SponsorshipEntity() {
     }
 
     public SponsorshipEntity(UUID id, SponsorEntity sponsor, UUID childId, String startMonth,
-                             SponsorshipStatus status, Instant createdAt, Instant expiresAt) {
+                             SponsorshipStatus status, Instant createdAt, Instant expiresAt,
+                             CommitmentType commitmentType) {
         this.id = id;
         this.sponsor = sponsor;
         this.childId = childId;
@@ -54,6 +60,7 @@ public class SponsorshipEntity {
         this.status = status;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
+        this.commitmentType = commitmentType;
     }
 
     public UUID getId() {
@@ -82,6 +89,10 @@ public class SponsorshipEntity {
 
     public Instant getExpiresAt() {
         return expiresAt;
+    }
+
+    public CommitmentType getCommitmentType() {
+        return commitmentType;
     }
 
     public void setStatus(SponsorshipStatus status) {

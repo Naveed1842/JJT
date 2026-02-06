@@ -26,9 +26,13 @@ public class PublicSponsorshipController {
 
     @PostMapping("/sponsorships")
     public ResponseEntity<PublicSponsorshipResponse> commitPublic(@RequestBody PublicSponsorshipRequest request) {
+        if (request == null || request.childId() == null || request.commitmentType() == null || request.sponsor() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         var sponsor = request.sponsor();
         var sponsorship = sponsorshipService.commitPublic(
                 request.childId(),
+                request.commitmentType(),
                 sponsor != null ? sponsor.name() : null,
                 sponsor != null ? sponsor.email() : null,
                 sponsor != null ? sponsor.phone() : null

@@ -41,9 +41,13 @@ public class PublicSponsorshipService {
     }
 
     @Transactional
-    public Sponsorship commitPublic(UUID childId, String sponsorName, String sponsorEmail, String sponsorPhone) {
+    public Sponsorship commitPublic(UUID childId, com.jjt.platform.core.domain.entity.CommitmentType commitmentType,
+                                    String sponsorName, String sponsorEmail, String sponsorPhone) {
         if (childId == null) {
             throw new DomainException("childId must not be null");
+        }
+        if (commitmentType == null) {
+            throw new DomainException("commitmentType must not be null");
         }
         if (sponsorName == null || sponsorName.isBlank()) {
             throw new DomainException("sponsor name must not be blank");
@@ -68,7 +72,7 @@ public class PublicSponsorshipService {
         YearMonthValue startMonth = YearMonthValue.of(YearMonth.now().plusMonths(1));
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
                 new CommitFutureSponsorshipUseCase.Command(null, sponsor.getId(), childId, startMonth,
-                        false, SponsorshipStatus.PENDING, Instant.now(), null));
+                        false, SponsorshipStatus.PENDING, Instant.now(), null, commitmentType));
         SponsorshipEntity sponsorshipEntity = SponsorshipMapper.toEntity(sponsorship, sponsorEntity);
         sponsorshipRepo.save(sponsorshipEntity);
 

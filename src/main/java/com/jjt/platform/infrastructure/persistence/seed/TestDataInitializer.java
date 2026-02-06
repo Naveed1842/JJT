@@ -1,6 +1,7 @@
 package com.jjt.platform.infrastructure.persistence.seed;
 
 import com.jjt.platform.api.admin.service.AdminCommandService;
+import com.jjt.platform.core.domain.entity.CommitmentType;
 import com.jjt.platform.core.domain.entity.Sponsor;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
@@ -54,7 +55,7 @@ public class TestDataInitializer implements ApplicationRunner {
             return;
         }
 
-        Money educationCost = Money.of("120.00", Currency.getInstance("USD").getCurrencyCode());
+        Money educationCost = Money.of("2000.00", Currency.getInstance("PKR").getCurrencyCode());
         YearMonth now = YearMonth.now();
         YearMonthValue previousMonth = YearMonthValue.of(now.minusMonths(1));
         YearMonthValue currentMonth = YearMonthValue.of(now);
@@ -77,7 +78,15 @@ public class TestDataInitializer implements ApplicationRunner {
     }
 
     private void seedChildA(YearMonthValue previousMonth, YearMonthValue currentMonth, Money educationCost) {
-        var createResult = adminCommands.createChild("Child A (Early Support)", educationCost, CHILD_A_ID, LEDGER_A_ID);
+        adminCommands.createChild(
+                "ROL-A-001",
+                "Child A (Early Support)",
+                "Karachi",
+                "JJT Campus A",
+                null,
+                educationCost,
+                CHILD_A_ID,
+                LEDGER_A_ID);
 
         adminCommands.recordEarlySupport(CHILD_A_ID, previousMonth, educationCost, UUID.nameUUIDFromBytes("LE-A-1".getBytes()));
         adminCommands.recordEarlySupport(CHILD_A_ID, currentMonth, educationCost, UUID.nameUUIDFromBytes("LE-A-2".getBytes()));
@@ -87,7 +96,15 @@ public class TestDataInitializer implements ApplicationRunner {
     }
 
     private void seedChildB(YearMonthValue previousMonth, YearMonthValue nextMonth, YearMonthValue currentMonth, Money educationCost) {
-        var createResult = adminCommands.createChild("Child B (Sponsored)", educationCost, CHILD_B_ID, LEDGER_B_ID);
+        adminCommands.createChild(
+                "ROL-B-001",
+                "Child B (Sponsored)",
+                "Lahore",
+                "JJT Campus B",
+                null,
+                educationCost,
+                CHILD_B_ID,
+                LEDGER_B_ID);
 
         adminCommands.recordEarlySupport(CHILD_B_ID, previousMonth, educationCost, UUID.nameUUIDFromBytes("LE-B-1".getBytes()));
         adminCommands.recordEarlySupport(CHILD_B_ID, currentMonth, educationCost, UUID.nameUUIDFromBytes("LE-B-2".getBytes()));
@@ -95,6 +112,11 @@ public class TestDataInitializer implements ApplicationRunner {
         adminCommands.addProgress(CHILD_B_ID, previousMonth, "Prepared for upcoming sponsorship.", UUID.nameUUIDFromBytes("PU-B-1".getBytes()));
         adminCommands.addProgress(CHILD_B_ID, currentMonth, "Classes underway, sponsorship planned next month.", UUID.nameUUIDFromBytes("PU-B-2".getBytes()));
 
-        adminCommands.commitSponsorship(SPONSOR_ID, CHILD_B_ID, nextMonth, UUID.nameUUIDFromBytes("SP-1".getBytes()));
+        adminCommands.commitSponsorship(
+                SPONSOR_ID,
+                CHILD_B_ID,
+                nextMonth,
+                UUID.nameUUIDFromBytes("SP-1".getBytes()),
+                CommitmentType.MONTHLY);
     }
 }
