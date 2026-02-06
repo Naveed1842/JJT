@@ -46,13 +46,13 @@ export interface ChildCardView {
       <div class="mt-4 flex gap-3">
         <a
           [routerLink]="['/children', child.id]"
-          class="rounded bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
+          class="btn-secondary text-xs px-4 py-2"
         >
           View details
         </a>
         <a
           [routerLink]="['/children', child.id, 'sponsor']"
-          class="rounded border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700"
+          class="btn-primary text-xs px-4 py-2"
           [class.pointer-events-none]="child.status === 'ALLOCATED'"
           [class.opacity-50]="child.status === 'ALLOCATED'"
           [attr.aria-disabled]="child.status === 'ALLOCATED'"
