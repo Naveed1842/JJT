@@ -1,3 +1,4 @@
+<app-site-header></app-site-header>
 <div class="min-h-screen bg-amber-50 py-12">
   <div class="max-w-4xl mx-auto px-4">
     <h1 class="text-4xl font-bold text-gray-800 mb-8 font-serif">Admin Dashboard</h1>
@@ -68,8 +69,30 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Child</h2>
       <form (ngSubmit)="createChild()" class="space-y-4">
         <div>
+          <label class="block text-gray-700 font-semibold mb-2">Roll Number</label>
+          <input [(ngModel)]="childForm.rollNumber" name="rollNumber" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
           <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
           <input [(ngModel)]="childForm.fullName" name="fullName" type="text" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">City</label>
+            <input [(ngModel)]="childForm.city" name="city" type="text" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-2">Campus Name</label>
+            <input [(ngModel)]="childForm.campusName" name="campusName" type="text" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">School Name (optional)</label>
+          <input [(ngModel)]="childForm.schoolName" name="schoolName" type="text"
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <div>
@@ -233,3 +256,4 @@
     </div>
   </div>
 </div>
+<app-site-footer></app-site-footer>

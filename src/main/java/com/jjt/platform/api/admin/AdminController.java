@@ -45,7 +45,11 @@ public class AdminController {
     public ResponseEntity<CreateChildResponse> createChild(@RequestBody CreateChildRequest request) {
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
         var result = adminService.createChild(
+                request.rollNumber(),
                 request.fullName(),
+                request.city(),
+                request.campusName(),
+                request.schoolName(),
                 Money.of(new BigDecimal(request.educationAmount()), Currency.getInstance(request.educationCurrency())),
                 request.childId(),
                 request.ledgerId()

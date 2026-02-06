@@ -71,8 +71,10 @@ public class AdminCommandService {
     }
 
     @Transactional
-    public CreateChildResult createChild(String fullName, Money educationCost, UUID childId, UUID ledgerId) {
-        CreateChildUseCase.Result result = createChildUseCase.create(new CreateChildUseCase.Command(childId, ledgerId, fullName, educationCost));
+    public CreateChildResult createChild(String rollNumber, String fullName, String city, String campusName, String schoolName,
+                                         Money educationCost, UUID childId, UUID ledgerId) {
+        CreateChildUseCase.Result result = createChildUseCase.create(
+                new CreateChildUseCase.Command(childId, ledgerId, fullName, educationCost, rollNumber, city, campusName, schoolName));
         ChildEntity childEntity = ChildMapper.toEntity(result.child());
         EducationSupportLedgerEntity ledgerEntity = EducationSupportLedgerMapper.toEntity(result.ledger(), childEntity);
         childRepo.save(childEntity);

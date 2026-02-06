@@ -1,3 +1,4 @@
+<app-site-header></app-site-header>
 <div class="min-h-screen bg-slate-50 py-12">
   <div class="mx-auto max-w-4xl px-4">
     <a [routerLink]="['/children', childId]" class="text-sm font-semibold text-slate-600 underline">
@@ -7,7 +8,8 @@
     <header class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
       <h1 class="text-2xl font-semibold text-slate-900">Sponsor this child</h1>
       <p class="mt-2 text-sm text-slate-600">Child: {{ childName || 'Loading...' }}</p>
-      <p class="mt-1 text-sm text-slate-600">Monthly cost: {{ monthlyCost }}</p>
+      <p class="text-sm text-slate-600">{{ campusName }} • {{ city }}</p>
+      <p class="mt-1 text-sm text-slate-600">Monthly cost: {{ monthlyCost || '—' }}</p>
       <p class="mt-2 text-sm text-slate-600">Status: {{ supportStatus }}</p>
       <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-sm text-amber-700">
         This child already has an active sponsorship.
@@ -83,3 +85,4 @@
     </section>
   </div>
 </div>
+<app-site-footer></app-site-footer>

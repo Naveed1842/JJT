@@ -8,7 +8,11 @@ export type CommitmentType = 'MONTHLY' | 'YEARLY';
 
 export interface ChildDto {
   id: string;
+  rollNumber: string;
   fullName: string;
+  city: string;
+  campusName: string;
+  schoolName: string | null;
   educationAmount: string;
   educationCurrency: string;
   availabilityStatus: AvailabilityStatus;

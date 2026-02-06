@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RoleService, UserRole } from '../../services/role.service';
+import { SiteHeaderComponent } from '../../components/layout/site-header.component';
+import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })

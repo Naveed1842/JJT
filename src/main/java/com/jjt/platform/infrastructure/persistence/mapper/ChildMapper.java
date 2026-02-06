@@ -13,7 +13,14 @@ public final class ChildMapper {
     public static Child toDomain(ChildEntity entity) {
         Objects.requireNonNull(entity, "entity");
         Money cost = MoneyMapper.toDomain(entity.getEducationAmount(), entity.getEducationCurrency());
-        return new Child(entity.getId(), entity.getFullName(), cost);
+        return new Child(
+                entity.getId(),
+                entity.getFullName(),
+                cost,
+                entity.getRollNumber(),
+                entity.getCity(),
+                entity.getCampusName(),
+                entity.getSchoolName());
     }
 
     public static ChildEntity toEntity(Child child) {
@@ -22,7 +29,11 @@ public final class ChildMapper {
                 child.getId(),
                 child.getFullName(),
                 MoneyMapper.amount(child.getEducationCost()),
-                MoneyMapper.currency(child.getEducationCost())
+                MoneyMapper.currency(child.getEducationCost()),
+                child.getRollNumber(),
+                child.getCity(),
+                child.getCampusName(),
+                child.getSchoolName()
         );
     }
 }

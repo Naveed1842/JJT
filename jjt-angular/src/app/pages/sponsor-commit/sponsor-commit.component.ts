@@ -3,17 +3,21 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SponsorService, CommitmentType, AvailabilityStatus } from '../../services/sponsor.service';
+import { SiteHeaderComponent } from '../../components/layout/site-header.component';
+import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 
 @Component({
   selector: 'app-sponsor-commit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './sponsor-commit.component.html'
 })
 export class SponsorCommitComponent implements OnInit {
   childId: string | null = null;
   childName = '';
-  monthlyCost = '2,000 PKR';
+  monthlyCost = '';
+  campusName = '';
+  city = '';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
 
   sponsorName = '';
@@ -37,6 +41,9 @@ export class SponsorCommitComponent implements OnInit {
         next: (child) => {
           this.childName = child.fullName;
           this.supportStatus = child.availabilityStatus;
+          this.monthlyCost = `${child.educationAmount} ${child.educationCurrency}`;
+          this.campusName = child.campusName;
+          this.city = child.city;
         },
         error: () => {
           this.error = 'Failed to load child details.';

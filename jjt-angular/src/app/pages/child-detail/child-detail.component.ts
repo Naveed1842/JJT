@@ -5,6 +5,8 @@ import { SponsorService, AvailabilityStatus } from '../../services/sponsor.servi
 import { ChildSnapshotComponent } from '../../components/child-snapshot/child-snapshot.component';
 import { LedgerRow, LedgerTableComponent } from '../../components/ledger-table/ledger-table.component';
 import { ProgressItem, ProgressListComponent } from '../../components/progress-list/progress-list.component';
+import { SiteHeaderComponent } from '../../components/layout/site-header.component';
+import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 
 @Component({
   selector: 'app-child-detail',
@@ -14,7 +16,9 @@ import { ProgressItem, ProgressListComponent } from '../../components/progress-l
     RouterLink,
     ChildSnapshotComponent,
     LedgerTableComponent,
-    ProgressListComponent
+    ProgressListComponent,
+    SiteHeaderComponent,
+    SiteFooterComponent
   ],
   templateUrl: './child-detail.component.html',
   styleUrl: './child-detail.component.css'
@@ -22,9 +26,13 @@ import { ProgressItem, ProgressListComponent } from '../../components/progress-l
 export class ChildDetailComponent implements OnInit {
   childId: string | null = null;
   childName = '';
+  rollNumber = '';
+  city = '';
+  campusName = '';
+  schoolName: string | null = null;
   age = 8;
   grade = 'Grade 3';
-  monthlyCost = '2,000 PKR';
+  monthlyCost = '—';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
   ledgerEntries: LedgerRow[] = [];
   progressUpdates: ProgressItem[] = [];
@@ -53,6 +61,11 @@ export class ChildDetailComponent implements OnInit {
     this.sponsorService.getChild(this.childId).subscribe({
       next: (data) => {
         this.childName = data.fullName;
+        this.rollNumber = data.rollNumber;
+        this.city = data.city;
+        this.campusName = data.campusName;
+        this.schoolName = data.schoolName;
+        this.monthlyCost = `${data.educationAmount} ${data.educationCurrency}`;
         this.supportStatus = data.availabilityStatus;
         this.loadLedger();
         this.loadProgress();

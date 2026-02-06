@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { SiteHeaderComponent } from '../../components/layout/site-header.component';
+import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
@@ -17,9 +19,13 @@ export class AdminComponent {
 
   // Create Child Form
   childForm = {
+    rollNumber: '',
     fullName: '',
-    educationAmount: '120.00',
-    educationCurrency: 'USD'
+    city: '',
+    campusName: '',
+    schoolName: '',
+    educationAmount: '2000.00',
+    educationCurrency: 'PKR'
   };
 
   // Create Sponsor Form
@@ -78,7 +84,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Child created successfully!';
-          this.childForm = { fullName: '', educationAmount: '120.00', educationCurrency: 'USD' };
+          this.childForm = { rollNumber: '', fullName: '', city: '', campusName: '', schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR' };
         },
         error: (err) => {
           this.errorMessage = 'Failed to create child';

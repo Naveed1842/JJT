@@ -25,17 +25,34 @@ public class ChildEntity {
     @Column(name = "education_currency", nullable = false, length = 3)
     private String educationCurrency;
 
+    @Column(name = "roll_number", nullable = false, unique = true)
+    private String rollNumber;
+
+    @Column(name = "city", nullable = false)
+    private String city;
+
+    @Column(name = "campus_name", nullable = false)
+    private String campusName;
+
+    @Column(name = "school_name")
+    private String schoolName;
+
     @OneToOne(mappedBy = "child", optional = false)
     private EducationSupportLedgerEntity ledger;
 
     protected ChildEntity() {
     }
 
-    public ChildEntity(UUID id, String fullName, java.math.BigDecimal educationAmount, String educationCurrency) {
+    public ChildEntity(UUID id, String fullName, java.math.BigDecimal educationAmount, String educationCurrency,
+                       String rollNumber, String city, String campusName, String schoolName) {
         this.id = id;
         this.fullName = fullName;
         this.educationAmount = educationAmount;
         this.educationCurrency = educationCurrency;
+        this.rollNumber = rollNumber;
+        this.city = city;
+        this.campusName = campusName;
+        this.schoolName = schoolName;
     }
 
     public UUID getId() {
@@ -52,6 +69,22 @@ public class ChildEntity {
 
     public String getEducationCurrency() {
         return educationCurrency;
+    }
+
+    public String getRollNumber() {
+        return rollNumber;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getCampusName() {
+        return campusName;
+    }
+
+    public String getSchoolName() {
+        return schoolName;
     }
 
     public EducationSupportLedgerEntity getLedger() {

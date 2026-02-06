@@ -4,6 +4,10 @@ import { RouterLink } from '@angular/router';
 
 export interface ChildCardView {
   id: string;
+  rollNumber: string;
+  city: string;
+  campusName: string;
+  schoolName?: string | null;
   name: string;
   age: number;
   grade: string;
@@ -19,6 +23,8 @@ export interface ChildCardView {
     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div class="mb-3 h-24 w-24 rounded-full bg-slate-100"></div>
       <h3 class="text-lg font-semibold text-slate-900">{{ child.name }}</h3>
+      <p class="text-xs font-mono text-slate-600">{{ child.rollNumber }}</p>
+      <p class="text-sm text-slate-600">{{ child.campusName }} • {{ child.city }}</p>
       <p class="text-sm text-slate-600">Age: {{ child.age }} • Grade: {{ child.grade }}</p>
       <p class="mt-3 text-sm font-semibold text-slate-800">Monthly cost: {{ child.monthlyCost }}</p>
       <span

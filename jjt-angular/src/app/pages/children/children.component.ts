@@ -2,11 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChildCardComponent, ChildCardView } from '../../components/child-card/child-card.component';
 import { SponsorService } from '../../services/sponsor.service';
+import { SiteHeaderComponent } from '../../components/layout/site-header.component';
+import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 
 @Component({
   selector: 'app-children',
   standalone: true,
-  imports: [CommonModule, ChildCardComponent],
+  imports: [CommonModule, ChildCardComponent, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './children.component.html',
   styleUrl: './children.component.css'
 })
@@ -26,10 +28,14 @@ export class ChildrenComponent implements OnInit {
       next: (data) => {
         this.children = data.map((child, index) => ({
           id: child.id,
+          rollNumber: child.rollNumber,
+          city: child.city,
+          campusName: child.campusName,
+          schoolName: child.schoolName,
           name: child.fullName,
           age: index % 2 === 0 ? 8 : 10,
           grade: index % 2 === 0 ? 'Grade 3' : 'Grade 5',
-          monthlyCost: '2,000 PKR',
+          monthlyCost: `${child.educationAmount} ${child.educationCurrency}`,
           status: child.availabilityStatus
         }));
         this.loading = false;
