@@ -11,6 +11,7 @@ import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
 import com.jjt.platform.core.domain.entity.Sponsor;
 import com.jjt.platform.core.domain.entity.Sponsorship;
+import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
@@ -103,8 +104,8 @@ public class AdminCommandService {
     }
 
     @Transactional
-    public Sponsor createSponsor(String displayName, String contactEmail, UUID sponsorId) {
-        Sponsor sponsor = createSponsorUseCase.create(new CreateSponsorUseCase.Command(sponsorId, displayName, contactEmail));
+    public Sponsor createSponsor(String displayName, String contactEmail, String phone, UUID sponsorId) {
+        Sponsor sponsor = createSponsorUseCase.create(new CreateSponsorUseCase.Command(sponsorId, displayName, contactEmail, phone));
         SponsorEntity entity = SponsorMapper.toEntity(sponsor);
         sponsorRepo.save(entity);
         return sponsor;
@@ -116,13 +117,53 @@ public class AdminCommandService {
         if (childRepo.findById(childId).isEmpty()) {
             throw new DomainException("Child not found");
         }
-        String currentMonth = java.time.YearMonth.now().toString();
-        boolean hasActiveSponsorship = sponsorshipRepo.existsActiveByChildId(childId, currentMonth);
+        boolean hasActive = sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE);
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
-                new CommitFutureSponsorshipUseCase.Command(sponsorshipId, sponsorId, childId, startMonth, hasActiveSponsorship));
+                new CommitFutureSponsorshipUseCase.Command(sponsorshipId, sponsorId, childId, startMonth,
+                        hasActive, com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING,
+                        java.time.Instant.now(), null));
         SponsorshipEntity entity = SponsorshipMapper.toEntity(sponsorship, sponsor);
         sponsorshipRepo.save(entity);
         return sponsorship;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SponsorshipEntity> findEntitiesByStatus(SponsorshipStatus status) {
+        return sponsorshipRepo.findByStatus(status);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SponsorshipEntity> findSponsorshipsByChild(UUID childId) {
+        return sponsorshipRepo.findByChildIdOrderByCreatedAtDesc(childId);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean hasActiveSponsorship(UUID childId) {
+        return sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE);
+    }
+
+    @Transactional
+    public Sponsorship activateSponsorship(UUID sponsorshipId) {
+        SponsorshipEntity entity = sponsorshipRepo.findById(sponsorshipId)
+                .orElseThrow(() -> new DomainException("Sponsorship not found"));
+        UUID childId = entity.getChildId();
+        boolean otherActive = sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE)
+                && entity.getStatus() != SponsorshipStatus.ACTIVE;
+        if (otherActive) {
+            throw new DomainException("Another active sponsorship exists for this child");
+        }
+        entity.setStatus(SponsorshipStatus.ACTIVE);
+        sponsorshipRepo.save(entity);
+        return SponsorshipMapper.toDomain(entity);
+    }
+
+    @Transactional
+    public Sponsorship expireSponsorship(UUID sponsorshipId) {
+        SponsorshipEntity entity = sponsorshipRepo.findById(sponsorshipId)
+                .orElseThrow(() -> new DomainException("Sponsorship not found"));
+        entity.setStatus(SponsorshipStatus.EXPIRED);
+        sponsorshipRepo.save(entity);
+        return SponsorshipMapper.toDomain(entity);
     }
 
     private Optional<EducationSupportLedger> loadLedgerDomain(UUID childId) {

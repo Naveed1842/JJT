@@ -71,7 +71,7 @@ public class TestDataInitializer implements ApplicationRunner {
         if (sponsorRepo.findById(SPONSOR_ID).isPresent()) {
             return;
         }
-        Sponsor sponsor = new Sponsor(SPONSOR_ID, "Future Path Sponsor", "sponsor@example.org");
+        Sponsor sponsor = new Sponsor(SPONSOR_ID, "Future Path Sponsor", "sponsor@example.org", null);
         SponsorEntity entity = SponsorMapper.toEntity(sponsor);
         sponsorRepo.save(entity);
     }

@@ -11,11 +11,11 @@ public final class SponsorMapper {
 
     public static Sponsor toDomain(SponsorEntity entity) {
         Objects.requireNonNull(entity, "entity");
-        return new Sponsor(entity.getId(), entity.getDisplayName(), entity.getContactEmail());
+        return new Sponsor(entity.getId(), entity.getDisplayName(), entity.getContactEmail(), entity.getPhone());
     }
 
     public static SponsorEntity toEntity(Sponsor sponsor) {
         Objects.requireNonNull(sponsor, "sponsor");
-        return new SponsorEntity(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail());
+        return new SponsorEntity(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail(), sponsor.getPhone());
     }
 }

@@ -14,11 +14,11 @@ public class CreateSponsorUseCase {
         Objects.requireNonNull(command, "command must not be null");
         UUID sponsorId = command.sponsorId != null ? command.sponsorId : UUID.randomUUID();
         
-        return new Sponsor(sponsorId, command.displayName, command.contactEmail);
+        return new Sponsor(sponsorId, command.displayName, command.contactEmail, command.phone);
     }
 
     /** Input data for creating a sponsor. */
-    public record Command(UUID sponsorId, String displayName, String contactEmail) {
+    public record Command(UUID sponsorId, String displayName, String contactEmail, String phone) {
         public Command {
             Objects.requireNonNull(displayName, "displayName must not be null");
             Objects.requireNonNull(contactEmail, "contactEmail must not be null");

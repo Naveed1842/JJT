@@ -19,30 +19,33 @@
           class="mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold"
           [ngClass]="{
             'bg-amber-100 text-amber-800': supportStatus === 'AVAILABLE',
-            'bg-emerald-100 text-emerald-800': supportStatus === 'EARLY_SUPPORTED',
-            'bg-slate-200 text-slate-700': supportStatus === 'SPONSORED'
+            'bg-amber-50 text-amber-700': supportStatus === 'RESERVED',
+            'bg-slate-200 text-slate-700': supportStatus === 'ALLOCATED'
           }"
         >
           {{
             supportStatus === 'AVAILABLE'
               ? 'Available'
-              : supportStatus === 'EARLY_SUPPORTED'
-                ? 'Early Supported'
-                : 'Sponsored'
+              : supportStatus === 'RESERVED'
+                ? 'Reserved (Pending)'
+                : 'Allocated'
           }}
         </span>
         <div class="mt-4">
           <a
             [routerLink]="['/children', childId, 'sponsor']"
             class="inline-flex rounded bg-slate-900 px-4 py-2 text-sm font-semibold text-white"
-            [class.pointer-events-none]="supportStatus === 'SPONSORED'"
-            [class.opacity-50]="supportStatus === 'SPONSORED'"
-            [attr.aria-disabled]="supportStatus === 'SPONSORED'"
+            [class.pointer-events-none]="supportStatus === 'ALLOCATED'"
+            [class.opacity-50]="supportStatus === 'ALLOCATED'"
+            [attr.aria-disabled]="supportStatus === 'ALLOCATED'"
           >
             Commit to sponsorship
           </a>
-          <p *ngIf="supportStatus === 'SPONSORED'" class="mt-2 text-xs text-slate-600">
+          <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-xs text-slate-600">
             This child already has an active sponsorship.
+          </p>
+          <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-xs text-slate-600">
+            This child has a pending sponsorship; final allocation awaits confirmation.
           </p>
         </div>
       </header>

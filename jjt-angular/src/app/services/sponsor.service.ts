@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
-export type SupportStatus = 'AVAILABLE' | 'EARLY_SUPPORTED' | 'SPONSORED';
+export type AvailabilityStatus = 'AVAILABLE' | 'RESERVED' | 'ALLOCATED';
 export type CommitmentType = 'MONTHLY' | 'YEARLY';
 
 export interface ChildDto {
@@ -11,7 +11,7 @@ export interface ChildDto {
   fullName: string;
   educationAmount: string;
   educationCurrency: string;
-  supportStatus: SupportStatus;
+  availabilityStatus: AvailabilityStatus;
 }
 
 export interface LedgerEntryDto {

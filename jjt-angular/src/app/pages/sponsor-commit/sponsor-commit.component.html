@@ -9,8 +9,11 @@
       <p class="mt-2 text-sm text-slate-600">Child: {{ childName || 'Loading...' }}</p>
       <p class="mt-1 text-sm text-slate-600">Monthly cost: {{ monthlyCost }}</p>
       <p class="mt-2 text-sm text-slate-600">Status: {{ supportStatus }}</p>
-      <p *ngIf="supportStatus === 'SPONSORED'" class="mt-2 text-sm text-amber-700">
+      <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-sm text-amber-700">
         This child already has an active sponsorship.
+      </p>
+      <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-sm text-amber-700">
+        This child currently has a pending sponsorship; final allocation is not confirmed.
       </p>
     </header>
 
@@ -51,6 +54,15 @@
             placeholder="name@example.com"
           />
         </div>
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Phone (optional)</label>
+          <input
+            class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            type="tel"
+            [(ngModel)]="phone"
+            placeholder="+92 300 1234567"
+          />
+        </div>
       </div>
 
       <p class="mt-4 text-sm text-slate-600">
@@ -64,7 +76,7 @@
       <button
         class="mt-6 rounded bg-slate-900 px-6 py-2 text-sm font-semibold text-white disabled:opacity-60"
         (click)="submit()"
-        [disabled]="loading || supportStatus === 'SPONSORED'"
+        [disabled]="loading || supportStatus === 'ALLOCATED'"
       >
         {{ loading ? 'Submitting...' : 'Commit to sponsorship' }}
       </button>

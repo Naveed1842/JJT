@@ -25,7 +25,8 @@ export class AdminComponent {
   // Create Sponsor Form
   sponsorForm = {
     displayName: '',
-    contactEmail: ''
+    contactEmail: '',
+    phone: ''
   };
 
   // Record Early Support Form
@@ -50,11 +51,20 @@ export class AdminComponent {
     startMonth: ''
   };
 
+  pendingSponsorships: any[] = [];
+  activeSponsorships: any[] = [];
+
   constructor(private http: HttpClient) {}
 
   setActiveForm(form: string) {
     this.activeForm = form;
     this.clearMessages();
+    if (form === 'pending') {
+      this.loadPending();
+    }
+    if (form === 'active') {
+      this.loadActive();
+    }
   }
 
   clearMessages() {
@@ -83,7 +93,7 @@ export class AdminComponent {
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsor created successfully!';
-          this.sponsorForm = { displayName: '', contactEmail: '' };
+          this.sponsorForm = { displayName: '', contactEmail: '', phone: '' };
         },
         error: (err) => {
           this.errorMessage = 'Failed to create sponsor';
@@ -140,6 +150,54 @@ export class AdminComponent {
           this.errorMessage = 'Failed to commit sponsorship';
           console.error('Error:', err);
         }
+      });
+  }
+
+  loadPending() {
+    this.http.get<any[]>('http://localhost:8080/api/admin/sponsorships?status=PENDING')
+      .subscribe({
+        next: (data) => this.pendingSponsorships = data,
+        error: (err) => {
+          console.error('Error loading pending sponsorships', err);
+        }
+      });
+  }
+
+  loadActive() {
+    this.http.get<any[]>('http://localhost:8080/api/admin/sponsorships?status=ACTIVE')
+      .subscribe({
+        next: (data) => this.activeSponsorships = data,
+        error: (err) => {
+          console.error('Error loading active sponsorships', err);
+        }
+      });
+  }
+
+  activate(id: string) {
+    this.http.post(`http://localhost:8080/api/admin/sponsorships/${id}/activate`, {})
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Sponsorship activated.';
+          this.loadPending();
+          if (this.activeForm === 'active') {
+            this.loadActive();
+          }
+        },
+        error: (err) => console.error('Error activating sponsorship', err)
+      });
+  }
+
+  expire(id: string) {
+    this.http.post(`http://localhost:8080/api/admin/sponsorships/${id}/expire`, {})
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Sponsorship expired.';
+          this.loadPending();
+          if (this.activeForm === 'active') {
+            this.loadActive();
+          }
+        },
+        error: (err) => console.error('Error expiring sponsorship', err)
       });
   }
 }

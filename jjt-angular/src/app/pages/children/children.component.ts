@@ -30,7 +30,7 @@ export class ChildrenComponent implements OnInit {
           age: index % 2 === 0 ? 8 : 10,
           grade: index % 2 === 0 ? 'Grade 3' : 'Grade 5',
           monthlyCost: '2,000 PKR',
-          status: child.supportStatus
+          status: child.availabilityStatus
         }));
         this.loading = false;
       },

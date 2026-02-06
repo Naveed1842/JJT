@@ -47,6 +47,20 @@
               class="px-4 py-2 rounded font-semibold transition-colors">
         Commit Sponsorship
       </button>
+      <button (click)="setActiveForm('pending')"
+              [class.bg-orange-500]="activeForm === 'pending'"
+              [class.text-white]="activeForm === 'pending'"
+              [class.bg-gray-200]="activeForm !== 'pending'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Pending Sponsorships
+      </button>
+      <button (click)="setActiveForm('active')"
+              [class.bg-orange-500]="activeForm === 'active'"
+              [class.text-white]="activeForm === 'active'"
+              [class.bg-gray-200]="activeForm !== 'active'"
+              class="px-4 py-2 rounded font-semibold transition-colors">
+        Active Sponsorships
+      </button>
     </div>
 
     <!-- Create Child Form -->
@@ -88,6 +102,11 @@
         <div>
           <label class="block text-gray-700 font-semibold mb-2">Contact Email</label>
           <input [(ngModel)]="sponsorForm.contactEmail" name="contactEmail" type="email" required
+                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+        </div>
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Phone (optional)</label>
+          <input [(ngModel)]="sponsorForm.phone" name="phone" type="text"
                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
         </div>
         <button type="submit" class="btn-orange w-full">Create Sponsor</button>
@@ -170,6 +189,47 @@
         </div>
         <button type="submit" class="btn-orange w-full">Commit Sponsorship</button>
       </form>
+    </div>
+
+    <!-- Pending Sponsorships -->
+    <div *ngIf="activeForm === 'pending'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Pending Sponsorships</h2>
+      <div *ngIf="pendingSponsorships.length === 0" class="text-sm text-gray-600">
+        No pending sponsorships right now.
+      </div>
+      <div *ngFor="let s of pendingSponsorships" class="mb-4 rounded border border-gray-200 bg-white p-4 shadow-sm">
+        <p class="text-sm text-gray-800 font-semibold">Sponsor: {{ s.sponsorName || 'N/A' }}</p>
+        <p class="text-sm text-gray-700">Email: <span class="font-mono">{{ s.sponsorEmail || 'N/A' }}</span></p>
+        <p class="text-sm text-gray-700">Phone: <span class="font-mono">{{ s.sponsorPhone || 'N/A' }}</span></p>
+        <p class="text-sm text-gray-800 mt-2">Child ID: {{ s.childId }}</p>
+        <p class="text-sm text-gray-800">Sponsorship ID: {{ s.sponsorshipId }}</p>
+        <p class="text-sm text-gray-700">Start Month: {{ s.startMonth }}</p>
+        <p class="text-sm text-gray-600">Status: {{ s.status }} • Created: {{ s.createdAt }}</p>
+        <div class="mt-3 flex gap-2">
+          <button (click)="activate(s.sponsorshipId)" class="rounded bg-green-700 px-3 py-1 text-xs font-semibold text-white">Activate</button>
+          <button (click)="expire(s.sponsorshipId)" class="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Expire</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Sponsorships -->
+    <div *ngIf="activeForm === 'active'" class="paper-texture p-8 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Active Sponsorships</h2>
+      <div *ngIf="activeSponsorships.length === 0" class="text-sm text-gray-600">
+        No active sponsorships right now.
+      </div>
+      <div *ngFor="let s of activeSponsorships" class="mb-4 rounded border border-gray-200 bg-white p-4 shadow-sm">
+        <p class="text-sm text-gray-800 font-semibold">Sponsor: {{ s.sponsorName || 'N/A' }}</p>
+        <p class="text-sm text-gray-700">Email: <span class="font-mono">{{ s.sponsorEmail || 'N/A' }}</span></p>
+        <p class="text-sm text-gray-700">Phone: <span class="font-mono">{{ s.sponsorPhone || 'N/A' }}</span></p>
+        <p class="text-sm text-gray-800 mt-2">Child ID: {{ s.childId }}</p>
+        <p class="text-sm text-gray-800">Sponsorship ID: {{ s.sponsorshipId }}</p>
+        <p class="text-sm text-gray-700">Start Month: {{ s.startMonth }}</p>
+        <p class="text-sm text-gray-600">Status: {{ s.status }} • Created: {{ s.createdAt }}</p>
+        <div class="mt-3 flex gap-2">
+          <button (click)="expire(s.sponsorshipId)" class="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Expire</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

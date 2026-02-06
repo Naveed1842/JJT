@@ -6,5 +6,5 @@ public record ChildDto(UUID id,
                        String fullName,
                        String educationAmount,
                        String educationCurrency,
-                       SupportStatus supportStatus) {
+                       AvailabilityStatus availabilityStatus) {
 }

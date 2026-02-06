@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { SponsorService, SupportStatus } from '../../services/sponsor.service';
+import { SponsorService, AvailabilityStatus } from '../../services/sponsor.service';
 import { ChildSnapshotComponent } from '../../components/child-snapshot/child-snapshot.component';
 import { LedgerRow, LedgerTableComponent } from '../../components/ledger-table/ledger-table.component';
 import { ProgressItem, ProgressListComponent } from '../../components/progress-list/progress-list.component';
@@ -25,7 +25,7 @@ export class ChildDetailComponent implements OnInit {
   age = 8;
   grade = 'Grade 3';
   monthlyCost = '2,000 PKR';
-  supportStatus: SupportStatus = 'AVAILABLE';
+  supportStatus: AvailabilityStatus = 'AVAILABLE';
   ledgerEntries: LedgerRow[] = [];
   progressUpdates: ProgressItem[] = [];
   loading = true;
@@ -53,7 +53,7 @@ export class ChildDetailComponent implements OnInit {
     this.sponsorService.getChild(this.childId).subscribe({
       next: (data) => {
         this.childName = data.fullName;
-        this.supportStatus = data.supportStatus;
+        this.supportStatus = data.availabilityStatus;
         this.loadLedger();
         this.loadProgress();
       },

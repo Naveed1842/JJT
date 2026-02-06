@@ -4,6 +4,7 @@ import com.jjt.platform.application.usecase.CommitFutureSponsorshipUseCase;
 import com.jjt.platform.application.usecase.CreateSponsorUseCase;
 import com.jjt.platform.core.domain.entity.Sponsor;
 import com.jjt.platform.core.domain.entity.Sponsorship;
+import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import com.jjt.platform.core.domain.value.YearMonthValue;
@@ -17,6 +18,7 @@ import com.jjt.platform.infrastructure.persistence.repository.SponsorshipJpaRepo
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.time.YearMonth;
 import java.util.UUID;
 
@@ -53,20 +55,20 @@ public class PublicSponsorshipService {
             throw new DomainException("Child not found");
         }
 
-        String currentMonth = YearMonth.now().toString();
-        boolean hasActiveSponsorship = sponsorshipRepo.existsActiveByChildId(childId, currentMonth);
+        boolean hasActiveSponsorship = sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE);
         if (hasActiveSponsorship) {
             throw new SponsorshipInvariantViolationException("Child already has an active sponsorship.");
         }
 
         Sponsor sponsor = createSponsorUseCase.create(
-                new CreateSponsorUseCase.Command(null, sponsorName.trim(), sponsorEmail.trim()));
+                new CreateSponsorUseCase.Command(null, sponsorName.trim(), sponsorEmail.trim(), sponsorPhone));
         SponsorEntity sponsorEntity = SponsorMapper.toEntity(sponsor);
         sponsorRepo.save(sponsorEntity);
 
         YearMonthValue startMonth = YearMonthValue.of(YearMonth.now().plusMonths(1));
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
-                new CommitFutureSponsorshipUseCase.Command(null, sponsor.getId(), childId, startMonth, false));
+                new CommitFutureSponsorshipUseCase.Command(null, sponsor.getId(), childId, startMonth,
+                        false, SponsorshipStatus.PENDING, Instant.now(), null));
         SponsorshipEntity sponsorshipEntity = SponsorshipMapper.toEntity(sponsorship, sponsorEntity);
         sponsorshipRepo.save(sponsorshipEntity);
 

@@ -8,7 +8,7 @@ export interface ChildCardView {
   age: number;
   grade: string;
   monthlyCost: string;
-  status: 'AVAILABLE' | 'EARLY_SUPPORTED' | 'SPONSORED';
+  status: 'AVAILABLE' | 'RESERVED' | 'ALLOCATED';
 }
 
 @Component({
@@ -25,16 +25,16 @@ export interface ChildCardView {
         class="mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold"
         [ngClass]="{
           'bg-amber-100 text-amber-800': child.status === 'AVAILABLE',
-          'bg-emerald-100 text-emerald-800': child.status === 'EARLY_SUPPORTED',
-          'bg-slate-200 text-slate-700': child.status === 'SPONSORED'
+          'bg-amber-50 text-amber-700': child.status === 'RESERVED',
+          'bg-slate-200 text-slate-700': child.status === 'ALLOCATED'
         }"
       >
         {{
           child.status === 'AVAILABLE'
             ? 'Available'
-            : child.status === 'EARLY_SUPPORTED'
-              ? 'Early Supported'
-              : 'Sponsored'
+            : child.status === 'RESERVED'
+              ? 'Reserved (Pending)'
+              : 'Allocated'
         }}
       </span>
       <div class="mt-4 flex gap-3">
@@ -47,9 +47,9 @@ export interface ChildCardView {
         <a
           [routerLink]="['/children', child.id, 'sponsor']"
           class="rounded border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700"
-          [class.pointer-events-none]="child.status === 'SPONSORED'"
-          [class.opacity-50]="child.status === 'SPONSORED'"
-          [attr.aria-disabled]="child.status === 'SPONSORED'"
+          [class.pointer-events-none]="child.status === 'ALLOCATED'"
+          [class.opacity-50]="child.status === 'ALLOCATED'"
+          [attr.aria-disabled]="child.status === 'ALLOCATED'"
         >
           Sponsor
         </a>

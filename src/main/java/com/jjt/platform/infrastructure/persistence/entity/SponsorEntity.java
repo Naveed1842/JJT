@@ -21,13 +21,17 @@ public class SponsorEntity {
     @Column(name = "contact_email", nullable = false)
     private String contactEmail;
 
+    @Column(name = "phone")
+    private String phone;
+
     protected SponsorEntity() {
     }
 
-    public SponsorEntity(UUID id, String displayName, String contactEmail) {
+    public SponsorEntity(UUID id, String displayName, String contactEmail, String phone) {
         this.id = id;
         this.displayName = displayName;
         this.contactEmail = contactEmail;
+        this.phone = phone;
     }
 
     public UUID getId() {
@@ -40,5 +44,9 @@ public class SponsorEntity {
 
     public String getContactEmail() {
         return contactEmail;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 }

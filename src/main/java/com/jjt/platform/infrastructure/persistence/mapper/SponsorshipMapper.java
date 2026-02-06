@@ -1,6 +1,7 @@
 package com.jjt.platform.infrastructure.persistence.mapper;
 
 import com.jjt.platform.core.domain.entity.Sponsorship;
+import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorshipEntity;
 
@@ -12,7 +13,15 @@ public final class SponsorshipMapper {
 
     public static Sponsorship toDomain(SponsorshipEntity entity) {
         Objects.requireNonNull(entity, "entity");
-        return Sponsorship.create(entity.getId(), entity.getSponsor().getId(), entity.getChildId(), YearMonthMapper.toDomain(entity.getStartMonth()));
+        return Sponsorship.create(
+                entity.getId(),
+                entity.getSponsor().getId(),
+                entity.getChildId(),
+                YearMonthMapper.toDomain(entity.getStartMonth()),
+                entity.getStatus(),
+                entity.getCreatedAt(),
+                entity.getExpiresAt()
+        );
     }
 
     public static SponsorshipEntity toEntity(Sponsorship sponsorship, SponsorEntity sponsorEntity) {
@@ -22,7 +31,10 @@ public final class SponsorshipMapper {
                 sponsorship.getId(),
                 sponsorEntity,
                 sponsorship.getChildId(),
-                YearMonthMapper.toString(sponsorship.getStartMonth())
+                YearMonthMapper.toString(sponsorship.getStartMonth()),
+                sponsorship.getStatus(),
+                sponsorship.getCreatedAt(),
+                sponsorship.getExpiresAt()
         );
     }
 }

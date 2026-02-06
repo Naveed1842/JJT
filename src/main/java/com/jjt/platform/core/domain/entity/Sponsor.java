@@ -11,8 +11,9 @@ public final class Sponsor {
     private final UUID id;
     private final String displayName;
     private final String contactEmail;
+    private final String phone;
 
-    public Sponsor(UUID id, String displayName, String contactEmail) {
+    public Sponsor(UUID id, String displayName, String contactEmail, String phone) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.displayName = Objects.requireNonNull(displayName, "displayName must not be null");
         if (displayName.isBlank()) {
@@ -22,6 +23,7 @@ public final class Sponsor {
         if (contactEmail.isBlank()) {
             throw new IllegalArgumentException("contactEmail must not be blank");
         }
+        this.phone = phone;
     }
 
     public UUID getId() {
@@ -34,6 +36,10 @@ public final class Sponsor {
 
     public String getContactEmail() {
         return contactEmail;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     @Override
