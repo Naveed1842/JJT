@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <footer class="bg-slate-900 text-slate-200 py-10 mt-12">
+    <footer class="bg-slate-900 text-slate-200 py-10">
       <div class="mx-auto max-w-6xl px-4">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>

@@ -1,1 +1,4 @@
 /* Component-specific styles are in global styles.css */
+.cta-tight {
+  margin-bottom: -8px;
+}
