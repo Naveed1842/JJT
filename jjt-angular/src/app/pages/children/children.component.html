@@ -16,7 +16,7 @@
     </div>
 
     <div *ngIf="!loading && !error" class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <app-child-card *ngFor="let child of children" [child]="child" />
+      <app-child-sponsor-card *ngFor="let child of children" [child]="child" />
     </div>
 
     <div *ngIf="!loading && !error && children.length === 0" class="py-12 text-center text-slate-600">
