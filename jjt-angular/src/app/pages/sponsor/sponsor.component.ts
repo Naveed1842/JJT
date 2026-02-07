@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 interface SponsoredChild {
   childId: string;
@@ -19,6 +20,7 @@ interface SponsoredChild {
   styleUrl: './sponsor.component.css'
 })
 export class SponsorComponent implements OnInit {
+  private readonly baseUrl = environment.apiBaseUrl;
   children: SponsoredChild[] = [];
   loading = true;
   error: string | null = null;
@@ -30,7 +32,7 @@ export class SponsorComponent implements OnInit {
   }
 
   loadSponsoredChildren() {
-    this.http.get<SponsoredChild[]>('http://localhost:8080/api/sponsors/children')
+    this.http.get<SponsoredChild[]>(`${this.baseUrl}/api/sponsors/children`)
       .subscribe({
         next: (data) => {
           this.children = data;
