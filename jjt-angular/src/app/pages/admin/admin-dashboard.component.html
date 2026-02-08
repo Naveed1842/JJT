@@ -1,0 +1,36 @@
+<div class="grid">
+  <p-card class="stat-card">
+    <div class="label">Children</div>
+    <div class="value">{{ summary?.totalChildren ?? '—' }}</div>
+    <p-tag severity="info" value="Org view"></p-tag>
+  </p-card>
+
+  <p-card class="stat-card">
+    <div class="label">Active Sponsorships</div>
+    <div class="value">{{ summary?.activeSponsorships ?? '—' }}</div>
+    <p-tag severity="success" value="Live"></p-tag>
+  </p-card>
+
+  <p-card class="stat-card">
+    <div class="label">Pending Intents</div>
+    <div class="value">{{ summary?.pendingSponsorships ?? '—' }}</div>
+    <p-tag severity="warning" value="Follow-up"></p-tag>
+  </p-card>
+
+  <p-card class="stat-card">
+    <div class="label">Sponsor Accounts</div>
+    <div class="value">{{ summary?.totalSponsors ?? '—' }}</div>
+    <p-tag severity="secondary" value="Directory"></p-tag>
+  </p-card>
+</div>
+
+<p-card class="chart-card">
+  <div class="chart-head">
+    <div>
+      <div class="label">Coverage Trend</div>
+      <div class="muted">Placeholder line chart (client-side only)</div>
+    </div>
+    <p-tag severity="success" [value]="(summary?.monthlyCoveragePct ?? 0) + '% coverage'"></p-tag>
+  </div>
+  <p-chart type="line" [data]="chartData" [options]="chartOptions"></p-chart>
+</p-card>

@@ -1,0 +1,40 @@
+<div class="header">
+  <div>
+    <h2>Sponsorships</h2>
+    <p class="muted">UI-only list of commitment intents. No backend mutations are triggered.</p>
+  </div>
+  <div class="filter">
+    <label for="status">Status</label>
+    <select id="status" [(ngModel)]="statusFilter">
+      <option value="ALL">All</option>
+      <option value="ACTIVE">Active</option>
+      <option value="PENDING">Pending</option>
+      <option value="PAUSED">Paused</option>
+    </select>
+  </div>
+</div>
+
+<p-table [value]="filtered">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Sponsor</th>
+      <th>Child</th>
+      <th>Start Month</th>
+      <th>Commitment</th>
+      <th>Status</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-item>
+    <tr>
+      <td>{{ item.sponsorName }}</td>
+      <td>{{ item.childName }}</td>
+      <td>{{ item.startMonth }}</td>
+      <td>
+        <p-tag [value]="labelCommitment(item.commitmentType)"></p-tag>
+      </td>
+      <td>
+        <p-tag [value]="item.status" [severity]="statusSeverity(item.status)"></p-tag>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

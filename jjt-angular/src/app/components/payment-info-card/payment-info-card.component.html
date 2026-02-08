@@ -1,0 +1,64 @@
+<p-card>
+  <div class="header">
+    <div>
+      <div class="eyebrow">Payment Information</div>
+      <h3>Manual bank transfer details</h3>
+      <p class="muted">
+        This platform does not process payments. Please complete the transfer manually. Our team will verify and update records.
+      </p>
+      <p *ngIf="childName" class="context">
+        Commitment for <span class="strong">{{ childName }}</span>
+        <span *ngIf="startMonth"> • starts {{ startMonth }}</span>
+      </p>
+    </div>
+    <p-tag severity="warning" value="Manual process"></p-tag>
+  </div>
+
+  <div class="grid">
+    <div class="field">
+      <label>Account Title</label>
+      <div class="value">{{ info.accountTitle }}</div>
+    </div>
+    <div class="field copyable">
+      <label>Account Number</label>
+      <div class="row">
+        <div class="value mono">{{ info.accountNumber }}</div>
+        <button pButton type="button" icon="pi pi-copy" class="p-button-text" (click)="copy(info.accountNumber, 'account')"></button>
+      </div>
+      <small class="copied" *ngIf="copiedField === 'account'">Copied</small>
+    </div>
+    <div class="field copyable">
+      <label>IBAN</label>
+      <div class="row">
+        <div class="value mono">{{ info.iban }}</div>
+        <button pButton type="button" icon="pi pi-copy" class="p-button-text" (click)="copy(info.iban, 'iban')"></button>
+      </div>
+      <small class="copied" *ngIf="copiedField === 'iban'">Copied</small>
+    </div>
+    <div class="field">
+      <label>Bank</label>
+      <div class="value">{{ info.bankName }}</div>
+    </div>
+  </div>
+
+  <p-divider></p-divider>
+
+  <div class="contact">
+    <div>
+      <label>Email</label>
+      <div class="row">
+        <div class="value">{{ info.email }}</div>
+        <button pButton type="button" icon="pi pi-copy" class="p-button-text" (click)="copy(info.email, 'email')"></button>
+      </div>
+      <small class="copied" *ngIf="copiedField === 'email'">Copied</small>
+    </div>
+    <div>
+      <label>Phone</label>
+      <div class="value" *ngFor="let phone of info.phone">{{ phone }}</div>
+    </div>
+    <div>
+      <label>Address</label>
+      <div class="value">{{ info.address }}</div>
+    </div>
+  </div>
+</p-card>

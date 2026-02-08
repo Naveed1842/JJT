@@ -1,0 +1,37 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stat-card {
+  border: 1px solid #e5e7eb;
+}
+
+.label {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0.35rem 0 0.75rem;
+}
+
+.muted {
+  color: #6b7280;
+}
+
+.chart-card {
+  margin-top: 0.5rem;
+}
+
+.chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}

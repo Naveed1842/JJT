@@ -1,0 +1,24 @@
+<div class="header">
+  <div>
+    <h2>Reports</h2>
+    <p class="muted">Static exports generated client-side for Phase-2 UI testing.</p>
+  </div>
+  <div class="actions">
+    <button pButton type="button" label="Export Sponsorships CSV" icon="pi pi-download" (click)="exportCsv('sponsorships.csv')"></button>
+  </div>
+</div>
+
+<p-card>
+  <p-table [value]="rows">
+    <ng-template pTemplate="header">
+      <tr>
+        <th *ngFor="let key of headers">{{ key }}</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <tr>
+        <td *ngFor="let key of headers">{{ row[key] }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-card>

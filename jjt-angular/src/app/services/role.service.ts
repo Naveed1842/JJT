@@ -23,4 +23,14 @@ export class RoleService {
   getRole(): UserRole {
     return this.roleSubject.value;
   }
+
+  hasStoredRole(): boolean {
+    return !!localStorage.getItem('userRole');
+  }
+
+  clearRole() {
+    localStorage.removeItem('userRole');
+    // Default back to ORG_ADMIN so existing flows keep a role header
+    this.roleSubject.next('ORG_ADMIN');
+  }
 }

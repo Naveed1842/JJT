@@ -77,9 +77,19 @@ export class SponsorCommitComponent implements OnInit {
         phone: this.phone || null
       }
     }).subscribe({
-      next: () => {
+      next: (res) => {
         this.loading = false;
-        this.router.navigate(['/sponsor/confirmation']);
+        const confirmationPayload = {
+          childId: this.childId,
+          childName: this.childName,
+          sponsorName: this.sponsorName,
+          email: this.email,
+          phone: this.phone,
+          commitmentType: this.commitmentType,
+          startMonth: res?.startMonth
+        };
+        sessionStorage.setItem('sponsorshipConfirmation', JSON.stringify(confirmationPayload));
+        this.router.navigate([`/children/${this.childId}/sponsor/confirmation`]);
       },
       error: () => {
         this.loading = false;

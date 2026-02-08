@@ -1,0 +1,30 @@
+<div class="header">
+  <div>
+    <h2>Sponsors</h2>
+    <p class="muted">Directory of sponsors from mock data. No backend write operations.</p>
+  </div>
+</div>
+
+<p-table [value]="sponsors">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Committed Children</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-sponsor>
+    <tr>
+      <td>{{ sponsor.name }}</td>
+      <td>{{ sponsor.email }}</td>
+      <td>{{ sponsor.phone }}</td>
+      <td>
+        <ng-container *ngIf="committedCount(sponsor) > 0; else none">
+          <p-tag *ngFor="let child of (sponsor.committedChildren ?? sponsor.children ?? [])" [value]="child" severity="secondary" styleClass="chip"></p-tag>
+        </ng-container>
+        <ng-template #none>—</ng-template>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

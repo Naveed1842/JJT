@@ -1,0 +1,20 @@
+h2 {
+  margin: 0;
+}
+
+.muted {
+  color: #6b7280;
+  margin: 0.15rem 0 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}

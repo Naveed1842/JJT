@@ -1,0 +1,34 @@
+<div class="header">
+  <div>
+    <h2>Children</h2>
+    <p class="muted">Read-only roster sourced from backend Phase-1 APIs.</p>
+  </div>
+  <input type="text" [(ngModel)]="searchTerm" placeholder="Search by name or city" class="search" />
+</div>
+
+<p-table [value]="filteredChildren" [tableStyle]="{ 'min-width': '60rem' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>City / Campus</th>
+      <th>School</th>
+      <th>Education Amount</th>
+      <th>Status</th>
+      <th>Committed Sponsor</th>
+      <th>Last Progress</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-child>
+    <tr>
+      <td>{{ child.fullName }}</td>
+      <td>{{ child.city }} · {{ child.campusName }}</td>
+      <td>{{ child.schoolName }}</td>
+      <td>{{ child.educationAmount | currency: child.educationCurrency }}</td>
+      <td>
+        <p-tag [value]="child.availabilityStatus" [severity]="statusSeverity(child.availabilityStatus)"></p-tag>
+      </td>
+      <td>{{ child.sponsorName || '—' }}</td>
+      <td>{{ child.lastProgressMonth || '—' }}</td>
+    </tr>
+  </ng-template>
+</p-table>

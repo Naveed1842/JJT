@@ -1,0 +1,73 @@
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+h3 {
+  margin: 0.2rem 0;
+  color: #0f172a;
+}
+
+.muted {
+  margin: 0;
+  color: #6b7280;
+}
+
+.context {
+  margin: 0.25rem 0 0;
+  color: #0f172a;
+}
+
+.strong {
+  font-weight: 700;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+  margin-top: 1rem;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 0.15rem;
+}
+
+.value {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.contact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.copied {
+  color: #16a34a;
+  font-weight: 600;
+}

@@ -6,28 +6,29 @@
       We’ve recorded your commitment. A JJT team member will reach out to confirm payment and activate the sponsorship.
     </p>
 
-    <div class="mt-8 space-y-4">
-      <h2 class="text-lg font-semibold text-slate-900">Frequently asked questions</h2>
-      <div class="space-y-3 text-sm text-slate-700">
-        <div>
-          <p class="font-semibold text-slate-900">How do I complete payment?</p>
-          <p>Our team will email or call you with the manual payment instructions. No online payments are processed on this site.</p>
-        </div>
+    <div *ngIf="data" class="mt-8 space-y-6">
+      <app-payment-info-card
+        [childName]="data.childName"
+        [startMonth]="data.startMonth">
+      </app-payment-info-card>
+
+      <div class="rounded border border-slate-200 bg-slate-50 p-4">
+        <p class="text-sm text-slate-800 font-semibold">Need help or want to update details?</p>
+        <p class="text-sm text-slate-700 mt-1">
+          Email us at <a href="mailto:payments&#64;jjt.org" class="text-orange-700 underline">payments&#64;jjt.org</a>
+          or call <span class="font-semibold">+92 300 123 4567</span>.
+        </p>
+      </div>
+
+      <div class="mt-4 space-y-3 text-sm text-slate-700">
         <div>
           <p class="font-semibold text-slate-900">When does the sponsorship start?</p>
           <p>It starts from the next month after activation. Pending commitments keep the child in “Reserved” status until payment is confirmed.</p>
         </div>
         <div>
           <p class="font-semibold text-slate-900">Can I sponsor annually?</p>
-          <p>Yes. You can cover 12 months at once (PKR 24,000) or monthly (PKR 2,000). We’ll confirm your preference during follow-up.</p>
+          <p>Yes. You can cover 12 months at once or monthly. We’ll confirm your preference during follow-up.</p>
         </div>
-      </div>
-
-      <div class="mt-6 rounded border border-slate-200 bg-slate-50 p-4">
-        <p class="text-sm text-slate-800 font-semibold">Need help or want to update details?</p>
-        <p class="text-sm text-slate-700 mt-1">
-          Email us at <a href="mailto:support&#64;jjt.org" class="text-orange-700 underline">support&#64;jjt.org</a> or call <span class="font-semibold">+92 300 000 0000</span>.
-        </p>
       </div>
 
       <div class="mt-6 flex flex-wrap gap-3">

@@ -1,0 +1,33 @@
+<p-card>
+  <h2>Admin Settings</h2>
+  <p class="muted">Client-side preferences only. No backend configuration is changed.</p>
+
+  <div class="setting">
+    <div>
+      <div class="label">Show sponsor contact info</div>
+      <div class="hint">Toggle visibility of emails/phones in sponsor tables.</div>
+    </div>
+    <p-inputSwitch [(ngModel)]="preferences.showContactInfo"></p-inputSwitch>
+  </div>
+
+  <div class="setting">
+    <div>
+      <div class="label">Compact table spacing</div>
+      <div class="hint">Use tighter padding for dense data views.</div>
+    </div>
+    <p-inputSwitch [(ngModel)]="preferences.compactTables"></p-inputSwitch>
+  </div>
+
+  <div class="setting">
+    <div>
+      <div class="label">Auto-refresh widgets</div>
+      <div class="hint">Simulates 5 min refresh on dashboard only (no API calls).</div>
+    </div>
+    <p-inputSwitch [(ngModel)]="preferences.autoRefresh"></p-inputSwitch>
+  </div>
+
+  <div class="actions">
+    <button pButton type="button" label="Save Preferences" icon="pi pi-check" (click)="save()"></button>
+    <span class="saved" *ngIf="savedMessage">{{ savedMessage }}</span>
+  </div>
+</p-card>

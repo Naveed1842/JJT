@@ -1,0 +1,34 @@
+<div class="login-shell">
+  <p-card>
+    <div class="header">
+      <div>
+        <p-tag value="Admin UI" severity="info"></p-tag>
+        <h2>Choose a role to enter the Admin workspace</h2>
+        <p class="muted">{{ note }}</p>
+      </div>
+      <a routerLink="/" class="back-link">← Back to public site</a>
+    </div>
+
+    <div class="form-row">
+      <label for="role">Role</label>
+      <p-dropdown
+        inputId="role"
+        [options]="roleOptions"
+        optionLabel="label"
+        optionValue="value"
+        [(ngModel)]="selectedRole"
+        placeholder="Select a role"
+        styleClass="w-full"
+      >
+        <ng-template pTemplate="item" let-role>
+          <div class="option">
+            <div class="label">{{ role.label }}</div>
+            <div class="desc">{{ role.description }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <button pButton type="button" label="Enter Admin" icon="pi pi-sign-in" (click)="submit()"></button>
+  </p-card>
+</div>

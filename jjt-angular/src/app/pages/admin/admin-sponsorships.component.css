@@ -1,0 +1,28 @@
+h2 {
+  margin: 0;
+}
+
+.muted {
+  color: #6b7280;
+  margin: 0.25rem 0 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+select {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
