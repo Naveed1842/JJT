@@ -16,6 +16,6 @@ public final class SponsorMapper {
 
     public static SponsorEntity toEntity(Sponsor sponsor) {
         Objects.requireNonNull(sponsor, "sponsor");
-        return new SponsorEntity(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail(), sponsor.getPhone());
+        return SponsorEntity.create(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail(), sponsor.getPhone());
     }
 }

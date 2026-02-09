@@ -1,19 +1,20 @@
 package com.jjt.platform.api.common.security;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public final class SecurityContextHolder {
     private static final ThreadLocal<SecurityContext> HOLDER = new ThreadLocal<>();
 
-    private SecurityContextHolder() {}
-
-    public static void setContext(SecurityContext context) {
+    public void setContext(SecurityContext context) {
         HOLDER.set(context);
     }
 
-    public static SecurityContext getContext() {
+    public SecurityContext getContext() {
         return HOLDER.get();
     }
 
-    public static void clear() {
+    public void clear() {
         HOLDER.remove();
     }
 }

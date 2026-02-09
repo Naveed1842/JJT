@@ -10,9 +10,11 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>17</java.version>
-        <spring.boot.version>3.2.3</spring.boot.version>
+        <java.version>21</java.version>
+        <spring.boot.version>3.3.0</spring.boot.version>
         <cloud.sql.socketfactory.version>1.27.0</cloud.sql.socketfactory.version>
+        <lombok.version>1.18.32</lombok.version>
+        <apache.commons.version>3.14.0</apache.commons.version>
     </properties>
 
     <dependencyManagement>
@@ -63,6 +65,21 @@
             <artifactId>postgres-socket-factory</artifactId>
             <version>${cloud.sql.socketfactory.version}</version>
             <scope>runtime</scope>
+        </dependency>
+        
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Apache Commons Lang for validations -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.version}</version>
         </dependency>
 
         <dependency>

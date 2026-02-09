@@ -1,21 +1,26 @@
 package com.jjt.platform.api.common.security;
 
 import com.jjt.platform.config.security.Role;
+import lombok.Builder;
+import lombok.Value;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Value
+@Builder
 public final class SecurityContext {
-    private final Role role;
-    private final UUID sponsorId;
-    private final UUID orgId;
-
+    Role role;
+    UUID sponsorId;
+    UUID orgId;
+    
+    @Builder
     public SecurityContext(Role role, UUID sponsorId, UUID orgId) {
         this.role = role;
         this.sponsorId = sponsorId;
         this.orgId = orgId;
     }
-
+    
     public Role role() {
         return role;
     }

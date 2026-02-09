@@ -19,7 +19,7 @@ public final class ProgressUpdateMapper {
 
     public static ProgressUpdateEntity toEntity(ProgressUpdate progressUpdate) {
         Objects.requireNonNull(progressUpdate, "progressUpdate");
-        return new ProgressUpdateEntity(
+        return ProgressUpdateEntity.create(
                 progressUpdate.getId(),
                 progressUpdate.getChildId(),
                 YearMonthMapper.toString(progressUpdate.getMonth()),

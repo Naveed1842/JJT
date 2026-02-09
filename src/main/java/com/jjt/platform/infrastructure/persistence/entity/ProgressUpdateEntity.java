@@ -5,12 +5,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "progress_updates",
        uniqueConstraints = @UniqueConstraint(name = "uk_child_month", columnNames = {"child_id", "update_month"}))
+@Data
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProgressUpdateEntity {
 
     @Id
@@ -25,30 +36,19 @@ public class ProgressUpdateEntity {
 
     @Column(name = "summary", nullable = false, length = 2000)
     private String summary;
-
-    protected ProgressUpdateEntity() {
-    }
-
-    public ProgressUpdateEntity(UUID id, UUID childId, String updateMonth, String summary) {
-        this.id = id;
-        this.childId = childId;
-        this.updateMonth = updateMonth;
-        this.summary = summary;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getUpdateMonth() {
-        return updateMonth;
-    }
-
-    public String getSummary() {
-        return summary;
+    
+    // Validation method using Apache Commons
+    public static ProgressUpdateEntity create(UUID id, UUID childId, String updateMonth, String summary) {
+        Validate.notNull(id, "Progress update ID cannot be null");
+        Validate.notNull(childId, "Child ID cannot be null");
+        Validate.isTrue(StringUtils.isNotBlank(updateMonth), "Update month cannot be blank");
+        Validate.isTrue(StringUtils.isNotBlank(summary), "Summary cannot be blank");
+        
+        return ProgressUpdateEntity.builder()
+                .id(id)
+                .childId(childId)
+                .updateMonth(StringUtils.trim(updateMonth))
+                .summary(StringUtils.trim(summary))
+                .build();
     }
 }

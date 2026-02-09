@@ -4,11 +4,22 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "sponsors")
+@Data
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class SponsorEntity {
 
     @Id
@@ -23,30 +34,18 @@ public class SponsorEntity {
 
     @Column(name = "phone")
     private String phone;
-
-    protected SponsorEntity() {
-    }
-
-    public SponsorEntity(UUID id, String displayName, String contactEmail, String phone) {
-        this.id = id;
-        this.displayName = displayName;
-        this.contactEmail = contactEmail;
-        this.phone = phone;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public String getPhone() {
-        return phone;
+    
+    // Validation method using Apache Commons
+    public static SponsorEntity create(UUID id, String displayName, String contactEmail, String phone) {
+        Validate.notNull(id, "Sponsor ID cannot be null");
+        Validate.isTrue(StringUtils.isNotBlank(displayName), "Display name cannot be blank");
+        Validate.isTrue(StringUtils.isNotBlank(contactEmail), "Contact email cannot be blank");
+        
+        return SponsorEntity.builder()
+                .id(id)
+                .displayName(StringUtils.trim(displayName))
+                .contactEmail(StringUtils.trim(contactEmail))
+                .phone(StringUtils.trimToNull(phone))
+                .build();
     }
 }

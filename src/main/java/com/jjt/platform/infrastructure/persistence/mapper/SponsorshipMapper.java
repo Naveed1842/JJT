@@ -29,7 +29,7 @@ public final class SponsorshipMapper {
     public static SponsorshipEntity toEntity(Sponsorship sponsorship, SponsorEntity sponsorEntity) {
         Objects.requireNonNull(sponsorship, "sponsorship");
         Objects.requireNonNull(sponsorEntity, "sponsorEntity");
-        return new SponsorshipEntity(
+        return SponsorshipEntity.create(
                 sponsorship.getId(),
                 sponsorEntity,
                 sponsorship.getChildId(),

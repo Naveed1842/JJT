@@ -25,7 +25,7 @@ public final class EducationSupportLedgerMapper {
     public static EducationSupportLedgerEntity toEntity(EducationSupportLedger ledger, ChildEntity childEntity) {
         Objects.requireNonNull(ledger, "ledger");
         Objects.requireNonNull(childEntity, "childEntity");
-        EducationSupportLedgerEntity entity = new EducationSupportLedgerEntity(ledger.getId(), childEntity);
+        EducationSupportLedgerEntity entity = EducationSupportLedgerEntity.create(ledger.getId(), childEntity);
         ledger.getEntriesByMonth().values().forEach(entry -> entity.getEntries().add(LedgerEntryMapper.toEntity(entry, entity)));
         return entity;
     }

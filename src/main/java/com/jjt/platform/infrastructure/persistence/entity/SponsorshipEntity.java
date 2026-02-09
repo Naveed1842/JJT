@@ -11,12 +11,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.With;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "sponsorships", uniqueConstraints = @UniqueConstraint(name = "uk_sponsor_child_start", columnNames = {"sponsor_id", "child_id", "start_month"}))
+@Data
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@With
 public class SponsorshipEntity {
 
     @Id
@@ -35,6 +49,7 @@ public class SponsorshipEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 16)
+    @Setter
     private SponsorshipStatus status;
 
     @Column(name = "created_at", nullable = false)
@@ -46,56 +61,28 @@ public class SponsorshipEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "commitment_type", nullable = false, length = 20)
     private CommitmentType commitmentType;
-
-    protected SponsorshipEntity() {
-    }
-
-    public SponsorshipEntity(UUID id, SponsorEntity sponsor, UUID childId, String startMonth,
-                             SponsorshipStatus status, Instant createdAt, Instant expiresAt,
-                             CommitmentType commitmentType) {
-        this.id = id;
-        this.sponsor = sponsor;
-        this.childId = childId;
-        this.startMonth = startMonth;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
-        this.commitmentType = commitmentType;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public SponsorEntity getSponsor() {
-        return sponsor;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getStartMonth() {
-        return startMonth;
-    }
-
-    public SponsorshipStatus getStatus() {
-        return status;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getExpiresAt() {
-        return expiresAt;
-    }
-
-    public CommitmentType getCommitmentType() {
-        return commitmentType;
-    }
-
-    public void setStatus(SponsorshipStatus status) {
-        this.status = status;
+    
+    // Validation method using Apache Commons
+    public static SponsorshipEntity create(UUID id, SponsorEntity sponsor, UUID childId, String startMonth,
+                                          SponsorshipStatus status, Instant createdAt, Instant expiresAt,
+                                          CommitmentType commitmentType) {
+        Validate.notNull(id, "Sponsorship ID cannot be null");
+        Validate.notNull(sponsor, "Sponsor cannot be null");
+        Validate.notNull(childId, "Child ID cannot be null");
+        Validate.isTrue(StringUtils.isNotBlank(startMonth), "Start month cannot be blank");
+        Validate.notNull(status, "Status cannot be null");
+        Validate.notNull(createdAt, "Created at cannot be null");
+        Validate.notNull(commitmentType, "Commitment type cannot be null");
+        
+        return SponsorshipEntity.builder()
+                .id(id)
+                .sponsor(sponsor)
+                .childId(childId)
+                .startMonth(StringUtils.trim(startMonth))
+                .status(status)
+                .createdAt(createdAt)
+                .expiresAt(expiresAt)
+                .commitmentType(commitmentType)
+                .build();
     }
 }

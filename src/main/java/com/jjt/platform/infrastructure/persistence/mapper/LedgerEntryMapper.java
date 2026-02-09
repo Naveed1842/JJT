@@ -23,7 +23,7 @@ public final class LedgerEntryMapper {
     public static LedgerEntryEntity toEntity(LedgerEntry entry, EducationSupportLedgerEntity ledgerEntity) {
         Objects.requireNonNull(entry, "entry");
         Objects.requireNonNull(ledgerEntity, "ledgerEntity");
-        return new LedgerEntryEntity(
+        return LedgerEntryEntity.create(
                 entry.getId(),
                 ledgerEntity,
                 entry.getChildId(),

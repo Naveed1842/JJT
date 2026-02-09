@@ -25,7 +25,7 @@ public final class ChildMapper {
 
     public static ChildEntity toEntity(Child child) {
         Objects.requireNonNull(child, "child");
-        return new ChildEntity(
+        return ChildEntity.create(
                 child.getId(),
                 child.getFullName(),
                 MoneyMapper.amount(child.getEducationCost()),

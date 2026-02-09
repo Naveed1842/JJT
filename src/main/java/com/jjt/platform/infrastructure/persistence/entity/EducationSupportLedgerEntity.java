@@ -8,6 +8,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.Validate;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -15,6 +21,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "education_support_ledgers")
+@Data
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EducationSupportLedgerEntity {
 
     @Id
@@ -27,24 +37,16 @@ public class EducationSupportLedgerEntity {
 
     @OneToMany(mappedBy = "ledger", cascade = CascadeType.ALL, orphanRemoval = false)
     private Set<LedgerEntryEntity> entries = new LinkedHashSet<>();
-
-    protected EducationSupportLedgerEntity() {
-    }
-
-    public EducationSupportLedgerEntity(UUID id, ChildEntity child) {
-        this.id = id;
-        this.child = child;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public ChildEntity getChild() {
-        return child;
-    }
-
-    public Set<LedgerEntryEntity> getEntries() {
-        return entries;
+    
+    // Validation method using Apache Commons
+    public static EducationSupportLedgerEntity create(UUID id, ChildEntity child) {
+        Validate.notNull(id, "Ledger ID cannot be null");
+        Validate.notNull(child, "Child cannot be null");
+        
+        return EducationSupportLedgerEntity.builder()
+                .id(id)
+                .child(child)
+                .entries(new LinkedHashSet<>())
+                .build();
     }
 }

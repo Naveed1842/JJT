@@ -7,6 +7,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.hibernate.annotations.Immutable;
 
 import java.math.BigDecimal;
@@ -16,6 +23,10 @@ import java.util.UUID;
 @Table(name = "ledger_entries",
        uniqueConstraints = @UniqueConstraint(name = "uk_ledger_month", columnNames = {"ledger_id", "entry_month"}))
 @Immutable
+@Data
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class LedgerEntryEntity {
 
     @Id
@@ -37,41 +48,25 @@ public class LedgerEntryEntity {
 
     @Column(name = "education_currency", nullable = false, length = 3, updatable = false)
     private String educationCurrency;
-
-    protected LedgerEntryEntity() {
-    }
-
-    public LedgerEntryEntity(UUID id, EducationSupportLedgerEntity ledger, UUID childId,
-                              String entryMonth, BigDecimal educationAmount, String educationCurrency) {
-        this.id = id;
-        this.ledger = ledger;
-        this.childId = childId;
-        this.entryMonth = entryMonth;
-        this.educationAmount = educationAmount;
-        this.educationCurrency = educationCurrency;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public EducationSupportLedgerEntity getLedger() {
-        return ledger;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getEntryMonth() {
-        return entryMonth;
-    }
-
-    public BigDecimal getEducationAmount() {
-        return educationAmount;
-    }
-
-    public String getEducationCurrency() {
-        return educationCurrency;
+    
+    // Validation method using Apache Commons
+    public static LedgerEntryEntity create(UUID id, EducationSupportLedgerEntity ledger, UUID childId,
+                                           String entryMonth, BigDecimal educationAmount, String educationCurrency) {
+        Validate.notNull(id, "Ledger entry ID cannot be null");
+        Validate.notNull(ledger, "Ledger cannot be null");
+        Validate.notNull(childId, "Child ID cannot be null");
+        Validate.isTrue(StringUtils.isNotBlank(entryMonth), "Entry month cannot be blank");
+        Validate.notNull(educationAmount, "Education amount cannot be null");
+        Validate.isTrue(educationAmount.compareTo(BigDecimal.ZERO) > 0, "Education amount must be positive");
+        Validate.isTrue(StringUtils.isNotBlank(educationCurrency), "Education currency cannot be blank");
+        
+        return LedgerEntryEntity.builder()
+                .id(id)
+                .ledger(ledger)
+                .childId(childId)
+                .entryMonth(StringUtils.trim(entryMonth))
+                .educationAmount(educationAmount)
+                .educationCurrency(StringUtils.upperCase(StringUtils.trim(educationCurrency)))
+                .build();
     }
 }
