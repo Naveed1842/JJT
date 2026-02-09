@@ -82,6 +82,55 @@
         <p>• Monthly cost: {{ monthlyCost || '—' }}</p>
       </div>
 
+      <div class="mt-4 rounded-lg border border-slate-200 bg-white px-5 py-5 text-slate-800 payment-card">
+        <p class="font-semibold text-slate-900 text-lg">Payment Details</p>
+        <p class="mt-2 text-slate-700 text-base">
+          Please complete the bank transfer using the details below before confirming your sponsorship.
+        </p>
+        <div class="mt-3 grid gap-3 md:grid-cols-2">
+          <div>
+            <p class="label">Account Title</p>
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="value">{{ paymentInfo.accountTitle }}</p>
+              <button type="button" class="copy-btn icon-only" aria-label="Copy account title" (click)="copy(paymentInfo.accountTitle, 'accountTitle')">
+                <i class="pi pi-clone"></i>
+              </button>
+            </div>
+            <small class="text-emerald-600" *ngIf="copiedField === 'accountTitle'">Copied</small>
+          </div>
+          <div>
+            <p class="label">Account Number</p>
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="value">{{ paymentInfo.accountNumber }}</p>
+              <button type="button" class="copy-btn icon-only" aria-label="Copy account number" (click)="copy(paymentInfo.accountNumber, 'accountNumber')">
+                <i class="pi pi-clone"></i>
+              </button>
+            </div>
+            <small class="text-emerald-600" *ngIf="copiedField === 'accountNumber'">Copied</small>
+          </div>
+          <div class="md:col-span-2">
+            <p class="label">IBAN</p>
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="value break-all">{{ paymentInfo.iban }}</p>
+              <button type="button" class="copy-btn icon-only" aria-label="Copy IBAN" (click)="copy(paymentInfo.iban, 'iban')">
+                <i class="pi pi-clone"></i>
+              </button>
+            </div>
+            <small class="text-emerald-600" *ngIf="copiedField === 'iban'">Copied</small>
+          </div>
+          <div class="md:col-span-2">
+            <p class="label">Bank</p>
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="value">{{ paymentInfo.bankName }}</p>
+              <button type="button" class="copy-btn icon-only" aria-label="Copy bank name" (click)="copy(paymentInfo.bankName, 'bankName')">
+                <i class="pi pi-clone"></i>
+              </button>
+            </div>
+            <small class="text-emerald-600" *ngIf="copiedField === 'bankName'">Copied</small>
+          </div>
+        </div>
+      </div>
+
       <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
         {{ error }}
       </div>

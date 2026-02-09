@@ -10,7 +10,8 @@ import { SiteFooterComponent } from '../../components/layout/site-footer.compone
   selector: 'app-sponsor-commit',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
-  templateUrl: './sponsor-commit.component.html'
+  templateUrl: './sponsor-commit.component.html',
+  styleUrl: './sponsor-commit.component.css'
 })
 export class SponsorCommitComponent implements OnInit {
   childId: string | null = null;
@@ -27,6 +28,15 @@ export class SponsorCommitComponent implements OnInit {
 
   loading = false;
   error: string | null = null;
+
+  readonly paymentInfo = {
+    accountTitle: 'JUNIOR JINNAH TRUST',
+    accountNumber: '2000848908',
+    iban: 'PK27SAMB0000002000848908',
+    bankName: 'SAMBA BANK LIMITED'
+  };
+
+  copiedField: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +59,16 @@ export class SponsorCommitComponent implements OnInit {
           this.error = 'Failed to load child details.';
         }
       });
+    }
+  }
+
+  async copy(value: string, field: string) {
+    try {
+      await navigator.clipboard.writeText(value);
+      this.copiedField = field;
+      setTimeout(() => (this.copiedField = null), 2000);
+    } catch (err) {
+      console.error('Copy failed', err);
     }
   }
 

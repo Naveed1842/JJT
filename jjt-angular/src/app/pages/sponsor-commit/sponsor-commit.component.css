@@ -1,0 +1,45 @@
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border: 1px solid #cbd5e1;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.3rem 0.35rem;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.copy-btn:hover {
+  border-color: #94a3b8;
+}
+
+.copy-btn i {
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.payment-card {
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.payment-card .label {
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 0.15rem;
+}
+
+.payment-card .value {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+.icon-only span {
+  display: none;
+}
