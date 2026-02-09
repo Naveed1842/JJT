@@ -5,11 +5,12 @@ import { FormsModule } from '@angular/forms';
 import { SponsorService, CommitmentType, AvailabilityStatus } from '../../services/sponsor.service';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
+import { SponsorImpactPanelComponent } from '../../components/sponsor-impact-panel/sponsor-impact-panel.component';
 
 @Component({
   selector: 'app-sponsor-commit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent, SponsorImpactPanelComponent],
   templateUrl: './sponsor-commit.component.html',
   styleUrl: './sponsor-commit.component.css'
 })

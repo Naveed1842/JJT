@@ -19,8 +19,8 @@ import { RouterLink } from '@angular/router';
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
           <a routerLink="/" class="hover:text-orange-700">Home</a>
           <a routerLink="/children" class="hover:text-orange-700">Children</a>
-          <a routerLink="/admin" class="hover:text-orange-700">Admin</a>
-          <a routerLink="/sponsor/confirmation" class="hover:text-orange-700">Contact</a>
+          <!-- <a routerLink="/admin" class="hover:text-orange-700">Admin</a> -->
+          <!-- <a routerLink="/sponsor/confirmation" class="hover:text-orange-700">Contact</a> -->
         </nav>
       </div>
     </header>
