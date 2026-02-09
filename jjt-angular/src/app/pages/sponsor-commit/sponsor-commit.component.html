@@ -1,71 +1,71 @@
 <app-site-header></app-site-header>
 <div class="min-h-screen bg-slate-50 py-12">
   <div class="mx-auto max-w-5xl px-4">
-    <a [routerLink]="['/children', childId]" class="text-sm font-semibold text-slate-600 underline">
+    <a [routerLink]="['/children', childId]" class="text-base font-semibold text-slate-600 underline">
       &larr; Back to child details
     </a>
 
     <div class="mt-6 grid gap-6 lg:grid-cols-3">
       <div class="space-y-6 lg:col-span-2">
         <header class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 class="text-2xl font-semibold text-slate-900">Sponsor this child</h1>
-          <p class="mt-2 text-sm text-slate-600">Child: {{ childName || 'Loading...' }}</p>
-          <p class="text-sm text-slate-600">{{ campusName }} &bull; {{ city }}</p>
-          <p class="mt-1 text-sm text-slate-600">Monthly cost: {{ monthlyCost || '—' }}</p>
-          <p class="mt-2 text-sm text-slate-600">Status: {{ supportStatus }}</p>
-          <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-sm text-amber-700">
+          <h1 class="text-3xl font-semibold text-slate-900 leading-tight">Sponsor this child</h1>
+          <p class="mt-3 text-base text-slate-700">Child: {{ childName || 'Loading...' }}</p>
+          <p class="text-base text-slate-700">{{ campusName }} &bull; {{ city }}</p>
+          <p class="mt-1 text-base text-slate-700">Monthly cost: {{ monthlyCost || '—' }}</p>
+          <p class="mt-2 text-base text-slate-700">Status: {{ supportStatus }}</p>
+          <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-base text-amber-700">
             This child already has an active sponsorship.
           </p>
-          <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-sm text-amber-700">
+          <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-base text-amber-700">
             This child currently has a pending sponsorship; final allocation is not confirmed.
           </p>
         </header>
 
         <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 class="text-base font-semibold text-slate-900">Choose your sponsorship</h2>
-          <p class="mt-2 text-sm text-slate-600">Sponsorship starts from the upcoming month.</p>
-          <p class="mt-1 text-sm font-semibold text-slate-700">
+          <h2 class="text-xl font-semibold text-slate-900">Choose your sponsorship</h2>
+          <p class="mt-2 text-base text-slate-700">Sponsorship starts from the upcoming month.</p>
+          <p class="mt-1 text-base font-semibold text-slate-800">
             This is a sponsorship commitment. Payments are completed manually after confirmation.
           </p>
           <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <label class="cursor-pointer rounded border border-slate-200 p-4" [class.border-slate-900]="commitmentType === 'MONTHLY'">
+            <label class="cursor-pointer rounded border border-slate-200 p-5" [class.border-slate-900]="commitmentType === 'MONTHLY'">
               <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="MONTHLY" />
-              <span class="text-sm font-semibold text-slate-900">Monthly sponsorship</span>
-              <p class="mt-2 text-sm text-slate-600">2,000 PKR / month</p>
+              <span class="text-base font-semibold text-slate-900">Monthly sponsorship</span>
+              <p class="mt-2 text-base text-slate-700">2,000 PKR / month</p>
             </label>
-            <label class="cursor-pointer rounded border border-slate-200 p-4" [class.border-slate-900]="commitmentType === 'YEARLY'">
+            <label class="cursor-pointer rounded border border-slate-200 p-5" [class.border-slate-900]="commitmentType === 'YEARLY'">
               <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="YEARLY" />
-              <span class="text-sm font-semibold text-slate-900">Yearly commitment (12 months)</span>
-              <p class="mt-2 text-sm text-slate-600">24,000 PKR (12 months)</p>
+              <span class="text-base font-semibold text-slate-900">Yearly commitment (12 months)</span>
+              <p class="mt-2 text-base text-slate-700">24,000 PKR (12 months)</p>
             </label>
           </div>
         </section>
 
         <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 class="text-base font-semibold text-slate-900">Your details</h2>
+          <h2 class="text-xl font-semibold text-slate-900">Your details</h2>
           <div class="mt-4 grid gap-4 md:grid-cols-2">
             <div>
-              <label class="text-sm font-semibold text-slate-700">Sponsor name</label>
+              <label class="text-base font-semibold text-slate-800">Sponsor name</label>
               <input
-                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-base"
                 type="text"
                 [(ngModel)]="sponsorName"
                 placeholder="Full name"
               />
             </div>
             <div>
-              <label class="text-sm font-semibold text-slate-700">Email</label>
+              <label class="text-base font-semibold text-slate-800">Email</label>
               <input
-                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-base"
                 type="email"
                 [(ngModel)]="email"
                 placeholder="name@example.com"
               />
             </div>
             <div>
-              <label class="text-sm font-semibold text-slate-700">Phone (optional)</label>
+              <label class="text-base font-semibold text-slate-800">Phone (optional)</label>
               <input
-                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-base"
                 type="tel"
                 [(ngModel)]="phone"
                 placeholder="+92 300 1234567"
@@ -73,12 +73,12 @@
             </div>
           </div>
 
-          <p class="mt-4 text-sm text-slate-600">
+          <p class="mt-4 text-base text-slate-700">
             Manual payment notice: Our team will contact you to complete the process.
           </p>
 
-          <div class="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800">
-            <p class="font-semibold text-slate-900">Confirmation</p>
+          <div class="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-800">
+            <p class="font-semibold text-slate-900 text-lg">Confirmation</p>
             <p class="mt-1">&bull; Child: {{ childName || 'Loading...' }}</p>
             <p>&bull; Commitment: {{ commitmentType === 'YEARLY' ? 'Yearly (12 months)' : 'Monthly' }}</p>
             <p>&bull; Monthly cost: {{ monthlyCost || '—' }}</p>
@@ -98,7 +98,7 @@
                     <i class="pi pi-clone"></i>
                   </button>
                 </div>
-                <small class="text-emerald-600" *ngIf="copiedField === 'accountTitle'">Copied</small>
+                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'accountTitle'">Copied</small>
               </div>
               <div>
                 <p class="label">Account Number</p>
@@ -108,7 +108,7 @@
                     <i class="pi pi-clone"></i>
                   </button>
                 </div>
-                <small class="text-emerald-600" *ngIf="copiedField === 'accountNumber'">Copied</small>
+                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'accountNumber'">Copied</small>
               </div>
               <div class="md:col-span-2">
                 <p class="label">IBAN</p>
@@ -118,7 +118,7 @@
                     <i class="pi pi-clone"></i>
                   </button>
                 </div>
-                <small class="text-emerald-600" *ngIf="copiedField === 'iban'">Copied</small>
+                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'iban'">Copied</small>
               </div>
               <div class="md:col-span-2">
                 <p class="label">Bank</p>
@@ -128,17 +128,17 @@
                     <i class="pi pi-clone"></i>
                   </button>
                 </div>
-                <small class="text-emerald-600" *ngIf="copiedField === 'bankName'">Copied</small>
+                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'bankName'">Copied</small>
               </div>
             </div>
           </div>
 
-          <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-base text-red-700">
             {{ error }}
           </div>
 
           <button
-            class="mt-6 btn-primary px-6 py-2 text-sm font-semibold disabled:opacity-60"
+            class="mt-6 btn-primary px-7 py-3 text-base font-semibold disabled:opacity-60"
             (click)="submit()"
             [disabled]="loading || supportStatus === 'ALLOCATED'"
           >
