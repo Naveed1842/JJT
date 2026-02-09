@@ -3,3 +3,5 @@ target/
 .vscode/
 *.iml
 .DS_Store
+jjt-angular/.firebase
+jjt-angular/node_modules
