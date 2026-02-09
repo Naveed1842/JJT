@@ -1,4 +1,8 @@
 <app-site-header></app-site-header>
+<app-ramadan-loader
+  *ngIf="pageLoading || loading"
+  [message]="loading ? 'Preparing your commitment...' : 'Preparing sponsor details...'"
+></app-ramadan-loader>
 <div class="min-h-screen bg-slate-50 py-12">
   <div class="mx-auto max-w-5xl px-4">
     <a [routerLink]="['/children', childId]" class="text-sm font-semibold text-slate-600 underline">

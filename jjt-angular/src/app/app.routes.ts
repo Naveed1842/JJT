@@ -7,7 +7,10 @@ export const routes: Routes = [
   },
   {
     path: 'children',
-    loadComponent: () => import('./pages/children/children.component').then(m => m.ChildrenComponent)
+    loadComponent: () =>
+      import('./pages/one-child-at-a-time/one-child-at-a-time.component').then(
+        m => m.OneChildAtATimeComponent
+      )
   },
   {
     path: 'children/:childId',

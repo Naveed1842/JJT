@@ -6,11 +6,20 @@ import { SponsorService, CommitmentType, AvailabilityStatus } from '../../servic
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 import { SponsorImpactPanelComponent } from '../../components/sponsor-impact-panel/sponsor-impact-panel.component';
+import { RamadanLoaderComponent } from '../../components/ramadan-loader/ramadan-loader.component';
 
 @Component({
   selector: 'app-sponsor-commit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent, SponsorImpactPanelComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    SiteHeaderComponent,
+    SiteFooterComponent,
+    SponsorImpactPanelComponent,
+    RamadanLoaderComponent
+  ],
   templateUrl: './sponsor-commit.component.html',
   styleUrl: './sponsor-commit.component.css'
 })
@@ -28,6 +37,7 @@ export class SponsorCommitComponent implements OnInit {
   commitmentType: CommitmentType = 'MONTHLY';
 
   loading = false;
+  pageLoading = true;
   error: string | null = null;
 
   readonly paymentInfo = {
@@ -55,11 +65,16 @@ export class SponsorCommitComponent implements OnInit {
           this.monthlyCost = `${child.educationAmount} ${child.educationCurrency}`;
           this.campusName = child.campusName;
           this.city = child.city;
+          this.pageLoading = false;
         },
         error: () => {
           this.error = 'Failed to load child details.';
+          this.pageLoading = false;
         }
       });
+    } else {
+      this.error = 'Child not found.';
+      this.pageLoading = false;
     }
   }
 

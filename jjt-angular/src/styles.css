@@ -59,3 +59,206 @@ body {
   background: linear-gradient(to right, transparent, #ccc, transparent);
   width: 100%;
 }
+
+@keyframes wall-drift-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate3d(-3%, 2%, 0) scale(1.05);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes wall-drift-b {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(3%, -2%, 0) scale(1.07);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+}
+
+@keyframes mosaic-breathe {
+  0% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+}
+
+@keyframes mosaic-sheen {
+  0% {
+    transform: translateX(-20%) translateY(-5%);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateX(20%) translateY(5%);
+    opacity: 0.4;
+  }
+  75% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateX(50%) translateY(10%);
+    opacity: 0;
+  }
+}
+
+@keyframes child-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wall-glow-a {
+  animation: wall-drift-a 18s ease-in-out infinite;
+}
+
+.wall-glow-b {
+  animation: wall-drift-b 22s ease-in-out infinite;
+}
+
+.mosaic-glow {
+  animation: mosaic-breathe 10s ease-in-out infinite;
+}
+
+.mosaic-sheen {
+  animation: mosaic-sheen 16s linear infinite;
+}
+
+.child-fade-enter {
+  animation: child-fade 0.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall-glow-a,
+  .wall-glow-b,
+  .mosaic-glow,
+  .mosaic-sheen,
+  .child-fade-enter {
+    animation: none;
+  }
+}
+
+@keyframes ramadan-orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ramadan-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  100% {
+    opacity: 0.6;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes ramadan-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes ramadan-twinkle {
+  0% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes ramadan-shimmer {
+  0% {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  60% {
+    transform: translateX(120%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(180%);
+    opacity: 0;
+  }
+}
+
+.ramadan-orbit {
+  animation: ramadan-orbit 6s linear infinite;
+}
+
+.ramadan-pulse {
+  animation: ramadan-pulse 2.6s ease-in-out infinite;
+}
+
+.ramadan-float {
+  animation: ramadan-float 3.2s ease-in-out infinite;
+}
+
+.ramadan-twinkle {
+  animation: ramadan-twinkle 2.4s ease-in-out infinite;
+}
+
+.ramadan-shimmer {
+  animation: ramadan-shimmer 3.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ramadan-orbit,
+  .ramadan-pulse,
+  .ramadan-float,
+  .ramadan-twinkle,
+  .ramadan-shimmer {
+    animation: none;
+  }
+}

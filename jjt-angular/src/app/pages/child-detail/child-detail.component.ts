@@ -7,6 +7,7 @@ import { LedgerRow, LedgerTableComponent } from '../../components/ledger-table/l
 import { ProgressItem, ProgressListComponent } from '../../components/progress-list/progress-list.component';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
+import { RamadanLoaderComponent } from '../../components/ramadan-loader/ramadan-loader.component';
 
 @Component({
   selector: 'app-child-detail',
@@ -18,7 +19,8 @@ import { SiteFooterComponent } from '../../components/layout/site-footer.compone
     LedgerTableComponent,
     ProgressListComponent,
     SiteHeaderComponent,
-    SiteFooterComponent
+    SiteFooterComponent,
+    RamadanLoaderComponent
   ],
   templateUrl: './child-detail.component.html',
   styleUrl: './child-detail.component.css'
