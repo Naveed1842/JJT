@@ -60,24 +60,24 @@ export class SponsorService {
   constructor(private http: HttpClient) {}
 
   getChildren(): Observable<ChildDto[]> {
-    return this.http.get<ChildDto[]>(`${this.baseUrl}/api/org/children`);
+    return this.http.get<ChildDto[]>(`${this.baseUrl}/org/children`);
   }
 
   getChild(childId: string): Observable<ChildDto> {
-    return this.http.get<ChildDto>(`${this.baseUrl}/api/org/children/${childId}`);
+    return this.http.get<ChildDto>(`${this.baseUrl}/org/children/${childId}`);
   }
 
   getLedger(childId: string): Observable<LedgerDto> {
-    return this.http.get<LedgerDto>(`${this.baseUrl}/api/org/children/${childId}/ledger`);
+    return this.http.get<LedgerDto>(`${this.baseUrl}/org/children/${childId}/ledger`);
   }
 
   getProgress(childId: string): Observable<ProgressUpdateDto[]> {
-    return this.http.get<ProgressUpdateDto[]>(`${this.baseUrl}/api/org/children/${childId}/progress`);
+    return this.http.get<ProgressUpdateDto[]>(`${this.baseUrl}/org/children/${childId}/progress`);
   }
 
   commitSponsorship(payload: SponsorshipCommitRequest): Observable<SponsorshipCommitResponse> {
     return this.http.post<SponsorshipCommitResponse>(
-      `${this.baseUrl}/api/public/sponsorships`,
+      `${this.baseUrl}/public/sponsorships`,
       payload
     );
   }

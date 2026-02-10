@@ -12,6 +12,9 @@ import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationExce
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin")
+@Tag(name = "Admin", description = "Admin operations for managing children, sponsors, and sponsorships")
+@SecurityRequirement(name = "bearerAuth")
 public class AdminController {
 
     private final AdminCommandService adminService;
@@ -42,6 +47,7 @@ public class AdminController {
     // Placeholder role check: assume caller is admin/org-admin.
 
     @PostMapping("/children")
+    @Operation(summary = "Create a new child", description = "Register a new child in the system")
     public ResponseEntity<CreateChildResponse> createChild(@RequestBody CreateChildRequest request) {
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
         var result = adminService.createChild(

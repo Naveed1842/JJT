@@ -1,27 +1,26 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 export const roleInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.url.includes('/api/public/')) {
-    return next(req);
-  }
-  if (req.headers.has('X-ROLE')) {
-    const existingRole = req.headers.get('X-ROLE');
-    if (existingRole === 'SPONSOR' && !req.headers.has('X-SPONSOR-ID')) {
-      const withSponsorId = req.clone({
-        setHeaders: { 'X-SPONSOR-ID': environment.sponsorId }
-      });
-      return next(withSponsorId);
-    }
+  // Skip authentication for public endpoints
+  if (req.url.includes('/api/public/') || req.url.includes('/api/auth/')) {
     return next(req);
   }
 
-  const role = localStorage.getItem('userRole') || 'ORG_ADMIN';
-  const headers: Record<string, string> = { 'X-ROLE': role };
+  const authService = inject(AuthService);
+  const token = authService.getToken();
 
-  if (role === 'SPONSOR') {
-    headers['X-SPONSOR-ID'] = environment.sponsorId;
+  if (token) {
+    // Add JWT token to Authorization header
+    const cloned = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return next(cloned);
   }
 
-  return next(req.clone({ setHeaders: headers }));
+  // If no token, proceed without authentication (will be handled by backend)
+  return next(req);
 };

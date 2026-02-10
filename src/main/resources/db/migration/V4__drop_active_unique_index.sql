@@ -5,16 +5,9 @@
 -- Drop constraint by name if it exists (covers H2 case)
 ALTER TABLE sponsorships DROP CONSTRAINT IF EXISTS uk_sponsorship_child_active;
 
--- Drop the Postgres index if it exists
-DO $$
-BEGIN
-    IF EXISTS (
-        SELECT 1
-        FROM pg_class c
-        JOIN pg_namespace n ON n.oid = c.relnamespace
-        WHERE c.relkind = 'i'
-          AND c.relname = 'uk_sponsorship_child_active'
-    ) THEN
-        EXECUTE 'DROP INDEX IF EXISTS uk_sponsorship_child_active';
-    END IF;
-END$$;
+-- Some engines bind the index to the FK constraint; drop/recreate FK to allow index removal.
+ALTER TABLE sponsorships DROP CONSTRAINT IF EXISTS fk_sponsorship_child;
+DROP INDEX IF EXISTS uk_sponsorship_child_active;
+ALTER TABLE sponsorships
+    ADD CONSTRAINT fk_sponsorship_child
+    FOREIGN KEY (child_id) REFERENCES children(id) ON DELETE RESTRICT;

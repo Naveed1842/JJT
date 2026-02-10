@@ -14,6 +14,7 @@ This folder is the single source of truth for Phase-1.
 - `rbac.md`
 - `audit.md`
 - `deployment.md`
+- `runbook.md`
 
 ## API
 - `api/README.md`

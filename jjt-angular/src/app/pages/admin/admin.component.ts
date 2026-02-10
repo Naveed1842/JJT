@@ -83,7 +83,7 @@ export class AdminComponent {
 
   createChild() {
     this.clearMessages();
-    this.http.post(`${this.baseUrl}/api/admin/children`, this.childForm)
+    this.http.post(`${this.baseUrl}/admin/children`, this.childForm)
       .subscribe({
         next: () => {
           this.successMessage = 'Child created successfully!';
@@ -98,7 +98,7 @@ export class AdminComponent {
 
   createSponsor() {
     this.clearMessages();
-    this.http.post(`${this.baseUrl}/api/admin/sponsors`, this.sponsorForm)
+    this.http.post(`${this.baseUrl}/admin/sponsors`, this.sponsorForm)
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsor created successfully!';
@@ -115,7 +115,7 @@ export class AdminComponent {
     this.clearMessages();
     const { childId, ...requestBody } = this.earlySupportForm;
     this.http.post(
-      `${this.baseUrl}/api/admin/children/${childId}/early-support`,
+      `${this.baseUrl}/admin/children/${childId}/early-support`,
       requestBody
     ).subscribe({
       next: () => {
@@ -133,7 +133,7 @@ export class AdminComponent {
     this.clearMessages();
     const { childId, ...requestBody } = this.progressForm;
     this.http.post(
-      `${this.baseUrl}/api/admin/children/${childId}/progress`,
+      `${this.baseUrl}/admin/children/${childId}/progress`,
       requestBody
     ).subscribe({
       next: () => {
@@ -149,7 +149,7 @@ export class AdminComponent {
 
   commitSponsorship() {
     this.clearMessages();
-    this.http.post(`${this.baseUrl}/api/admin/sponsorships`, this.sponsorshipForm)
+    this.http.post(`${this.baseUrl}/admin/sponsorships`, this.sponsorshipForm)
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsorship committed successfully!';
@@ -163,7 +163,7 @@ export class AdminComponent {
   }
 
   loadPending() {
-    this.http.get<any[]>(`${this.baseUrl}/api/admin/sponsorships?status=PENDING`)
+    this.http.get<any[]>(`${this.baseUrl}/admin/sponsorships?status=PENDING`)
       .subscribe({
         next: (data) => this.pendingSponsorships = data,
         error: (err) => {
@@ -173,7 +173,7 @@ export class AdminComponent {
   }
 
   loadActive() {
-    this.http.get<any[]>(`${this.baseUrl}/api/admin/sponsorships?status=ACTIVE`)
+    this.http.get<any[]>(`${this.baseUrl}/admin/sponsorships?status=ACTIVE`)
       .subscribe({
         next: (data) => this.activeSponsorships = data,
         error: (err) => {
@@ -183,7 +183,7 @@ export class AdminComponent {
   }
 
   activate(id: string) {
-    this.http.post(`${this.baseUrl}/api/admin/sponsorships/${id}/activate`, {})
+    this.http.post(`${this.baseUrl}/admin/sponsorships/${id}/activate`, {})
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsorship activated.';
@@ -197,7 +197,7 @@ export class AdminComponent {
   }
 
   expire(id: string) {
-    this.http.post(`${this.baseUrl}/api/admin/sponsorships/${id}/expire`, {})
+    this.http.post(`${this.baseUrl}/admin/sponsorships/${id}/expire`, {})
       .subscribe({
         next: () => {
           this.successMessage = 'Sponsorship expired.';

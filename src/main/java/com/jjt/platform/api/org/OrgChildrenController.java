@@ -14,7 +14,6 @@ import com.jjt.platform.infrastructure.persistence.entity.EducationSupportLedger
 import com.jjt.platform.infrastructure.persistence.entity.LedgerEntryEntity;
 import com.jjt.platform.infrastructure.persistence.entity.ProgressUpdateEntity;
 import com.jjt.platform.infrastructure.persistence.mapper.ChildMapper;
-import com.jjt.platform.infrastructure.persistence.mapper.EducationSupportLedgerMapper;
 import com.jjt.platform.infrastructure.persistence.mapper.LedgerEntryMapper;
 import com.jjt.platform.infrastructure.persistence.mapper.ProgressUpdateMapper;
 import com.jjt.platform.infrastructure.persistence.repository.ChildJpaRepository;
@@ -22,11 +21,10 @@ import com.jjt.platform.infrastructure.persistence.repository.EducationSupportLe
 import com.jjt.platform.infrastructure.persistence.repository.LedgerEntryRepository;
 import com.jjt.platform.infrastructure.persistence.repository.ProgressUpdateRepository;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorshipJpaRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +32,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/org")
+@Tag(name = "Organization", description = "Organization children endpoints")
+@SecurityRequirement(name = "bearerAuth")
 public class OrgChildrenController {
 
     private final ChildJpaRepository childRepo;
@@ -58,7 +58,6 @@ public class OrgChildrenController {
 
     @GetMapping("/children")
     public List<ChildDto> listChildren() {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return childRepo.findAll().stream()
                 .map(ChildMapper::toDomain)
                 .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
@@ -67,7 +66,6 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}")
     public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
                 .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
@@ -77,7 +75,6 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}/ledger")
     public ResponseEntity<LedgerDto> getChildLedger(@PathVariable("childId") UUID childId) {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
                 .map(DtoMapper::toLedgerDto)
@@ -87,7 +84,6 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}/progress")
     public ResponseEntity<List<ProgressUpdateDto>> getChildProgress(@PathVariable("childId") UUID childId) {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
                 .map(ledger -> {

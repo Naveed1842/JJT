@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { AuthService, User } from '../../services/auth.service';
 
 @Component({
   selector: 'app-site-header',
@@ -19,11 +20,41 @@ import { RouterLink } from '@angular/router';
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
           <a routerLink="/" class="hover:text-orange-700">Home</a>
           <a routerLink="/children" class="hover:text-orange-700">Children</a>
-          <!-- <a routerLink="/admin" class="hover:text-orange-700">Admin</a> -->
-          <!-- <a routerLink="/sponsor/confirmation" class="hover:text-orange-700">Contact</a> -->
+          <a *ngIf="authService.isAdmin()" routerLink="/admin" class="hover:text-orange-700">Admin</a>
+          
+          <div *ngIf="currentUser" class="flex items-center gap-3 ml-4 pl-4 border-l border-slate-300">
+            <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
+              {{ currentUser.username }} ({{ currentUser.role }})
+            </span>
+            <button (click)="logout()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1 rounded">
+              Logout
+            </button>
+          </div>
+          
+          <a *ngIf="!currentUser" routerLink="/login" class="text-xs bg-orange-600 text-white hover:bg-orange-700 px-4 py-2 rounded">
+            Login
+          </a>
         </nav>
       </div>
     </header>
   `
 })
-export class SiteHeaderComponent {}
+export class SiteHeaderComponent implements OnInit {
+  currentUser: User | null = null;
+
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
+  }
+
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+}
