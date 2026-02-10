@@ -69,6 +69,20 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Register new user", description = "Register a new user (admin only in production)")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+        // Basic field validation
+        if (request.username() == null || request.username().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Username is required");
+        }
+        if (request.email() == null || request.email().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Email is required");
+        }
+        if (request.password() == null || request.password().isEmpty()) {
+            return ResponseEntity.badRequest().body("Password is required");
+        }
+        if (request.role() == null || request.role().trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Role is required");
+        }
+        
         if (userRepository.existsByUsername(request.username())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
         }
@@ -77,9 +91,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
         }
 
-        // Validate role
-        if (!request.role().equals("ADMIN") && !request.role().equals("SPONSOR")) {
-            return ResponseEntity.badRequest().body("Invalid role. Must be ADMIN or SPONSOR");
+        // Validate role against supported roles (align with Role enum)
+        if (!"JJT_ADMIN".equals(request.role()) && 
+            !"ORG_ADMIN".equals(request.role()) && 
+            !"SPONSOR".equals(request.role())) {
+            return ResponseEntity.badRequest().body("Invalid role. Must be JJT_ADMIN, ORG_ADMIN, or SPONSOR");
         }
 
         UserEntity user = new UserEntity();
@@ -97,8 +113,12 @@ public class AuthController {
 
     @GetMapping("/me")
     @Operation(summary = "Get current user", description = "Get current authenticated user information")
-    public ResponseEntity<LoginResponse> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
-        String token = authHeader.substring(7);
+    public ResponseEntity<LoginResponse> getCurrentUser(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String token = authHeader.substring("Bearer ".length());
         String username = jwtTokenProvider.extractUsername(token);
         String role = jwtTokenProvider.extractRole(token);
         UUID sponsorId = jwtTokenProvider.extractSponsorId(token);

@@ -5,7 +5,7 @@
 ### Step 1: Start the Backend (1 min)
 
 ```bash
-cd C:\Users\muhassan\springprojects\JJT
+cd <repo-root>
 mvn spring-boot:run
 ```
 

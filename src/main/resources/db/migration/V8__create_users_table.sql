@@ -11,19 +11,6 @@ CREATE TABLE users (
     CONSTRAINT fk_user_sponsor FOREIGN KEY (sponsor_id) REFERENCES sponsors(id) ON DELETE SET NULL
 );
 
--- Create index for faster lookups
-CREATE INDEX idx_users_username ON users(username);
-CREATE INDEX idx_users_email ON users(email);
-
--- -- Insert default admin user (password: admin123)
--- -- Hash generated using: BCryptPasswordEncoder with strength 10
--- INSERT INTO users (id, username, password, email, role, enabled)
--- VALUES (
---     'a0000000-0000-0000-0000-000000000001',
---     'admin',
---     '$2a$10$slYQmyNdGzin7olVN.tf8OPST9/PgBkqquzi.Ss8KIUgO2t0mC9m6',
---     'admin@jjt.org',
---     'ADMIN',
---     true
--- );
-
+-- Note: Separate indexes on username and email are redundant because UNIQUE constraints
+-- automatically create backing unique indexes in PostgreSQL and H2.
+-- The existing UNIQUE constraints provide the same query performance benefits.

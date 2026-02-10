@@ -86,15 +86,22 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://127.0.0.1:4200"));
+        // Align with WebConfig origins - includes both localhost and deployed frontends
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:4200",
+            "http://127.0.0.1:4200",
+            "https://sandbox-27e5d.web.app",
+            "https://sandbox-27e5d.firebaseapp.com"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Total-Count"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        // Limit to API endpoints, not all paths
+        source.registerCorsConfiguration("/api/**", configuration);
         return source;
     }
 }

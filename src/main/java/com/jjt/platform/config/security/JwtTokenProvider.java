@@ -2,6 +2,9 @@ package com.jjt.platform.config.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -16,12 +19,47 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenProvider {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+    private static final String DEFAULT_SECRET = "jjt-platform-secret-key-for-jwt-token-generation-minimum-256-bits";
+    private static final int MINIMUM_KEY_LENGTH = 32; // 256 bits
 
-    @Value("${jwt.secret:jjt-platform-secret-key-for-jwt-token-generation-minimum-256-bits}")
+    @Value("${jwt.secret:}")
     private String secret;
 
     @Value("${jwt.expiration:86400000}") // 24 hours default
     private long expiration;
+    
+    @Value("${spring.profiles.active:}")
+    private String activeProfile;
+
+    @PostConstruct
+    public void init() {
+        // Use default only in dev/local profiles
+        if (secret == null || secret.isEmpty()) {
+            boolean isDevEnvironment = activeProfile != null && 
+                (activeProfile.contains("dev") || activeProfile.contains("local"));
+            
+            if (isDevEnvironment) {
+                logger.warn("JWT secret not configured, using default secret for development");
+                secret = DEFAULT_SECRET;
+            } else {
+                throw new IllegalStateException(
+                    "JWT secret must be explicitly configured via JWT_SECRET environment variable or jwt.secret property. " +
+                    "Do not use default secrets in production!"
+                );
+            }
+        }
+        
+        // Validate key length
+        if (secret.getBytes(StandardCharsets.UTF_8).length < MINIMUM_KEY_LENGTH) {
+            throw new IllegalStateException(
+                "JWT secret must be at least " + MINIMUM_KEY_LENGTH + " bytes (256 bits) for HS256 algorithm"
+            );
+        }
+        
+        logger.info("JWT token provider initialized successfully");
+    }
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
@@ -90,11 +128,13 @@ public class JwtTokenProvider {
 
     public Boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(token);
-            return !isTokenExpired(token);
+                    .parseClaimsJws(token)
+                    .getBody();
+            // Check expiration from already-parsed claims
+            return !claims.getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

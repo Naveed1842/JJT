@@ -3,13 +3,19 @@ package com.jjt.platform.config;
 import com.jjt.platform.config.security.Role;
 import com.jjt.platform.infrastructure.persistence.entity.UserEntity;
 import com.jjt.platform.infrastructure.persistence.repository.UserJpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
+@Profile({"dev", "local"})
 public class DataInitializationRunner implements CommandLineRunner {
+    
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializationRunner.class);
 
     private final UserJpaRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -25,6 +31,8 @@ public class DataInitializationRunner implements CommandLineRunner {
     }
 
     private void initializeDefaultUsers() {
+        logger.info("Initializing default users for development/local environment");
+        
         // Admin User
         if (!userRepository.existsByUsername("admin")) {
             UserEntity adminUser = new UserEntity();
@@ -35,10 +43,10 @@ public class DataInitializationRunner implements CommandLineRunner {
             adminUser.setRole(Role.JJT_ADMIN.name());
             adminUser.setEnabled(true);
             userRepository.save(adminUser);
-            System.out.println("✓ Admin user created: username=admin, password=admin123");
+            logger.info("✓ Default admin user created: username=admin");
         }
 
-        // Sponsor User
+        // Sponsor User - need to link to seeded sponsor for sponsor flows to work
         if (!userRepository.existsByUsername("sponsor")) {
             UserEntity sponsorUser = new UserEntity();
             sponsorUser.setId(UUID.randomUUID());
@@ -47,8 +55,10 @@ public class DataInitializationRunner implements CommandLineRunner {
             sponsorUser.setEmail("sponsor@example.org");
             sponsorUser.setRole(Role.SPONSOR.name());
             sponsorUser.setEnabled(true);
+            // Link to first seeded sponsor from V5 migration
+            sponsorUser.setSponsorId(UUID.fromString("50000000-0000-0000-0000-000000000001"));
             userRepository.save(sponsorUser);
-            System.out.println("✓ Sponsor user created: username=sponsor, password=sponsor123");
+            logger.info("✓ Default sponsor user created: username=sponsor");
         }
 
         // Org Admin User
@@ -61,7 +71,9 @@ public class DataInitializationRunner implements CommandLineRunner {
             orgAdminUser.setRole(Role.ORG_ADMIN.name());
             orgAdminUser.setEnabled(true);
             userRepository.save(orgAdminUser);
-            System.out.println("✓ Org Admin user created: username=orgadmin, password=orgadmin123");
+            logger.info("✓ Default org admin user created: username=orgadmin");
         }
+        
+        logger.info("Default users initialization complete");
     }
 }

@@ -3,8 +3,11 @@ import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 
 export const roleInterceptor: HttpInterceptorFn = (req, next) => {
-  // Skip authentication for public endpoints
-  if (req.url.includes('/api/public/') || req.url.includes('/api/auth/')) {
+  // Skip authentication for public endpoints (check path segments, not full URL)
+  const parsedUrl = new URL(req.url, window.location.origin);
+  const pathname = parsedUrl.pathname;
+
+  if (pathname.includes('/public/') || pathname.includes('/auth/')) {
     return next(req);
   }
 

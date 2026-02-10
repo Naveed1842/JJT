@@ -41,9 +41,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UUID sponsorId = jwtTokenProvider.extractSponsorId(jwt);
 
                 // Set custom SecurityContext for existing AccessGuard logic
-                Role roleEnum = Role.valueOf(role);
-                SecurityContext context = new SecurityContext(roleEnum, sponsorId, null);
-                SecurityContextHolder.setContext(context);
+                // Handle invalid roles gracefully
+                try {
+                    Role roleEnum = Role.valueOf(role);
+                    SecurityContext context = new SecurityContext(roleEnum, sponsorId, null);
+                    SecurityContextHolder.setContext(context);
+                } catch (IllegalArgumentException ex) {
+                    logger.warn("Unknown role '{}' in JWT; skipping custom SecurityContext population", role);
+                }
 
                 // Set Spring Security context
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -56,7 +61,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             logger.error("Could not set user authentication in security context", ex);
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            // Clear custom SecurityContext to prevent leaking between requests in thread pools
+            SecurityContextHolder.clear();
+        }
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
@@ -71,7 +81,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
         return path.startsWith("/api/public/") ||
-               path.startsWith("/api/auth/*") ||
+               path.startsWith("/api/auth/") ||
                path.startsWith("/api/org/children") ||
                path.startsWith("/swagger-ui") ||
                path.startsWith("/v3/api-docs") ||

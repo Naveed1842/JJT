@@ -13,7 +13,7 @@ export const routes: Routes = [
   {
     path: 'children',
     loadComponent: () => import('./pages/children/children.component').then(m => m.ChildrenComponent),
-//    canActivate: [authGuard]
+    canActivate: [authGuard]
   },
   {
     path: 'children/:childId',

@@ -150,22 +150,31 @@ springdoc:
 - Can view child profiles, ledger entries, progress updates
 - Cannot create or modify data
 
-## Default Test Users
+## Default Test Users (Dev/Local Only)
 
-Two test users are created automatically via database migration:
+Test users are created automatically via `DataInitializationRunner` when running in dev or local profiles:
 
 ### Admin User
 - **Username**: `admin`
 - **Password**: `admin123`
 - **Email**: `admin@jjt.org`
-- **Role**: ADMIN
+- **Role**: JJT_ADMIN
+- Linked to system administration
 
 ### Sponsor User
 - **Username**: `sponsor`
 - **Password**: `sponsor123`
 - **Email**: `sponsor@example.org`
 - **Role**: SPONSOR
-- **Linked to**: Test sponsor (ID: `00000000-0000-0000-0000-000000000001`)
+- **Linked to**: First seeded sponsor (ID: `50000000-0000-0000-0000-000000000001`)
+
+### Org Admin User
+- **Username**: `orgadmin`
+- **Password**: `orgadmin123`
+- **Email**: `orgadmin@jjt.org`
+- **Role**: ORG_ADMIN
+
+**Note**: These default users are only created in dev/local environments. They will not be created in production.
 
 ## API Endpoints
 

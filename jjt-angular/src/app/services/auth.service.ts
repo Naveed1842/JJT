@@ -110,11 +110,30 @@ export class AuthService {
 
   private isTokenExpired(token: string): boolean {
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
+      const payload = this.decodeJwtPayload(token);
       const expiry = payload.exp;
       return Math.floor(new Date().getTime() / 1000) >= expiry;
     } catch (e) {
       return true;
     }
+  }
+
+  private decodeJwtPayload(token: string): any {
+    const base64Url = token.split('.')[1];
+    if (!base64Url) {
+      throw new Error('Invalid JWT: missing payload segment');
+    }
+
+    // Convert from Base64URL to standard Base64
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+    // Pad with '=' to make length a multiple of 4
+    const paddingNeeded = (4 - (base64.length % 4)) % 4;
+    if (paddingNeeded > 0) {
+      base64 = base64 + '='.repeat(paddingNeeded);
+    }
+
+    const json = atob(base64);
+    return JSON.parse(json);
   }
 }
