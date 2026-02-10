@@ -66,7 +66,7 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}")
-    public ResponseEntity<ChildDto> getChild(@PathVariable UUID childId) {
+    public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
         log.info("Fetching child details for sponsor, child ID: {}", childId);
         SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
         UUID sponsorId = AccessGuard.requireSponsorId(ctx);
@@ -107,7 +107,7 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}/progress")
-    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@PathVariable UUID childId) {
+    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@PathVariable("childId") UUID childId) {
         log.info("Fetching progress updates for sponsor, child ID: {}", childId);
         SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
         UUID sponsorId = AccessGuard.requireSponsorId(ctx);

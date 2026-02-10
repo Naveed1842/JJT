@@ -117,7 +117,7 @@ public class AdminController {
     }
 
     @PostMapping("/children/{childId}/progress")
-    public ResponseEntity<AddProgressResponse> addProgress(@PathVariable UUID childId,
+    public ResponseEntity<AddProgressResponse> addProgress(@PathVariable("childId") UUID childId,
                                                            @RequestBody AddProgressRequest request) {
         log.info("Adding progress for child: {} for month: {}", childId, request.month());
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
@@ -198,7 +198,7 @@ public class AdminController {
     }
 
     @PostMapping("/sponsorships/{sponsorshipId}/activate")
-    public ResponseEntity<CommitSponsorshipResponse> activate(@PathVariable UUID sponsorshipId) {
+    public ResponseEntity<CommitSponsorshipResponse> activate(@PathVariable("sponsorshipId") UUID sponsorshipId) {
         log.info("Activating sponsorship with ID: {}", sponsorshipId);
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
         
@@ -220,7 +220,7 @@ public class AdminController {
     }
 
     @PostMapping("/sponsorships/{sponsorshipId}/expire")
-    public ResponseEntity<CommitSponsorshipResponse> expire(@PathVariable UUID sponsorshipId) {
+    public ResponseEntity<CommitSponsorshipResponse> expire(@PathVariable("sponsorshipId") UUID sponsorshipId) {
         log.info("Expiring sponsorship with ID: {}", sponsorshipId);
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
         
@@ -242,7 +242,7 @@ public class AdminController {
     }
 
     @GetMapping("/children/{childId}/sponsorships")
-    public List<SponsorshipSummaryResponse> listSponsorshipsByChild(@PathVariable UUID childId) {
+    public List<SponsorshipSummaryResponse> listSponsorshipsByChild(@PathVariable("childId") UUID childId) {
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
         
         Validate.notNull(childId, "Child ID cannot be null");
@@ -263,7 +263,7 @@ public class AdminController {
     }
 
     @GetMapping("/children/{childId}/sponsorships/active")
-    public Map<String, Boolean> hasActive(@PathVariable UUID childId) {
+    public Map<String, Boolean> hasActive(@PathVariable("childId") UUID childId) {
         AccessGuard.requireRole(Role.JJT_ADMIN, Role.ORG_ADMIN);
         
         Validate.notNull(childId, "Child ID cannot be null");
