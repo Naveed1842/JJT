@@ -1,0 +1,107 @@
+<div class="flex h-screen bg-slate-50">
+  <!-- Sidebar -->
+  <aside [class.w-64]="sidebarOpen" [class.w-0]="!sidebarOpen" class="fixed left-0 top-0 bottom-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white transition-all duration-300 ease-in-out overflow-hidden z-30 md:relative md:w-64">
+    <!-- Logo Section -->
+    <div class="p-6 border-b border-slate-800">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-xs font-bold">
+          JJT
+        </div>
+        <div>
+          <p class="font-bold text-sm leading-none">JJT Admin</p>
+          <p class="text-xs text-slate-400 leading-none">Operations Console</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="p-4 space-y-6">
+      <div *ngFor="let group of navGroups" class="space-y-2">
+        <p class="px-3 text-[11px] uppercase tracking-[0.18em] text-slate-400">{{ group.label }}</p>
+        <div class="space-y-1">
+          <div *ngFor="let item of group.items" class="space-y-1">
+            <div class="flex items-center gap-2">
+              <button
+                (click)="onItemClick(item)"
+                [class.active-item]="isRouteActive(item.route, router.url) || (item.children && item.children.some(child => isChildActive(child, router.url)))"
+                class="nav-item"
+              >
+                <span class="icon-badge">{{ item.icon }}</span>
+                <span class="font-medium text-sm">{{ item.label }}</span>
+              </button>
+              <button
+                *ngIf="item.children"
+                (click)="toggleItem(item, $event)"
+                class="toggle-icon"
+                [attr.aria-expanded]="item.expanded"
+              >
+                {{ item.expanded ? '-' : '+' }}
+              </button>
+            </div>
+
+            <div *ngIf="item.children && item.expanded" class="ml-10 space-y-1">
+              <button
+                *ngFor="let child of item.children"
+                (click)="navigateToChild(child)"
+                [class.active-child]="isChildActive(child, router.url)"
+                class="child-item"
+              >
+                {{ child.label }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Sidebar Footer - User Profile -->
+    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-800 bg-slate-900/50 backdrop-blur">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-sm font-bold">
+          {{ currentUser?.username.charAt(0).toUpperCase() || 'A' }}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold truncate">{{ currentUser?.username }}</p>
+          <p class="text-xs text-slate-400 truncate">{{ currentUser?.role }}</p>
+        </div>
+      </div>
+      <button
+        (click)="logout()"
+        class="w-full px-3 py-2 rounded-lg text-sm font-medium bg-slate-700 hover:bg-slate-600 transition-colors text-slate-100"
+      >
+        Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div
+    *ngIf="sidebarOpen && isMobile"
+    (click)="toggleSidebar()"
+    class="fixed inset-0 bg-black/50 z-20 md:hidden"
+  ></div>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col overflow-hidden">
+    <!-- Mobile Header -->
+    <header class="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+      <button
+        (click)="toggleSidebar()"
+        class="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+      >
+        <span class="text-xs font-semibold">{{ sidebarOpen ? 'CLOSE' : 'MENU' }}</span>
+      </button>
+      <div class="flex items-center gap-2">
+        <div class="h-8 w-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600"></div>
+        <p class="text-sm font-semibold text-slate-900">JJT Admin</p>
+      </div>
+    </header>
+
+    <!-- Content Area -->
+    <div class="flex-1 overflow-auto">
+      <div class="p-4 md:p-8 max-w-7xl mx-auto w-full">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </main>
+</div>

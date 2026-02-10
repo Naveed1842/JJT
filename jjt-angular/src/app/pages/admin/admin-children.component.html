@@ -1,0 +1,185 @@
+<div>
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">Manage Children</h1>
+    <p class="text-gray-600">Register and manage child beneficiaries</p>
+  </div>
+
+  <!-- Alert Messages -->
+  <div *ngIf="successMessage" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
+    <span class="text-green-600 text-xs font-semibold mt-1">OK</span>
+    <div>
+      <p class="font-semibold text-green-900">Success</p>
+      <p class="text-sm text-green-800">{{ successMessage }}</p>
+    </div>
+    <button (click)="clearMessages()" class="ml-auto text-green-600 hover:text-green-800">X</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+    <span class="text-red-600 text-xs font-semibold mt-1">ERR</span>
+    <div>
+      <p class="font-semibold text-red-900">Error</p>
+      <p class="text-sm text-red-800">{{ errorMessage }}</p>
+    </div>
+    <button (click)="clearMessages()" class="ml-auto text-red-600 hover:text-red-800">X</button>
+  </div>
+
+  <!-- Form Container -->
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-8">Create New Child</h2>
+
+    <form (ngSubmit)="createChild()" class="space-y-6">
+      <!-- Full Name -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Full Name <span class="text-red-600">*</span>
+          </label>
+          <input
+            [(ngModel)]="childForm.fullName"
+            name="fullName"
+            type="text"
+            required
+            placeholder="Enter child's full name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          >
+        </div>
+
+        <!-- Roll Number -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Roll Number <span class="text-red-600">*</span>
+          </label>
+          <input
+            [(ngModel)]="childForm.rollNumber"
+            name="rollNumber"
+            type="text"
+            required
+            placeholder="e.g., CS-2024-001"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          >
+        </div>
+      </div>
+
+      <!-- City and Campus -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            City <span class="text-red-600">*</span>
+          </label>
+          <input
+            [(ngModel)]="childForm.city"
+            name="city"
+            type="text"
+            required
+            placeholder="e.g., Karachi"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Campus Name <span class="text-red-600">*</span>
+          </label>
+          <input
+            [(ngModel)]="childForm.campusName"
+            name="campusName"
+            type="text"
+            required
+            placeholder="e.g., Main Campus"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          >
+        </div>
+      </div>
+
+      <!-- School Name -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-900 mb-2">
+          School Name <span class="text-gray-500">(Optional)</span>
+        </label>
+        <input
+          [(ngModel)]="childForm.schoolName"
+          name="schoolName"
+          type="text"
+          placeholder="e.g., Government School #5"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        >
+      </div>
+
+      <!-- Education Amount and Currency -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Education Amount <span class="text-red-600">*</span>
+          </label>
+          <input
+            [(ngModel)]="childForm.educationAmount"
+            name="educationAmount"
+            type="number"
+            step="0.01"
+            required
+            placeholder="2000.00"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+          >
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-gray-900 mb-2">
+            Currency <span class="text-red-600">*</span>
+          </label>
+          <select
+            [(ngModel)]="childForm.educationCurrency"
+            name="educationCurrency"
+            required
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all bg-white"
+          >
+            <option value="PKR">PKR (Pakistani Rupee)</option>
+            <option value="USD">USD (US Dollar)</option>
+            <option value="EUR">EUR (Euro)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex gap-4 pt-4">
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <span *ngIf="!isLoading">Create Child</span>
+          <span *ngIf="isLoading">Creating...</span>
+        </button>
+        <button
+          type="button"
+          (click)="resetForm()"
+          class="px-6 py-3 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition-all"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Info Section -->
+  <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <h3 class="font-semibold text-blue-900 mb-3">Required Information</h3>
+      <ul class="text-sm text-blue-800 space-y-2">
+        <li>Full Name of the child</li>
+        <li>Roll Number or unique identifier</li>
+        <li>City and campus location</li>
+        <li>Monthly education amount</li>
+      </ul>
+    </div>
+    <div class="bg-amber-50 border border-amber-200 rounded-lg p-6">
+      <h3 class="font-semibold text-amber-900 mb-3">Tips</h3>
+      <ul class="text-sm text-amber-800 space-y-2">
+        <li>Use consistent naming format</li>
+        <li>Verify city and campus details</li>
+        <li>Currency must match sponsor currency</li>
+        <li>School name helps with identification</li>
+      </ul>
+    </div>
+  </div>
+</div>

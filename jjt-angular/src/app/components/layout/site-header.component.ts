@@ -20,7 +20,7 @@ import { AuthService, User } from '../../services/auth.service';
         <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
           <a routerLink="/" class="hover:text-orange-700">Home</a>
           <a routerLink="/children" class="hover:text-orange-700">Children</a>
-          <a *ngIf="authService.isAdmin()" routerLink="/admin" class="hover:text-orange-700">Admin</a>
+          <a *ngIf="authService.isAdmin()" routerLink="/admin/dashboard" class="hover:text-orange-700">Admin</a>
           
           <div *ngIf="currentUser" class="flex items-center gap-3 ml-4 pl-4 border-l border-slate-300">
             <span class="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">

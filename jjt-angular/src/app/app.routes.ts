@@ -32,9 +32,40 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent),
+    loadComponent: () => import('./pages/admin/admin-layout.component').then(m => m.AdminLayoutComponent),
     canActivate: [authGuard],
-    data: { roles: ['ADMIN', 'JJT_ADMIN', 'ORG_ADMIN'] }
+    data: { roles: ['ADMIN', 'JJT_ADMIN', 'ORG_ADMIN'] },
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./pages/admin/admin-dashboard.component').then(m => m.AdminDashboardComponent)
+      },
+      {
+        path: 'children',
+        loadComponent: () => import('./pages/admin/admin-children.component').then(m => m.AdminChildrenComponent)
+      },
+      {
+        path: 'sponsors',
+        loadComponent: () => import('./pages/admin/admin-sponsors.component').then(m => m.AdminSponsorsComponent)
+      },
+      {
+        path: 'early-support',
+        loadComponent: () => import('./pages/admin/admin-early-support.component').then(m => m.AdminEarlySupportComponent)
+      },
+      {
+        path: 'progress',
+        loadComponent: () => import('./pages/admin/admin-progress.component').then(m => m.AdminProgressComponent)
+      },
+      {
+        path: 'sponsorships',
+        loadComponent: () => import('./pages/admin/admin-sponsorships.component').then(m => m.AdminSponsorshipsComponent)
+      },
+      {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+      }
+    ]
   },
   {
     path: '**',

@@ -1,0 +1,144 @@
+<div>
+  <!-- Page Header -->
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-2">Add Progress Updates</h1>
+    <p class="text-gray-600">Share monthly progress and updates about child beneficiaries</p>
+  </div>
+
+  <!-- Alert Messages -->
+  <div *ngIf="successMessage" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
+    <span class="text-green-600 text-xs font-semibold mt-1">OK</span>
+    <div>
+      <p class="font-semibold text-green-900">Success</p>
+      <p class="text-sm text-green-800">{{ successMessage }}</p>
+    </div>
+    <button (click)="clearMessages()" class="ml-auto text-green-600 hover:text-green-800">X</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+    <span class="text-red-600 text-xs font-semibold mt-1">ERR</span>
+    <div>
+      <p class="font-semibold text-red-900">Error</p>
+      <p class="text-sm text-red-800">{{ errorMessage }}</p>
+    </div>
+    <button (click)="clearMessages()" class="ml-auto text-red-600 hover:text-red-800">X</button>
+  </div>
+
+  <!-- Form Container -->
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-8">Create Progress Update</h2>
+
+    <form (ngSubmit)="addProgress()" class="space-y-6">
+      <!-- Child ID -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-900 mb-2">
+          Child ID <span class="text-red-600">*</span>
+        </label>
+        <input
+          [(ngModel)]="progressForm.childId"
+          name="childId"
+          type="text"
+          required
+          placeholder="e.g., CHD-2024-001"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        >
+        <p class="text-xs text-gray-500 mt-1">The unique identifier of the child</p>
+      </div>
+
+      <!-- Month -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-900 mb-2">
+          Month <span class="text-red-600">*</span>
+        </label>
+        <input
+          [(ngModel)]="progressForm.month"
+          name="month"
+          type="month"
+          required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+        >
+        <p class="text-xs text-gray-500 mt-1">The reporting month (YYYY-MM)</p>
+      </div>
+
+      <!-- Summary -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-900 mb-2">
+          Progress Summary <span class="text-red-600">*</span>
+        </label>
+        <textarea
+          [(ngModel)]="progressForm.summary"
+          name="summary"
+          required
+          maxlength="500"
+          rows="6"
+          placeholder="Describe the child's academic progress, achievements, challenges, and any notable updates..."
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-vertical"
+        ></textarea>
+        <div class="flex justify-between items-center mt-2">
+          <p class="text-xs text-gray-500">Provide a detailed summary of the child's progress</p>
+          <p class="text-xs font-semibold" [class.text-orange-600]="getCharacterCount() > 450">
+            {{ getCharacterCount() }} / {{ getMaxCharacters() }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex gap-4 pt-4">
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <span *ngIf="!isLoading">Add Progress Update</span>
+          <span *ngIf="isLoading">Submitting...</span>
+        </button>
+        <button
+          type="button"
+          (click)="resetForm()"
+          class="px-6 py-3 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition-all"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Info Sections -->
+  <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+      <h3 class="font-semibold text-blue-900 mb-3">What to Include</h3>
+      <ul class="text-sm text-blue-800 space-y-2">
+        <li>Academic performance and grades</li>
+        <li>School attendance records</li>
+        <li>Notable achievements or awards</li>
+        <li>Challenges or areas for improvement</li>
+        <li>Personal development and milestones</li>
+        <li>Family or health updates</li>
+      </ul>
+    </div>
+    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+      <h3 class="font-semibold text-green-900 mb-3">Writing Tips</h3>
+      <ul class="text-sm text-green-800 space-y-2">
+        <li>Be specific and factual</li>
+        <li>Use clear, simple language</li>
+        <li>Focus on meaningful progress</li>
+        <li>Include both strengths and needs</li>
+        <li>Keep professional tone</li>
+        <li>Use monthly as your update cycle</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Template Section -->
+  <div class="mt-6 bg-slate-50 border border-slate-200 rounded-lg p-6">
+    <h3 class="font-semibold text-slate-900 mb-3">Progress Update Template</h3>
+    <div class="bg-white p-4 rounded border border-slate-200 text-sm text-slate-700 font-mono whitespace-pre-wrap break-words">
+      <span class="text-slate-600">Academics:</span> [Describe grades and subjects]
+<span class="text-slate-600">Attendance:</span> [School attendance status]
+<span class="text-slate-600">Achievements:</span> [Recent accomplishments]
+<span class="text-slate-600">Challenges:</span> [Areas needing support]
+<span class="text-slate-600">Personal Growth:</span> [Development observations]
+<span class="text-slate-600">Other Notes:</span> [Any additional information]
+    </div>
+  </div>
+</div>
