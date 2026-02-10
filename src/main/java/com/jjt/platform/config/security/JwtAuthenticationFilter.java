@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContext context = new SecurityContext(roleEnum, sponsorId, null);
                     SecurityContextHolder.setContext(context);
                 } catch (IllegalArgumentException ex) {
-                    logger.warn("Unknown role '{}' in JWT; skipping custom SecurityContext population", role);
+                    logger.warn("Unknown role '" + role + "' in JWT; skipping custom SecurityContext population. Error: " + ex.getMessage());
                 }
 
                 // Set Spring Security context

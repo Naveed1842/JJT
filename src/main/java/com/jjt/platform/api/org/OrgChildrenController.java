@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/org")
 @Tag(name = "Organization", description = "Organization children endpoints")
-@SecurityRequirement(name = "bearerAuth")
 public class OrgChildrenController {
 
     private final ChildJpaRepository childRepo;
