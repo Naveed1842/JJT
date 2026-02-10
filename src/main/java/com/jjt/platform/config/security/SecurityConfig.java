@@ -50,7 +50,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/me").permitAll()
+                .requestMatchers("/api/auth/register").hasAnyRole("JJT_ADMIN", "ORG_ADMIN")
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/org/children/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()

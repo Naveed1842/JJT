@@ -8,6 +8,7 @@ import com.jjt.platform.config.security.JwtTokenProvider;
 import com.jjt.platform.infrastructure.persistence.entity.UserEntity;
 import com.jjt.platform.infrastructure.persistence.repository.UserJpaRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,7 +68,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @Operation(summary = "Register new user", description = "Register a new user (admin only in production)")
+    @Operation(summary = "Register new user", description = "Register a new user. Requires JJT_ADMIN or ORG_ADMIN role.")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         // Basic field validation
         if (request.username() == null || request.username().trim().isEmpty()) {
