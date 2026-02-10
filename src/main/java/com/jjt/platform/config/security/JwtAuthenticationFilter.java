@@ -47,6 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContext context = new SecurityContext(roleEnum, sponsorId, null);
                     SecurityContextHolder.setContext(context);
                 } catch (IllegalArgumentException ex) {
+                    // Note: String concatenation used because this filter uses Apache Commons Logging
+                    // (inherited from OncePerRequestFilter) which doesn't support parameterized logging
                     logger.warn("Unknown role '" + role + "' in JWT; skipping custom SecurityContext population. Error: " + ex.getMessage());
                 }
 
