@@ -32,6 +32,7 @@ export class OneChildAtATimeComponent implements OnInit {
   currentChild: OneChildViewModel | null = null;
   loading = true;
   error: string | null = null;
+  heroHeadline = "This Ramadan, Change One Child's Future.";
   heroSubtext = 'This child is out of school and needs support now.';
   animateCard = false;
 
@@ -82,9 +83,13 @@ export class OneChildAtATimeComponent implements OnInit {
     if (!child) return;
     this.currentChild = this.mapChild(child);
     this.animateCard = true;
+    setTimeout(() => {
+      this.animateCard = false;
+    }, 500);
   }
 
   private mapChild(child: ChildDto): OneChildViewModel {
+    const dailyCost = this.formatDailyCost(child.educationAmount, child.educationCurrency);
     return {
       id: child.id,
       name: child.fullName,
@@ -92,7 +97,11 @@ export class OneChildAtATimeComponent implements OnInit {
       city: child.city,
       tags: this.tagsForStatus(child.availabilityStatus),
       monthlyCost: `${child.educationCurrency} ${child.educationAmount} / month`,
+      dailyCost,
+      storyLine: this.storyForStatus(child.availabilityStatus),
+      ramadanDonors: this.donorsForStatus(child.availabilityStatus),
       trustNote: 'Trusted support for 2 months',
+      coveragePercent: this.coverageForStatus(child.availabilityStatus),
       status: child.availabilityStatus
     };
   }
@@ -108,5 +117,47 @@ export class OneChildAtATimeComponent implements OnInit {
       default:
         return ['Needs support'];
     }
+  }
+
+  private coverageForStatus(status: ChildDto['availabilityStatus']): number {
+    switch (status) {
+      case 'ALLOCATED':
+        return 100;
+      case 'RESERVED':
+        return 60;
+      default:
+        return 20;
+    }
+  }
+
+  private donorsForStatus(status: ChildDto['availabilityStatus']): number {
+    switch (status) {
+      case 'ALLOCATED':
+        return 6;
+      case 'RESERVED':
+        return 3;
+      default:
+        return 1;
+    }
+  }
+
+  private storyForStatus(status: ChildDto['availabilityStatus']): string {
+    switch (status) {
+      case 'ALLOCATED':
+        return 'Back in school and staying on track this year.';
+      case 'RESERVED':
+        return 'Support is pending; needs confirmation to continue.';
+      default:
+        return 'Dreams of becoming a teacher.';
+    }
+  }
+
+  private formatDailyCost(amount: string, currency: string): string {
+    const numeric = Number(amount.replace(/[^0-9.]/g, ''));
+    if (!Number.isFinite(numeric) || numeric <= 0) {
+      return '';
+    }
+    const perDay = Math.round(numeric / 30);
+    return `Just ${currency} ${perDay} per day in Ramadan`;
   }
 }

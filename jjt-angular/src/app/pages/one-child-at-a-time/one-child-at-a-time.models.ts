@@ -7,6 +7,10 @@ export interface OneChildViewModel {
   city: string;
   tags: string[];
   monthlyCost: string;
+  dailyCost?: string;
+  storyLine?: string;
+  ramadanDonors?: number;
   trustNote?: string;
+  coveragePercent?: number;
   status: AvailabilityStatus;
 }

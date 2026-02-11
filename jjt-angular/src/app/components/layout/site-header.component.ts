@@ -7,18 +7,18 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <header class="bg-white/90 backdrop-blur border-b border-slate-200 sticky top-0 z-20">
-      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-        <div class="flex items-center gap-2">
-          <div class="h-8 w-8 rounded-full bg-orange-600"></div>
-          <div>
-            <p class="text-sm font-semibold text-slate-900 leading-none">JJT Platform</p>
-            <p class="text-[11px] text-slate-500 leading-none">Education Continuity</p>
-          </div>
+    <header class="sticky top-0 z-30 border-b border-[#2B3A33] bg-[#0B1512]/95 backdrop-blur">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+        <div class="flex items-center gap-3">
+          <img
+            src="assets/images/jj-FINAL-LOGO.png"
+            alt="Junior Jinnah Trust"
+            class="h-16 w-auto max-w-[260px] object-contain"
+          />
         </div>
-        <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-slate-700">
-          <a routerLink="/" class="hover:text-orange-700">Home</a>
-          <a routerLink="/children" class="hover:text-orange-700">Children</a>
+        <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-amber-100">
+          <a routerLink="/" class="hover:text-amber-300">Home</a>
+          <a routerLink="/children" class="hover:text-amber-300">Children</a>
           <!-- <a routerLink="/admin" class="hover:text-orange-700">Admin</a> -->
           <!-- <a routerLink="/sponsor/confirmation" class="hover:text-orange-700">Contact</a> -->
         </nav>

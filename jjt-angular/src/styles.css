@@ -1,9 +1,9 @@
 :root {
-  --color-primary: #d95f23;
-  --color-primary-dark: #b84d1a;
-  --color-ink: #0f172a;
-  --color-bg: #f4f1ea;
-  --color-muted: #e2e8f0;
+  --color-primary: #c38a2e;
+  --color-primary-dark: #a87326;
+  --color-ink: #2b1b0b;
+  --color-bg: #0b1512;
+  --color-muted: #e6d4ae;
 }
 
 body {
@@ -11,6 +11,7 @@ body {
   background-color: var(--color-bg);
   margin: 0;
   padding: 0;
+  color: #f7e9c8;
 }
 
 .paper-texture {
@@ -42,21 +43,22 @@ body {
   padding: 0.8rem 1.35rem;
   border-radius: 0.4rem;
   border: 1px solid var(--color-muted);
-  color: var(--color-ink);
+  color: #f7e9c8;
   font-weight: 700;
-  background: #fff;
+  background: transparent;
   text-decoration: none;
   transition: border-color 0.2s ease, transform 0.1s ease;
 }
 
 .btn-secondary:hover {
   border-color: var(--color-primary);
+  color: #fff6dd;
   transform: translateY(-1px);
 }
 
 .divider-line {
   height: 1px;
-  background: linear-gradient(to right, transparent, #ccc, transparent);
+  background: linear-gradient(to right, transparent, #c9a45d, transparent);
   width: 100%;
 }
 
