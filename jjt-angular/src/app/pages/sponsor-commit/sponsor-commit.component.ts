@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SponsorService, CommitmentType, AvailabilityStatus } from '../../services/sponsor.service';
 import { RamadanLoaderComponent } from '../../components/ramadan-loader/ramadan-loader.component';
@@ -46,7 +46,8 @@ export class SponsorCommitComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private sponsorService: SponsorService
+    private sponsorService: SponsorService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -129,4 +130,8 @@ export class SponsorCommitComponent implements OnInit {
     });
   }
 
+  // Navigate back to campaign landing (fragment scroll)
+  backToCampaign(): void {
+    this.router.navigate(['/'], { fragment: 'featured-child' });
+  }
 }
