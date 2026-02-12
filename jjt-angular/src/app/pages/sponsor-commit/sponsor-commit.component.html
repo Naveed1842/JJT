@@ -1,166 +1,176 @@
-<app-site-header></app-site-header>
 <app-ramadan-loader
   *ngIf="pageLoading || loading"
   [message]="loading ? 'Preparing your commitment...' : 'Preparing sponsor details...'"
 ></app-ramadan-loader>
-<div class="relative min-h-screen overflow-hidden bg-[#0B1512] py-12 text-amber-50">
+
+<div class="relative min-h-screen overflow-hidden bg-[#0B1512] px-4 py-12 text-amber-50">
+  <!-- Background ambience -->
   <div class="pointer-events-none absolute inset-0">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,214,153,0.18),_rgba(8,19,16,0.92)_60%,_rgba(6,12,10,1)_100%)]"></div>
-    <div class="absolute inset-0 opacity-25" style="background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 32px 32px;"></div>
-    <div class="wall-glow-a absolute -top-40 right-[-10%] h-[420px] w-[420px] rounded-full bg-amber-300/30 blur-[140px]"></div>
-    <div class="wall-glow-b absolute -bottom-40 left-[-10%] h-[520px] w-[520px] rounded-full bg-emerald-400/20 blur-[160px]"></div>
+    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <span class="absolute left-[12%] top-[10%] h-1.5 w-1.5 rounded-full bg-amber-200/70 animate-pulse" style="animation-delay: 0.2s;"></span>
+    <span class="absolute left-[68%] top-[16%] h-1 w-1 rounded-full bg-amber-100/60 animate-pulse" style="animation-delay: 1.1s;"></span>
+    <span class="absolute left-[25%] top-[42%] h-1 w-1 rounded-full bg-amber-200/50 animate-pulse" style="animation-delay: 0.6s;"></span>
+    <span class="absolute left-[78%] top-[48%] h-1.5 w-1.5 rounded-full bg-amber-100/70 animate-pulse" style="animation-delay: 1.6s;"></span>
+    <span class="absolute left-[55%] top-[70%] h-1 w-1 rounded-full bg-amber-200/50 animate-pulse" style="animation-delay: 0.9s;"></span>
   </div>
-  <div class="relative mx-auto max-w-5xl px-4">
-    <a [routerLink]="['/children', childId]" class="text-sm font-semibold text-amber-200 underline">
-      &larr; Back to child details
-    </a>
 
-    <div class="mt-6 grid gap-6 lg:grid-cols-3">
-      <div class="space-y-6 lg:col-span-2">
-        <header class="rounded-2xl border border-[#E6D4AE]/60 bg-gradient-to-br from-[#FDF7EA] via-[#F7E6C4] to-[#F4DEB2] p-6 text-[#2B2A24] shadow-[0_18px_45px_rgba(12,20,17,0.45)]">
-          <h1 class="text-2xl font-semibold text-[#1F2A1E]">Sponsor this child</h1>
-          <p class="mt-2 text-sm text-[#4B3C1C]">Child: {{ childName || 'Loading...' }}</p>
-          <p class="text-sm text-[#4B3C1C]">{{ campusName }} &bull; {{ city }}</p>
-          <p class="mt-1 text-sm text-[#4B3C1C]">Monthly cost: {{ monthlyCost || '—' }}</p>
-          <p class="mt-2 text-sm text-[#4B3C1C]">Status: {{ supportStatus }}</p>
-          <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-sm text-[#8B5B10]">
-            This child already has an active sponsorship.
-          </p>
-          <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-sm text-[#8B5B10]">
-            This child currently has a pending sponsorship; final allocation is not confirmed.
-          </p>
-        </header>
+  <main class="relative mx-auto flex max-w-2xl flex-col gap-8">
+    <!-- Header Section -->
+    <section class="text-center">
+      <h1 class="text-2xl font-semibold text-amber-50 md:text-3xl" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
+        🌙 Complete Your Sponsorship for {{ childName || 'Noor Fatima' }}
+      </h1>
+      <p class="mt-3 text-sm text-amber-100/80">
+        You are one step away from keeping her in school this year.
+      </p>
+    </section>
 
-        <section class="rounded-2xl border border-[#E6D4AE]/60 bg-gradient-to-br from-[#FDF7EA] via-[#F7E6C4] to-[#F4DEB2] p-6 text-[#2B2A24] shadow-[0_18px_45px_rgba(12,20,17,0.45)]">
-          <h2 class="text-base font-semibold text-[#1F2A1E]">Choose your sponsorship</h2>
-          <p class="mt-2 text-sm text-[#4B3C1C]">Sponsorship starts from the upcoming month.</p>
-          <p class="mt-1 text-sm font-semibold text-[#4B3C1C]">
-            This is a sponsorship commitment. Payments are completed manually after confirmation.
-          </p>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <label class="cursor-pointer rounded border border-[#D8BE7B] bg-white/70 p-4" [class.border-amber-700]="commitmentType === 'MONTHLY'">
-              <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="MONTHLY" />
-              <span class="text-sm font-semibold text-[#1F2A1E]">Monthly sponsorship</span>
-              <p class="mt-2 text-sm text-[#4B3C1C]">2,000 PKR / month</p>
-            </label>
-            <label class="cursor-pointer rounded border border-[#D8BE7B] bg-white/70 p-4" [class.border-amber-700]="commitmentType === 'YEARLY'">
-              <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="YEARLY" />
-              <span class="text-sm font-semibold text-[#1F2A1E]">Yearly commitment (12 months)</span>
-              <p class="mt-2 text-sm text-[#4B3C1C]">24,000 PKR (12 months)</p>
-            </label>
-          </div>
-        </section>
+    <!-- Confirmation Screen (after 201) -->
+    <section
+      *ngIf="submitted"
+      class="relative rounded-[30px] border border-[#F2D9A4]/70 bg-gradient-to-br from-[#FDF7EA] via-[#F8E8C8] to-[#F6E2BE] px-6 py-8 text-[#2B2A24] shadow-[0_28px_70px_rgba(13,21,18,0.55)]"
+    >
+      <!-- Backend lifecycle: public sponsorship is PENDING until admin activation -->
+      <h2 class="text-base font-semibold text-[#1F2A1E]" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
+        Your sponsorship is pending activation.
+      </h2>
+      <p class="mt-3 text-sm text-[#5D4B26]">
+        It will begin in {{ startMonth || 'next month' }}.
+      </p>
+    </section>
 
-        <section class="rounded-2xl border border-[#E6D4AE]/60 bg-gradient-to-br from-[#FDF7EA] via-[#F7E6C4] to-[#F4DEB2] p-6 text-[#2B2A24] shadow-[0_18px_45px_rgba(12,20,17,0.45)]">
-          <h2 class="text-base font-semibold text-[#1F2A1E]">Your details</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div>
-              <label class="text-sm font-semibold text-[#4B3C1C]">Sponsor name</label>
-              <input
-                class="mt-1 w-full rounded border border-[#D8BE7B] bg-white/80 px-3 py-2 text-sm text-[#2B2A24]"
-                type="text"
-                [(ngModel)]="sponsorName"
-                placeholder="Full name"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-semibold text-[#4B3C1C]">Email</label>
-              <input
-                class="mt-1 w-full rounded border border-[#D8BE7B] bg-white/80 px-3 py-2 text-sm text-[#2B2A24]"
-                type="email"
-                [(ngModel)]="email"
-                placeholder="name@example.com"
-              />
-            </div>
-            <div>
-              <label class="text-sm font-semibold text-[#4B3C1C]">Phone (optional)</label>
-              <input
-                class="mt-1 w-full rounded border border-[#D8BE7B] bg-white/80 px-3 py-2 text-sm text-[#2B2A24]"
-                type="tel"
-                [(ngModel)]="phone"
-                placeholder="+92 300 1234567"
-              />
-            </div>
-          </div>
+    <!-- Main Premium Card -->
+    <section
+      *ngIf="!submitted"
+      class="relative rounded-[30px] border border-[#F2D9A4]/70 bg-gradient-to-br from-[#FDF7EA] via-[#F8E8C8] to-[#F6E2BE] px-6 py-8 text-[#2B2A24] shadow-[0_28px_70px_rgba(13,21,18,0.55)]"
+    >
+      <div class="absolute -top-6 left-1/2 h-14 w-40 -translate-x-1/2 rounded-full bg-amber-200/40 blur-[24px]"></div>
 
-          <p class="mt-4 text-sm text-[#4B3C1C]">
-            Manual payment notice: Our team will contact you to complete the process.
-          </p>
+      <!-- Status messaging based on backend availability -->
+      <p *ngIf="supportStatus === 'RESERVED'" class="relative text-sm font-semibold text-[#7A5A22]">
+        Reserved – Pending Activation
+      </p>
+      <p *ngIf="supportStatus === 'ALLOCATED'" class="relative text-sm font-semibold text-[#7A5A22]">
+        Sponsored
+      </p>
 
-          <div class="mt-5 rounded-lg border border-[#D8BE7B] bg-white/70 px-4 py-3 text-sm text-[#2B2A24]">
-            <p class="font-semibold text-[#1F2A1E]">Confirmation</p>
-            <p class="mt-1">&bull; Child: {{ childName || 'Loading...' }}</p>
-            <p>&bull; Commitment: {{ commitmentType === 'YEARLY' ? 'Yearly (12 months)' : 'Monthly' }}</p>
-            <p>&bull; Monthly cost: {{ monthlyCost || '—' }}</p>
-          </div>
-
-          <div class="mt-4 rounded-lg border border-[#D8BE7B] bg-white/80 px-5 py-5 text-[#2B2A24] payment-card">
-            <p class="font-semibold text-[#1F2A1E] text-lg">Payment Details</p>
-            <p class="mt-2 text-[#4B3C1C] text-base">
-              Please complete the bank transfer using the details below before confirming your sponsorship.
-            </p>
-            <div class="mt-3 grid gap-3 md:grid-cols-2">
-              <div>
-                <p class="label">Account Title</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value">{{ paymentInfo.accountTitle }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy account title" (click)="copy(paymentInfo.accountTitle, 'accountTitle')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-700" *ngIf="copiedField === 'accountTitle'">Copied</small>
-              </div>
-              <div>
-                <p class="label">Account Number</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value">{{ paymentInfo.accountNumber }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy account number" (click)="copy(paymentInfo.accountNumber, 'accountNumber')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-700" *ngIf="copiedField === 'accountNumber'">Copied</small>
-              </div>
-              <div class="md:col-span-2">
-                <p class="label">IBAN</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value break-all">{{ paymentInfo.iban }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy IBAN" (click)="copy(paymentInfo.iban, 'iban')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-700" *ngIf="copiedField === 'iban'">Copied</small>
-              </div>
-              <div class="md:col-span-2">
-                <p class="label">Bank</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value">{{ paymentInfo.bankName }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy bank name" (click)="copy(paymentInfo.bankName, 'bankName')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-700" *ngIf="copiedField === 'bankName'">Copied</small>
-            </div>
-          </div>
-          </div>
-
-          <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {{ error }}
-          </div>
-
-          <button
-            class="mt-6 btn-primary px-6 py-2 text-sm font-semibold text-[#2B1B0B] disabled:opacity-60"
-            (click)="submit()"
-            [disabled]="loading || supportStatus === 'ALLOCATED'"
+      <!-- Section A: Commitment -->
+      <div class="relative mt-4">
+        <h2 class="text-base font-semibold text-[#1F2A1E]" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
+          Choose Your Commitment
+        </h2>
+        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+          <label
+            class="cursor-pointer rounded-2xl border border-[#D8BE7B] bg-white/70 px-4 py-4 text-sm font-semibold text-[#4B3C1C] shadow-sm transition"
+            [class.ring-2]="commitmentType === 'MONTHLY'"
+            [class.ring-[#C38A2E]]="commitmentType === 'MONTHLY'"
           >
-            {{ loading ? 'Submitting...' : 'Commit to sponsorship' }}
-          </button>
-        </section>
+            <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="MONTHLY" />
+            Monthly — PKR 2,000
+          </label>
+          <label
+            class="cursor-pointer rounded-2xl border border-[#D8BE7B] bg-white/70 px-4 py-4 text-sm font-semibold text-[#4B3C1C] shadow-sm transition"
+            [class.ring-2]="commitmentType === 'YEARLY'"
+            [class.ring-[#C38A2E]]="commitmentType === 'YEARLY'"
+          >
+            <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="YEARLY" />
+            Yearly — PKR 24,000
+          </label>
+        </div>
       </div>
 
-      <div class="lg:col-span-1 lg:pt-1">
-        <app-sponsor-impact-panel class="block lg:sticky lg:top-20"></app-sponsor-impact-panel>
+      <!-- Section B: Your Details -->
+      <div class="relative mt-8">
+        <h2 class="text-base font-semibold text-[#1F2A1E]" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
+          Your Details
+        </h2>
+        <div class="mt-4 grid gap-4">
+          <div>
+            <label class="text-sm font-semibold text-[#4B3C1C]">Full Name</label>
+            <input
+              class="mt-1 w-full rounded-xl border border-[#D8BE7B] bg-white/80 px-3 py-2 text-sm text-[#2B2A24]"
+              type="text"
+              [(ngModel)]="sponsorName"
+              placeholder="Full name"
+              required
+            />
+          </div>
+          <div>
+            <label class="text-sm font-semibold text-[#4B3C1C]">Email</label>
+            <input
+              class="mt-1 w-full rounded-xl border border-[#D8BE7B] bg-white/80 px-3 py-2 text-sm text-[#2B2A24]"
+              type="email"
+              [(ngModel)]="email"
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+          <div>
+            <label class="text-sm font-semibold text-[#4B3C1C]">Phone (optional)</label>
+            <input
+              class="mt-1 w-full rounded-xl border border-[#D8BE7B] bg-white/80 px-3 py-2 text-sm text-[#2B2A24]"
+              type="tel"
+              [(ngModel)]="phone"
+              placeholder="+92 300 1234567"
+            />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+
+      <!-- Section C: Bank Transfer -->
+      <div class="relative mt-8">
+        <h2 class="text-base font-semibold text-[#1F2A1E]" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
+          Transfer to Complete Sponsorship
+        </h2>
+        <p class="mt-2 text-sm text-[#5D4B26]">
+          You will transfer: <span class="font-semibold text-[#7A5A22]">{{ commitmentType === 'YEARLY' ? 'PKR 24,000' : (monthlyCost || 'PKR 2,000') }}</span>
+        </p>
+
+        <div class="mt-4 rounded-2xl border border-[#D8BE7B] bg-white/80 px-4 py-4 text-sm text-[#4B3C1C]">
+          <div class="grid gap-3">
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-[#7A5A22]">Account Title</p>
+              <p class="text-sm font-semibold text-[#2B2A24]">{{ paymentInfo.accountTitle }}</p>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-[#7A5A22]">Account Number</p>
+                <p class="text-sm font-semibold text-[#2B2A24]">{{ paymentInfo.accountNumber }}</p>
+              </div>
+              <button type="button" class="copy-btn" aria-label="Copy account number" (click)="copy(paymentInfo.accountNumber, 'accountNumber')">
+                Copy
+              </button>
+            </div>
+            <div class="flex items-center justify-between gap-3">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-wide text-[#7A5A22]">IBAN</p>
+                <p class="text-sm font-semibold text-[#2B2A24]">{{ paymentInfo.iban }}</p>
+              </div>
+              <button type="button" class="copy-btn" aria-label="Copy IBAN" (click)="copy(paymentInfo.iban, 'iban')">
+                Copy
+              </button>
+            </div>
+            <div>
+              <p class="text-xs font-semibold uppercase tracking-wide text-[#7A5A22]">Bank</p>
+              <p class="text-sm font-semibold text-[#2B2A24]">{{ paymentInfo.bankName }}</p>
+            </div>
+          </div>
+        </div>
+
+        <button
+          id="confirmTransferBtn"
+          class="mt-6 w-full rounded-2xl bg-gradient-to-r from-[#C38A2E] via-[#E2B763] to-[#C38A2E] px-6 py-3 text-sm font-semibold text-[#2B1B0B] shadow-[0_18px_40px_rgba(135,92,26,0.55)] transition hover:scale-[1.02]"
+          (click)="submit()"
+          [disabled]="loading || submitted || supportStatus !== 'AVAILABLE' || !sponsorName.trim() || !email.trim()"
+        >
+          {{ loading ? 'Submitting...' : '🌙 I Have Completed the Transfer' }}
+        </button>
+
+        <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {{ error }}
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
-<app-site-footer></app-site-footer>

@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SponsorService, CommitmentType, AvailabilityStatus } from '../../services/sponsor.service';
-import { SiteHeaderComponent } from '../../components/layout/site-header.component';
-import { SiteFooterComponent } from '../../components/layout/site-footer.component';
-import { SponsorImpactPanelComponent } from '../../components/sponsor-impact-panel/sponsor-impact-panel.component';
 import { RamadanLoaderComponent } from '../../components/ramadan-loader/ramadan-loader.component';
 
 @Component({
@@ -14,10 +11,6 @@ import { RamadanLoaderComponent } from '../../components/ramadan-loader/ramadan-
   imports: [
     CommonModule,
     FormsModule,
-    RouterLink,
-    SiteHeaderComponent,
-    SiteFooterComponent,
-    SponsorImpactPanelComponent,
     RamadanLoaderComponent
   ],
   templateUrl: './sponsor-commit.component.html',
@@ -39,6 +32,8 @@ export class SponsorCommitComponent implements OnInit {
   loading = false;
   pageLoading = true;
   error: string | null = null;
+  submitted = false;
+  startMonth: string | null = null;
 
   readonly paymentInfo = {
     accountTitle: 'JUNIOR JINNAH TRUST',
@@ -51,18 +46,18 @@ export class SponsorCommitComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private sponsorService: SponsorService
   ) {}
 
   ngOnInit(): void {
     this.childId = this.route.snapshot.paramMap.get('childId');
     if (this.childId) {
+      // Backend contract: fetch child via /api/org/children/{id} (requires X-ROLE)
       this.sponsorService.getChild(this.childId).subscribe({
         next: (child) => {
           this.childName = child.fullName;
           this.supportStatus = child.availabilityStatus;
-          this.monthlyCost = `${child.educationAmount} ${child.educationCurrency}`;
+          this.monthlyCost = `${child.educationCurrency} ${child.educationAmount}`;
           this.campusName = child.campusName;
           this.city = child.city;
           this.pageLoading = false;
@@ -90,8 +85,15 @@ export class SponsorCommitComponent implements OnInit {
 
   submit(): void {
     this.error = null;
+    if (this.loading || this.submitted) {
+      return;
+    }
     if (this.supportStatus === 'ALLOCATED') {
       this.error = 'This child already has an active sponsorship.';
+      return;
+    }
+    if (this.supportStatus === 'RESERVED') {
+      this.error = 'This child is reserved and pending activation.';
       return;
     }
     if (!this.childId) {
@@ -104,6 +106,7 @@ export class SponsorCommitComponent implements OnInit {
     }
 
     this.loading = true;
+    // Backend contract: POST /api/public/sponsorships (creates PENDING sponsorship)
     this.sponsorService.commitSponsorship({
       childId: this.childId,
       commitmentType: this.commitmentType,
@@ -113,9 +116,11 @@ export class SponsorCommitComponent implements OnInit {
         phone: this.phone || null
       }
     }).subscribe({
-      next: () => {
+      next: (response) => {
+        // Backend lifecycle: public commit creates PENDING sponsorship; activation is manual.
         this.loading = false;
-        this.router.navigate(['/sponsor/confirmation']);
+        this.submitted = true;
+        this.startMonth = response.startMonth;
       },
       error: () => {
         this.loading = false;
