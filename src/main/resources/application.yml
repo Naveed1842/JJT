@@ -2,10 +2,10 @@ spring:
   application:
     name: jjt-platform
   datasource:
-    url: jdbc:h2:mem:jjt;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/jjt}
+    username: ${SPRING_DATASOURCE_USERNAME:jjt}
+    password: ${SPRING_DATASOURCE_PASSWORD:jjt}
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: none
@@ -29,3 +29,15 @@ management:
     health:
       probes:
         enabled: true
+
+app:
+  security:
+    # LEGACY: X-ROLE headers only
+    # DUAL: Bearer token first, fallback to X-ROLE headers
+    # FIREBASE: Bearer token only
+    mode: ${AUTH_MODE:DUAL}
+
+firebase:
+  auth:
+    service-account-base64: ${FIREBASE_SERVICE_ACCOUNT_BASE64:}
+    project-id: ${FIREBASE_PROJECT_ID:}
