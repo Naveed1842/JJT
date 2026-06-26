@@ -15,12 +15,14 @@ public final class LedgerEntry {
     private final UUID childId;
     private final YearMonthValue month;
     private final Money educationCost;
+    private final CoverageType coverageType;
 
-    public LedgerEntry(UUID id, UUID childId, YearMonthValue month, Money educationCost) {
+    public LedgerEntry(UUID id, UUID childId, YearMonthValue month, Money educationCost, CoverageType coverageType) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.childId = Objects.requireNonNull(childId, "childId must not be null");
         this.month = Objects.requireNonNull(month, "month must not be null");
         this.educationCost = Objects.requireNonNull(educationCost, "educationCost must not be null");
+        this.coverageType = Objects.requireNonNull(coverageType, "coverageType must not be null");
     }
 
     public UUID getId() {
@@ -37,6 +39,10 @@ public final class LedgerEntry {
 
     public Money getEducationCost() {
         return educationCost;
+    }
+
+    public CoverageType getCoverageType() {
+        return coverageType;
     }
 
     @Override

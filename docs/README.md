@@ -8,6 +8,7 @@ This folder is the single source of truth for Phase-1.
 - `domain-model.md`
 - `ledger-rules.md`
 - `data-model.md`
+- `current-state.md`
 
 ## Operations
 - `workflows.md`

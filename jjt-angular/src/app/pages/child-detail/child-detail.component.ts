@@ -32,7 +32,6 @@ export class ChildDetailComponent implements OnInit {
   city = '';
   campusName = '';
   schoolName: string | null = null;
-  age = 8;
   grade = 'Grade 3';
   monthlyCost = '—';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
@@ -86,10 +85,10 @@ export class ChildDetailComponent implements OnInit {
     }
     this.sponsorService.getLedger(this.childId).subscribe({
       next: (data) => {
-        this.ledgerEntries = (data.entries || []).map((entry, index) => ({
+        this.ledgerEntries = (data.entries || []).map((entry) => ({
           month: entry.month,
           status: 'Continued',
-          source: index % 2 === 0 ? 'Early Support' : 'Sponsor'
+          source: entry.coverageType === 'SPONSOR' ? 'Sponsor' : 'Early Support'
         }));
       },
       error: (err) => console.error('Error loading ledger:', err)

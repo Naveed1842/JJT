@@ -5,8 +5,6 @@ import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
 import com.jjt.platform.api.common.dto.AvailabilityStatus;
 import com.jjt.platform.api.common.mapper.DtoMapper;
-import com.jjt.platform.api.common.security.AccessGuard;
-import com.jjt.platform.config.security.Role;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
@@ -14,7 +12,6 @@ import com.jjt.platform.infrastructure.persistence.entity.EducationSupportLedger
 import com.jjt.platform.infrastructure.persistence.entity.LedgerEntryEntity;
 import com.jjt.platform.infrastructure.persistence.entity.ProgressUpdateEntity;
 import com.jjt.platform.infrastructure.persistence.mapper.ChildMapper;
-import com.jjt.platform.infrastructure.persistence.mapper.EducationSupportLedgerMapper;
 import com.jjt.platform.infrastructure.persistence.mapper.LedgerEntryMapper;
 import com.jjt.platform.infrastructure.persistence.mapper.ProgressUpdateMapper;
 import com.jjt.platform.infrastructure.persistence.repository.ChildJpaRepository;
@@ -23,17 +20,20 @@ import com.jjt.platform.infrastructure.persistence.repository.LedgerEntryReposit
 import com.jjt.platform.infrastructure.persistence.repository.ProgressUpdateRepository;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorshipJpaRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/org")
+@PreAuthorize("hasAnyRole('JJT_ADMIN', 'ORG_ADMIN')")
 public class OrgChildrenController {
 
     private final ChildJpaRepository childRepo;
@@ -54,20 +54,18 @@ public class OrgChildrenController {
         this.sponsorshipRepo = sponsorshipRepo;
     }
 
-    // NOTE: In real system, enforce ORG role; omitted per instructions
-
     @GetMapping("/children")
     public List<ChildDto> listChildren() {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
+        Set<UUID> activeChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE);
+        Set<UUID> pendingChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING);
         return childRepo.findAll().stream()
                 .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
+                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId(), activeChildIds, pendingChildIds)))
                 .toList();
     }
 
     @GetMapping("/children/{childId}")
     public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
                 .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
@@ -77,7 +75,6 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}/ledger")
     public ResponseEntity<LedgerDto> getChildLedger(@PathVariable("childId") UUID childId) {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
                 .map(DtoMapper::toLedgerDto)
@@ -87,7 +84,6 @@ public class OrgChildrenController {
 
     @GetMapping("/children/{childId}/progress")
     public ResponseEntity<List<ProgressUpdateDto>> getChildProgress(@PathVariable("childId") UUID childId) {
-        AccessGuard.requireRole(Role.ORG_ADMIN, Role.SPONSOR);
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
                 .map(ledger -> {
@@ -112,12 +108,20 @@ public class OrgChildrenController {
     }
 
     private AvailabilityStatus deriveAvailability(UUID childId) {
-        boolean hasActive = sponsorshipRepo.existsByChildIdAndStatus(childId, com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE);
-        if (hasActive) {
+        if (sponsorshipRepo.existsByChildIdAndStatus(childId, com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE)) {
             return AvailabilityStatus.ALLOCATED;
         }
-        boolean hasPending = sponsorshipRepo.existsByChildIdAndStatus(childId, com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING);
-        if (hasPending) {
+        if (sponsorshipRepo.existsByChildIdAndStatus(childId, com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING)) {
+            return AvailabilityStatus.RESERVED;
+        }
+        return AvailabilityStatus.AVAILABLE;
+    }
+
+    private AvailabilityStatus deriveAvailability(UUID childId, Set<UUID> activeChildIds, Set<UUID> pendingChildIds) {
+        if (activeChildIds.contains(childId)) {
+            return AvailabilityStatus.ALLOCATED;
+        }
+        if (pendingChildIds.contains(childId)) {
             return AvailabilityStatus.RESERVED;
         }
         return AvailabilityStatus.AVAILABLE;

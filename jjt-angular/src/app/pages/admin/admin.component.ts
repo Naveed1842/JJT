@@ -113,10 +113,9 @@ export class AdminComponent {
 
   recordEarlySupport() {
     this.clearMessages();
-    const { childId, ...requestBody } = this.earlySupportForm;
     this.http.post(
-      `${this.baseUrl}/api/admin/children/${childId}/early-support`,
-      requestBody
+      `${this.baseUrl}/api/admin/early-support`,
+      this.earlySupportForm
     ).subscribe({
       next: () => {
         this.successMessage = 'Early support recorded successfully!';

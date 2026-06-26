@@ -42,6 +42,7 @@ Out of scope:
 ## Repository docs
 Start here:
 - `docs/README.md`
+- `docs/current-state.md`
 - `docs/phase-1-guardrails.md`
 - `docs/architecture.md`
 - `docs/domain-model.md`

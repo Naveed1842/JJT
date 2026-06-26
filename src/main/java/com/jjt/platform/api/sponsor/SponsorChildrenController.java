@@ -5,9 +5,7 @@ import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
 import com.jjt.platform.api.common.dto.AvailabilityStatus;
 import com.jjt.platform.api.common.mapper.DtoMapper;
-import com.jjt.platform.api.common.security.AccessGuard;
-import com.jjt.platform.api.common.security.SecurityContext;
-import com.jjt.platform.config.security.Role;
+import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
@@ -25,6 +23,8 @@ import com.jjt.platform.infrastructure.persistence.repository.ProgressUpdateRepo
 import com.jjt.platform.infrastructure.persistence.repository.SponsorshipJpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/sponsor")
+@PreAuthorize("hasRole('SPONSOR')")
 public class SponsorChildrenController {
 
     private final SponsorshipJpaRepository sponsorshipRepo;
@@ -57,9 +58,8 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children")
-    public ResponseEntity<List<ChildDto>> listSponsorChildren() {
-        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
-        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
+    public ResponseEntity<List<ChildDto>> listSponsorChildren(@AuthenticationPrincipal JwtUserDetails principal) {
+        UUID sponsorId = principal.getSponsorId();
         List<UUID> childIds = sponsoredChildIds(sponsorId);
         List<ChildDto> result = childRepo.findAllById(childIds).stream()
                 .map(ChildMapper::toDomain)
@@ -69,9 +69,9 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}")
-    public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
-        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
-        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
+    public ResponseEntity<ChildDto> getChild(@AuthenticationPrincipal JwtUserDetails principal,
+                                             @PathVariable("childId") UUID childId) {
+        UUID sponsorId = principal.getSponsorId();
         if (!isChildSponsoredBy(sponsorId, childId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -83,9 +83,9 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}/ledger")
-    public ResponseEntity<LedgerDto> getLedger(@PathVariable("childId") UUID childId) {
-        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
-        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
+    public ResponseEntity<LedgerDto> getLedger(@AuthenticationPrincipal JwtUserDetails principal,
+                                               @PathVariable("childId") UUID childId) {
+        UUID sponsorId = principal.getSponsorId();
         if (!isChildSponsoredBy(sponsorId, childId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -97,9 +97,9 @@ public class SponsorChildrenController {
     }
 
     @GetMapping("/children/{childId}/progress")
-    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@PathVariable("childId") UUID childId) {
-        SecurityContext ctx = AccessGuard.requireRole(Role.SPONSOR);
-        UUID sponsorId = AccessGuard.requireSponsorId(ctx);
+    public ResponseEntity<List<ProgressUpdateDto>> getProgress(@AuthenticationPrincipal JwtUserDetails principal,
+                                                               @PathVariable("childId") UUID childId) {
+        UUID sponsorId = principal.getSponsorId();
         if (!isChildSponsoredBy(sponsorId, childId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -117,13 +117,11 @@ public class SponsorChildrenController {
     }
 
     private boolean isChildSponsoredBy(UUID sponsorId, UUID childId) {
-        return sponsorshipRepo.findAll().stream()
-                .anyMatch(s -> s.getSponsor().getId().equals(sponsorId) && s.getChildId().equals(childId));
+        return sponsorshipRepo.existsBySponsor_IdAndChildId(sponsorId, childId);
     }
 
     private List<UUID> sponsoredChildIds(UUID sponsorId) {
-        return sponsorshipRepo.findAll().stream()
-                .filter(s -> s.getSponsor().getId().equals(sponsorId))
+        return sponsorshipRepo.findBySponsor_Id(sponsorId).stream()
                 .map(SponsorshipEntity::getChildId)
                 .toList();
     }
@@ -140,13 +138,9 @@ public class SponsorChildrenController {
 
     private AvailabilityStatus deriveAvailability(UUID childId) {
         boolean hasActive = sponsorshipRepo.existsByChildIdAndStatus(childId, com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE);
-        if (hasActive) {
-            return AvailabilityStatus.ALLOCATED;
-        }
+        if (hasActive) return AvailabilityStatus.ALLOCATED;
         boolean hasPending = sponsorshipRepo.existsByChildIdAndStatus(childId, com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING);
-        if (hasPending) {
-            return AvailabilityStatus.RESERVED;
-        }
+        if (hasPending) return AvailabilityStatus.RESERVED;
         return AvailabilityStatus.AVAILABLE;
     }
 }

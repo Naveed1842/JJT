@@ -155,18 +155,18 @@ public class AdminCommandService {
         if (otherActive) {
             throw new DomainException("Another active sponsorship exists for this child");
         }
-        entity.setStatus(SponsorshipStatus.ACTIVE);
-        sponsorshipRepo.save(entity);
-        return SponsorshipMapper.toDomain(entity);
+        Sponsorship updated = SponsorshipMapper.toDomain(entity).withStatus(SponsorshipStatus.ACTIVE);
+        sponsorshipRepo.save(SponsorshipMapper.toEntity(updated, entity.getSponsor()));
+        return updated;
     }
 
     @Transactional
     public Sponsorship expireSponsorship(UUID sponsorshipId) {
         SponsorshipEntity entity = sponsorshipRepo.findById(sponsorshipId)
                 .orElseThrow(() -> new DomainException("Sponsorship not found"));
-        entity.setStatus(SponsorshipStatus.EXPIRED);
-        sponsorshipRepo.save(entity);
-        return SponsorshipMapper.toDomain(entity);
+        Sponsorship updated = SponsorshipMapper.toDomain(entity).withStatus(SponsorshipStatus.EXPIRED);
+        sponsorshipRepo.save(SponsorshipMapper.toEntity(updated, entity.getSponsor()));
+        return updated;
     }
 
     private Optional<EducationSupportLedger> loadLedgerDomain(UUID childId) {

@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div class="mb-4 flex items-center gap-4">
         <div class="h-20 w-20 rounded bg-slate-100"></div>
-        <div>
+        <div *ngIf="age !== null">
           <p class="text-sm text-slate-600">Age</p>
           <p class="text-lg font-semibold text-slate-900">{{ age }}</p>
         </div>
@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class ChildSnapshotComponent {
-  @Input({ required: true }) age!: number;
+  @Input() age: number | null = null;
   @Input({ required: true }) grade!: string;
   @Input({ required: true }) monthlyCost!: string;
 }

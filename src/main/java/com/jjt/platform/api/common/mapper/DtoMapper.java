@@ -43,7 +43,8 @@ public final class DtoMapper {
                 entry.getId(),
                 entry.getMonth().getValue().toString(),
                 entry.getEducationCost().getAmount().toPlainString(),
-                entry.getEducationCost().getCurrency().getCurrencyCode()
+                entry.getEducationCost().getCurrency().getCurrencyCode(),
+                entry.getCoverageType().name()
         );
     }
 

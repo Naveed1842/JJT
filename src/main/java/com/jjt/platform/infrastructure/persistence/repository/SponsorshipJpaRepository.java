@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface SponsorshipJpaRepository extends JpaRepository<SponsorshipEntity, UUID> {
@@ -16,4 +17,11 @@ public interface SponsorshipJpaRepository extends JpaRepository<SponsorshipEntit
     boolean existsByChildIdAndStatus(UUID childId, SponsorshipStatus status);
 
     List<SponsorshipEntity> findByChildIdOrderByCreatedAtDesc(UUID childId);
+
+    List<SponsorshipEntity> findBySponsor_Id(UUID sponsorId);
+
+    boolean existsBySponsor_IdAndChildId(UUID sponsorId, UUID childId);
+
+    @Query("SELECT s.childId FROM SponsorshipEntity s WHERE s.status = :status")
+    Set<UUID> findChildIdsByStatus(@Param("status") SponsorshipStatus status);
 }
