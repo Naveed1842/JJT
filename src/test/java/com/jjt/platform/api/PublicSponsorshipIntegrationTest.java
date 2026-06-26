@@ -20,6 +20,9 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+// Eclipse null-flow analysis does not recognise assertThat(...).isNotNull() as a null guard,
+// so it still warns on subsequent dereferences. The assertions make those accesses safe.
+@SuppressWarnings("null")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @Import(TestcontainersConfiguration.class)
@@ -47,7 +50,9 @@ class PublicSponsorshipIntegrationTest {
                 "campusName", "Test Campus",
                 "schoolName", "Test School",
                 "educationAmount", "5000",
-                "educationCurrency", "PKR"
+                "educationCurrency", "PKR",
+                "childId", UUID.randomUUID().toString(),
+                "ledgerId", UUID.randomUUID().toString()
         );
         ResponseEntity<Map<String, Object>> response = adminPost("/api/admin/children", childRequest, token);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -80,7 +85,7 @@ class PublicSponsorshipIntegrationTest {
     void commitPublicSponsorship_missingEmail_returns400() {
         Map<String, Object> body = Map.of(
                 "childId", childId.toString(),
-                "commitmentType", "FULL",
+                "commitmentType", "MONTHLY",
                 "sponsor", Map.of("name", "A Sponsor", "phone", "01234567890")
                 // email deliberately absent
         );
@@ -92,7 +97,7 @@ class PublicSponsorshipIntegrationTest {
     void commitPublicSponsorship_malformedEmail_returns400() {
         Map<String, Object> body = Map.of(
                 "childId", childId.toString(),
-                "commitmentType", "FULL",
+                "commitmentType", "MONTHLY",
                 "sponsor", Map.of("name", "A Sponsor", "email", "not-an-email", "phone", "01234567890")
         );
         assertThat(post("/api/public/sponsorships", body).getStatusCode())
@@ -103,7 +108,7 @@ class PublicSponsorshipIntegrationTest {
     void commitPublicSponsorship_missingName_returns400() {
         Map<String, Object> body = Map.of(
                 "childId", childId.toString(),
-                "commitmentType", "FULL",
+                "commitmentType", "MONTHLY",
                 "sponsor", Map.of("email", "sponsor@example.com")
                 // name deliberately absent
         );
@@ -115,7 +120,7 @@ class PublicSponsorshipIntegrationTest {
     void commitPublicSponsorship_nonExistentChild_returns400() {
         Map<String, Object> body = Map.of(
                 "childId", UUID.randomUUID().toString(),
-                "commitmentType", "FULL",
+                "commitmentType", "MONTHLY",
                 "sponsor", Map.of("name", "A Sponsor", "email", "sponsor@example.com")
         );
         assertThat(post("/api/public/sponsorships", body).getStatusCode())
@@ -127,7 +132,7 @@ class PublicSponsorshipIntegrationTest {
     private Map<String, Object> buildSponsorshipRequest() {
         return Map.of(
                 "childId", childId.toString(),
-                "commitmentType", "FULL",
+                "commitmentType", "MONTHLY",
                 "sponsor", Map.of("name", "A Sponsor", "email", "sponsor@example.com", "phone", "01234567890")
         );
     }
