@@ -9,7 +9,7 @@ public record CreateChildRequest(
         @NotBlank String fullName,
         @NotBlank String city,
         @NotBlank String campusName,
-        @NotBlank String schoolName,
+        String schoolName,
         @NotBlank String educationAmount,
         @NotBlank String educationCurrency,
         @NotNull UUID childId,

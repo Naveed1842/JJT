@@ -55,6 +55,7 @@ public class OrgChildrenController {
     }
 
     @GetMapping("/children")
+    @PreAuthorize("permitAll()")
     public List<ChildDto> listChildren() {
         Set<UUID> activeChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE);
         Set<UUID> pendingChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING);
@@ -65,6 +66,7 @@ public class OrgChildrenController {
     }
 
     @GetMapping("/children/{childId}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
@@ -74,6 +76,7 @@ public class OrgChildrenController {
     }
 
     @GetMapping("/children/{childId}/ledger")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<LedgerDto> getChildLedger(@PathVariable("childId") UUID childId) {
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))
@@ -83,6 +86,7 @@ public class OrgChildrenController {
     }
 
     @GetMapping("/children/{childId}/progress")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<ProgressUpdateDto>> getChildProgress(@PathVariable("childId") UUID childId) {
         return ledgerRepo.findByChild_Id(childId)
                 .map(ledgerEntity -> toDomainLedger(ledgerEntity, childId))

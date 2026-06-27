@@ -68,7 +68,7 @@ export interface CreateChildRequest {
   fullName: string;
   city: string;
   campusName: string;
-  schoolName?: string | null;
+  schoolName: string | null;
   educationAmount: string;
   educationCurrency: string;
   childId: string;
@@ -81,14 +81,14 @@ export interface CreateChildResponse {
 }
 
 export interface CreateSponsorRequest {
+  sponsorId: string;
   displayName: string;
   contactEmail: string;
   phone?: string | null;
-  sponsorId?: string | null;
 }
 
 export interface CreateSponsorResponse {
-  id: string;
+  sponsorId: string;
   displayName: string;
   contactEmail: string;
 }
@@ -102,8 +102,8 @@ export interface RecordEarlySupportRequest {
 }
 
 export interface RecordEarlySupportResponse {
-  id: string;
-  childId: string;
+  ledgerEntryId: string;
+  ledgerId: string;
   month: string;
 }
 
@@ -114,7 +114,7 @@ export interface AddProgressRequest {
 }
 
 export interface AddProgressResponse {
-  id: string;
+  progressUpdateId: string;
   childId: string;
   month: string;
 }
@@ -128,7 +128,7 @@ export interface CommitSponsorshipRequest {
 }
 
 export interface CommitSponsorshipResponse {
-  id: string;
+  sponsorshipId: string;
   sponsorId: string;
   childId: string;
   startMonth: string;

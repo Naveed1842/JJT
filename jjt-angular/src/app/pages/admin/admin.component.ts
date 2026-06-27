@@ -151,12 +151,13 @@ export class AdminComponent implements OnInit {
 
     this.adminService.createSponsor({
       ...this.sponsorForm,
+      sponsorId: this.newUuid(),
       phone: this.sponsorForm.phone || null,
     }).subscribe({
       next: (res) => {
         this.isLoading = false;
-        this.createdSponsorId = res.id;
-        this.successMessage = `Sponsor created. ID: ${res.id}`;
+        this.createdSponsorId = res.sponsorId;
+        this.successMessage = `Sponsor created. ID: ${res.sponsorId}`;
         this.sponsorForm = { displayName: '', contactEmail: '', phone: '' };
       },
       error: (err) => this.handleError(err, 'Failed to create sponsor.')
