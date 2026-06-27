@@ -1,67 +1,227 @@
-<app-site-header></app-site-header>
-<app-ramadan-loader *ngIf="loading" message="Preparing this child's story..."></app-ramadan-loader>
-<div class="min-h-screen bg-slate-50 paper-texture py-12">
-  <div class="mx-auto max-w-6xl px-4">
-    <a routerLink="/children" class="text-sm font-semibold text-slate-600 underline">← Back to list</a>
+<app-site-header />
 
-    <div *ngIf="error" class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+<!-- Loading -->
+<div *ngIf="loading" style="padding:80px;text-align:center;background:#fffdf9;min-height:60vh;">
+  <div style="display:inline-block;width:40px;height:40px;border:3px solid #e3dccd;
+              border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <p style="color:#8a958d;margin-top:16px;font-size:14px;">Preparing this child's story…</p>
+</div>
+
+<div *ngIf="!loading" style="background:#fffdf9;min-height:100vh;">
+
+  <!-- Error -->
+  <div *ngIf="error" style="max-width:800px;margin:40px auto;padding:0 32px;">
+    <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:16px;color:#b45454;">
       {{ error }}
     </div>
+  </div>
 
-    <div *ngIf="!loading && !error">
-      <header class="mt-6 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 class="text-2xl font-semibold text-slate-900">{{ childName }}</h1>
-        <p class="mt-2 text-sm text-slate-600 font-mono">Roll #: {{ rollNumber }}</p>
-        <p class="mt-1 text-sm text-slate-600">{{ campusName }} • {{ city }}</p>
-        <p *ngIf="schoolName" class="mt-1 text-sm text-slate-600">School: {{ schoolName }}</p>
-        <span
-          class="mt-3 inline-flex rounded-full px-3 py-1 text-xs font-semibold"
-          [ngClass]="{
-            'bg-amber-100 text-amber-800': supportStatus === 'AVAILABLE',
-            'bg-amber-50 text-amber-700': supportStatus === 'RESERVED',
-            'bg-slate-200 text-slate-700': supportStatus === 'ALLOCATED'
-          }"
-        >
-          {{
-            supportStatus === 'AVAILABLE'
-              ? 'Available'
-              : supportStatus === 'RESERVED'
-                ? 'Reserved (Pending)'
-                : 'Allocated'
-          }}
-        </span>
-        <div class="mt-4">
-        <a
-          [routerLink]="['/children', childId, 'sponsor']"
-          class="inline-flex btn-primary px-4 py-2 text-sm font-semibold"
-          [class.pointer-events-none]="supportStatus === 'ALLOCATED'"
-          [class.opacity-50]="supportStatus === 'ALLOCATED'"
-          [attr.aria-disabled]="supportStatus === 'ALLOCATED'"
-        >
-          Commit to sponsorship
-          </a>
-          <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-xs text-slate-600">
-            This child already has an active sponsorship.
-          </p>
-          <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-xs text-slate-600">
-            This child has a pending sponsorship; final allocation awaits confirmation.
-          </p>
+  <div *ngIf="!error">
+    <!-- Breadcrumb -->
+    <div style="max-width:1200px;margin:0 auto;padding:20px 32px 0;font-size:13px;color:#8a958d;">
+      <a routerLink="/children" style="color:#8a958d;text-decoration:none;">Children</a>
+      <span style="margin:0 8px;">›</span>
+      <span style="color:#1c352c;">{{ childName }}</span>
+    </div>
+
+    <!-- Two-column layout -->
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;
+                gap:36px;padding:20px 32px 56px;align-items:start;">
+
+      <!-- ── Left column: content ── -->
+      <div>
+        <!-- Hero image placeholder -->
+        <div style="border-radius:18px;height:380px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);
+                    border:1px solid #e3dccd;position:relative;margin-bottom:18px;
+                    display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:80px;opacity:.3;">👦</span>
+          <span style="position:absolute;top:16px;left:16px;font-family:'IBM Plex Mono',monospace;
+                       font-size:11px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;
+                       border-radius:5px;padding:4px 9px;">PORTRAIT · {{ childName }}</span>
         </div>
-      </header>
 
-      <div class="mt-6 grid gap-6 lg:grid-cols-3">
-        <app-child-snapshot
-          [grade]="grade"
-          [monthlyCost]="monthlyCost"
-          class="lg:col-span-1"
-        />
-        <app-ledger-table class="lg:col-span-2" [entries]="ledgerEntries" />
+        <!-- Thumbnail row -->
+        <div style="display:flex;gap:10px;margin-bottom:32px;">
+          <div style="flex:1;height:70px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+          <div style="flex:1;height:70px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+          <div style="flex:1;height:70px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+        </div>
+
+        <!-- Story -->
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:0 0 14px;">
+          {{ childName }}'s story
+        </h2>
+        <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0 0 14px;">
+          {{ childName }} studies at <strong style="color:#1c352c;">{{ campusName }}</strong> in {{ city }}.
+          Roll number: <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ rollNumber }}</span>.
+          <span *ngIf="schoolName"> School: {{ schoolName }}.</span>
+        </p>
+        <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0;">
+          Your sponsorship covers education fees, books, and supplies — and the Continuity Fund ensures
+          none of it lapses between payments.
+        </p>
+
+        <!-- What sponsorship covers -->
+        <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;margin-top:28px;background:#faf8f2;">
+          <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:16px;">What your sponsorship covers</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+              School tuition &amp; fees
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+              Books &amp; supplies
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+              Uniform &amp; essentials
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+              Education continuity fund
+            </div>
+          </div>
+        </div>
+
+        <!-- Education Ledger -->
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;color:#1c352c;margin:36px 0 16px;">
+          Education ledger
+        </h2>
+        <div *ngIf="ledgerEntries.length === 0"
+             style="font-size:14px;color:#8a958d;font-style:italic;">
+          No ledger entries recorded yet.
+        </div>
+        <div *ngIf="ledgerEntries.length > 0"
+             style="border:1px solid #e3dccd;border-radius:12px;overflow:hidden;">
+          <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
+            <thead>
+              <tr style="background:#f3eee4;border-bottom:1px solid #e3dccd;">
+                <th style="padding:10px 16px;text-align:left;color:#6b7b73;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Month</th>
+                <th style="padding:10px 16px;text-align:left;color:#6b7b73;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Status</th>
+                <th style="padding:10px 16px;text-align:left;color:#6b7b73;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em;">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let entry of ledgerEntries; let last = last"
+                  [style]="'border-bottom:' + (last ? 'none' : '1px solid #efe9dd') + ';'">
+                <td style="padding:12px 16px;font-family:'IBM Plex Mono',monospace;color:#54625b;">{{ entry.month }}</td>
+                <td style="padding:12px 16px;color:#54625b;">{{ entry.status }}</td>
+                <td style="padding:12px 16px;">
+                  <span style="background:#eef5f1;color:#214a3e;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;" *ngIf="entry.source === 'Sponsor'">Sponsor</span>
+                  <span style="background:#fdf7ec;color:#8a5f1f;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;" *ngIf="entry.source !== 'Sponsor'">{{ entry.source }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Progress timeline -->
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;color:#1c352c;margin:36px 0 20px;">
+          Progress timeline
+        </h2>
+        <div *ngIf="progressUpdates.length === 0"
+             style="font-size:14px;color:#8a958d;font-style:italic;">
+          No progress updates yet.
+        </div>
+        <div *ngIf="progressUpdates.length > 0"
+             style="border-left:2px solid #e3dccd;padding-left:24px;display:flex;flex-direction:column;gap:24px;">
+          <div *ngFor="let update of progressUpdates" style="position:relative;">
+            <span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;
+                         background:#2f5d4f;border:2px solid #fffdf9;"></span>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">
+              {{ update.month }}
+            </div>
+            <div style="font-size:14px;line-height:1.6;color:#54625b;">{{ update.summary }}</div>
+          </div>
+        </div>
       </div>
 
-      <div class="mt-6">
-        <app-progress-list [updates]="progressUpdates" />
+      <!-- ── Right column: sticky sponsor card ── -->
+      <div style="position:sticky;top:84px;">
+        <div style="border:1px solid #e3dccd;border-radius:16px;overflow:hidden;
+                    box-shadow:0 20px 40px -28px rgba(20,40,30,.25);">
+          <div style="padding:24px;background:#fffdf9;">
+            <!-- Name + location -->
+            <div style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin-bottom:4px;">
+              {{ childName }}
+            </div>
+            <div style="font-size:13.5px;color:#8a958d;margin-bottom:14px;">
+              {{ campusName }}<span *ngIf="city"> · {{ city }}</span>
+            </div>
+
+            <!-- Status badge -->
+            <span *ngIf="supportStatus === 'AVAILABLE'"
+                  style="display:inline-flex;align-items:center;gap:7px;background:#f1ece2;color:#8a7a5f;
+                         font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;margin-bottom:20px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#9aa79f;"></span>
+              Seeking sponsor
+            </span>
+            <span *ngIf="supportStatus === 'RESERVED'"
+                  style="display:inline-flex;align-items:center;gap:7px;background:#fdf7ec;color:#8a5f1f;
+                         font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;margin-bottom:20px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#d99a4e;"></span>
+              Bridged
+            </span>
+            <span *ngIf="supportStatus === 'ALLOCATED'"
+                  style="display:inline-flex;align-items:center;gap:7px;background:#eef5f1;color:#214a3e;
+                         font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;margin-bottom:20px;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span>
+              Sponsored
+            </span>
+
+            <!-- Monthly cost -->
+            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
+              <span style="font-family:'Newsreader',serif;font-size:38px;color:#1c352c;">{{ monthlyCost }}</span>
+            </div>
+            <div style="font-size:13px;color:#8a958d;margin-bottom:20px;">per month · education support</div>
+
+            <!-- CTA -->
+            <a *ngIf="supportStatus === 'AVAILABLE'"
+               [routerLink]="['/children', childId, 'sponsor']"
+               style="display:block;background:#2f5d4f;color:#fff;text-align:center;font-size:16px;
+                      font-weight:600;border-radius:10px;padding:15px 0;margin-bottom:10px;text-decoration:none;
+                      transition:background .15s;">
+              Sponsor {{ childName }}
+            </a>
+            <div *ngIf="supportStatus !== 'AVAILABLE'"
+                 style="display:block;background:#9aa79f;color:#fff;text-align:center;font-size:15px;
+                        font-weight:600;border-radius:10px;padding:15px 0;margin-bottom:10px;opacity:.7;">
+              {{ supportStatus === 'ALLOCATED' ? 'Already sponsored' : 'Pending activation' }}
+            </div>
+            <a routerLink="/children"
+               style="display:block;border:1px solid #cdc4b2;color:#1c352c;text-align:center;
+                      font-size:14px;font-weight:500;border-radius:10px;padding:12px 0;text-decoration:none;">
+              ← Browse other children
+            </a>
+          </div>
+
+          <!-- Continuity fund notice -->
+          <div style="background:#fdf7ec;border-top:1px solid #ecd6b0;padding:16px 24px;
+                      display:flex;gap:10px;align-items:flex-start;">
+            <span style="width:9px;height:9px;border-radius:50%;background:#d99a4e;margin-top:4px;flex-shrink:0;"></span>
+            <div style="font-size:12.5px;line-height:1.5;color:#8a6a38;">
+              Protected by the <strong>Continuity Fund</strong> — if a payment is ever delayed,
+              {{ childName }}'s education keeps going.
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
 </div>
-<app-site-footer></app-site-footer>
+
+<app-site-footer />
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 960px) {
+    div[style*="grid-template-columns:1fr 360px"] {
+      grid-template-columns: 1fr !important;
+    }
+    div[style*="position:sticky;top:84px"] {
+      position: static !important;
+    }
+  }
+</style>

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminAuthGuard } from './guards/admin-auth.guard';
+import { sponsorAuthGuard } from './guards/sponsor-auth.guard';
 
 export const routes: Routes = [
   {
@@ -33,6 +34,12 @@ export const routes: Routes = [
     path: 'admin',
     canActivate: [adminAuthGuard],
     loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent)
+  },
+  {
+    path: 'sponsor/portal',
+    canActivate: [sponsorAuthGuard],
+    loadComponent: () =>
+      import('./pages/sponsor-portal/sponsor-portal.component').then(m => m.SponsorPortalComponent)
   },
   {
     path: '**',

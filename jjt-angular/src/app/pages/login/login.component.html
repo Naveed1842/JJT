@@ -1,19 +1,24 @@
-<div class="min-h-screen bg-[#0B1512] flex items-center justify-center px-4">
-  <div class="w-full max-w-sm">
-    <div class="mb-8 text-center">
-      <img
-        src="assets/images/jj-FINAL-LOGO.png"
-        alt="Junior Jinnah Trust"
-        class="mx-auto h-14 w-auto object-contain"
-      />
+<div style="min-height:100vh;background:#fffdf9;display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="width:100%;max-width:400px;">
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:32px;">
+      <a routerLink="/" style="font-family:'Newsreader',serif;font-size:28px;font-weight:500;color:#1c352c;text-decoration:none;">JJT</a>
+      <div style="font-size:13px;color:#8a958d;margin-top:4px;">Junior Jinnah Trust</div>
     </div>
 
-    <div class="rounded-2xl border border-[#2B3A33] bg-[#0D1C16] p-8 shadow-xl">
-      <h1 class="mb-6 text-center text-xl font-semibold text-amber-100">Sign in to your account</h1>
+    <!-- Card -->
+    <div style="border:1px solid #e3dccd;border-radius:16px;background:#fff;padding:32px;
+                box-shadow:0 16px 40px -24px rgba(20,40,30,.16);">
+      <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:0 0 6px;text-align:center;">
+        Sign in
+      </h1>
+      <p style="font-size:14px;color:#8a958d;text-align:center;margin:0 0 28px;">
+        Admin &amp; sponsor portal
+      </p>
 
-      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-4">
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" style="display:flex;flex-direction:column;gap:16px;">
         <div>
-          <label for="email" class="mb-1 block text-sm text-amber-200/70">Email</label>
+          <label for="email" style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Email</label>
           <input
             id="email"
             type="email"
@@ -21,13 +26,15 @@
             [(ngModel)]="email"
             required
             autocomplete="email"
-            class="w-full rounded-lg border border-[#2B3A33] bg-[#0B1512] px-4 py-3 text-sm text-amber-50 placeholder-amber-200/30 focus:border-amber-400 focus:outline-none"
             placeholder="you@example.com"
+            style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                   color:#1c352c;background:#fdfcf8;outline:none;font-family:'Hanken Grotesk',sans-serif;
+                   box-sizing:border-box;transition:border-color .15s;"
           />
         </div>
 
         <div>
-          <label for="password" class="mb-1 block text-sm text-amber-200/70">Password</label>
+          <label for="password" style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Password</label>
           <input
             id="password"
             type="password"
@@ -35,24 +42,32 @@
             [(ngModel)]="password"
             required
             autocomplete="current-password"
-            class="w-full rounded-lg border border-[#2B3A33] bg-[#0B1512] px-4 py-3 text-sm text-amber-50 placeholder-amber-200/30 focus:border-amber-400 focus:outline-none"
             placeholder="••••••••"
+            style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                   color:#1c352c;background:#fdfcf8;outline:none;font-family:'Hanken Grotesk',sans-serif;
+                   box-sizing:border-box;transition:border-color .15s;"
           />
         </div>
 
-        <div *ngIf="error" class="rounded-lg border border-red-800/50 bg-red-950/50 px-4 py-3 text-sm text-red-300">
+        <div *ngIf="error"
+             style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;
+                    color:#b45454;font-size:13.5px;">
           {{ error }}
         </div>
 
         <button
           type="submit"
           [disabled]="loading || !loginForm.form.valid"
-          class="w-full rounded-xl bg-gradient-to-r from-[#C38A2E] via-[#E2B763] to-[#C38A2E] py-3 text-sm font-semibold text-[#2B1B0B] shadow-lg transition hover:opacity-90 disabled:opacity-50"
-        >
-          <span *ngIf="!loading">Sign in</span>
-          <span *ngIf="loading">Signing in…</span>
+          [style]="'width:100%;background:' + (loading || !loginForm.form.valid ? '#9aa79f' : '#2f5d4f') + ';color:#fff;font-size:15px;font-weight:600;border-radius:10px;padding:14px 0;border:none;cursor:' + (loading ? 'not-allowed' : 'pointer') + ';transition:background .15s;'">
+          {{ loading ? 'Signing in…' : 'Sign in' }}
         </button>
       </form>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <a routerLink="/children" style="font-size:13.5px;color:#8a958d;text-decoration:none;">
+        ← Back to children
+      </a>
     </div>
   </div>
 </div>

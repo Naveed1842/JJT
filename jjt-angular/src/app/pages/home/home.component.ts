@@ -9,6 +9,5 @@ import { SiteFooterComponent } from '../../components/layout/site-footer.compone
   standalone: true,
   imports: [CommonModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
 })
 export class HomeComponent {}

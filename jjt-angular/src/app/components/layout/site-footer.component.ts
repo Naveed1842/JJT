@@ -7,73 +7,45 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <footer class="bg-[#0B1512] text-amber-100 py-12 border-t border-[#2B3A33]">
-      <div class="mx-auto max-w-6xl px-4">
-        <div class="grid gap-10 lg:grid-cols-12">
-          <div class="lg:col-span-5">
-            <img
-              src="assets/images/JJT-Logo-768x251.png"
-              alt="Junior Jinnah Trust"
-              class="h-16 w-auto"
-            />
-            <p class="mt-4 text-sm text-amber-100/70">
-              Junior Jinnah Trust is an authoritative and registered organization under Trust Act 1882 that has been
-              providing education to orphans, Needy, Underprivileged, and Zakat Eligible Children and catering to the
-              educational needs of Child Labor, Rag picking & Beggary victims in Pakistan since 2014.
+    <footer style="background:#1c352c;color:#9cc3b3;padding:40px 32px;margin-top:auto;">
+      <div style="max-width:1200px;margin:0 auto;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+          <div>
+            <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+            <p style="margin:8px 0 0;font-size:13px;max-width:340px;line-height:1.6;color:#9cc3b3;">
+              Junior Jinnah Trust — providing education to orphan, needy, and underprivileged children
+              across Pakistan since 2014.
             </p>
           </div>
-
-          <div class="lg:col-span-3">
-            <p class="text-sm font-semibold text-amber-50">Get in Touch</p>
-            <p class="mt-3 text-sm text-amber-100/70">
-              1st Floor, Plot-4, Al-Rehman Plaza, Ghouri VIP Phase, Express Way, Islamabad
-            </p>
-            <p class="mt-3 text-sm text-amber-100/70">Cell: +92-332-311-1345</p>
-            <p class="text-sm text-amber-100/70">Cell: +92-332-548-8876</p>
-            <p class="mt-3 text-sm text-amber-100/70">Mail: info&#64;jjtrust.org</p>
-            <a href="#" class="mt-4 inline-flex text-sm font-semibold text-amber-200 hover:text-amber-100">
-              Get Direction
-            </a>
-          </div>
-
-          <div class="lg:col-span-2">
-            <p class="text-sm font-semibold text-amber-50">Documents</p>
-            <ul class="mt-3 space-y-2 text-sm text-amber-100/70">
-              <li>Junior Jinnah Trust (Newsletter) Oct-24</li>
-              <li>JJT-Rregistration Certificate-2018</li>
-              <li>JJT-Registration-24-25</li>
-              <li>FBR Certificate</li>
-            </ul>
-          </div>
-
-          <div class="lg:col-span-2">
-            <p class="text-sm font-semibold text-amber-50">Donate From Anywhere</p>
-            <div class="mt-3 space-y-2 text-sm text-amber-100/70">
-              <p>SAMBA BANK LIMITED</p>
-              <p>JUNIOR JINNAH TRUST</p>
-              <p>A/C#: 2000848908</p>
-              <p>IBAN# PK27SAMB0000002000848908</p>
-              <p>Jinnah Avenue, Islamabad</p>
+          <div style="display:flex;gap:28px;flex-wrap:wrap;">
+            <div>
+              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 10px;">Contact</p>
+              <p style="font-size:13px;margin:0 0 4px;">info&#64;jjtrust.org</p>
+              <p style="font-size:13px;margin:0 0 4px;">+92-332-311-1345</p>
+              <p style="font-size:13px;margin:0;">Islamabad, Pakistan</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 10px;">Donate</p>
+              <p style="font-size:13px;margin:0 0 4px;">SAMBA BANK LIMITED</p>
+              <p style="font-size:13px;margin:0 0 4px;font-family:'IBM Plex Mono',monospace;">A/C: 2000848908</p>
+              <p style="font-size:12px;margin:0;font-family:'IBM Plex Mono',monospace;">IBAN: PK27SAMB0000002000848908</p>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 10px;">Links</p>
+              <a routerLink="/children" style="display:block;font-size:13px;color:#9cc3b3;text-decoration:none;margin-bottom:4px;">Sponsor a Child</a>
+              <a routerLink="/" style="display:block;font-size:13px;color:#9cc3b3;text-decoration:none;margin-bottom:4px;">How it Works</a>
+              <a routerLink="/login" style="display:block;font-size:13px;color:#9cc3b3;text-decoration:none;">Sign In</a>
             </div>
           </div>
         </div>
-
-        <div class="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-[#2B3A33] pt-6 text-sm text-amber-100/70">
-          <div class="flex flex-wrap gap-5">
-            <a routerLink="/children" class="hover:text-amber-100">About</a>
-            <a routerLink="/admin" class="hover:text-amber-100">How it works</a>
-            <a routerLink="/children" class="hover:text-amber-100">Contact</a>
-            <span>Facebook</span>
-            <span>Instagram</span>
-            <span>Linkedin-in</span>
-          </div>
-          <p class="text-xs text-amber-100/50">
-            All Right Reserved. JJ-Trust &#64;2024 – Powered By TeleNoc
+        <div style="margin-top:32px;padding-top:20px;border-top:1px solid #2b4a3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <p style="font-size:12px;margin:0;color:#6b9c8b;">
+            © 2024 Junior Jinnah Trust — Registered under Trust Act 1882
           </p>
+          <p style="font-size:12px;margin:0;color:#6b9c8b;">Powered by TeleNoc</p>
         </div>
       </div>
     </footer>
   `
 })
-export class SiteFooterComponent {
-}
+export class SiteFooterComponent {}

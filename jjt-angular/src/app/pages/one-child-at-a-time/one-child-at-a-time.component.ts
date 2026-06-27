@@ -1,208 +1,112 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { SponsorService, ChildDto } from '../../services/sponsor.service';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
-import { RamadanLoaderComponent } from '../../components/ramadan-loader/ramadan-loader.component';
-import { HeroBannerComponent } from '../../components/one-child/hero-banner.component';
-import { SingleChildFocusCardComponent } from '../../components/one-child/single-child-focus-card.component';
-import { ChildDecisionActionsComponent } from '../../components/one-child/child-decision-actions.component';
-import { TrustSignalsComponent } from '../../components/one-child/trust-signals.component';
-import { OneChildViewModel } from './one-child-at-a-time.models';
+
+type StatusFilter = 'AVAILABLE' | 'RESERVED' | 'ALL';
 
 @Component({
   selector: 'app-one-child-at-a-time',
   standalone: true,
-  imports: [
-    CommonModule,
-    SiteHeaderComponent,
-    SiteFooterComponent,
-    RamadanLoaderComponent,
-    HeroBannerComponent,
-    SingleChildFocusCardComponent,
-    ChildDecisionActionsComponent,
-    TrustSignalsComponent
-  ],
-  templateUrl: './one-child-at-a-time.component.html'
+  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  templateUrl: './one-child-at-a-time.component.html',
 })
-export class OneChildAtATimeComponent implements OnInit, AfterViewInit, OnDestroy {
-  children: ChildDto[] = [];
-  eligibleChildren: ChildDto[] = [];
-  currentChild: OneChildViewModel | null = null;
+export class OneChildAtATimeComponent implements OnInit {
+  allChildren: ChildDto[] = [];
   loading = true;
   error: string | null = null;
-  heroHeadline = "This Ramadan, Change One Child's Future.";
-  heroSubtext = 'This child is out of school and needs support now.';
-  animateCard = false;
-  noAvailable = false;
-  howItWorksVisible = false;
 
-  private currentIndex = 0;
-  private readonly featuredKey = 'jjt_featured_child';
-  private howItWorksObserver?: IntersectionObserver;
+  searchQuery = '';
+  statusFilter: StatusFilter = 'ALL';
 
-  @ViewChild('howItWorksSection') howItWorksSection?: ElementRef<HTMLElement>;
+  pageSize = 12;
+  page = 0;
 
-  constructor(
-    private sponsorService: SponsorService,
-    private router: Router
-  ) {}
+  constructor(private sponsorService: SponsorService, private router: Router) {}
 
   ngOnInit(): void {
-    // Backend contract: cache featured child in sessionStorage to avoid flicker in the same session.
-    const cached = sessionStorage.getItem(this.featuredKey);
-    let cachedChild: ChildDto | null = null;
-    if (cached) {
-      try {
-        cachedChild = JSON.parse(cached) as ChildDto;
-      } catch {
-        cachedChild = null;
-      }
-    }
-
-    // Backend contract: GET /api/org/children (requires X-ROLE)
     this.sponsorService.getChildren().subscribe({
       next: (data) => {
-        this.children = data;
-        // Backend availability: only AVAILABLE children can be featured for sponsorship
-        this.eligibleChildren = data.filter(child => child.availabilityStatus === 'AVAILABLE');
-        if (this.eligibleChildren.length === 0) {
-          this.noAvailable = true;
-          this.currentChild = null;
-          this.loading = false;
-          return;
-        }
-
-        let selected = this.eligibleChildren[Math.floor(Math.random() * this.eligibleChildren.length)];
-        if (cachedChild) {
-          const found = this.eligibleChildren.find(child => child.id === cachedChild?.id);
-          if (found) {
-            selected = found;
-          }
-        }
-
-        this.currentIndex = this.eligibleChildren.findIndex(child => child.id === selected.id);
-        this.setCurrentChild(selected);
-        sessionStorage.setItem(this.featuredKey, JSON.stringify(selected));
+        this.allChildren = data;
         this.loading = false;
       },
-      error: (err) => {
-        this.error = 'Unable to load children right now.';
+      error: () => {
+        this.error = 'Unable to load children right now. Please try again.';
         this.loading = false;
-        console.error('Error loading children:', err);
       }
     });
   }
 
-  ngAfterViewInit(): void {
-    if (!this.howItWorksSection) return;
-    this.howItWorksObserver = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0];
-        if (entry?.isIntersecting) {
-          this.howItWorksVisible = true;
-          this.howItWorksObserver?.disconnect();
-        }
-      },
-      { threshold: 0.2 }
-    );
-    this.howItWorksObserver.observe(this.howItWorksSection.nativeElement);
+  get filtered(): ChildDto[] {
+    let list = this.allChildren;
+    if (this.statusFilter !== 'ALL') {
+      list = list.filter(c => c.availabilityStatus === this.statusFilter);
+    }
+    if (this.searchQuery.trim()) {
+      const q = this.searchQuery.toLowerCase();
+      list = list.filter(c =>
+        c.fullName.toLowerCase().includes(q) ||
+        c.city.toLowerCase().includes(q) ||
+        c.campusName.toLowerCase().includes(q)
+      );
+    }
+    return list;
   }
 
-  ngOnDestroy(): void {
-    this.howItWorksObserver?.disconnect();
+  get visible(): ChildDto[] {
+    return this.filtered.slice(0, this.pageSize * (this.page + 1));
   }
 
-  sponsorCurrent(): void {
-    if (!this.currentChild) return;
-    this.router.navigate(['/children', this.currentChild.id, 'sponsor']);
+  get hasMore(): boolean {
+    return this.visible.length < this.filtered.length;
   }
 
-  // Scroll target for "Learn How It Works" CTA
-  scrollToHowItWorks(): void {
-    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  loadMore(): void {
+    this.page++;
   }
 
-  private setCurrentChild(child: ChildDto | undefined): void {
-    if (!child) return;
-    this.currentChild = this.mapChild(child);
-    this.animateCard = true;
-    setTimeout(() => {
-      this.animateCard = false;
-    }, 500);
+  setFilter(f: StatusFilter): void {
+    this.statusFilter = f;
+    this.page = 0;
   }
 
-  private mapChild(child: ChildDto): OneChildViewModel {
-    const dailyCost = this.formatDailyCost(child.educationAmount, child.educationCurrency);
-    return {
-      id: child.id,
-      name: child.fullName,
-      ageText: 'Age -',
-      city: child.city,
-      tags: this.tagsForStatus(child.availabilityStatus),
-      monthlyCost: `${child.educationCurrency} ${child.educationAmount} / month`,
-      dailyCost,
-      storyLine: this.storyForStatus(child.availabilityStatus),
-      ramadanDonors: this.donorsForStatus(child.availabilityStatus),
-      trustNote: 'Trusted support for 2 months',
-      coveragePercent: this.coverageForStatus(child.availabilityStatus),
-      status: child.availabilityStatus
-    };
+  resetFilters(): void {
+    this.searchQuery = '';
+    this.statusFilter = 'ALL';
+    this.page = 0;
   }
 
-  private tagsForStatus(status: ChildDto['availabilityStatus']): string[] {
+  statusLabel(status: ChildDto['availabilityStatus']): string {
+    switch (status) {
+      case 'AVAILABLE': return 'Seeking';
+      case 'RESERVED':  return 'Bridged';
+      case 'ALLOCATED': return 'Sponsored';
+      default:          return status;
+    }
+  }
+
+  badgeStyle(status: ChildDto['availabilityStatus']): string {
     switch (status) {
       case 'AVAILABLE':
-        return ['Needs sponsor', 'Education at risk', 'Priority'];
+        return 'background:#f1ece2;color:#8a7a5f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;';
       case 'RESERVED':
-        return ['Pending support', 'Awaiting confirmation'];
+        return 'background:#fdf7ec;color:#8a5f1f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;';
       case 'ALLOCATED':
-        return ['In school', 'Sponsored'];
+        return 'background:#eef5f1;color:#214a3e;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;';
       default:
-        return ['Needs support'];
+        return 'background:#f1ece2;color:#8a7a5f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;';
     }
   }
 
-  private coverageForStatus(status: ChildDto['availabilityStatus']): number {
-    switch (status) {
-      case 'ALLOCATED':
-        return 100;
-      case 'RESERVED':
-        return 60;
-      default:
-        return 20;
-    }
+  openChild(id: string): void {
+    this.router.navigate(['/children', id]);
   }
 
-  private donorsForStatus(status: ChildDto['availabilityStatus']): number {
-    switch (status) {
-      case 'ALLOCATED':
-        return 6;
-      case 'RESERVED':
-        return 3;
-      default:
-        return 1;
-    }
-  }
-
-  private storyForStatus(status: ChildDto['availabilityStatus']): string {
-    switch (status) {
-      case 'ALLOCATED':
-        return 'Back in school and staying on track this year.';
-      case 'RESERVED':
-        return 'Support is pending; needs confirmation to continue.';
-      default:
-        return 'Dreams of becoming a teacher.';
-    }
-  }
-
-  private formatDailyCost(amount: string, currency: string): string {
-    const numeric = Number(amount.replace(/[^0-9.]/g, ''));
-    if (!Number.isFinite(numeric) || numeric <= 0) {
-      return '';
-    }
-    const perDay = Math.round(numeric / 30);
-    return `Just ${currency} ${perDay} per day in Ramadan`;
+  sponsorChild(event: Event, id: string): void {
+    event.stopPropagation();
+    this.router.navigate(['/children', id, 'sponsor']);
   }
 }

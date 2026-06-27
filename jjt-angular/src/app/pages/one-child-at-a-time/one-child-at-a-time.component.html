@@ -1,235 +1,185 @@
-<div class="relative min-h-screen overflow-hidden bg-[#0B1512] px-4 py-12 text-amber-50">
-  <!-- Background: deep emerald gradient + subtle starfield -->
-  <!-- Designer note: keep ambience minimal and slow -->
-  <div class="pointer-events-none absolute inset-0">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,214,153,0.18),_rgba(8,19,16,0.92)_60%,_rgba(6,12,10,1)_100%)]"></div>
-    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(rgba(255,255,255,0.08) 1px, transparent 1px); background-size: 32px 32px;"></div>
-    <span class="absolute left-[12%] top-[10%] h-1.5 w-1.5 rounded-full bg-amber-200/70 animate-pulse" style="animation-delay: 0.2s;"></span>
-    <span class="absolute left-[68%] top-[16%] h-1 w-1 rounded-full bg-amber-100/60 animate-pulse" style="animation-delay: 1.1s;"></span>
-    <span class="absolute left-[25%] top-[42%] h-1 w-1 rounded-full bg-amber-200/50 animate-pulse" style="animation-delay: 0.6s;"></span>
-    <span class="absolute left-[78%] top-[48%] h-1.5 w-1.5 rounded-full bg-amber-100/70 animate-pulse" style="animation-delay: 1.6s;"></span>
-    <span class="absolute left-[55%] top-[70%] h-1 w-1 rounded-full bg-amber-200/50 animate-pulse" style="animation-delay: 0.9s;"></span>
+<app-site-header />
+
+<!-- Page header -->
+<div style="background:#fffdf9;padding:40px 32px 24px;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;">
+      Children waiting for a sponsor
+    </h1>
+    <p style="font-size:16px;color:#6b7b73;margin:0;">
+      Every profile is real, verified by the JJT team.
+      <strong style="color:#1c352c;">{{ filtered.length }}</strong>
+      {{ filtered.length === 1 ? 'child' : 'children' }} found.
+    </p>
   </div>
+</div>
 
-  <main class="relative mx-auto flex max-w-2xl flex-col gap-8">
-    <!-- Hero Section -->
-    <!-- Designer note: serif headline + calm subtext -->
-    <section class="relative rounded-[28px] border border-[#F2D9A4]/60 bg-gradient-to-br from-[#FDF7EA] via-[#F7E8C6] to-[#F9F0DA] px-6 py-8 text-center text-[#2B2A24] shadow-[0_30px_80px_rgba(12,20,17,0.55)]">
-      <!-- subtle radial glow behind hero card -->
-      <div class="pointer-events-none absolute inset-0 opacity-40" style="background: radial-gradient(circle at center, rgba(255,226,162,0.55), transparent 60%);"></div>
-      <h1 class="relative text-3xl font-semibold md:text-4xl" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
-        This Ramadan, Change One Child’s Future.
-      </h1>
-      <p class="relative mt-4 text-sm text-[#4B3C1C]">
-        Multiply your rewards this blessed month.
-      </p>
-    </section>
+<!-- Loading -->
+<div *ngIf="loading" style="padding:80px;text-align:center;">
+  <div style="display:inline-block;width:40px;height:40px;border:3px solid #e3dccd;
+              border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <p style="color:#8a958d;margin-top:16px;font-size:14px;">Loading children…</p>
+</div>
 
-    <div *ngIf="error" class="rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-      {{ error }}
+<!-- Error -->
+<div *ngIf="error" style="max-width:1200px;margin:24px auto;padding:0 32px;">
+  <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:16px;color:#b45454;font-size:14px;">
+    {{ error }}
+  </div>
+</div>
+
+<!-- Main: filter sidebar + grid -->
+<div *ngIf="!loading && !error"
+     style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:240px 1fr;
+            gap:32px;padding:0 32px 56px;align-items:start;">
+
+  <!-- ── Filter sidebar ── -->
+  <aside style="border:1px solid #e3dccd;border-radius:14px;padding:22px;position:sticky;top:80px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <span style="font-weight:600;font-size:15px;color:#1c352c;">Filter</span>
+      <button (click)="resetFilters()"
+              style="font-size:12.5px;color:#2f5d4f;background:none;border:none;cursor:pointer;font-weight:500;">
+        Reset
+      </button>
     </div>
 
-    <!-- Loading skeleton for featured child -->
-    <section
-      *ngIf="loading"
-      class="relative rounded-[30px] border border-[#F2D9A4]/40 bg-white/10 px-6 py-7 shadow-[0_20px_60px_rgba(13,21,18,0.45)]"
-    >
-      <!-- Designer note: simple skeleton to avoid flicker while fetching /api/public/children -->
-      <div class="animate-pulse space-y-4">
-        <div class="h-5 w-40 rounded-full bg-amber-100/30"></div>
-        <div class="h-4 w-56 rounded-full bg-amber-100/20"></div>
-        <div class="h-8 w-full rounded-xl bg-amber-100/20"></div>
-        <div class="h-10 w-full rounded-2xl bg-amber-100/25"></div>
-      </div>
-    </section>
+    <!-- Search -->
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                color:#9aa79f;margin-bottom:8px;">Search</div>
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Name or location…"
+      style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:9px 12px;
+             font-size:13px;color:#1c352c;background:#fff;outline:none;margin-bottom:20px;
+             font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;"
+    />
 
-    <!-- Featured Child Card -->
-    <section
-      id="featured-child"
-      *ngIf="!loading && !error"
-      class="relative rounded-[30px] border border-[#F2D9A4]/70 bg-gradient-to-br from-[#FDF7EA] via-[#F8E8C8] to-[#F6E2BE] px-6 py-7 text-[#2B2A24] shadow-[0_28px_70px_rgba(13,21,18,0.55)]"
-    >
-      <!-- Designer note: focus the eye on the child + CTA only -->
-      <div class="absolute -top-6 left-1/2 h-14 w-40 -translate-x-1/2 rounded-full bg-amber-200/40 blur-[24px]"></div>
+    <!-- Status filter -->
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                color:#9aa79f;margin-bottom:10px;">Status</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:8px;">
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
+        <input type="radio" name="status" value="ALL"
+               [checked]="statusFilter === 'ALL'"
+               (change)="setFilter('ALL')"
+               style="accent-color:#2f5d4f;" />
+        All children
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
+        <input type="radio" name="status" value="AVAILABLE"
+               [checked]="statusFilter === 'AVAILABLE'"
+               (change)="setFilter('AVAILABLE')"
+               style="accent-color:#2f5d4f;" />
+        Seeking sponsor
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
+        <input type="radio" name="status" value="RESERVED"
+               [checked]="statusFilter === 'RESERVED'"
+               (change)="setFilter('RESERVED')"
+               style="accent-color:#2f5d4f;" />
+        Bridged (needs sponsor)
+      </label>
+    </div>
+  </aside>
 
-      <div class="relative flex flex-col gap-6">
-        <ng-container *ngIf="!noAvailable; else noAvailableState">
-          <div class="flex flex-wrap items-center gap-3">
-            <span
-              class="rounded-full border px-3 py-1 text-xs font-semibold"
-              [ngClass]="{
-                'border-emerald-200 bg-emerald-100 text-emerald-700': currentChild?.status === 'AVAILABLE',
-                'border-amber-200 bg-amber-100 text-amber-700': currentChild?.status === 'RESERVED',
-                'border-slate-200 bg-slate-100 text-slate-600': currentChild?.status === 'ALLOCATED'
-              }"
-            >
-              <ng-container [ngSwitch]="currentChild?.status">
-                <span *ngSwitchCase="'AVAILABLE'">Needs Sponsor</span>
-                <span *ngSwitchCase="'RESERVED'">Reserved</span>
-                <span *ngSwitchCase="'ALLOCATED'">Sponsored</span>
-                <span *ngSwitchDefault>Unavailable</span>
-              </ng-container>
-            </span>
-          </div>
-
-          <div>
-            <h2 class="text-2xl font-semibold text-[#1F2A1E]" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
-              {{ currentChild?.name }}
-            </h2>
-            <p class="mt-2 text-sm text-[#5D4B26]">
-              {{ currentChild?.city }}
-            </p>
-          </div>
-
-          <div class="rounded-2xl border border-[#E6D4AE]/70 bg-white/70 px-4 py-3 text-sm text-[#4B3C1C]">
-            Monthly education cost:
-            <span class="font-semibold text-[#2B2A24]">{{ currentChild?.monthlyCost }}</span>
-          </div>
-
-          <!-- Only AVAILABLE children can be sponsored (backend: public sponsorship creates PENDING) -->
-          <button
-            id="sponsorBtn"
-            type="button"
-            class="w-full rounded-2xl bg-gradient-to-r from-[#C38A2E] via-[#E2B763] to-[#C38A2E] px-6 py-3 text-sm font-semibold text-[#2B1B0B] shadow-[0_18px_40px_rgba(135,92,26,0.55)] transition hover:scale-[1.02] hover:shadow-[0_22px_50px_rgba(135,92,26,0.65)]"
-            (click)="sponsorCurrent()"
-            [disabled]="currentChild?.status !== 'AVAILABLE'"
-          >
-            Sponsor This Child
-          </button>
-        </ng-container>
-
-        <ng-template #noAvailableState>
-          <div class="text-center">
-            <h2 class="text-xl font-semibold text-[#1F2A1E]" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
-              All children are sponsored.
-            </h2>
-            <p class="mt-3 text-sm text-[#5D4B26]">
-              Please check back soon for new sponsorship opportunities this Ramadan.
-            </p>
-            <button
-              type="button"
-              class="mt-6 w-full rounded-2xl border border-[#D8BE7B] bg-white/70 px-6 py-3 text-sm font-semibold text-[#7A5A22]"
-              disabled
-            >
-              Check Back Soon
-            </button>
-          </div>
-        </ng-template>
-      </div>
-    </section>
-
-    <!-- How It Works Section -->
-    <section
-      id="how-it-works"
-      #howItWorksSection
-      class="relative rounded-[30px] border border-emerald-900/60 bg-[#0F1D18]/90 px-6 py-8 text-amber-50 shadow-[0_26px_70px_rgba(7,12,10,0.6)] transition-all duration-700 ease-out"
-      [class.opacity-0]="!howItWorksVisible"
-      [class.translate-y-6]="!howItWorksVisible"
-      [class.opacity-100]="howItWorksVisible"
-      [class.translate-y-0]="howItWorksVisible"
-    >
-      <!-- Designer note: dark green base with gold accents -->
-      <div class="flex items-center justify-between gap-4">
-        <div>
-          <h2 class="text-xl font-semibold text-amber-100" style="font-family: 'Playfair Display', ui-serif, Georgia, serif;">
-            How Sponsorship Works
-          </h2>
-          <p class="mt-2 text-sm text-amber-100/70">
-            A simple, transparent process that keeps one child in school.
-          </p>
-        </div>
-      </div>
-      <div class="mt-6 h-px w-full bg-gradient-to-r from-transparent via-amber-300/40 to-transparent"></div>
-
-      <!-- Mobile connector line -->
-      <div class="pointer-events-none absolute left-6 top-28 bottom-8 hidden w-px bg-amber-200/20 sm:hidden"></div>
-
-      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <!-- Step 1 -->
-        <div class="relative rounded-2xl border border-emerald-800/60 bg-[#12251E]/80 px-5 py-5 shadow-[0_16px_40px_rgba(6,10,9,0.5)] transition hover:-translate-y-1">
-          <div class="absolute left-3 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#F6D78B] to-[#C7902E] text-xs font-semibold text-[#2B1B0B] shadow-[0_0_18px_rgba(221,174,80,0.6)] sm:static sm:mb-4">
-            1
-          </div>
-          <div class="pl-10 sm:pl-0">
-            <h3 class="text-sm font-semibold text-amber-100">Choose One Child</h3>
-            <p class="mt-2 text-xs text-amber-100/70">
-              We present one available child who needs support.
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 2 -->
-        <div class="relative rounded-2xl border border-emerald-800/60 bg-[#12251E]/80 px-5 py-5 shadow-[0_16px_40px_rgba(6,10,9,0.5)] transition hover:-translate-y-1">
-          <div class="absolute left-3 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#F6D78B] to-[#C7902E] text-xs font-semibold text-[#2B1B0B] shadow-[0_0_18px_rgba(221,174,80,0.6)] sm:static sm:mb-4">
-            2
-          </div>
-          <div class="pl-10 sm:pl-0">
-            <h3 class="text-sm font-semibold text-amber-100">Submit Your Commitment</h3>
-            <p class="mt-2 text-xs text-amber-100/70">
-              Enter your details and select monthly or yearly sponsorship.
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="relative rounded-2xl border border-emerald-800/60 bg-[#12251E]/80 px-5 py-5 shadow-[0_16px_40px_rgba(6,10,9,0.5)] transition hover:-translate-y-1">
-          <div class="absolute left-3 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#F6D78B] to-[#C7902E] text-xs font-semibold text-[#2B1B0B] shadow-[0_0_18px_rgba(221,174,80,0.6)] sm:static sm:mb-4">
-            3
-          </div>
-          <div class="pl-10 sm:pl-0">
-            <h3 class="text-sm font-semibold text-amber-100">Complete Bank Transfer</h3>
-            <p class="mt-2 text-xs text-amber-100/70">
-              Transfer your sponsorship amount to Junior Jinnah Trust.
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 4 -->
-        <div class="relative rounded-2xl border border-emerald-800/60 bg-[#12251E]/80 px-5 py-5 shadow-[0_16px_40px_rgba(6,10,9,0.5)] transition hover:-translate-y-1">
-          <div class="absolute left-3 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#F6D78B] to-[#C7902E] text-xs font-semibold text-[#2B1B0B] shadow-[0_0_18px_rgba(221,174,80,0.6)] sm:static sm:mb-4">
-            4
-          </div>
-          <div class="pl-10 sm:pl-0">
-            <h3 class="text-sm font-semibold text-amber-100">Activation After Verification</h3>
-            <p class="mt-2 text-xs text-amber-100/70">
-              Once payment is verified, your sponsorship becomes active.
-            </p>
-          </div>
-        </div>
-
-        <!-- Step 5 -->
-        <div class="relative rounded-2xl border border-emerald-800/60 bg-[#12251E]/80 px-5 py-5 shadow-[0_16px_40px_rgba(6,10,9,0.5)] transition hover:-translate-y-1">
-          <div class="absolute left-3 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-[#F6D78B] to-[#C7902E] text-xs font-semibold text-[#2B1B0B] shadow-[0_0_18px_rgba(221,174,80,0.6)] sm:static sm:mb-4">
-            5
-          </div>
-          <div class="pl-10 sm:pl-0">
-            <h3 class="text-sm font-semibold text-amber-100">Monthly Progress Updates</h3>
-            <p class="mt-2 text-xs text-amber-100/70">
-              We share regular updates about the child’s education journey.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- Mobile sticky CTA bar -->
-  <!-- Designer note: visible only on mobile -->
-  <div class="fixed bottom-0 left-0 right-0 z-30 bg-[#0B1512]/95 px-4 py-3 shadow-[0_-10px_25px_rgba(8,12,10,0.5)] backdrop-blur sm:hidden">
-    <div class="flex items-center justify-between gap-3 text-xs font-semibold text-amber-100">
-      <span>{{ currentChild?.monthlyCost || 'PKR 2,000 / month' }}</span>
-      <button
-        *ngIf="currentChild?.status === 'AVAILABLE'"
-        id="sponsorBtnMobile"
-        type="button"
-        class="rounded-xl bg-gradient-to-r from-[#C38A2E] via-[#E2B763] to-[#C38A2E] px-4 py-2 text-xs font-semibold text-[#2B1B0B] shadow-[0_18px_40px_rgba(135,92,26,0.55)]"
-        (click)="sponsorCurrent()"
-      >
-        Sponsor Now
-      </button>
-      <span *ngIf="currentChild?.status !== 'AVAILABLE'" class="text-[10px] text-amber-200/80">
-        {{ noAvailable ? 'Check back soon' : 'Reserved / Sponsored' }}
+  <!-- ── Grid ── -->
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <span style="font-size:13.5px;color:#8a958d;">
+        Showing {{ visible.length }} of {{ filtered.length }}
       </span>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="filtered.length === 0"
+         style="text-align:center;padding:60px 0;border:1px solid #e3dccd;border-radius:14px;background:#faf8f2;">
+      <p style="color:#8a958d;font-size:16px;margin:0 0 8px;">No children match your filters.</p>
+      <button (click)="resetFilters()"
+              style="font-size:14px;color:#2f5d4f;font-weight:600;background:none;border:none;cursor:pointer;">
+        Clear filters
+      </button>
+    </div>
+
+    <!-- Child grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;" *ngIf="filtered.length > 0">
+      <div *ngFor="let child of visible"
+           (click)="openChild(child.id)"
+           style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;
+                  cursor:pointer;transition:box-shadow .15s,transform .15s;"
+           class="child-grid-card">
+
+        <!-- Photo -->
+        <div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);
+                    position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+          <span style="font-size:48px;opacity:.4;">👦</span>
+        </div>
+
+        <!-- Info -->
+        <div style="padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+            <span style="font-weight:600;font-size:15px;color:#1c352c;">{{ child.fullName }}</span>
+            <span [style]="badgeStyle(child.availabilityStatus)">{{ statusLabel(child.availabilityStatus) }}</span>
+          </div>
+          <div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">
+            {{ child.campusName }} · {{ child.city }}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;color:#54625b;">
+              {{ child.educationCurrency }} {{ child.educationAmount }}/mo
+            </span>
+            <button
+              *ngIf="child.availabilityStatus === 'AVAILABLE'"
+              (click)="sponsorChild($event, child.id)"
+              style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;
+                     padding:7px 12px;border:none;cursor:pointer;transition:background .15s;">
+              Sponsor
+            </button>
+            <a *ngIf="child.availabilityStatus !== 'AVAILABLE'"
+               [routerLink]="['/children', child.id]"
+               (click)="$event.stopPropagation()"
+               style="font-size:12.5px;color:#2f5d4f;font-weight:600;text-decoration:none;">
+              View →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load more -->
+    <div *ngIf="hasMore" style="display:flex;justify-content:center;margin-top:30px;">
+      <button (click)="loadMore()"
+              style="border:1px solid #cdc4b2;color:#1c352c;font-size:14px;font-weight:500;
+                     border-radius:10px;padding:13px 26px;background:#fffdf9;cursor:pointer;
+                     transition:border-color .15s;">
+        Load more children
+      </button>
     </div>
   </div>
 </div>
+
+<app-site-footer />
+
+<style>
+  .child-grid-card:hover {
+    box-shadow: 0 8px 24px -10px rgba(20,40,30,.18);
+    transform: translateY(-2px);
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 900px) {
+    div[style*="grid-template-columns:240px 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+    aside[style*="position:sticky"] {
+      position: static !important;
+    }
+    div[style*="grid-template-columns:repeat(3,1fr)"] {
+      grid-template-columns: repeat(2,1fr) !important;
+    }
+  }
+  @media (max-width: 540px) {
+    div[style*="grid-template-columns:repeat(3,1fr)"] {
+      grid-template-columns: 1fr !important;
+    }
+  }
+</style>

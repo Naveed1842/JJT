@@ -53,6 +53,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
+                // Public read access for the children-browsing pages (no account required)
+                .requestMatchers(HttpMethod.GET, "/api/org/children").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/org/children/**").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
