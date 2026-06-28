@@ -1,6 +1,13 @@
 package com.jjt.platform.api.admin.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public record RecordEarlySupportRequest(UUID childId, String month, String educationAmount, String educationCurrency, UUID ledgerEntryId) {
+public record RecordEarlySupportRequest(
+        @NotNull UUID childId,
+        @NotBlank String month,
+        @NotBlank String educationAmount,
+        @NotBlank String educationCurrency,
+        UUID ledgerEntryId) {
 }

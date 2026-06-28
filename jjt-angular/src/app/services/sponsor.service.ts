@@ -1,83 +1,69 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import {
+  ChildDto,
+  LedgerDto,
+  ProgressUpdateDto,
+  PublicSponsorshipRequest,
+  PublicSponsorshipResponse,
+} from './api.models';
 
-export type AvailabilityStatus = 'AVAILABLE' | 'RESERVED' | 'ALLOCATED';
-export type CommitmentType = 'MONTHLY' | 'YEARLY';
-
-export interface ChildDto {
-  id: string;
-  rollNumber: string;
-  fullName: string;
-  city: string;
-  campusName: string;
-  schoolName: string | null;
-  educationAmount: string;
-  educationCurrency: string;
-  availabilityStatus: AvailabilityStatus;
-}
-
-export interface LedgerEntryDto {
-  id: string;
-  month: string;
-  educationAmount: string;
-  educationCurrency: string;
-}
-
-export interface LedgerDto {
-  childId: string;
-  entries: LedgerEntryDto[];
-}
-
-export interface ProgressUpdateDto {
-  id: string;
-  month: string;
-  summary: string;
-}
-
-export interface SponsorshipCommitRequest {
-  childId: string;
-  commitmentType: CommitmentType;
-  sponsor: PublicSponsorInfo;
-}
-
-export interface PublicSponsorInfo {
-  name: string;
-  email: string;
-  phone?: string | null;
-}
-
-export interface SponsorshipCommitResponse {
-  childId: string;
-  startMonth: string;
-}
+// Re-export types still imported by existing page components
+export type { AvailabilityStatus, CommitmentType } from './api.models';
+export type { ChildDto, LedgerDto, LedgerEntryDto, ProgressUpdateDto,
+              PublicSponsorInfo, PublicSponsorshipRequest, PublicSponsorshipResponse
+            } from './api.models';
 
 @Injectable({ providedIn: 'root' })
 export class SponsorService {
-  private readonly baseUrl = environment.apiBaseUrl;
+  private readonly http = inject(HttpClient);
+  private readonly base = environment.apiBaseUrl;
 
-  constructor(private http: HttpClient) {}
+  // ── Org read-only endpoints (public after SecurityConfig permit) ───────────
+  // Used by the public browsing pages: /children, /children/:id, /children/:id/sponsor
 
   getChildren(): Observable<ChildDto[]> {
-    return this.http.get<ChildDto[]>(`${this.baseUrl}/api/org/children`);
+    return this.http.get<ChildDto[]>(`${this.base}/api/org/children`);
   }
 
   getChild(childId: string): Observable<ChildDto> {
-    return this.http.get<ChildDto>(`${this.baseUrl}/api/org/children/${childId}`);
+    return this.http.get<ChildDto>(`${this.base}/api/org/children/${childId}`);
   }
 
   getLedger(childId: string): Observable<LedgerDto> {
-    return this.http.get<LedgerDto>(`${this.baseUrl}/api/org/children/${childId}/ledger`);
+    return this.http.get<LedgerDto>(`${this.base}/api/org/children/${childId}/ledger`);
   }
 
   getProgress(childId: string): Observable<ProgressUpdateDto[]> {
-    return this.http.get<ProgressUpdateDto[]>(`${this.baseUrl}/api/org/children/${childId}/progress`);
+    return this.http.get<ProgressUpdateDto[]>(`${this.base}/api/org/children/${childId}/progress`);
   }
 
-  commitSponsorship(payload: SponsorshipCommitRequest): Observable<SponsorshipCommitResponse> {
-    return this.http.post<SponsorshipCommitResponse>(
-      `${this.baseUrl}/api/public/sponsorships`,
+  // ── Sponsor portal endpoints (SPONSOR role, JWT required) ─────────────────
+  // Used by /sponsor/portal — data scoped server-side to sponsorId from JWT
+
+  getSponsorChildren(): Observable<ChildDto[]> {
+    return this.http.get<ChildDto[]>(`${this.base}/api/sponsor/children`);
+  }
+
+  getSponsorChild(childId: string): Observable<ChildDto> {
+    return this.http.get<ChildDto>(`${this.base}/api/sponsor/children/${childId}`);
+  }
+
+  getSponsorLedger(childId: string): Observable<LedgerDto> {
+    return this.http.get<LedgerDto>(`${this.base}/api/sponsor/children/${childId}/ledger`);
+  }
+
+  getSponsorProgress(childId: string): Observable<ProgressUpdateDto[]> {
+    return this.http.get<ProgressUpdateDto[]>(`${this.base}/api/sponsor/children/${childId}/progress`);
+  }
+
+  // ── Public endpoint (no auth) ─────────────────────────────────────────────
+
+  commitSponsorship(payload: PublicSponsorshipRequest): Observable<PublicSponsorshipResponse> {
+    return this.http.post<PublicSponsorshipResponse>(
+      `${this.base}/api/public/sponsorships`,
       payload
     );
   }

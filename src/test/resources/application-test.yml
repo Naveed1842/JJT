@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  flyway:
+    enabled: true
+
+logging:
+  level:
+    root: WARN
+    com.jjt: INFO
+    org.flywaydb: INFO

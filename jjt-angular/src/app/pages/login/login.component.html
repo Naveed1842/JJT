@@ -1,0 +1,73 @@
+<div style="min-height:100vh;background:#fffdf9;display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="width:100%;max-width:400px;">
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:32px;">
+      <a routerLink="/" style="font-family:'Newsreader',serif;font-size:28px;font-weight:500;color:#1c352c;text-decoration:none;">JJT</a>
+      <div style="font-size:13px;color:#8a958d;margin-top:4px;">Junior Jinnah Trust</div>
+    </div>
+
+    <!-- Card -->
+    <div style="border:1px solid #e3dccd;border-radius:16px;background:#fff;padding:32px;
+                box-shadow:0 16px 40px -24px rgba(20,40,30,.16);">
+      <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:0 0 6px;text-align:center;">
+        Sign in
+      </h1>
+      <p style="font-size:14px;color:#8a958d;text-align:center;margin:0 0 28px;">
+        Admin &amp; sponsor portal
+      </p>
+
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label for="email" style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            autocomplete="email"
+            placeholder="you@example.com"
+            style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                   color:#1c352c;background:#fdfcf8;outline:none;font-family:'Hanken Grotesk',sans-serif;
+                   box-sizing:border-box;transition:border-color .15s;"
+          />
+        </div>
+
+        <div>
+          <label for="password" style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            autocomplete="current-password"
+            placeholder="••••••••"
+            style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                   color:#1c352c;background:#fdfcf8;outline:none;font-family:'Hanken Grotesk',sans-serif;
+                   box-sizing:border-box;transition:border-color .15s;"
+          />
+        </div>
+
+        <div *ngIf="error"
+             style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;
+                    color:#b45454;font-size:13.5px;">
+          {{ error }}
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="loading || !loginForm.form.valid"
+          [style]="'width:100%;background:' + (loading || !loginForm.form.valid ? '#9aa79f' : '#2f5d4f') + ';color:#fff;font-size:15px;font-weight:600;border-radius:10px;padding:14px 0;border:none;cursor:' + (loading ? 'not-allowed' : 'pointer') + ';transition:background .15s;'">
+          {{ loading ? 'Signing in…' : 'Sign in' }}
+        </button>
+      </form>
+    </div>
+
+    <div style="text-align:center;margin-top:20px;">
+      <a routerLink="/children" style="font-size:13.5px;color:#8a958d;text-decoration:none;">
+        ← Back to children
+      </a>
+    </div>
+  </div>
+</div>

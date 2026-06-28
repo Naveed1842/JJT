@@ -59,9 +59,11 @@ public class PublicSponsorshipService {
             throw new DomainException("Child not found");
         }
 
-        boolean hasActiveSponsorship = sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE);
-        if (hasActiveSponsorship) {
+        if (sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE)) {
             throw new SponsorshipInvariantViolationException("Child already has an active sponsorship.");
+        }
+        if (sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.PENDING)) {
+            throw new SponsorshipInvariantViolationException("Child already has a pending sponsorship.");
         }
 
         Sponsor sponsor = createSponsorUseCase.create(

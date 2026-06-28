@@ -1,315 +1,521 @@
-<app-site-header></app-site-header>
-<div class="min-h-screen bg-amber-50 py-12">
-  <div class="max-w-4xl mx-auto px-4">
-    <h1 class="text-4xl font-bold text-gray-800 mb-8 font-serif">Admin Dashboard</h1>
+<app-site-header />
 
-    <!-- Success/Error Messages -->
-    <div *ngIf="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+<main style="min-height:100vh;background:#fffdf9;padding:32px;">
+  <div style="max-width:1100px;margin:0 auto;">
+
+    <!-- Page header -->
+    <div style="margin-bottom:28px;">
+      <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:34px;color:#1c352c;margin:0 0 4px;">Admin Panel</h1>
+      <p style="font-size:14px;color:#8a958d;margin:0;">Junior Jinnah Trust — Operations Dashboard</p>
+    </div>
+
+    <!-- Alerts -->
+    <div *ngIf="successMessage"
+         style="margin-bottom:20px;background:#eef5f1;border:1px solid #cfe0d7;border-radius:10px;padding:14px 18px;font-size:14px;color:#214a3e;">
       {{ successMessage }}
     </div>
-    <div *ngIf="errorMessage" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+    <div *ngIf="errorMessage"
+         style="margin-bottom:20px;background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:14px 18px;font-size:14px;color:#b45454;">
       {{ errorMessage }}
     </div>
 
-    <!-- Form Selection Tabs -->
-    <div class="mb-6 flex flex-wrap gap-2">
-      <button (click)="setActiveForm('child')" 
-              [class.bg-orange-500]="activeForm === 'child'"
-              [class.text-white]="activeForm === 'child'"
-              [class.bg-gray-200]="activeForm !== 'child'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Create Child
-      </button>
-      <button (click)="setActiveForm('sponsor')"
-              [class.bg-orange-500]="activeForm === 'sponsor'"
-              [class.text-white]="activeForm === 'sponsor'"
-              [class.bg-gray-200]="activeForm !== 'sponsor'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Create Sponsor
-      </button>
-      <button (click)="setActiveForm('earlySupport')"
-              [class.bg-orange-500]="activeForm === 'earlySupport'"
-              [class.text-white]="activeForm === 'earlySupport'"
-              [class.bg-gray-200]="activeForm !== 'earlySupport'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Record Early Support
-      </button>
-      <button (click)="setActiveForm('progress')"
-              [class.bg-orange-500]="activeForm === 'progress'"
-              [class.text-white]="activeForm === 'progress'"
-              [class.bg-gray-200]="activeForm !== 'progress'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Add Progress
-      </button>
-      <button (click)="setActiveForm('sponsorship')"
-              [class.bg-orange-500]="activeForm === 'sponsorship'"
-              [class.text-white]="activeForm === 'sponsorship'"
-              [class.bg-gray-200]="activeForm !== 'sponsorship'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Commit Sponsorship
-      </button>
-      <button (click)="setActiveForm('pending')"
-              [class.bg-orange-500]="activeForm === 'pending'"
-              [class.text-white]="activeForm === 'pending'"
-              [class.bg-gray-200]="activeForm !== 'pending'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Pending Sponsorships
-      </button>
-      <button (click)="setActiveForm('active')"
-              [class.bg-orange-500]="activeForm === 'active'"
-              [class.text-white]="activeForm === 'active'"
-              [class.bg-gray-200]="activeForm !== 'active'"
-              class="px-4 py-2 rounded font-semibold transition-colors">
-        Active Sponsorships
+    <!-- Tab bar -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid #e3dccd;padding-bottom:16px;margin-bottom:28px;">
+      <button *ngFor="let tab of visibleTabs"
+              (click)="setTab(tab.id)"
+              [style]="activeTab === tab.id
+                ? 'background:#1c352c;color:#fff;border:1px solid #1c352c;border-radius:8px;padding:8px 16px;font-size:13.5px;font-weight:600;cursor:pointer;'
+                : 'background:#fffdf9;color:#54625b;border:1px solid #ddd5c5;border-radius:8px;padding:8px 16px;font-size:13.5px;font-weight:500;cursor:pointer;'">
+        {{ tab.label }}
       </button>
     </div>
 
-    <!-- Create Child Form -->
-    <div *ngIf="activeForm === 'child'" class="paper-texture p-8 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Child</h2>
-      <form (ngSubmit)="createChild()" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Roll Number</label>
-          <input [(ngModel)]="childForm.rollNumber" name="rollNumber" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
-          <input [(ngModel)]="childForm.fullName" name="fullName" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">City</label>
-            <input [(ngModel)]="childForm.city" name="city" type="text" required
-                   class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-          </div>
-          <div>
-            <label class="block text-gray-700 font-semibold mb-2">Campus Name</label>
-            <input [(ngModel)]="childForm.campusName" name="campusName" type="text" required
-                   class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-          </div>
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">School Name (optional)</label>
-          <input [(ngModel)]="childForm.schoolName" name="schoolName" type="text"
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Education Amount</label>
-          <input [(ngModel)]="childForm.educationAmount" name="educationAmount" type="number" step="0.01" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Currency</label>
-          <select [(ngModel)]="childForm.educationCurrency" name="educationCurrency" required
-                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-            <option value="USD">USD</option>
-            <option value="PKR">PKR</option>
-            <option value="EUR">EUR</option>
+    <!-- ── Create Child ────────────────────────────────────────── -->
+    <section *ngIf="activeTab === 'child'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 20px;">Add a New Child</h2>
+      <form (ngSubmit)="createChild()" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Roll Number *</label>
+          <input class="form-input" type="text" [(ngModel)]="childForm.rollNumber" name="rollNumber" required placeholder="e.g. JJT-ISB-2026-0210" /></div>
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Full Name *</label>
+          <input class="form-input" type="text" [(ngModel)]="childForm.fullName" name="fullName" required /></div>
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">City *</label>
+          <input class="form-input" type="text" [(ngModel)]="childForm.city" name="city" required /></div>
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Campus Name *</label>
+          <input class="form-input" type="text" [(ngModel)]="childForm.campusName" name="campusName" required /></div>
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">School Name</label>
+          <input class="form-input" type="text" [(ngModel)]="childForm.schoolName" name="schoolName" /></div>
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Education Amount *</label>
+          <input class="form-input" type="text" [(ngModel)]="childForm.educationAmount" name="educationAmount" required /></div>
+        <div style="grid-column:1/-1;"><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Currency *</label>
+          <select class="form-input" [(ngModel)]="childForm.educationCurrency" name="educationCurrency" style="width:200px;">
+            <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
           </select>
         </div>
-        <button type="submit" class="btn-orange w-full">Create Child</button>
+        <div style="grid-column:1/-1;">
+          <button type="submit" class="btn-primary" [disabled]="isLoading" style="width:100%;">
+            {{ isLoading ? 'Saving…' : 'Create Child' }}
+          </button>
+        </div>
       </form>
-    </div>
+    </section>
 
-    <!-- Create Sponsor Form -->
-    <div *ngIf="activeForm === 'sponsor'" class="paper-texture p-8 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Create New Sponsor</h2>
-      <form (ngSubmit)="createSponsor()" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Display Name</label>
-          <input [(ngModel)]="sponsorForm.displayName" name="displayName" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+    <!-- ── Create Sponsor ─────────────────────────────────────── -->
+    <section *ngIf="activeTab === 'sponsor'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 4px;">Register a Sponsor</h2>
+      <p style="font-size:13.5px;color:#8a958d;margin:0 0 20px;">After saving, copy the Sponsor ID — you will need it to create a login for this sponsor.</p>
+      <form (ngSubmit)="createSponsor()" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Display Name *</label>
+          <input class="form-input" type="text" [(ngModel)]="sponsorForm.displayName" name="displayName" required /></div>
+        <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Contact Email *</label>
+          <input class="form-input" type="email" [(ngModel)]="sponsorForm.contactEmail" name="contactEmail" required /></div>
+        <div style="grid-column:1/-1;">
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Phone (optional)</label>
+          <input class="form-input" type="tel" [(ngModel)]="sponsorForm.phone" name="phone" /></div>
+        <div style="grid-column:1/-1;">
+          <button type="submit" class="btn-primary" [disabled]="isLoading" style="width:100%;">
+            {{ isLoading ? 'Saving…' : 'Register Sponsor' }}
+          </button>
         </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Contact Email</label>
-          <input [(ngModel)]="sponsorForm.contactEmail" name="contactEmail" type="email" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Phone (optional)</label>
-          <input [(ngModel)]="sponsorForm.phone" name="phone" type="text"
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <button type="submit" class="btn-orange w-full">Create Sponsor</button>
       </form>
-    </div>
-
-    <!-- Record Early Support Form -->
-    <div *ngIf="activeForm === 'earlySupport'" class="paper-texture p-8 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Record Early Support</h2>
-      <form (ngSubmit)="recordEarlySupport()" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Child ID</label>
-          <input [(ngModel)]="earlySupportForm.childId" name="childId" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
+      <div *ngIf="createdSponsorId"
+           style="margin-top:20px;background:#fdf7ec;border:1px solid #ecd6b0;border-radius:10px;padding:16px;">
+        <p style="font-size:13px;color:#8a6a38;margin:0 0 8px;font-weight:600;">Sponsor created! Copy this ID to use when creating a login:</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <code style="flex:1;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#1c352c;word-break:break-all;">{{ createdSponsorId }}</code>
+          <button (click)="copySponsorId()" class="btn-secondary" style="flex-shrink:0;font-size:12px;padding:6px 12px;">Copy</button>
         </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Month (YYYY-MM)</label>
-          <input [(ngModel)]="earlySupportForm.month" name="month" type="month" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Education Amount</label>
-          <input [(ngModel)]="earlySupportForm.educationAmount" name="educationAmount" type="number" step="0.01" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Currency</label>
-          <select [(ngModel)]="earlySupportForm.educationCurrency" name="educationCurrency" required
-                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-            <option value="USD">USD</option>
-            <option value="PKR">PKR</option>
-            <option value="EUR">EUR</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-orange w-full">Record Support</button>
-      </form>
-    </div>
-
-    <!-- Add Progress Form -->
-    <div *ngIf="activeForm === 'progress'" class="paper-texture p-8 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Add Progress Update</h2>
-      <form (ngSubmit)="addProgress()" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Child ID</label>
-          <input [(ngModel)]="progressForm.childId" name="childId" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Month (YYYY-MM)</label>
-          <input [(ngModel)]="progressForm.month" name="month" type="month" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Summary</label>
-          <textarea [(ngModel)]="progressForm.summary" name="summary" required rows="4"
-                    class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
-        </div>
-        <button type="submit" class="btn-orange w-full">Add Progress</button>
-      </form>
-    </div>
-
-    <!-- Commit Sponsorship Form -->
-    <div *ngIf="activeForm === 'sponsorship'" class="paper-texture p-8 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Commit Sponsorship</h2>
-      <form (ngSubmit)="commitSponsorship()" class="space-y-4">
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Child ID</label>
-          <input [(ngModel)]="sponsorshipForm.childId" name="childId" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Sponsor ID</label>
-          <input [(ngModel)]="sponsorshipForm.sponsorId" name="sponsorId" type="text" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Start Month (YYYY-MM)</label>
-          <input [(ngModel)]="sponsorshipForm.startMonth" name="startMonth" type="month" required
-                 class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-        </div>
-        <div>
-          <label class="block text-gray-700 font-semibold mb-2">Commitment Type</label>
-          <select [(ngModel)]="sponsorshipForm.commitmentType" name="commitmentType" required
-                  class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-orange-500">
-            <option value="MONTHLY">Monthly</option>
-            <option value="YEARLY">Yearly</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-orange w-full">Commit Sponsorship</button>
-      </form>
-    </div>
-
-    <!-- Pending Sponsorships -->
-    <div *ngIf="activeForm === 'pending'" class="paper-texture p-8 rounded-lg shadow-lg overflow-x-auto">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Pending Sponsorships</h2>
-      <div *ngIf="pendingSponsorships.length === 0" class="text-sm text-gray-600">
-        No pending sponsorships right now.
       </div>
-      <table *ngIf="pendingSponsorships.length" class="min-w-full text-sm border border-slate-200 shadow-sm bg-white/80">
-        <thead class="bg-slate-100 text-gray-700 uppercase text-xs tracking-wide">
-        <tr>
-          <th class="px-3 py-2 text-left">Sponsor</th>
-          <th class="px-3 py-2 text-left">Child ID</th>
-          <th class="px-3 py-2 text-left">Commitment</th>
-          <th class="px-3 py-2 text-left">Created</th>
-          <th class="px-3 py-2 text-left">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let s of pendingSponsorships" class="border-b last:border-b-0">
-          <td class="px-3 py-3">
-            <div class="font-semibold text-gray-800">{{ s.sponsorName || 'N/A' }}</div>
-            <div class="font-mono text-gray-700">{{ s.sponsorEmail || 'N/A' }}</div>
-            <div class="font-mono text-gray-700">{{ s.sponsorPhone || 'N/A' }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="font-mono text-gray-800">{{ s.childId }}</div>
-            <div class="text-xs text-gray-500">Sponsorship ID: {{ s.sponsorshipId }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="text-gray-800">Start: {{ s.startMonth }}</div>
-            <div class="text-gray-700">Type: {{ s.commitmentType }}</div>
-            <div class="text-gray-600 text-xs">Status: {{ s.status }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="text-gray-800">{{ s.createdAt | date:'medium' }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="flex gap-2">
-              <button (click)="activate(s.sponsorshipId)" class="rounded bg-green-700 px-3 py-1 text-xs font-semibold text-white">Activate</button>
-              <button (click)="expire(s.sponsorshipId)" class="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Expire</button>
+    </section>
+
+    <!-- ── Early Support ──────────────────────────────────────── -->
+    <section *ngIf="activeTab === 'earlySupport'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 4px;">Record Early Support</h2>
+      <p style="font-size:13.5px;color:#8a958d;margin:0 0 20px;">
+        Use this for months JJT funded a child before a sponsor was found. One entry per month.
+        A progress update can be added for any month that has a ledger entry.
+      </p>
+      <form (ngSubmit)="recordEarlySupport()" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div style="grid-column:1/-1;">
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Child *</label>
+          <select class="form-input" [(ngModel)]="earlySupportForm.childId" name="childId" required>
+            <option value="">— Select a child —</option>
+            <option *ngFor="let c of children" [value]="c.id">
+              {{ c.fullName }} — {{ c.rollNumber }} ({{ c.availabilityStatus }})
+            </option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Month *</label>
+          <select class="form-input" [(ngModel)]="earlySupportForm.month" name="month" required>
+            <option value="">— Select month —</option>
+            <option *ngFor="let m of pastMonths" [value]="m">{{ m }}</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Amount *</label>
+          <input class="form-input" type="text" [(ngModel)]="earlySupportForm.educationAmount" name="educationAmount" required />
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Currency *</label>
+          <select class="form-input" [(ngModel)]="earlySupportForm.educationCurrency" name="educationCurrency">
+            <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
+          </select>
+        </div>
+        <div style="grid-column:1/-1;">
+          <button type="submit" class="btn-primary" [disabled]="isLoading || !earlySupportForm.childId || !earlySupportForm.month" style="width:100%;">
+            {{ isLoading ? 'Saving…' : 'Record Early Support' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── Add Progress ──────────────────────────────────────── -->
+    <section *ngIf="activeTab === 'progress'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 4px;">Add Progress Update</h2>
+      <p style="font-size:13.5px;color:#8a958d;margin:0 0 20px;">
+        Select a child first — the month list will show only months that have a ledger entry.
+        You must add Early Support (or an active sponsorship) for a month before adding progress for it.
+      </p>
+      <form (ngSubmit)="addProgress()" style="display:grid;gap:16px;">
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Child *</label>
+          <select class="form-input" [(ngModel)]="progressForm.childId" name="childId" required
+                  (ngModelChange)="onProgressChildChange()">
+            <option value="">— Select a child —</option>
+            <option *ngFor="let c of children" [value]="c.id">
+              {{ c.fullName }} — {{ c.rollNumber }}
+            </option>
+          </select>
+        </div>
+        <div *ngIf="progressForm.childId">
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Month *</label>
+          <div *ngIf="loadingProgressMonths" style="font-size:13px;color:#8a958d;">Loading ledger…</div>
+          <select *ngIf="!loadingProgressMonths && progressLedgerMonths.length > 0"
+                  class="form-input" [(ngModel)]="progressForm.month" name="month" required>
+            <option value="">— Select month —</option>
+            <option *ngFor="let m of progressLedgerMonths" [value]="m">{{ m }}</option>
+          </select>
+          <div *ngIf="!loadingProgressMonths && progressLedgerMonths.length === 0"
+               style="font-size:13px;color:#b45454;padding:10px;background:#fdf2f2;border-radius:8px;border:1px solid #f5c5c5;">
+            No ledger entries found for this child. Add Early Support first.
+          </div>
+        </div>
+        <div *ngIf="progressForm.month">
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Summary *</label>
+          <textarea class="form-input" style="min-height:120px;resize:vertical;"
+                    [(ngModel)]="progressForm.summary" name="summary" required
+                    placeholder="Describe the child's academic progress, attendance, and any notable achievements this month…"></textarea>
+        </div>
+        <button type="submit" class="btn-primary"
+                [disabled]="isLoading || !progressForm.childId || !progressForm.month || !progressForm.summary">
+          {{ isLoading ? 'Saving…' : 'Add Progress Update' }}
+        </button>
+      </form>
+    </section>
+
+    <!-- ── Commit Sponsorship ──────────────────────────────────── -->
+    <section *ngIf="activeTab === 'sponsorship'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 4px;">Commit Sponsorship</h2>
+      <p style="font-size:13.5px;color:#8a958d;margin:0 0 20px;">
+        Links a sponsor to a child starting from a future month. Status will be PENDING until you activate it in the Pending tab.
+        Start month must be in the future.
+      </p>
+      <form (ngSubmit)="commitSponsorship()" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Sponsor *</label>
+          <select class="form-input" [(ngModel)]="sponsorshipForm.sponsorId" name="sponsorId" required>
+            <option value="">— Select a sponsor —</option>
+            <option *ngFor="let s of sponsors" [value]="s.sponsorId">
+              {{ s.displayName }} — {{ s.contactEmail }}
+            </option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Child *</label>
+          <select class="form-input" [(ngModel)]="sponsorshipForm.childId" name="childId" required>
+            <option value="">— Select a child —</option>
+            <option *ngFor="let c of children" [value]="c.id">
+              {{ c.fullName }} — {{ c.rollNumber }} ({{ c.availabilityStatus }})
+            </option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Start Month *</label>
+          <select class="form-input" [(ngModel)]="sponsorshipForm.startMonth" name="startMonth" required>
+            <option value="">— Select month —</option>
+            <option *ngFor="let m of futureMonths" [value]="m">{{ m }}</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Commitment Type *</label>
+          <select class="form-input" [(ngModel)]="sponsorshipForm.commitmentType" name="commitmentType">
+            <option value="MONTHLY">Monthly (PKR 2,000 / month)</option>
+            <option value="YEARLY">Yearly (PKR 21,600 / year — 10% saving)</option>
+          </select>
+        </div>
+        <div style="grid-column:1/-1;">
+          <button type="submit" class="btn-primary"
+                  [disabled]="isLoading || !sponsorshipForm.sponsorId || !sponsorshipForm.childId || !sponsorshipForm.startMonth"
+                  style="width:100%;">
+            {{ isLoading ? 'Saving…' : 'Commit Sponsorship' }}
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ── Pending Sponsorships ──────────────────────────────── -->
+    <section *ngIf="activeTab === 'pending'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 20px;">Pending Sponsorships</h2>
+      <div *ngIf="loadingList" style="font-size:14px;color:#8a958d;">Loading…</div>
+      <p *ngIf="!loadingList && pendingSponsorships.length === 0"
+         style="font-size:14px;color:#8a958d;">No pending sponsorships.</p>
+      <div *ngIf="!loadingList && pendingSponsorships.length > 0" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Sponsor</th><th>Child</th><th>Type</th><th>Start</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let s of pendingSponsorships">
+              <td>
+                <div style="font-weight:600;color:#1c352c;">{{ s.sponsorName }}</div>
+                <div style="font-size:12px;color:#8a958d;">{{ s.sponsorEmail }}</div>
+              </td>
+              <td style="font-size:13px;color:#1c352c;">{{ childName(s.childId) }}</td>
+              <td>{{ s.commitmentType }}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;">{{ s.startMonth }}</td>
+              <td>
+                <div style="display:flex;gap:8px;">
+                  <button (click)="activate(s.sponsorshipId)" class="btn-primary" style="font-size:12px;padding:6px 12px;">Activate</button>
+                  <button (click)="expire(s.sponsorshipId)" class="btn-secondary" style="font-size:12px;padding:6px 12px;">Expire</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── Active Sponsorships ────────────────────────────────── -->
+    <section *ngIf="activeTab === 'active'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 20px;">Active Sponsorships</h2>
+      <div *ngIf="loadingList" style="font-size:14px;color:#8a958d;">Loading…</div>
+      <p *ngIf="!loadingList && activeSponsorships.length === 0"
+         style="font-size:14px;color:#8a958d;">No active sponsorships.</p>
+      <div *ngIf="!loadingList && activeSponsorships.length > 0" style="overflow-x:auto;">
+        <table class="admin-table">
+          <thead><tr><th>Sponsor</th><th>Child</th><th>Type</th><th>Start</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let s of activeSponsorships">
+              <td>
+                <div style="font-weight:600;color:#1c352c;">{{ s.sponsorName }}</div>
+                <div style="font-size:12px;color:#8a958d;">{{ s.sponsorEmail }}</div>
+              </td>
+              <td style="font-size:13px;color:#1c352c;">{{ childName(s.childId) }}</td>
+              <td>{{ s.commitmentType }}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;">{{ s.startMonth }}</td>
+              <td>
+                <button (click)="expire(s.sponsorshipId)" class="btn-secondary" style="font-size:12px;padding:6px 12px;">Expire</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── How It Works ───────────────────────────────────────── -->
+    <section *ngIf="activeTab === 'docs'">
+      <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0 0 6px;">How the System Works</h2>
+      <p style="font-size:13.5px;color:#8a958d;margin:0 0 32px;">Follow these steps in order for every child. Each step unlocks the next.</p>
+
+      <!-- Flow steps -->
+      <div style="display:flex;flex-wrap:wrap;gap:0;align-items:stretch;margin-bottom:40px;">
+
+        <!-- Step 1 -->
+        <div style="flex:1;min-width:160px;position:relative;">
+          <div style="background:#fff;border:1px solid #e3dccd;border-radius:12px;padding:20px 18px;height:100%;box-sizing:border-box;">
+            <div style="width:32px;height:32px;background:#1c352c;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                        font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;font-weight:700;margin-bottom:12px;">1</div>
+            <div style="font-weight:700;font-size:14px;color:#1c352c;margin-bottom:6px;">Add Child</div>
+            <div style="font-size:12.5px;color:#54625b;line-height:1.55;">Register the child with roll number, city, campus. The system creates an empty ledger automatically.</div>
+            <div style="margin-top:12px;padding:8px 10px;background:#f5f0e8;border-radius:6px;font-size:11.5px;color:#6b5c3a;font-family:'IBM Plex Mono',monospace;">Tab → Add Child</div>
+          </div>
+          <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:1;
+                      font-size:20px;color:#cdc4b2;font-weight:300;">›</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div style="flex:1;min-width:160px;position:relative;margin-left:14px;">
+          <div style="background:#fff;border:1px solid #e3dccd;border-radius:12px;padding:20px 18px;height:100%;box-sizing:border-box;">
+            <div style="width:32px;height:32px;background:#1c352c;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                        font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;font-weight:700;margin-bottom:12px;">2</div>
+            <div style="font-weight:700;font-size:14px;color:#1c352c;margin-bottom:6px;">Early Support</div>
+            <div style="font-size:12.5px;color:#54625b;line-height:1.55;">For each month JJT paid before a sponsor was matched, add one entry. This builds the child's ledger history.</div>
+            <div style="margin-top:12px;padding:8px 10px;background:#f5f0e8;border-radius:6px;font-size:11.5px;color:#6b5c3a;font-family:'IBM Plex Mono',monospace;">Tab → Early Support</div>
+          </div>
+          <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:1;
+                      font-size:20px;color:#cdc4b2;font-weight:300;">›</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div style="flex:1;min-width:160px;position:relative;margin-left:14px;">
+          <div style="background:#fff;border:1px solid #e3dccd;border-radius:12px;padding:20px 18px;height:100%;box-sizing:border-box;">
+            <div style="width:32px;height:32px;background:#1c352c;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                        font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;font-weight:700;margin-bottom:12px;">3</div>
+            <div style="font-weight:700;font-size:14px;color:#1c352c;margin-bottom:6px;">Add Sponsor</div>
+            <div style="font-size:12.5px;color:#54625b;line-height:1.55;">Create the sponsor record. Copy the Sponsor ID shown after saving — you need it for Steps 5 and 6.</div>
+            <div style="margin-top:12px;padding:8px 10px;background:#f5f0e8;border-radius:6px;font-size:11.5px;color:#6b5c3a;font-family:'IBM Plex Mono',monospace;">Tab → Add Sponsor</div>
+          </div>
+          <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:1;
+                      font-size:20px;color:#cdc4b2;font-weight:300;">›</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div style="flex:1;min-width:160px;position:relative;margin-left:14px;">
+          <div style="background:#fff;border:1px solid #e3dccd;border-radius:12px;padding:20px 18px;height:100%;box-sizing:border-box;">
+            <div style="width:32px;height:32px;background:#1c352c;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                        font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;font-weight:700;margin-bottom:12px;">4</div>
+            <div style="font-weight:700;font-size:14px;color:#1c352c;margin-bottom:6px;">Commit Sponsorship</div>
+            <div style="font-size:12.5px;color:#54625b;line-height:1.55;">Link sponsor to child with a future start month. Status is PENDING — child shows as "Bridged" publicly.</div>
+            <div style="margin-top:12px;padding:8px 10px;background:#f5f0e8;border-radius:6px;font-size:11.5px;color:#6b5c3a;font-family:'IBM Plex Mono',monospace;">Tab → Commit Sponsorship</div>
+          </div>
+          <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:1;
+                      font-size:20px;color:#cdc4b2;font-weight:300;">›</div>
+        </div>
+
+        <!-- Step 5 -->
+        <div style="flex:1;min-width:160px;position:relative;margin-left:14px;">
+          <div style="background:#fff;border:1px solid #e3dccd;border-radius:12px;padding:20px 18px;height:100%;box-sizing:border-box;">
+            <div style="width:32px;height:32px;background:#2f5d4f;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                        font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;font-weight:700;margin-bottom:12px;">5</div>
+            <div style="font-weight:700;font-size:14px;color:#1c352c;margin-bottom:6px;">Activate</div>
+            <div style="font-size:12.5px;color:#54625b;line-height:1.55;">Once payment is confirmed, click Activate. Status becomes ACTIVE — child shows as "Sponsored" publicly.</div>
+            <div style="margin-top:12px;padding:8px 10px;background:#eef5f1;border-radius:6px;font-size:11.5px;color:#214a3e;font-family:'IBM Plex Mono',monospace;">Tab → Pending → Activate</div>
+          </div>
+          <div style="position:absolute;right:-14px;top:50%;transform:translateY(-50%);z-index:1;
+                      font-size:20px;color:#cdc4b2;font-weight:300;">›</div>
+        </div>
+
+        <!-- Step 6 -->
+        <div style="flex:1;min-width:160px;margin-left:14px;">
+          <div style="background:#fff;border:1px solid #e3dccd;border-radius:12px;padding:20px 18px;height:100%;box-sizing:border-box;">
+            <div style="width:32px;height:32px;background:#2f5d4f;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                        font-family:'IBM Plex Mono',monospace;font-size:13px;color:#fff;font-weight:700;margin-bottom:12px;">6</div>
+            <div style="font-weight:700;font-size:14px;color:#1c352c;margin-bottom:6px;">Add Progress</div>
+            <div style="font-size:12.5px;color:#54625b;line-height:1.55;">Each month, write a progress update for the child. Month must match an existing ledger entry.</div>
+            <div style="margin-top:12px;padding:8px 10px;background:#eef5f1;border-radius:6px;font-size:11.5px;color:#214a3e;font-family:'IBM Plex Mono',monospace;">Tab → Add Progress</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Optional step -->
+      <div style="background:#fdf7ec;border:1px solid #ecd6b0;border-radius:12px;padding:20px 22px;margin-bottom:32px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div style="width:32px;height:32px;background:#8a5f1f;border-radius:50%;display:flex;align-items:center;justify-content:center;
+                      font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;font-weight:700;flex-shrink:0;">6b</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:#7a5219;margin-bottom:4px;">Create Sponsor Login (optional)</div>
+            <div style="font-size:13px;color:#8a6a38;line-height:1.6;">
+              If the sponsor wants portal access, go to <strong>Users → + Sponsor User</strong>.
+              Paste the Sponsor ID from Step 3. Use the <em>same ID</em> — creating a new one will result in the portal showing no children.
             </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Active Sponsorships -->
-    <div *ngIf="activeForm === 'active'" class="paper-texture p-8 rounded-lg shadow-lg overflow-x-auto">
-      <h2 class="text-2xl font-bold text-gray-800 mb-6 font-serif">Active Sponsorships</h2>
-      <div *ngIf="activeSponsorships.length === 0" class="text-sm text-gray-600">
-        No active sponsorships right now.
+          </div>
+        </div>
       </div>
-      <table *ngIf="activeSponsorships.length" class="min-w-full text-sm border border-slate-200 shadow-sm bg-white/80">
-        <thead class="bg-slate-100 text-gray-700 uppercase text-xs tracking-wide">
-        <tr>
-          <th class="px-3 py-2 text-left">Sponsor</th>
-          <th class="px-3 py-2 text-left">Child ID</th>
-          <th class="px-3 py-2 text-left">Commitment</th>
-          <th class="px-3 py-2 text-left">Created</th>
-          <th class="px-3 py-2 text-left">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let s of activeSponsorships" class="border-b last:border-b-0">
-          <td class="px-3 py-3">
-            <div class="font-semibold text-gray-800">{{ s.sponsorName || 'N/A' }}</div>
-            <div class="font-mono text-gray-700">{{ s.sponsorEmail || 'N/A' }}</div>
-            <div class="font-mono text-gray-700">{{ s.sponsorPhone || 'N/A' }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="font-mono text-gray-800">{{ s.childId }}</div>
-            <div class="text-xs text-gray-500">Sponsorship ID: {{ s.sponsorshipId }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="text-gray-800">Start: {{ s.startMonth }}</div>
-            <div class="text-gray-700">Type: {{ s.commitmentType }}</div>
-            <div class="text-gray-600 text-xs">Status: {{ s.status }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <div class="text-gray-800">{{ s.createdAt | date:'medium' }}</div>
-          </td>
-          <td class="px-3 py-3 align-top">
-            <button (click)="expire(s.sponsorshipId)" class="rounded bg-red-600 px-3 py-1 text-xs font-semibold text-white">Expire</button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+
+      <!-- Status reference -->
+      <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:18px;color:#1c352c;margin:0 0 14px;">Child Status Reference</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;">
+        <div style="border:1px solid #e3dccd;border-radius:10px;padding:16px;">
+          <div style="display:inline-block;background:#f0ece3;color:#6b5c3a;font-size:11px;font-weight:700;border-radius:100px;padding:3px 10px;letter-spacing:.5px;margin-bottom:8px;">SEEKING</div>
+          <div style="font-size:13px;color:#54625b;line-height:1.5;">No sponsorship exists. Child appears on the public browse page as available.</div>
+        </div>
+        <div style="border:1px solid #e3dccd;border-radius:10px;padding:16px;">
+          <div style="display:inline-block;background:#fef3cd;color:#8a5f1f;font-size:11px;font-weight:700;border-radius:100px;padding:3px 10px;letter-spacing:.5px;margin-bottom:8px;">BRIDGED</div>
+          <div style="font-size:13px;color:#54625b;line-height:1.5;">A PENDING sponsorship exists. Commitment recorded but payment not yet confirmed.</div>
+        </div>
+        <div style="border:1px solid #e3dccd;border-radius:10px;padding:16px;">
+          <div style="display:inline-block;background:#eef5f1;color:#214a3e;font-size:11px;font-weight:700;border-radius:100px;padding:3px 10px;letter-spacing:.5px;margin-bottom:8px;">SPONSORED</div>
+          <div style="font-size:13px;color:#54625b;line-height:1.5;">An ACTIVE sponsorship exists. Payment confirmed. Sponsor can see this child in their portal.</div>
+        </div>
+      </div>
+
+      <!-- Key rules -->
+      <h3 style="font-family:'Newsreader',serif;font-weight:500;font-size:18px;color:#1c352c;margin:0 0 14px;">Key Rules</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:#fff;border:1px solid #e3dccd;border-radius:10px;">
+          <span style="color:#2f5d4f;font-weight:700;font-size:15px;flex-shrink:0;">→</span>
+          <span style="font-size:13.5px;color:#3a4a42;line-height:1.5;">Progress updates require a matching ledger entry for the same month. Add Early Support first, then progress.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:#fff;border:1px solid #e3dccd;border-radius:10px;">
+          <span style="color:#2f5d4f;font-weight:700;font-size:15px;flex-shrink:0;">→</span>
+          <span style="font-size:13.5px;color:#3a4a42;line-height:1.5;">Commit Sponsorship start month must always be a future month. The system enforces this automatically.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:#fff;border:1px solid #e3dccd;border-radius:10px;">
+          <span style="color:#2f5d4f;font-weight:700;font-size:15px;flex-shrink:0;">→</span>
+          <span style="font-size:13.5px;color:#3a4a42;line-height:1.5;">When creating a Sponsor Login, always use the Sponsor ID from Step 3. A different ID creates a new empty sponsor — the portal will show no children.</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:#fff;border:1px solid #e3dccd;border-radius:10px;">
+          <span style="color:#2f5d4f;font-weight:700;font-size:15px;flex-shrink:0;">→</span>
+          <span style="font-size:13.5px;color:#3a4a42;line-height:1.5;">The ledger is append-only — entries can never be deleted or edited. Each month gets exactly one entry.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── User Management ────────────────────────────────────── -->
+    <section *ngIf="activeTab === 'users' && isJjtAdmin">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin:0;">User Management</h2>
+        <div style="display:flex;gap:8px;">
+          <button (click)="showSponsorUserForm = !showSponsorUserForm; showOrgUserForm = false"
+                  class="btn-primary" style="font-size:13px;">+ Sponsor User</button>
+          <button (click)="showOrgUserForm = !showOrgUserForm; showSponsorUserForm = false"
+                  class="btn-secondary" style="font-size:13px;">+ Org Admin</button>
+        </div>
+      </div>
+
+      <!-- Sponsor user form -->
+      <div *ngIf="showSponsorUserForm"
+           style="margin-bottom:20px;border:1px solid #e3dccd;border-radius:12px;padding:20px;background:#faf8f2;">
+        <h3 style="font-size:15px;font-weight:600;color:#1c352c;margin:0 0 6px;">Create Sponsor Login</h3>
+        <p style="font-size:12.5px;color:#8a958d;margin:0 0 14px;">Paste the Sponsor ID from "Add Sponsor" tab. Do NOT use a new ID.</p>
+        <form (ngSubmit)="createSponsorUser()" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div style="grid-column:1/-1;">
+            <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Sponsor *</label>
+            <select class="form-input" [(ngModel)]="sponsorUserForm.sponsorId" name="sp_sponsorId" required>
+              <option value="">— Select existing sponsor —</option>
+              <option *ngFor="let s of sponsors" [value]="s.sponsorId">
+                {{ s.displayName }} — {{ s.contactEmail }}
+              </option>
+            </select>
+          </div>
+          <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Email *</label>
+            <input class="form-input" type="email" [(ngModel)]="sponsorUserForm.email" name="sp_email" required /></div>
+          <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Password *</label>
+            <input class="form-input" type="password" [(ngModel)]="sponsorUserForm.password"
+                   name="sp_password" required minlength="8" /></div>
+          <div style="grid-column:1/-1;">
+            <button type="submit" class="btn-primary" [disabled]="isLoading" style="width:100%;">
+              {{ isLoading ? 'Creating…' : 'Create Sponsor User' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Org user form -->
+      <div *ngIf="showOrgUserForm"
+           style="margin-bottom:20px;border:1px solid #e3dccd;border-radius:12px;padding:20px;background:#faf8f2;">
+        <h3 style="font-size:15px;font-weight:600;color:#1c352c;margin:0 0 16px;">Create Org Admin Login</h3>
+        <form (ngSubmit)="createOrgUser()" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Email *</label>
+            <input class="form-input" type="email" [(ngModel)]="orgUserForm.email" name="org_email" required /></div>
+          <div><label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Password *</label>
+            <input class="form-input" type="password" [(ngModel)]="orgUserForm.password"
+                   name="org_password" required minlength="8" /></div>
+          <div style="grid-column:1/-1;">
+            <label style="display:block;font-size:12.5px;color:#6b7b73;margin-bottom:5px;">Org ID (optional)</label>
+            <input class="form-input" type="text" [(ngModel)]="orgUserForm.orgId" name="org_orgId" /></div>
+          <div style="grid-column:1/-1;">
+            <button type="submit" class="btn-primary" [disabled]="isLoading" style="width:100%;">
+              {{ isLoading ? 'Creating…' : 'Create Org Admin' }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Users table -->
+      <div *ngIf="loadingUsers" style="font-size:14px;color:#8a958d;">Loading users…</div>
+      <div *ngIf="!loadingUsers" style="overflow-x:auto;">
+        <p *ngIf="users.length === 0" style="font-size:14px;color:#8a958d;">No users found.</p>
+        <table *ngIf="users.length > 0" class="admin-table">
+          <thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let u of users">
+              <td style="font-size:13.5px;color:#1c352c;">{{ u.email }}</td>
+              <td>
+                <span [style]="u.role === 'JJT_ADMIN' ? 'background:#ede9f7;color:#5b2ea6;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;'
+                              : u.role === 'ORG_ADMIN' ? 'background:#e6f0fa;color:#1a4f8a;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;'
+                              : 'background:#eef5f1;color:#214a3e;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;'">
+                  {{ u.role }}
+                </span>
+              </td>
+              <td>
+                <span [style]="u.active ? 'color:#2f5d4f;font-weight:600;font-size:13px;' : 'color:#b45454;font-weight:600;font-size:13px;'">
+                  {{ u.active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td style="font-size:12.5px;color:#8a958d;">{{ u.lastLoginAt ? (u.lastLoginAt | date:'dd MMM yyyy') : 'Never' }}</td>
+              <td>
+                <button *ngIf="!u.active" (click)="setUserActive(u.id, true)"
+                        class="btn-primary" style="font-size:12px;padding:6px 12px;">Activate</button>
+                <button *ngIf="u.active" (click)="setUserActive(u.id, false)"
+                        class="btn-secondary" style="font-size:12px;padding:6px 12px;">Deactivate</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </div>
-</div>
-<app-site-footer></app-site-footer>
+</main>
+
+<app-site-footer />

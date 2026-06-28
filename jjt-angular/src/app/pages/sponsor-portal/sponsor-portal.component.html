@@ -1,0 +1,132 @@
+<app-site-header />
+
+<main style="min-height:100vh;background:#fffdf9;padding:40px 32px;">
+  <div style="max-width:860px;margin:0 auto;">
+
+    <!-- Header -->
+    <div style="margin-bottom:32px;">
+      <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:36px;color:#1c352c;margin:0 0 6px;">
+        My Sponsored Children
+      </h1>
+      <p style="font-size:14px;color:#8a958d;margin:0;">Logged in as {{ sponsorEmail }}</p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" style="text-align:center;padding:60px 0;">
+      <div style="display:inline-block;width:38px;height:38px;border:3px solid #e3dccd;
+                  border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <p style="color:#8a958d;margin-top:14px;font-size:14px;">Loading your children…</p>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error"
+         style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:16px;color:#b45454;font-size:14px;">
+      {{ error }}
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="!loading && !error && children.length === 0"
+         style="border:1px solid #e3dccd;border-radius:14px;padding:60px;text-align:center;background:#faf8f2;">
+      <p style="font-size:18px;color:#6b7b73;margin:0 0 8px;">No sponsored children yet.</p>
+      <p style="font-size:14px;color:#9aa79f;margin:0;">Contact the JJT admin to link children to your sponsorship.</p>
+    </div>
+
+    <!-- Children list -->
+    <div *ngIf="!loading && !error && children.length > 0"
+         style="display:flex;flex-direction:column;gap:14px;">
+      <div *ngFor="let d of children"
+           style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fff;
+                  transition:box-shadow .15s;" class="sponsor-card">
+
+        <!-- Summary row -->
+        <button (click)="toggleChild(d)"
+                style="width:100%;background:none;border:none;cursor:pointer;padding:20px;
+                       display:flex;align-items:flex-start;gap:16px;text-align:left;">
+          <!-- Avatar -->
+          <div style="width:46px;height:46px;border-radius:50%;background:#eef5f1;border:1px solid #cfe0d7;
+                      flex-shrink:0;display:flex;align-items:center;justify-content:center;
+                      font-family:'Newsreader',serif;font-size:20px;font-weight:500;color:#2f5d4f;">
+            {{ d.child.fullName.charAt(0) }}
+          </div>
+          <!-- Info -->
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:5px;">
+              <span style="font-weight:600;font-size:16px;color:#1c352c;">{{ d.child.fullName }}</span>
+              <span [style]="statusBadgeStyle(d.child.availabilityStatus)">{{ statusLabel(d.child.availabilityStatus) }}</span>
+            </div>
+            <div style="font-size:13px;color:#8a958d;display:flex;flex-wrap:wrap;gap:12px;">
+              <span>{{ d.child.campusName }}</span>
+              <span>{{ d.child.city }}</span>
+              <span>{{ d.child.educationCurrency }} {{ d.child.educationAmount }}/mo</span>
+            </div>
+          </div>
+          <!-- Chevron -->
+          <svg [style]="'transition:transform .2s;flex-shrink:0;' + (d.expanded ? 'transform:rotate(180deg);' : '')"
+               width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#9aa79f" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+
+        <!-- Expanded detail -->
+        <div *ngIf="d.expanded"
+             style="border-top:1px solid #efe9dd;padding:20px 24px;">
+          <div *ngIf="d.loadingDetail"
+               style="font-size:14px;color:#8a958d;padding:16px 0;">Loading details…</div>
+
+          <ng-container *ngIf="!d.loadingDetail">
+            <!-- Ledger -->
+            <h3 style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+                       color:#9aa79f;margin:0 0 12px;">Education Ledger</h3>
+            <div *ngIf="!d.ledger || d.ledger.entries.length === 0"
+                 style="font-size:13px;color:#8a958d;font-style:italic;margin-bottom:20px;">No ledger entries recorded yet.</div>
+            <div *ngIf="d.ledger && d.ledger.entries.length > 0"
+                 style="border:1px solid #e3dccd;border-radius:10px;overflow:hidden;margin-bottom:24px;">
+              <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                <thead>
+                  <tr style="background:#f3eee4;border-bottom:1px solid #e3dccd;">
+                    <th style="padding:9px 14px;text-align:left;color:#6b7b73;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Month</th>
+                    <th style="padding:9px 14px;text-align:left;color:#6b7b73;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Amount</th>
+                    <th style="padding:9px 14px;text-align:left;color:#6b7b73;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">Coverage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let entry of d.ledger.entries; let last = last"
+                      [style]="'border-bottom:' + (last ? 'none' : '1px solid #efe9dd') + ';'">
+                    <td style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;color:#54625b;">{{ entry.month }}</td>
+                    <td style="padding:10px 14px;color:#1c352c;font-weight:500;">{{ entry.educationCurrency }} {{ entry.educationAmount }}</td>
+                    <td style="padding:10px 14px;">
+                      <span [style]="entry.coverageType === 'SPONSOR' ? 'background:#eef5f1;color:#214a3e;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;' : 'background:#fdf7ec;color:#8a5f1f;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;'">
+                        {{ coverageLabel(entry.coverageType) }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Progress updates -->
+            <h3 style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+                       color:#9aa79f;margin:0 0 12px;">Progress Updates</h3>
+            <div *ngIf="d.progress.length === 0"
+                 style="font-size:13px;color:#8a958d;font-style:italic;">No progress updates yet.</div>
+            <div *ngFor="let p of d.progress"
+                 style="border:1px solid #e3dccd;border-radius:10px;padding:14px 16px;margin-bottom:10px;background:#faf8f2;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">
+                {{ p.month }}
+              </div>
+              <p style="font-size:14px;line-height:1.6;color:#54625b;margin:0;">{{ p.summary }}</p>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<app-site-footer />
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sponsor-card:hover { box-shadow: 0 4px 16px -8px rgba(20,40,30,.18); }
+</style>

@@ -3,18 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SponsorService, CommitmentType, AvailabilityStatus } from '../../services/sponsor.service';
-import { SiteHeaderComponent } from '../../components/layout/site-header.component';
-import { SiteFooterComponent } from '../../components/layout/site-footer.component';
-import { SponsorImpactPanelComponent } from '../../components/sponsor-impact-panel/sponsor-impact-panel.component';
 
 @Component({
   selector: 'app-sponsor-commit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent, SponsorImpactPanelComponent],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './sponsor-commit.component.html',
-  styleUrl: './sponsor-commit.component.css'
 })
 export class SponsorCommitComponent implements OnInit {
+  // Child data
   childId: string | null = null;
   childName = '';
   monthlyCost = '';
@@ -22,27 +19,34 @@ export class SponsorCommitComponent implements OnInit {
   city = '';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
 
+  // Step
+  step: 1 | 2 | 3 | 4 = 1;
+
+  // Form
+  commitmentType: CommitmentType = 'MONTHLY';
   sponsorName = '';
   email = '';
   phone = '';
-  commitmentType: CommitmentType = 'MONTHLY';
 
-  loading = false;
-  error: string | null = null;
-
+  // Bank info
   readonly paymentInfo = {
     accountTitle: 'JUNIOR JINNAH TRUST',
     accountNumber: '2000848908',
     iban: 'PK27SAMB0000002000848908',
     bankName: 'SAMBA BANK LIMITED'
   };
-
   copiedField: string | null = null;
+
+  // State
+  pageLoading = true;
+  submitting = false;
+  error: string | null = null;
+  startMonth: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
-    private sponsorService: SponsorService
+    private sponsorService: SponsorService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -50,63 +54,87 @@ export class SponsorCommitComponent implements OnInit {
     if (this.childId) {
       this.sponsorService.getChild(this.childId).subscribe({
         next: (child) => {
-          this.childName = child.fullName;
+          this.childName   = child.fullName;
           this.supportStatus = child.availabilityStatus;
-          this.monthlyCost = `${child.educationAmount} ${child.educationCurrency}`;
-          this.campusName = child.campusName;
-          this.city = child.city;
+          this.monthlyCost = `${child.educationCurrency} ${child.educationAmount}`;
+          this.campusName  = child.campusName;
+          this.city        = child.city;
+          this.pageLoading = false;
         },
         error: () => {
           this.error = 'Failed to load child details.';
+          this.pageLoading = false;
         }
       });
+    } else {
+      this.error = 'Child not found.';
+      this.pageLoading = false;
     }
   }
 
-  async copy(value: string, field: string) {
-    try {
-      await navigator.clipboard.writeText(value);
-      this.copiedField = field;
-      setTimeout(() => (this.copiedField = null), 2000);
-    } catch (err) {
-      console.error('Copy failed', err);
-    }
+  get yearlyPrice(): string {
+    const match = this.monthlyCost.match(/[\d,]+\.?\d*/);
+    if (!match) return this.monthlyCost;
+    const numeric = parseFloat(match[0].replace(/,/g, ''));
+    const yearly = Math.round(numeric * 12 * 0.9);
+    const currency = this.monthlyCost.replace(match[0], '').trim();
+    return `${currency} ${yearly.toLocaleString()}`;
+  }
+
+  get displayPrice(): string {
+    return this.commitmentType === 'YEARLY' ? this.yearlyPrice : this.monthlyCost;
+  }
+
+  get stepValid(): boolean {
+    if (this.step === 1) return true;
+    if (this.step === 2) return !!this.sponsorName.trim() && !!this.email.trim();
+    return true;
+  }
+
+  nextStep(): void {
+    if (!this.stepValid) { this.error = 'Please fill in all required fields.'; return; }
+    this.error = null;
+    if (this.step === 3) { this.submit(); return; }
+    this.step = (this.step + 1) as 1 | 2 | 3 | 4;
+  }
+
+  prevStep(): void {
+    if (this.step > 1) this.step = (this.step - 1) as 1 | 2 | 3 | 4;
   }
 
   submit(): void {
-    this.error = null;
-    if (this.supportStatus === 'ALLOCATED') {
-      this.error = 'This child already has an active sponsorship.';
+    if (this.submitting) return;
+    if (this.supportStatus !== 'AVAILABLE') {
+      this.error = 'This child is not available for new sponsorships.';
       return;
     }
-    if (!this.childId) {
-      this.error = 'Child not found.';
-      return;
-    }
-    if (!this.sponsorName.trim() || !this.email.trim()) {
-      this.error = 'Please provide your name and email.';
-      return;
-    }
+    if (!this.childId) return;
 
-    this.loading = true;
+    this.submitting = true;
+    this.error = null;
+
     this.sponsorService.commitSponsorship({
       childId: this.childId,
       commitmentType: this.commitmentType,
-      sponsor: {
-        name: this.sponsorName,
-        email: this.email,
-        phone: this.phone || null
-      }
+      sponsor: { name: this.sponsorName, email: this.email, phone: this.phone || null }
     }).subscribe({
-      next: () => {
-        this.loading = false;
-        this.router.navigate(['/sponsor/confirmation']);
+      next: (res) => {
+        this.submitting = false;
+        this.startMonth = res.startMonth;
+        this.step = 4;
       },
-      error: () => {
-        this.loading = false;
-        this.error = 'Unable to submit sponsorship. Please try again.';
+      error: (err) => {
+        this.submitting = false;
+        this.error = err?.error?.message ?? 'Unable to submit sponsorship. Please try again.';
       }
     });
   }
 
+  async copy(value: string, field: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(value);
+      this.copiedField = field;
+      setTimeout(() => (this.copiedField = null), 2000);
+    } catch { /* noop */ }
+  }
 }

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,0,600;6..72,1,400&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+</style>
+</helmet>
+
+<!-- ===== BOARD TITLE ===== -->
+<div style="position:absolute;left:0px;top:0px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">JJT · Product Design</div>
+  <div style="background:#1c352c;border-radius:6px;box-shadow:0 18px 40px -22px rgba(20,40,30,.5);padding:34px 42px;display:flex;justify-content:space-between;align-items:center;gap:40px;">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9cc3b3;margin-bottom:10px;">Phase 3 of 4 · High-fidelity mockups</div>
+      <div style="font-family:'Newsreader',serif;font-weight:500;font-size:36px;line-height:1.05;color:#fdfaf3;letter-spacing:-.01em;">The hero flows, fully designed</div>
+    </div>
+    <div style="font-size:13px;color:#9cc3b3;text-align:right;line-height:1.6;max-width:300px;">Landing · Browse · Child profile · Sponsorship.<br>Photos shown as placeholders — drop in real imagery.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 1 — LANDING                                            -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:0px;top:320px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">01 · Landing page</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <!-- chrome -->
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org</div>
+    </div>
+    <!-- page -->
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <!-- nav -->
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:26px;margin-left:18px;font-size:14px;color:#54625b;"><span>Children</span><span>How it works</span><span>Impact</span></div>
+        <div style="margin-left:auto;display:flex;gap:14px;align-items:center;"><span style="font-size:14px;color:#54625b;">Sign in</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <!-- hero -->
+      <div style="display:grid;grid-template-columns:1.05fr .95fr;gap:48px;padding:64px 40px;align-items:center;">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:8px;background:#eef5f1;border:1px solid #cfe0d7;border-radius:100px;padding:6px 14px;margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span><span style="font-size:12.5px;color:#214a3e;font-weight:500;">Education sponsorship, uninterrupted</span></div>
+          <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:54px;line-height:1.04;letter-spacing:-.015em;color:#1c352c;margin:0 0 22px;">Keep a child in school — even when life gets in the way.</h1>
+          <p style="font-size:18px;line-height:1.6;color:#54625b;margin:0 0 32px;max-width:480px;">Sponsor a child's education and follow their real progress. And if a sponsorship ever lapses, our Continuity Fund keeps their learning going without a single missed day.</p>
+          <div style="display:flex;gap:14px;align-items:center;">
+            <span style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;padding:15px 28px;">Browse children</span>
+            <span style="border:1px solid #cdc4b2;color:#1c352c;font-size:16px;font-weight:500;border-radius:10px;padding:15px 24px;">How it works →</span>
+          </div>
+          <div style="display:flex;gap:40px;margin-top:44px;">
+            <div><div style="font-family:'Newsreader',serif;font-size:32px;color:#1c352c;">2,840</div><div style="font-size:13px;color:#8a958d;margin-top:2px;">children supported</div></div>
+            <div><div style="font-family:'Newsreader',serif;font-size:32px;color:#1c352c;">100%</div><div style="font-size:13px;color:#8a958d;margin-top:2px;">days of learning kept</div></div>
+            <div><div style="font-family:'Newsreader',serif;font-size:32px;color:#1c352c;">41</div><div style="font-size:13px;color:#8a958d;margin-top:2px;">partner schools</div></div>
+          </div>
+        </div>
+        <div style="border-radius:16px;height:460px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 11px,#e5dccb 11px,#e5dccb 22px);border:1px solid #e3dccd;display:flex;align-items:flex-end;justify-content:center;padding:18px;position:relative;">
+          <span style="position:absolute;top:18px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;border-radius:5px;padding:4px 9px;">HERO PHOTO · child in class</span>
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;width:100%;box-shadow:0 10px 24px -16px rgba(20,40,30,.4);">
+            <div style="width:44px;height:44px;border-radius:50%;background:repeating-linear-gradient(135deg,#dcd2bf,#dcd2bf 6px,#d3c8b2 6px,#d3c8b2 12px);border:1px solid #d3c8b2;flex-shrink:0;"></div>
+            <div style="flex:1;"><div style="font-weight:600;font-size:14px;color:#1c352c;">Amara, 9</div><div style="font-size:12.5px;color:#8a958d;">Grade 4 · Riverside Primary</div></div>
+            <span style="background:#eef5f1;color:#214a3e;font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">Sponsored</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- continuity promise band -->
+      <sc-if value="{{ showContinuity }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#f3eee4;border-top:1px solid #e3dccd;border-bottom:1px solid #e3dccd;padding:56px 40px;">
+        <div style="text-align:center;max-width:620px;margin:0 auto 36px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#b07d3a;margin-bottom:12px;">The continuity promise</div>
+          <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:34px;line-height:1.12;color:#1c352c;margin:0;">A child's education never pauses while a sponsorship does.</h2>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:26px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2f5d4f;margin-bottom:14px;"></span><div style="font-weight:600;font-size:17px;color:#1c352c;margin-bottom:6px;">Sponsored</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">An active sponsor funds the child and follows their progress directly.</div></div>
+          <div style="background:#fdf7ec;border:1px solid #ecd6b0;border-radius:14px;padding:26px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#d99a4e;margin-bottom:14px;"></span><div style="font-weight:600;font-size:17px;color:#8a5f1f;margin-bottom:6px;">Bridged by Continuity Fund</div><div style="font-size:14px;line-height:1.55;color:#8a6a38;">Support continues from a pooled fund while a sponsor is restored or found.</div></div>
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:26px;"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#9aa79f;margin-bottom:14px;"></span><div style="font-weight:600;font-size:17px;color:#1c352c;margin-bottom:6px;">Seeking sponsor</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">Eligible and waiting in Browse to be matched with someone who cares.</div></div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- featured children -->
+      <div style="padding:56px 40px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px;"><h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0;">Children waiting for a sponsor</h2><span style="font-size:14px;color:#2f5d4f;font-weight:600;">View all →</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+          <!-- card -->
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Daniel, 11</span><span style="background:#f1ece2;color:#8a7a5f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Seeking</span></div><div style="font-size:13px;color:#8a958d;margin-bottom:14px;">Grade 5 · Kisumu</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13.5px;color:#54625b;">from <strong style="color:#1c352c;">$35/mo</strong></span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Grace, 8</span><span style="background:#fdf7ec;color:#8a5f1f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Bridged</span></div><div style="font-size:13px;color:#8a958d;margin-bottom:14px;">Grade 3 · Mwanza</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13.5px;color:#54625b;">from <strong style="color:#1c352c;">$35/mo</strong></span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Samuel, 10</span><span style="background:#f1ece2;color:#8a7a5f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Seeking</span></div><div style="font-size:13px;color:#8a958d;margin-bottom:14px;">Grade 4 · Eldoret</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13.5px;color:#54625b;">from <strong style="color:#1c352c;">$35/mo</strong></span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Esther, 12</span><span style="background:#f1ece2;color:#8a7a5f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Seeking</span></div><div style="font-size:13px;color:#8a958d;margin-bottom:14px;">Grade 6 · Nakuru</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13.5px;color:#54625b;">from <strong style="color:#1c352c;">$35/mo</strong></span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- how it works -->
+      <div style="background:#f3eee4;border-top:1px solid #e3dccd;padding:56px 40px;">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0 0 30px;">How sponsorship works</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;">
+          <div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">01</div><div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Choose a child</div><div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Browse real profiles and find a child whose story moves you.</div></div>
+          <div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">02</div><div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Sponsor monthly or yearly</div><div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Set up support in minutes. Cancel or change anytime.</div></div>
+          <div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">03</div><div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Follow their progress</div><div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Receive updates, grades, and photos as your child grows.</div></div>
+        </div>
+      </div>
+
+      <!-- footer -->
+      <div style="background:#1c352c;padding:40px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+        <div style="display:flex;gap:24px;font-size:13.5px;color:#9cc3b3;"><span>About</span><span>Impact</span><span>For organizations</span><span>Contact</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 2 — BROWSE CHILDREN                                    -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:1480px;top:320px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">02 · Browse children</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/children</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <!-- nav -->
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:26px;margin-left:18px;font-size:14px;color:#54625b;"><span style="color:#2f5d4f;font-weight:600;">Children</span><span>How it works</span><span>Impact</span></div>
+        <div style="margin-left:auto;display:flex;gap:14px;align-items:center;"><span style="font-size:14px;color:#54625b;">Sign in</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <!-- header -->
+      <div style="padding:40px 40px 24px;">
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;letter-spacing:-.01em;">Children waiting for a sponsor</h1>
+        <p style="font-size:16px;color:#6b7b73;margin:0;">Every profile is real, verified by a partner organization. <strong style="color:#1c352c;">1,204 children</strong> are seeking a sponsor right now.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:248px 1fr;gap:32px;padding:0 40px 48px;align-items:start;">
+        <!-- filters -->
+        <div style="border:1px solid #e3dccd;border-radius:14px;padding:22px;position:sticky;top:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Filter</span><span style="font-size:12.5px;color:#2f5d4f;">Reset</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Search</div>
+          <div style="border:1px solid #ddd5c5;border-radius:8px;padding:9px 12px;font-size:13px;color:#a99e88;margin-bottom:22px;">Name or location…</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Status</div>
+          <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:22px;">
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;background:#2f5d4f;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✓</span>Seeking sponsor</span>
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;"></span>Bridged</span>
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;"></span>All children</span>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">School level</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;"><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Primary</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Secondary</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Age</div>
+          <div style="height:4px;background:#e7e1d4;border-radius:4px;position:relative;margin:14px 4px 0;"><span style="position:absolute;left:10%;top:-4px;width:12px;height:12px;border-radius:50%;background:#2f5d4f;"></span><span style="position:absolute;left:75%;top:-4px;width:12px;height:12px;border-radius:50%;background:#2f5d4f;"></span></div>
+        </div>
+
+        <!-- grid -->
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;"><span style="font-size:13.5px;color:#8a958d;">Showing 12 of 1,204</span><span style="font-size:13.5px;color:#54625b;border:1px solid #ddd5c5;border-radius:8px;padding:8px 14px;">Sort: Newest ▾</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+            <!-- 9 cards -->
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Daniel, 11</span><span style="background:#f1ece2;color:#8a7a5f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Seeking</span></div><div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">Grade 5 · Kisumu</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">$35/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Grace, 8</span><span style="background:#fdf7ec;color:#8a5f1f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Bridged</span></div><div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">Grade 3 · Mwanza</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">$35/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Samuel, 10</span><span style="background:#f1ece2;color:#8a7a5f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Seeking</span></div><div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">Grade 4 · Eldoret</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">$35/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Esther, 12</span><span style="background:#f1ece2;color:#8a7a5f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Seeking</span></div><div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">Grade 6 · Nakuru</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">$35/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Joseph, 9</span><span style="background:#f1ece2;color:#8a7a5f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Seeking</span></div><div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">Grade 4 · Arusha</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">$35/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Mary, 13</span><span style="background:#fdf7ec;color:#8a5f1f;font-size:10.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Bridged</span></div><div style="font-size:12.5px;color:#8a958d;margin-bottom:12px;">Form 1 · Kampala</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">$42/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+          </div>
+          <div style="display:flex;justify-content:center;margin-top:30px;"><span style="border:1px solid #cdc4b2;color:#1c352c;font-size:14px;font-weight:500;border-radius:10px;padding:13px 26px;">Load more children</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 3 — CHILD PROFILE                                      -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:2960px;top:320px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">03 · Child profile</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/children/daniel</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <!-- nav -->
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:26px;margin-left:18px;font-size:14px;color:#54625b;"><span style="color:#2f5d4f;font-weight:600;">Children</span><span>How it works</span><span>Impact</span></div>
+        <div style="margin-left:auto;display:flex;gap:14px;align-items:center;"><span style="font-size:14px;color:#54625b;">Sign in</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <div style="padding:24px 40px 12px;font-size:13px;color:#8a958d;">Children &nbsp;›&nbsp; Daniel</div>
+
+      <!-- hero -->
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:36px;padding:12px 40px 48px;align-items:start;">
+        <div>
+          <div style="border-radius:18px;height:420px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);border:1px solid #e3dccd;position:relative;margin-bottom:18px;"><span style="position:absolute;top:16px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;border-radius:5px;padding:4px 9px;">PORTRAIT · Daniel</span></div>
+          <div style="display:flex;gap:10px;">
+            <div style="flex:1;height:80px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+            <div style="flex:1;height:80px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+            <div style="flex:1;height:80px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+          </div>
+
+          <!-- story -->
+          <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:38px 0 12px;">Daniel's story</h2>
+          <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0 0 14px;">Daniel is in Grade 5 at Riverside Primary in Kisumu. He loves mathematics and dreams of becoming an engineer. He walks 40 minutes to school each day and rarely misses a class.</p>
+          <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0;">His family works seasonal farm labour, which makes school fees unpredictable. Your sponsorship covers tuition, books, uniform, and a daily meal — and the Continuity Fund ensures none of it lapses between payments.</p>
+
+          <!-- support breakdown -->
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;margin-top:30px;background:#faf8f2;">
+            <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:16px;">What your sponsorship covers</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>School tuition &amp; fees</div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>Books &amp; supplies</div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>Uniform &amp; shoes</div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>Daily school meal</div>
+            </div>
+          </div>
+
+          <!-- timeline -->
+          <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:38px 0 20px;">Progress timeline</h2>
+          <div style="border-left:2px solid #e3dccd;padding-left:24px;display:flex;flex-direction:column;gap:24px;">
+            <div style="position:relative;"><span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:#2f5d4f;border:2px solid #fffdf9;"></span><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;">MAR 2026 · TERM REPORT</div><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:4px;">Top of class in mathematics</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">Daniel scored 92% in his end-of-term maths exam and 96% attendance.</div></div>
+            <div style="position:relative;"><span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:#d99a4e;border:2px solid #fffdf9;"></span><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;">JAN 2026 · PHOTO UPDATE</div><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:4px;">New school year, new uniform</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">Daniel started Grade 5 with a fresh set of books and a big smile.</div></div>
+            <div style="position:relative;"><span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:#9aa79f;border:2px solid #fffdf9;"></span><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;">NOV 2025 · MILESTONE</div><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:4px;">Joined the school science club</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">He built a model water filter for the regional fair.</div></div>
+          </div>
+        </div>
+
+        <!-- sticky sponsor card -->
+        <div style="position:sticky;top:20px;">
+          <div style="border:1px solid #e3dccd;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px -28px rgba(20,40,30,.4);">
+            <div style="padding:24px;background:#fffdf9;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;"><div><div style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;">Daniel, 11</div><div style="font-size:13.5px;color:#8a958d;margin-top:2px;">Grade 5 · Riverside Primary, Kisumu</div></div></div>
+              <span style="display:inline-flex;align-items:center;gap:7px;background:#f1ece2;color:#8a7a5f;font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;margin-top:12px;"><span style="width:7px;height:7px;border-radius:50%;background:#9aa79f;"></span>Seeking sponsor</span>
+
+              <!-- plan toggle -->
+              <div style="display:flex;background:#f3eee4;border-radius:10px;padding:4px;margin:22px 0 16px;">
+                <span style="flex:1;text-align:center;background:#fffdf9;border:1px solid #e3dccd;color:#1c352c;font-weight:600;font-size:13.5px;border-radius:7px;padding:9px 0;">Monthly</span>
+                <span style="flex:1;text-align:center;color:#8a958d;font-size:13.5px;font-weight:500;padding:9px 0;">Yearly · save 10%</span>
+              </div>
+
+              <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;"><span style="font-family:'Newsreader',serif;font-size:42px;color:#1c352c;">{{ heroPrice }}</span><span style="font-size:15px;color:#8a958d;">{{ heroPeriod }}</span></div>
+              <div style="font-size:13px;color:#8a958d;margin-bottom:20px;">{{ heroSub }}</div>
+
+              <div style="background:#2f5d4f;color:#fff;text-align:center;font-size:16px;font-weight:600;border-radius:10px;padding:15px 0;margin-bottom:10px;">Sponsor Daniel</div>
+              <div style="border:1px solid #cdc4b2;color:#1c352c;text-align:center;font-size:14px;font-weight:500;border-radius:10px;padding:12px 0;">Give a one-time gift</div>
+            </div>
+            <div style="background:#fdf7ec;border-top:1px solid #ecd6b0;padding:16px 24px;display:flex;gap:11px;align-items:flex-start;">
+              <span style="width:9px;height:9px;border-radius:50%;background:#d99a4e;margin-top:4px;flex-shrink:0;"></span>
+              <div style="font-size:12.5px;line-height:1.5;color:#8a6a38;">Protected by the <strong>Continuity Fund</strong> — if a payment is ever delayed, Daniel's education keeps going.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 4 — SPONSORSHIP FLOW                                   -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:4440px;top:320px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">04 · Sponsorship flow · checkout</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/sponsor/daniel</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <!-- minimal checkout nav -->
+      <div style="display:flex;align-items:center;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <span style="margin-left:auto;font-size:13px;color:#8a958d;">Secure checkout 🔒</span>
+      </div>
+
+      <!-- stepper -->
+      <div style="display:flex;align-items:center;gap:0;padding:28px 40px;border-bottom:1px solid #efe9dd;">
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#2f5d4f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">1</span><span style="font-size:14px;font-weight:600;color:#1c352c;">Plan</span></div>
+        <span style="flex:1;height:1px;background:#e3dccd;margin:0 16px;"></span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">2</span><span style="font-size:14px;color:#8a958d;">Account</span></div>
+        <span style="flex:1;height:1px;background:#e3dccd;margin:0 16px;"></span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">3</span><span style="font-size:14px;color:#8a958d;">Payment</span></div>
+        <span style="flex:1;height:1px;background:#e3dccd;margin:0 16px;"></span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">4</span><span style="font-size:14px;color:#8a958d;">Confirm</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:36px;padding:40px;align-items:start;">
+        <!-- left: plan select -->
+        <div>
+          <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:34px;color:#1c352c;margin:0 0 6px;letter-spacing:-.01em;">Choose your sponsorship</h1>
+          <p style="font-size:15.5px;color:#6b7b73;margin:0 0 28px;">You can change or cancel anytime. Every plan is protected by the Continuity Fund.</p>
+
+          <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:34px;">
+            <!-- monthly selected -->
+            <div style="border:2px solid #2f5d4f;border-radius:14px;padding:22px;display:flex;align-items:center;gap:18px;background:#f6faf7;">
+              <span style="width:22px;height:22px;border-radius:50%;border:6px solid #2f5d4f;background:#fff;flex-shrink:0;"></span>
+              <div style="flex:1;"><div style="font-weight:600;font-size:17px;color:#1c352c;">Monthly</div><div style="font-size:13.5px;color:#6b7b73;">Billed monthly · cancel anytime</div></div>
+              <div style="text-align:right;"><div style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">$35<span style="font-size:14px;color:#8a958d;">/mo</span></div></div>
+            </div>
+            <!-- yearly -->
+            <div style="border:1px solid #e3dccd;border-radius:14px;padding:22px;display:flex;align-items:center;gap:18px;">
+              <span style="width:22px;height:22px;border-radius:50%;border:1px solid #cdc4b2;flex-shrink:0;"></span>
+              <div style="flex:1;"><div style="display:flex;align-items:center;gap:10px;"><span style="font-weight:600;font-size:17px;color:#1c352c;">Yearly</span><span style="background:#eef5f1;color:#214a3e;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;">Save 10%</span></div><div style="font-size:13.5px;color:#6b7b73;">Billed once a year</div></div>
+              <div style="text-align:right;"><div style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">$378<span style="font-size:14px;color:#8a958d;">/yr</span></div></div>
+            </div>
+          </div>
+
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:14px;">Add a little extra</div>
+          <div style="display:flex;gap:12px;margin-bottom:34px;">
+            <span style="border:1px solid #cdc4b2;border-radius:10px;padding:12px 22px;font-size:14px;color:#54625b;">+ $5</span>
+            <span style="border:1px solid #cdc4b2;border-radius:10px;padding:12px 22px;font-size:14px;color:#54625b;">+ $10</span>
+            <span style="border:1px solid #cdc4b2;border-radius:10px;padding:12px 22px;font-size:14px;color:#54625b;">+ $25</span>
+            <span style="border:1px dashed #cdc4b2;border-radius:10px;padding:12px 22px;font-size:14px;color:#8a958d;">Custom</span>
+          </div>
+
+          <div style="display:flex;gap:14px;align-items:center;">
+            <span style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;padding:15px 32px;">Continue to account →</span>
+            <span style="font-size:14px;color:#8a958d;">Step 1 of 4</span>
+          </div>
+        </div>
+
+        <!-- right: order summary -->
+        <div style="position:sticky;top:20px;">
+          <div style="border:1px solid #e3dccd;border-radius:16px;overflow:hidden;">
+            <div style="padding:22px;border-bottom:1px solid #efe9dd;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:16px;">You're sponsoring</div>
+              <div style="display:flex;gap:14px;align-items:center;">
+                <div style="width:56px;height:56px;border-radius:12px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 7px,#e5dccb 7px,#e5dccb 14px);border:1px solid #e3dccd;flex-shrink:0;"></div>
+                <div><div style="font-weight:600;font-size:16px;color:#1c352c;">Daniel, 11</div><div style="font-size:13px;color:#8a958d;">Grade 5 · Kisumu</div></div>
+              </div>
+            </div>
+            <div style="padding:22px;">
+              <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:12px;"><span>Monthly sponsorship</span><span>{{ heroPrice }}</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:12px;"><span>Extra contribution</span><span>$0</span></div>
+              <div style="height:1px;background:#efe9dd;margin:14px 0;"></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Due today</span><span style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">{{ heroPrice }}</span></div>
+              <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">Then {{ heroPrice }}{{ heroPeriod }}, recurring</div>
+            </div>
+            <div style="background:#fdf7ec;border-top:1px solid #ecd6b0;padding:16px 22px;display:flex;gap:11px;align-items:flex-start;">
+              <span style="width:9px;height:9px;border-radius:50%;background:#d99a4e;margin-top:4px;flex-shrink:0;"></span>
+              <div style="font-size:12.5px;line-height:1.5;color:#8a6a38;">A portion supports the <strong>Continuity Fund</strong>, protecting every sponsored child from gaps.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;planView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;monthly&quot;,&quot;yearly&quot;],&quot;default&quot;:&quot;monthly&quot;,&quot;tsType&quot;:&quot;'monthly'|'yearly'&quot;},&quot;showContinuity&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const yearly = (this.props.planView ?? 'monthly') === 'yearly';
+    return {
+      showContinuity: this.props.showContinuity ?? true,
+      heroPrice: yearly ? '$378' : '$35',
+      heroPeriod: yearly ? '/year' : '/month',
+      heroSub: yearly ? 'Billed once a year · saves 10%' : 'Billed monthly · cancel anytime',
+    };
+  }
+}
+</script>
+</body>
+</html>

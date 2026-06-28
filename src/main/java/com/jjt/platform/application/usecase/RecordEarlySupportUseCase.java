@@ -1,5 +1,6 @@
 package com.jjt.platform.application.usecase;
 
+import com.jjt.platform.core.domain.entity.CoverageType;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.exceptions.DomainException;
@@ -26,7 +27,8 @@ public class RecordEarlySupportUseCase {
                 command.ledgerEntryId != null ? command.ledgerEntryId : UUID.randomUUID(),
                 command.childId,
                 command.month,
-                command.educationCost
+                command.educationCost,
+                CoverageType.EARLY_SUPPORT
         );
 
         return ledger.appendEntry(entry);

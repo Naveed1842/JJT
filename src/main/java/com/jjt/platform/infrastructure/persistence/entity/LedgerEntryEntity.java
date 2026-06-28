@@ -1,7 +1,10 @@
 package com.jjt.platform.infrastructure.persistence.entity;
 
+import com.jjt.platform.core.domain.entity.CoverageType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -38,17 +41,23 @@ public class LedgerEntryEntity {
     @Column(name = "education_currency", nullable = false, length = 3, updatable = false)
     private String educationCurrency;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "coverage_type", nullable = false, length = 20, updatable = false)
+    private CoverageType coverageType;
+
     protected LedgerEntryEntity() {
     }
 
     public LedgerEntryEntity(UUID id, EducationSupportLedgerEntity ledger, UUID childId,
-                              String entryMonth, BigDecimal educationAmount, String educationCurrency) {
+                              String entryMonth, BigDecimal educationAmount, String educationCurrency,
+                              CoverageType coverageType) {
         this.id = id;
         this.ledger = ledger;
         this.childId = childId;
         this.entryMonth = entryMonth;
         this.educationAmount = educationAmount;
         this.educationCurrency = educationCurrency;
+        this.coverageType = coverageType;
     }
 
     public UUID getId() {
@@ -73,5 +82,9 @@ public class LedgerEntryEntity {
 
     public String getEducationCurrency() {
         return educationCurrency;
+    }
+
+    public CoverageType getCoverageType() {
+        return coverageType;
     }
 }

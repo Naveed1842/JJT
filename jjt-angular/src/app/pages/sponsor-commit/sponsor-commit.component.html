@@ -1,156 +1,271 @@
-<app-site-header></app-site-header>
-<div class="min-h-screen bg-slate-50 py-12">
-  <div class="mx-auto max-w-5xl px-4">
-    <a [routerLink]="['/children', childId]" class="text-base font-semibold text-slate-600 underline">
-      &larr; Back to child details
-    </a>
+<!-- Minimal header for checkout -->
+<nav style="background:#fffdf9;border-bottom:1px solid #efe9dd;padding:0 32px;height:60px;
+            display:flex;align-items:center;justify-content:space-between;">
+  <a routerLink="/" style="font-family:'Newsreader',serif;font-size:22px;font-weight:500;color:#1c352c;text-decoration:none;">JJT</a>
+  <span style="font-size:13px;color:#8a958d;display:flex;align-items:center;gap:7px;">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="6" width="10" height="7" rx="1.5" stroke="#8a958d" stroke-width="1.2"/><path d="M4.5 6V4.5a2.5 2.5 0 115 0V6" stroke="#8a958d" stroke-width="1.2" stroke-linecap="round"/></svg>
+    Secure checkout
+  </span>
+</nav>
 
-    <div class="mt-6 grid gap-6 lg:grid-cols-3">
-      <div class="space-y-6 lg:col-span-2">
-        <header class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 class="text-3xl font-semibold text-slate-900 leading-tight">Sponsor this child</h1>
-          <p class="mt-3 text-base text-slate-700">Child: {{ childName || 'Loading...' }}</p>
-          <p class="text-base text-slate-700">{{ campusName }} &bull; {{ city }}</p>
-          <p class="mt-1 text-base text-slate-700">Monthly cost: {{ monthlyCost || '—' }}</p>
-          <p class="mt-2 text-base text-slate-700">Status: {{ supportStatus }}</p>
-          <p *ngIf="supportStatus === 'ALLOCATED'" class="mt-2 text-base text-amber-700">
-            This child already has an active sponsorship.
-          </p>
-          <p *ngIf="supportStatus === 'RESERVED'" class="mt-2 text-base text-amber-700">
-            This child currently has a pending sponsorship; final allocation is not confirmed.
-          </p>
-        </header>
+<!-- Loading -->
+<div *ngIf="pageLoading" style="padding:80px;text-align:center;background:#fffdf9;min-height:70vh;">
+  <div style="display:inline-block;width:38px;height:38px;border:3px solid #e3dccd;
+              border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+  <p style="color:#8a958d;margin-top:16px;font-size:14px;">Loading child details…</p>
+</div>
 
-        <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 class="text-xl font-semibold text-slate-900">Choose your sponsorship</h2>
-          <p class="mt-2 text-base text-slate-700">Sponsorship starts from the upcoming month.</p>
-          <p class="mt-1 text-base font-semibold text-slate-800">
-            This is a sponsorship commitment. Payments are completed manually after confirmation.
-          </p>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <label class="cursor-pointer rounded border border-slate-200 p-5" [class.border-slate-900]="commitmentType === 'MONTHLY'">
-              <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="MONTHLY" />
-              <span class="text-base font-semibold text-slate-900">Monthly sponsorship</span>
-              <p class="mt-2 text-base text-slate-700">2,000 PKR / month</p>
-            </label>
-            <label class="cursor-pointer rounded border border-slate-200 p-5" [class.border-slate-900]="commitmentType === 'YEARLY'">
-              <input class="mr-2" type="radio" name="commitmentType" [(ngModel)]="commitmentType" value="YEARLY" />
-              <span class="text-base font-semibold text-slate-900">Yearly commitment (12 months)</span>
-              <p class="mt-2 text-base text-slate-700">24,000 PKR (12 months)</p>
-            </label>
-          </div>
-        </section>
+<!-- Error banner (steps 1-3) -->
+<div *ngIf="!pageLoading && error && step < 4"
+     style="max-width:640px;margin:32px auto;padding:0 32px;">
+  <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:14px;color:#b45454;font-size:14px;">
+    {{ error }}
+  </div>
+</div>
 
-        <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 class="text-xl font-semibold text-slate-900">Your details</h2>
-          <div class="mt-4 grid gap-4 md:grid-cols-2">
-            <div>
-              <label class="text-base font-semibold text-slate-800">Sponsor name</label>
-              <input
-                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-base"
-                type="text"
-                [(ngModel)]="sponsorName"
-                placeholder="Full name"
-              />
+<!-- Main checkout (steps 1-3) -->
+<div *ngIf="!pageLoading && step < 4"
+     style="background:#fffdf9;min-height:calc(100vh - 60px);padding:40px 32px;">
+  <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:36px;align-items:start;">
+
+    <!-- ── Left: stepper + forms ── -->
+    <div>
+      <!-- Stepper -->
+      <div style="display:flex;align-items:center;margin-bottom:36px;">
+        <ng-container *ngFor="let s of [1,2,3]; let i = index; let last = last">
+          <div style="display:flex;align-items:center;">
+            <div [style]="'width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;' + (step > s ? 'background:#2f5d4f;color:#fff;' : step === s ? 'background:#1c352c;color:#fff;' : 'background:#e3dccd;color:#8a958d;')">
+              {{ step > s ? '✓' : s }}
             </div>
-            <div>
-              <label class="text-base font-semibold text-slate-800">Email</label>
-              <input
-                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-base"
-                type="email"
-                [(ngModel)]="email"
-                placeholder="name@example.com"
-              />
-            </div>
-            <div>
-              <label class="text-base font-semibold text-slate-800">Phone (optional)</label>
-              <input
-                class="mt-1 w-full rounded border border-slate-300 px-3 py-2 text-base"
-                type="tel"
-                [(ngModel)]="phone"
-                placeholder="+92 300 1234567"
-              />
-            </div>
+            <span [style]="'font-size:13px;font-weight:500;margin:0 8px;' + (step === s ? 'color:#1c352c;' : 'color:#9aa79f;')">
+              {{ s === 1 ? 'Plan' : s === 2 ? 'Your details' : 'Payment' }}
+            </span>
           </div>
-
-          <p class="mt-4 text-base text-slate-700">
-            Manual payment notice: Our team will contact you to complete the process.
-          </p>
-
-          <div class="mt-5 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-base text-slate-800">
-            <p class="font-semibold text-slate-900 text-lg">Confirmation</p>
-            <p class="mt-1">&bull; Child: {{ childName || 'Loading...' }}</p>
-            <p>&bull; Commitment: {{ commitmentType === 'YEARLY' ? 'Yearly (12 months)' : 'Monthly' }}</p>
-            <p>&bull; Monthly cost: {{ monthlyCost || '—' }}</p>
-          </div>
-
-          <div class="mt-4 rounded-lg border border-slate-200 bg-white px-5 py-5 text-slate-800 payment-card">
-            <p class="font-semibold text-slate-900 text-lg">Payment Details</p>
-            <p class="mt-2 text-slate-700 text-base">
-              Please complete the bank transfer using the details below before confirming your sponsorship.
-            </p>
-            <div class="mt-3 grid gap-3 md:grid-cols-2">
-              <div>
-                <p class="label">Account Title</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value">{{ paymentInfo.accountTitle }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy account title" (click)="copy(paymentInfo.accountTitle, 'accountTitle')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'accountTitle'">Copied</small>
-              </div>
-              <div>
-                <p class="label">Account Number</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value">{{ paymentInfo.accountNumber }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy account number" (click)="copy(paymentInfo.accountNumber, 'accountNumber')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'accountNumber'">Copied</small>
-              </div>
-              <div class="md:col-span-2">
-                <p class="label">IBAN</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value break-all">{{ paymentInfo.iban }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy IBAN" (click)="copy(paymentInfo.iban, 'iban')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'iban'">Copied</small>
-              </div>
-              <div class="md:col-span-2">
-                <p class="label">Bank</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <p class="value">{{ paymentInfo.bankName }}</p>
-                  <button type="button" class="copy-btn icon-only" aria-label="Copy bank name" (click)="copy(paymentInfo.bankName, 'bankName')">
-                    <i class="pi pi-clone"></i>
-                  </button>
-                </div>
-                <small class="text-emerald-600 text-sm" *ngIf="copiedField === 'bankName'">Copied</small>
-              </div>
-            </div>
-          </div>
-
-          <div *ngIf="error" class="mt-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-base text-red-700">
-            {{ error }}
-          </div>
-
-          <button
-            class="mt-6 btn-primary px-7 py-3 text-base font-semibold disabled:opacity-60"
-            (click)="submit()"
-            [disabled]="loading || supportStatus === 'ALLOCATED'"
-          >
-            {{ loading ? 'Submitting...' : 'Commit to sponsorship' }}
-          </button>
-        </section>
+          <div *ngIf="!last" style="flex:1;height:1px;background:#e3dccd;min-width:20px;"></div>
+        </ng-container>
       </div>
 
-      <div class="lg:col-span-1 lg:pt-1">
-        <app-sponsor-impact-panel class="block lg:sticky lg:top-20"></app-sponsor-impact-panel>
+      <!-- ── Step 1: Plan selection ── -->
+      <div *ngIf="step === 1">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
+          Choose a plan
+        </h2>
+        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">
+          Sponsoring <strong style="color:#1c352c;">{{ childName }}</strong>'s education.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+          <!-- Monthly card -->
+          <div (click)="commitmentType = 'MONTHLY'"
+               [style]="'border:2px solid ' + (commitmentType === 'MONTHLY' ? '#2f5d4f' : '#e3dccd') + ';border-radius:14px;padding:20px;cursor:pointer;transition:border-color .15s;background:' + (commitmentType === 'MONTHLY' ? '#f0f5f2' : '#fff') + ';'">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+              <span style="font-weight:600;font-size:15px;color:#1c352c;">Monthly</span>
+              <div [style]="'width:18px;height:18px;border-radius:50%;border:2px solid ' + (commitmentType === 'MONTHLY' ? '#2f5d4f' : '#cdc4b2') + ';display:flex;align-items:center;justify-content:center;'">
+                <div *ngIf="commitmentType === 'MONTHLY'" style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;"></div>
+              </div>
+            </div>
+            <div style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">{{ monthlyCost }}</div>
+            <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">per month</div>
+          </div>
+          <!-- Yearly card -->
+          <div (click)="commitmentType = 'YEARLY'"
+               [style]="'border:2px solid ' + (commitmentType === 'YEARLY' ? '#2f5d4f' : '#e3dccd') + ';border-radius:14px;padding:20px;cursor:pointer;transition:border-color .15s;background:' + (commitmentType === 'YEARLY' ? '#f0f5f2' : '#fff') + ';position:relative;'">
+            <span style="position:absolute;top:-1px;right:-1px;background:#d99a4e;color:#fff;font-size:10.5px;font-weight:700;border-radius:0 12px 0 8px;padding:4px 10px;">Save 10%</span>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+              <span style="font-weight:600;font-size:15px;color:#1c352c;">Yearly</span>
+              <div [style]="'width:18px;height:18px;border-radius:50%;border:2px solid ' + (commitmentType === 'YEARLY' ? '#2f5d4f' : '#cdc4b2') + ';display:flex;align-items:center;justify-content:center;'">
+                <div *ngIf="commitmentType === 'YEARLY'" style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;"></div>
+              </div>
+            </div>
+            <div style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">{{ yearlyPrice }}</div>
+            <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">per year</div>
+          </div>
+        </div>
+        <button (click)="nextStep()"
+                style="width:100%;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
+                       padding:15px 0;border:none;cursor:pointer;">
+          Continue →
+        </button>
+      </div>
+
+      <!-- ── Step 2: Sponsor details ── -->
+      <div *ngIf="step === 2">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
+          Your details
+        </h2>
+        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">We'll use these to confirm and keep you updated.</p>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
+          <div>
+            <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Full name *</label>
+            <input type="text" [(ngModel)]="sponsorName" placeholder="Your full name"
+                   style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                          color:#1c352c;background:#fff;outline:none;font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Email address *</label>
+            <input type="email" [(ngModel)]="email" placeholder="you@example.com"
+                   style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                          color:#1c352c;background:#fff;outline:none;font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;" />
+          </div>
+          <div>
+            <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">
+              Phone <span style="color:#9aa79f;font-weight:400;">(optional)</span>
+            </label>
+            <input type="tel" [(ngModel)]="phone" placeholder="+92 300 0000000"
+                   style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
+                          color:#1c352c;background:#fff;outline:none;font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;" />
+          </div>
+        </div>
+        <div *ngIf="error"
+             style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
+          {{ error }}
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button (click)="prevStep()"
+                  style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
+                         padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
+            ← Back
+          </button>
+          <button (click)="nextStep()"
+                  style="flex:1;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
+                         padding:14px 0;border:none;cursor:pointer;">
+            Continue →
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Step 3: Payment (bank transfer) ── -->
+      <div *ngIf="step === 3">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
+          Payment details
+        </h2>
+        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">
+          Transfer to JJT's account below. We'll confirm receipt within 1–2 business days.
+        </p>
+        <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;margin-bottom:24px;">
+          <div style="background:#f3eee4;border-bottom:1px solid #e3dccd;padding:14px 20px;
+                      font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
+                      text-transform:uppercase;color:#9aa79f;">Bank transfer details</div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <div>
+                <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">Account title</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#1c352c;">{{ paymentInfo.accountTitle }}</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <div>
+                <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">Account number</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#1c352c;">{{ paymentInfo.accountNumber }}</div>
+              </div>
+              <button (click)="copy(paymentInfo.accountNumber, 'acc')"
+                      style="border:1px solid #e3dccd;background:#fffdf9;border-radius:7px;padding:6px 12px;
+                             font-size:12px;color:#54625b;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                {{ copiedField === 'acc' ? '✓ Copied' : 'Copy' }}
+              </button>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+              <div>
+                <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">IBAN</div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#1c352c;">{{ paymentInfo.iban }}</div>
+              </div>
+              <button (click)="copy(paymentInfo.iban, 'iban')"
+                      style="border:1px solid #e3dccd;background:#fffdf9;border-radius:7px;padding:6px 12px;
+                             font-size:12px;color:#54625b;cursor:pointer;white-space:nowrap;flex-shrink:0;">
+                {{ copiedField === 'iban' ? '✓ Copied' : 'Copy' }}
+              </button>
+            </div>
+            <div>
+              <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">Bank</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#1c352c;">{{ paymentInfo.bankName }}</div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="error"
+             style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
+          {{ error }}
+        </div>
+        <div style="display:flex;gap:12px;">
+          <button (click)="prevStep()"
+                  style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
+                         padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
+            ← Back
+          </button>
+          <button (click)="nextStep()" [disabled]="submitting"
+                  [style]="'flex:1;background:' + (submitting ? '#9aa79f' : '#2f5d4f') + ';color:#fff;font-size:16px;font-weight:600;border-radius:10px;padding:14px 0;border:none;cursor:' + (submitting ? 'not-allowed' : 'pointer') + ';'">
+            {{ submitting ? 'Submitting…' : 'Confirm sponsorship' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Right: order summary ── -->
+    <div style="position:sticky;top:24px;border:1px solid #e3dccd;border-radius:14px;overflow:hidden;">
+      <div style="background:#f3eee4;border-bottom:1px solid #e3dccd;padding:14px 20px;font-weight:600;font-size:14px;color:#1c352c;">
+        Order summary
+      </div>
+      <div style="padding:20px;">
+        <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:4px;">{{ childName }}</div>
+        <div style="font-size:13px;color:#8a958d;margin-bottom:18px;">{{ campusName }}<span *ngIf="city"> · {{ city }}</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:14px;color:#54625b;">
+          <span>{{ commitmentType === 'YEARLY' ? 'Yearly' : 'Monthly' }} sponsorship</span>
+          <strong style="color:#1c352c;">{{ displayPrice }}</strong>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#54625b;">
+          <span>Duration</span>
+          <span style="color:#1c352c;">{{ commitmentType === 'YEARLY' ? '12 months' : 'Monthly' }}</span>
+        </div>
+        <hr style="border:none;border-top:1px solid #e3dccd;margin:16px 0;" />
+        <div style="background:#fdf7ec;border:1px solid #ecd6b0;border-radius:10px;padding:12px;
+                    font-size:12.5px;line-height:1.5;color:#8a6a38;display:flex;gap:9px;align-items:flex-start;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#d99a4e;margin-top:3px;flex-shrink:0;"></span>
+          Protected by JJT's Continuity Fund — if you ever miss a payment, {{ childName }}'s education is not interrupted.
+        </div>
       </div>
     </div>
   </div>
 </div>
-<app-site-footer></app-site-footer>
+
+<!-- ── Step 4: Confirmation ── -->
+<div *ngIf="step === 4"
+     style="background:#fffdf9;min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 32px;">
+  <div style="max-width:520px;width:100%;text-align:center;">
+    <div style="width:60px;height:60px;border-radius:50%;background:#eef5f1;border:1px solid #cfe0d7;display:flex;align-items:center;
+                justify-content:center;margin:0 auto 20px;font-size:24px;color:#2f5d4f;font-weight:700;">✓</div>
+    <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:32px;color:#1c352c;margin:0 0 12px;">
+      Sponsorship committed!
+    </h2>
+    <p style="font-size:16px;line-height:1.65;color:#54625b;margin:0 0 8px;">
+      Thank you for sponsoring <strong style="color:#1c352c;">{{ childName }}</strong>. We've received your commitment.
+    </p>
+    <p *ngIf="startMonth" style="font-size:15px;color:#6b7b73;margin:0 0 8px;">
+      Starting: <strong style="color:#1c352c;font-family:'IBM Plex Mono',monospace;">{{ startMonth }}</strong>
+    </p>
+    <p style="font-size:14px;color:#8a958d;margin:0 0 28px;">
+      We'll reach out to <strong style="color:#1c352c;">{{ email }}</strong> with next steps within 1–2 business days.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a routerLink="/children"
+         style="display:block;background:#2f5d4f;color:#fff;font-size:15px;font-weight:600;border-radius:10px;
+                padding:14px 0;text-decoration:none;">
+        Browse more children
+      </a>
+      <a routerLink="/"
+         style="display:block;border:1px solid #cdc4b2;color:#1c352c;font-size:14px;font-weight:500;
+                border-radius:10px;padding:12px 0;text-decoration:none;">
+        Return to home
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 820px) {
+    div[style*="grid-template-columns:1fr 320px"] {
+      grid-template-columns: 1fr !important;
+    }
+    div[style*="position:sticky;top:24px"] {
+      position: static !important;
+    }
+  }
+</style>
