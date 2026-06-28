@@ -6,14 +6,16 @@ import { SiteFooterComponent } from '../../components/layout/site-footer.compone
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 import {
+  ChildDto,
+  CreateSponsorResponse,
   SponsorshipSummaryResponse,
-  UserResponse,
   SponsorshipStatus,
+  UserResponse,
 } from '../../services/api.models';
 
 type TabId =
   | 'child' | 'sponsor' | 'earlySupport' | 'progress' | 'sponsorship'
-  | 'pending' | 'active' | 'users';
+  | 'pending' | 'active' | 'users' | 'docs';
 
 @Component({
   selector: 'app-admin',
@@ -30,8 +32,12 @@ export class AdminComponent implements OnInit {
   successMessage: string | null = null;
   errorMessage:   string | null = null;
   isLoading = false;
-
   isJjtAdmin = false;
+
+  // ── Shared dropdown data ───────────────────────────────────────────────────
+  children:  ChildDto[]              = [];
+  sponsors:  CreateSponsorResponse[] = [];
+  loadingDropdowns = false;
 
   // ── Create Child ────────────────────────────────────────────────────────
   childForm = {
@@ -47,14 +53,18 @@ export class AdminComponent implements OnInit {
   earlySupportForm = {
     childId: '', month: '', educationAmount: '2000.00', educationCurrency: 'PKR'
   };
+  pastMonths: string[] = this.generatePastMonths(24);
 
   // ── Add Progress ─────────────────────────────────────────────────────────
   progressForm = { childId: '', month: '', summary: '' };
+  progressLedgerMonths: string[] = [];
+  loadingProgressMonths = false;
 
   // ── Commit Sponsorship ───────────────────────────────────────────────────
   sponsorshipForm = {
     sponsorId: '', childId: '', startMonth: '', commitmentType: 'MONTHLY' as 'MONTHLY' | 'YEARLY'
   };
+  futureMonths: string[] = this.generateFutureMonths(12);
 
   // ── Sponsorship lists ─────────────────────────────────────────────────────
   pendingSponsorships: SponsorshipSummaryResponse[] = [];
@@ -64,9 +74,8 @@ export class AdminComponent implements OnInit {
   // ── User management ───────────────────────────────────────────────────────
   users: UserResponse[] = [];
   loadingUsers = false;
-
-  sponsorUserForm = { sponsorId: '', email: '', password: '' };
-  orgUserForm     = { email: '', password: '', orgId: '' };
+  sponsorUserForm     = { sponsorId: '', email: '', password: '' };
+  orgUserForm         = { email: '', password: '', orgId: '' };
   showSponsorUserForm = false;
   showOrgUserForm     = false;
 
@@ -81,6 +90,7 @@ export class AdminComponent implements OnInit {
       { id: 'sponsorship',  label: 'Commit Sponsorship' },
       { id: 'pending',      label: 'Pending' },
       { id: 'active',       label: 'Active' },
+      { id: 'docs',         label: 'How It Works' },
     ];
     if (this.isJjtAdmin) {
       base.push({ id: 'users', label: 'Users' });
@@ -91,6 +101,19 @@ export class AdminComponent implements OnInit {
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
     this.isJjtAdmin = user?.role === 'JJT_ADMIN';
+    this.loadDropdowns();
+  }
+
+  private loadDropdowns(): void {
+    this.loadingDropdowns = true;
+    this.adminService.getOrgChildren().subscribe({
+      next: (data) => { this.children = data; },
+      error: () => {}
+    });
+    this.adminService.listSponsors().subscribe({
+      next: (data) => { this.sponsors = data; this.loadingDropdowns = false; },
+      error: () => { this.loadingDropdowns = false; }
+    });
   }
 
   // ── Tab switching ─────────────────────────────────────────────────────────
@@ -119,6 +142,31 @@ export class AdminComponent implements OnInit {
     return crypto.randomUUID();
   }
 
+  childName(childId: string): string {
+    const c = this.children.find(x => x.id === childId);
+    return c ? `${c.fullName} (${c.rollNumber})` : childId;
+  }
+
+  private generatePastMonths(count: number): string[] {
+    const months: string[] = [];
+    const now = new Date();
+    for (let i = 0; i < count; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+    return months;
+  }
+
+  private generateFutureMonths(count: number): string[] {
+    const months: string[] = [];
+    const now = new Date();
+    for (let i = 1; i <= count; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+    }
+    return months;
+  }
+
   // ── Child ─────────────────────────────────────────────────────────────────
 
   createChild(): void {
@@ -136,6 +184,7 @@ export class AdminComponent implements OnInit {
         this.isLoading = false;
         this.successMessage = `Child created. ID: ${res.childId}`;
         this.childForm = { rollNumber: '', fullName: '', city: '', campusName: '', schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR' };
+        this.loadDropdowns();
       },
       error: (err) => this.handleError(err, 'Failed to create child.')
     });
@@ -159,6 +208,7 @@ export class AdminComponent implements OnInit {
         this.createdSponsorId = res.sponsorId;
         this.successMessage = `Sponsor created. ID: ${res.sponsorId}`;
         this.sponsorForm = { displayName: '', contactEmail: '', phone: '' };
+        this.loadDropdowns();
       },
       error: (err) => this.handleError(err, 'Failed to create sponsor.')
     });
@@ -176,9 +226,7 @@ export class AdminComponent implements OnInit {
     if (this.isLoading) return;
     this.isLoading = true;
 
-    this.adminService.recordEarlySupport({
-      ...this.earlySupportForm,
-    }).subscribe({
+    this.adminService.recordEarlySupport({ ...this.earlySupportForm }).subscribe({
       next: () => {
         this.isLoading = false;
         this.successMessage = 'Early support recorded.';
@@ -189,6 +237,20 @@ export class AdminComponent implements OnInit {
   }
 
   // ── Progress ───────────────────────────────────────────────────────────────
+
+  onProgressChildChange(): void {
+    this.progressForm.month = '';
+    this.progressLedgerMonths = [];
+    if (!this.progressForm.childId) return;
+    this.loadingProgressMonths = true;
+    this.adminService.getOrgLedger(this.progressForm.childId).subscribe({
+      next: (ledger) => {
+        this.progressLedgerMonths = ledger.entries.map(e => e.month);
+        this.loadingProgressMonths = false;
+      },
+      error: () => { this.loadingProgressMonths = false; }
+    });
+  }
 
   addProgress(): void {
     this.clearMessages();
@@ -201,6 +263,7 @@ export class AdminComponent implements OnInit {
         this.isLoading = false;
         this.successMessage = 'Progress update added.';
         this.progressForm = { childId: '', month: '', summary: '' };
+        this.progressLedgerMonths = [];
       },
       error: (err) => this.handleError(err, 'Failed to add progress update.')
     });
@@ -216,7 +279,7 @@ export class AdminComponent implements OnInit {
     this.adminService.commitSponsorship({ ...this.sponsorshipForm }).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = 'Sponsorship committed.';
+        this.successMessage = 'Sponsorship committed. Go to Pending tab to activate it.';
         this.sponsorshipForm = { sponsorId: '', childId: '', startMonth: '', commitmentType: 'MONTHLY' };
       },
       error: (err) => this.handleError(err, 'Failed to commit sponsorship.')
@@ -266,14 +329,8 @@ export class AdminComponent implements OnInit {
   loadUsers(): void {
     this.loadingUsers = true;
     this.adminService.listUsers().subscribe({
-      next: (data) => {
-        this.loadingUsers = false;
-        this.users = data;
-      },
-      error: (err) => {
-        this.loadingUsers = false;
-        this.errorMessage = err?.error?.message ?? 'Failed to load users.';
-      }
+      next: (data) => { this.loadingUsers = false; this.users = data; },
+      error: (err) => { this.loadingUsers = false; this.errorMessage = err?.error?.message ?? 'Failed to load users.'; }
     });
   }
 
@@ -327,14 +384,5 @@ export class AdminComponent implements OnInit {
       },
       error: (err) => this.handleError(err)
     });
-  }
-
-  roleBadgeClass(role: string): string {
-    switch (role) {
-      case 'JJT_ADMIN': return 'bg-purple-100 text-purple-800';
-      case 'ORG_ADMIN':  return 'bg-blue-100 text-blue-800';
-      case 'SPONSOR':    return 'bg-green-100 text-green-800';
-      default:           return 'bg-gray-100 text-gray-800';
-    }
   }
 }

@@ -7,6 +7,7 @@ import com.jjt.platform.api.common.mapper.DtoMapper;
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
+import com.jjt.platform.infrastructure.persistence.repository.SponsorJpaRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,18 @@ import java.util.UUID;
 public class AdminController {
 
     private final AdminCommandService adminService;
+    private final SponsorJpaRepository sponsorRepo;
 
-    public AdminController(AdminCommandService adminService) {
+    public AdminController(AdminCommandService adminService, SponsorJpaRepository sponsorRepo) {
         this.adminService = adminService;
+        this.sponsorRepo = sponsorRepo;
+    }
+
+    @GetMapping("/sponsors")
+    public List<CreateSponsorResponse> listSponsors() {
+        return sponsorRepo.findAll().stream()
+                .map(s -> new CreateSponsorResponse(s.getId(), s.getDisplayName(), s.getContactEmail()))
+                .toList();
     }
 
     @PostMapping("/children")

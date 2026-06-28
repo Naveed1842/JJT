@@ -93,6 +93,10 @@ export class AdminService {
     );
   }
 
+  listSponsors(): Observable<CreateSponsorResponse[]> {
+    return this.http.get<CreateSponsorResponse[]>(`${this.base}/api/admin/sponsors`);
+  }
+
   // ── Org read ──────────────────────────────────────────────────────────────
 
   getOrgChildren(): Observable<ChildDto[]> {
