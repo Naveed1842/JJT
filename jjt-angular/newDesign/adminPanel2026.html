@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;height:100%;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#1c352c;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:#d8cfbd;border-radius:6px;border:3px solid transparent;background-clip:content-box;}
+  ::-webkit-scrollbar-thumb:hover{background:#c4baa4;background-clip:content-box;}
+  input,select,button,textarea{font-family:inherit;}
+  @keyframes scIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
+  @keyframes scDrawer{from{transform:translateX(28px);opacity:0;}to{transform:none;opacity:1;}}
+  @keyframes scFade{from{opacity:0;}to{opacity:1;}}
+  @keyframes scToast{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+</style>
+</helmet>
+
+<div style="display:flex;height:100vh;width:100%;overflow:hidden;background:#f4f1ea;">
+
+  <!-- ===================== LEFT RAIL ===================== -->
+  <aside style="width:252px;flex-shrink:0;background:#1c352c;display:flex;flex-direction:column;height:100%;">
+    <div style="padding:22px 22px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid rgba(255,255,255,.07);">
+      <div style="width:34px;height:34px;border-radius:8px;background:#2f5d4f;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',serif;font-weight:600;font-size:18px;color:#fdfaf3;">J</div>
+      <div>
+        <div style="font-family:'Newsreader',serif;font-weight:600;font-size:18px;color:#fdfaf3;line-height:1;">JJT Admin</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#7fa394;margin-top:3px;">Platform console</div>
+      </div>
+    </div>
+
+    <nav style="flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:2px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5f8071;padding:8px 12px 6px;">Overview</div>
+      <sc-for list="{{ navTop }}" as="item" hint-placeholder-count="1">
+        <div onClick="{{ item.go }}" style="{{ item.style }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="{{ item.p1 }}"></path><path d="{{ item.p2 }}"></path></svg>
+          <span style="flex:1;">{{ item.label }}</span>
+          <sc-if value="{{ item.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="{{ item.badgeStyle }}">{{ item.badge }}</span></sc-if>
+        </div>
+      </sc-for>
+
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5f8071;padding:14px 12px 6px;">Management</div>
+      <sc-for list="{{ navManage }}" as="item" hint-placeholder-count="5">
+        <div onClick="{{ item.go }}" style="{{ item.style }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="{{ item.p1 }}"></path><path d="{{ item.p2 }}"></path></svg>
+          <span style="flex:1;">{{ item.label }}</span>
+          <sc-if value="{{ item.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="{{ item.badgeStyle }}">{{ item.badge }}</span></sc-if>
+        </div>
+      </sc-for>
+
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#5f8071;padding:14px 12px 6px;">System</div>
+      <sc-for list="{{ navSystem }}" as="item" hint-placeholder-count="3">
+        <div onClick="{{ item.go }}" style="{{ item.style }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="{{ item.p1 }}"></path><path d="{{ item.p2 }}"></path></svg>
+          <span style="flex:1;">{{ item.label }}</span>
+          <sc-if value="{{ item.hasBadge }}" hint-placeholder-val="{{ false }}"><span style="{{ item.badgeStyle }}">{{ item.badge }}</span></sc-if>
+        </div>
+      </sc-for>
+    </nav>
+
+    <div style="padding:14px;border-top:1px solid rgba(255,255,255,.07);">
+      <div style="background:rgba(217,154,78,.12);border:1px solid rgba(217,154,78,.28);border-radius:10px;padding:13px 14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><span style="width:8px;height:8px;border-radius:50%;background:#e8b572;box-shadow:0 0 0 4px rgba(217,154,78,.18);"></span><span style="font-size:12px;font-weight:600;color:#f3dcb4;">Continuity Fund</span></div>
+        <div style="font-family:'Newsreader',serif;font-size:22px;color:#fdfaf3;line-height:1;">Rs 4.82M</div>
+        <div style="font-size:11px;color:#bfae8d;margin-top:4px;">Covers 38 bridged children · healthy</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <div style="flex:1;display:flex;flex-direction:column;height:100%;min-width:0;">
+
+    <!-- top bar -->
+    <header style="flex-shrink:0;background:#fffdf9;border-bottom:1px solid #e3dccd;padding:0 28px;height:66px;display:flex;align-items:center;gap:20px;">
+      <div style="min-width:0;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#9aa79f;">{{ crumb }}</div>
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:21px;color:#1c352c;line-height:1.1;">{{ pageTitle }}</div>
+      </div>
+
+      <div style="margin-left:auto;display:flex;align-items:center;gap:14px;">
+        <div style="display:flex;align-items:center;gap:9px;background:#f4f1ea;border:1px solid #e3dccd;border-radius:9px;padding:9px 13px;width:280px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9aa79f" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
+          <span style="font-size:13px;color:#a99e88;">Search the platform…</span>
+          <span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#bcae97;border:1px solid #ddd5c5;border-radius:4px;padding:1px 5px;">⌘K</span>
+        </div>
+        <div style="position:relative;width:40px;height:40px;border-radius:10px;border:1px solid #e3dccd;display:flex;align-items:center;justify-content:center;cursor:pointer;" onClick="{{ goNotifications }}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#54625b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          <span style="position:absolute;top:7px;right:8px;min-width:15px;height:15px;border-radius:8px;background:#b9603f;color:#fff;font-size:9.5px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;">{{ unreadCount }}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding-left:14px;border-left:1px solid #e3dccd;">
+          <div style="width:38px;height:38px;border-radius:10px;background:#2f5d4f;color:#fdfaf3;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">AM</div>
+          <div><div style="font-size:13.5px;font-weight:600;color:#1c352c;line-height:1.1;">Asad Mahmood</div><div style="font-size:11.5px;color:#9aa79f;">Super Admin</div></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- content -->
+    <main style="flex:1;overflow-y:auto;padding:26px 28px 60px;">
+
+      <!-- ============ DASHBOARD ============ -->
+      <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ true }}">
+      <div style="animation:scIn .3s ease both;">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px;">
+          <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:18px 20px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:12.5px;color:#6b7b73;">{{ k.label }}</span>
+                <span style="{{ k.deltaStyle }}">{{ k.delta }}</span>
+              </div>
+              <div style="font-family:'Newsreader',serif;font-size:34px;color:#1c352c;line-height:1.05;margin-top:10px;">{{ k.value }}</div>
+              <div style="font-size:12px;color:#9aa79f;margin-top:4px;">{{ k.sub }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-bottom:18px;">
+          <!-- sponsorships chart -->
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;">
+              <div><div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;">New sponsorships</div><div style="font-size:12.5px;color:#9aa79f;margin-top:2px;">Last 8 months · matched children</div></div>
+              <div style="display:flex;gap:6px;"><span style="font-size:11.5px;font-weight:600;color:#214a3e;background:#e7eee9;border-radius:7px;padding:5px 11px;">Monthly</span><span style="font-size:11.5px;color:#9aa79f;padding:5px 11px;">Quarterly</span></div>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:14px;height:188px;padding-top:8px;">
+              <sc-for list="{{ chartBars }}" as="b" hint-placeholder-count="8">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;height:100%;justify-content:flex-end;">
+                  <div style="font-size:11px;font-weight:600;color:#54625b;">{{ b.val }}</div>
+                  <div style="{{ b.barStyle }}"></div>
+                  <div style="font-size:11px;color:#9aa79f;">{{ b.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- status donut -->
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+            <div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;margin-bottom:18px;">Children by status</div>
+            <div style="display:flex;align-items:center;gap:22px;">
+              <div style="{{ donutStyle }}"><div style="width:78px;height:78px;border-radius:50%;background:#fffdf9;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;line-height:1;">{{ childTotal }}</div><div style="font-size:10px;color:#9aa79f;">children</div></div></div>
+              <div style="display:flex;flex-direction:column;gap:13px;flex:1;">
+                <sc-for list="{{ statusLegend }}" as="s" hint-placeholder-count="3">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <span style="{{ s.dotStyle }}"></span>
+                    <span style="font-size:13px;color:#54625b;flex:1;">{{ s.label }}</span>
+                    <span style="font-size:13px;font-weight:600;color:#1c352c;">{{ s.count }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <!-- alerts -->
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;">Needs attention</div><span style="font-size:12px;font-weight:600;color:#8f432a;background:#f7e8e1;border-radius:100px;padding:4px 11px;">{{ alertCount }} open</span></div>
+            <div style="display:flex;flex-direction:column;gap:11px;">
+              <sc-for list="{{ alerts }}" as="a" hint-placeholder-count="3">
+                <div style="display:flex;gap:13px;align-items:flex-start;padding:13px 14px;border:1px solid #efe9dd;border-radius:11px;">
+                  <span style="{{ a.dotStyle }}"></span>
+                  <div style="flex:1;"><div style="font-size:13.5px;font-weight:600;color:#1c352c;">{{ a.title }}</div><div style="font-size:12.5px;color:#6b7b73;margin-top:2px;line-height:1.4;">{{ a.body }}</div></div>
+                  <span style="font-size:11px;color:#9aa79f;white-space:nowrap;">{{ a.time }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- activity -->
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;">Recent activity</div><span style="font-size:12.5px;color:#2f5d4f;font-weight:600;cursor:pointer;" onClick="{{ goAudit }}">View audit log →</span></div>
+            <div style="display:flex;flex-direction:column;">
+              <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+                <div style="display:flex;gap:13px;align-items:center;padding:11px 0;border-bottom:1px solid #f1ece2;">
+                  <div style="width:32px;height:32px;border-radius:9px;background:#eef2ec;color:#2f5d4f;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;">{{ a.who }}</div>
+                  <div style="flex:1;font-size:13px;color:#54625b;line-height:1.4;">{{ a.text }}</div>
+                  <span style="font-size:11px;color:#9aa79f;white-space:nowrap;">{{ a.time }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ MANAGEMENT (generic) ============ -->
+      <sc-if value="{{ isManagement }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:scIn .25s ease both;">
+        <!-- toolbar -->
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px 14px 0 0;padding:16px 18px;border-bottom:none;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:9px;background:#f4f1ea;border:1px solid #e3dccd;border-radius:9px;padding:9px 12px;width:280px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9aa79f" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
+              <input value="{{ search }}" onInput="{{ onSearch }}" placeholder="{{ searchPlaceholder }}" style="border:none;background:none;outline:none;font-size:13px;color:#1c352c;width:100%;" />
+            </div>
+            <div onClick="{{ toggleFilters }}" style="{{ filterBtnStyle }}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"></path></svg>
+              Filters
+            </div>
+            <span style="font-size:12.5px;color:#9aa79f;">{{ resultsText }}</span>
+            <div style="margin-left:auto;display:flex;gap:9px;align-items:center;">
+              <div onClick="{{ exportData }}" style="display:flex;align-items:center;gap:7px;border:1px solid #cdc4b2;color:#54625b;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"></path></svg>
+                Export
+              </div>
+              <sc-if value="{{ mCanAdd }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ openAdd }}" style="display:flex;align-items:center;gap:7px;background:#2f5d4f;color:#fff;border-radius:9px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+                  {{ mAddLabel }}
+                </div>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- filter row -->
+          <sc-if value="{{ showFilters }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:15px;padding-top:15px;border-top:1px dashed #e3dccd;">
+            <sc-if value="{{ mHasStatus }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;align-items:center;gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;">Status</span>
+              <div style="display:flex;gap:6px;">
+                <sc-for list="{{ mStatusChips }}" as="c" hint-placeholder-count="4"><span onClick="{{ c.go }}" style="{{ c.style }}">{{ c.label }}</span></sc-for>
+              </div>
+            </div>
+            </sc-if>
+            <sc-if value="{{ mHasFilter }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;">{{ mFilterLabel }}</span>
+              <select value="{{ filterVal }}" onChange="{{ onFilter }}" style="border:1px solid #ddd5c5;background:#fffdf9;border-radius:8px;padding:7px 11px;font-size:12.5px;color:#54625b;outline:none;">
+                <sc-for list="{{ mFilterOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for>
+              </select>
+            </div>
+            </sc-if>
+            <span onClick="{{ resetFilters }}" style="font-size:12.5px;color:#2f5d4f;font-weight:600;cursor:pointer;margin-left:auto;">Reset all</span>
+          </div>
+          </sc-if>
+        </div>
+
+        <!-- bulk bar -->
+        <sc-if value="{{ mHasSelection }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#eef2ec;border-left:1px solid #e3dccd;border-right:1px solid #e3dccd;border-bottom:1px solid #d7e0d6;padding:11px 18px;display:flex;align-items:center;gap:14px;">
+          <span style="font-size:13px;font-weight:600;color:#214a3e;">{{ mSelectedCount }} selected</span>
+          <div style="display:flex;gap:8px;margin-left:6px;">
+            <span style="font-size:12.5px;color:#2f5d4f;font-weight:600;border:1px solid #cfe0d7;border-radius:8px;padding:6px 12px;cursor:pointer;background:#fff;">Activate</span>
+            <span style="font-size:12.5px;color:#2f5d4f;font-weight:600;border:1px solid #cfe0d7;border-radius:8px;padding:6px 12px;cursor:pointer;background:#fff;">Export selected</span>
+            <span onClick="{{ bulkDelete }}" style="font-size:12.5px;color:#8f432a;font-weight:600;border:1px solid #e6c9bd;border-radius:8px;padding:6px 12px;cursor:pointer;background:#fff;">Delete</span>
+          </div>
+          <span onClick="{{ clearSelection }}" style="margin-left:auto;font-size:12.5px;color:#6b7b73;cursor:pointer;">Clear</span>
+        </div>
+        </sc-if>
+
+        <!-- table -->
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;border-radius:0 0 14px 14px;overflow:hidden;">
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;min-width:820px;">
+              <thead>
+                <tr style="background:#faf8f2;">
+                  <sc-if value="{{ mCanBulk }}" hint-placeholder-val="{{ true }}">
+                  <th style="padding:12px 8px 12px 18px;width:42px;text-align:left;"><span onClick="{{ toggleSelectAll }}" style="{{ selectAllStyle }}">{{ selectAllMark }}</span></th>
+                  </sc-if>
+                  <sc-for list="{{ mColumns }}" as="col" hint-placeholder-count="6">
+                    <th onClick="{{ col.go }}" style="{{ col.thStyle }}"><span style="display:inline-flex;align-items:center;gap:5px;">{{ col.label }}<span style="{{ col.caretStyle }}">{{ col.caret }}</span></span></th>
+                  </sc-for>
+                  <th style="padding:12px 18px 12px 8px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;font-weight:500;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ mRows }}" as="row" hint-placeholder-count="8">
+                  <tr style="{{ row.trStyle }}">
+                    <sc-if value="{{ mCanBulk }}" hint-placeholder-val="{{ true }}">
+                    <td style="padding:13px 8px 13px 18px;"><span onClick="{{ row.toggle }}" style="{{ row.checkStyle }}">{{ row.checkMark }}</span></td>
+                    </sc-if>
+                    <sc-for list="{{ row.cells }}" as="cell" hint-placeholder-count="6">
+                      <td style="padding:11px 14px;border-bottom:1px solid #f1ece2;vertical-align:middle;">
+                        <sc-if value="{{ cell.isAvatar }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex;align-items:center;gap:11px;">
+                            <div style="width:34px;height:34px;border-radius:9px;background:#eef2ec;color:#2f5d4f;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;">{{ cell.initials }}</div>
+                            <div style="min-width:0;"><div style="font-size:13.5px;font-weight:600;color:#1c352c;">{{ cell.name }}</div><div style="font-size:12px;color:#9aa79f;">{{ cell.sub }}</div></div>
+                          </div>
+                        </sc-if>
+                        <sc-if value="{{ cell.isSub }}" hint-placeholder-val="{{ false }}"><div><div style="font-size:13px;color:#1c352c;">{{ cell.value }}</div><div style="font-size:12px;color:#9aa79f;">{{ cell.sub }}</div></div></sc-if>
+                        <sc-if value="{{ cell.isText }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;color:#54625b;">{{ cell.value }}</span></sc-if>
+                        <sc-if value="{{ cell.isAmount }}" hint-placeholder-val="{{ false }}"><span style="font-size:13px;font-weight:600;color:#1c352c;">{{ cell.value }}</span></sc-if>
+                        <sc-if value="{{ cell.isMono }}" hint-placeholder-val="{{ false }}"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6b7b73;">{{ cell.value }}</span></sc-if>
+                        <sc-if value="{{ cell.isBadge }}" hint-placeholder-val="{{ false }}">
+                          <sc-if value="{{ cell.green }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#e7eee9;color:#214a3e;font-size:11.5px;font-weight:600;border-radius:100px;padding:4px 10px;"><span style="width:6px;height:6px;border-radius:50%;background:#2f5d4f;"></span>{{ cell.label }}</span></sc-if>
+                          <sc-if value="{{ cell.amber }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#fdf7ec;color:#8a5f1f;font-size:11.5px;font-weight:600;border-radius:100px;padding:4px 10px;"><span style="width:6px;height:6px;border-radius:50%;background:#d99a4e;"></span>{{ cell.label }}</span></sc-if>
+                          <sc-if value="{{ cell.grey }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#f1ece2;color:#8a7a5f;font-size:11.5px;font-weight:600;border-radius:100px;padding:4px 10px;"><span style="width:6px;height:6px;border-radius:50%;background:#9aa79f;"></span>{{ cell.label }}</span></sc-if>
+                          <sc-if value="{{ cell.red }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#f7e8e1;color:#8f432a;font-size:11.5px;font-weight:600;border-radius:100px;padding:4px 10px;"><span style="width:6px;height:6px;border-radius:50%;background:#b9603f;"></span>{{ cell.label }}</span></sc-if>
+                        </sc-if>
+                      </td>
+                    </sc-for>
+                    <td style="padding:11px 18px 11px 8px;border-bottom:1px solid #f1ece2;">
+                      <div style="display:flex;gap:4px;justify-content:flex-end;align-items:center;">
+                        <span onClick="{{ row.view }}" title="View details" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7b73;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
+                        <sc-if value="{{ row.canEdit }}" hint-placeholder-val="{{ true }}"><span onClick="{{ row.edit }}" title="Edit" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7b73;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg></span></sc-if>
+                        <sc-if value="{{ row.canDelete }}" hint-placeholder-val="{{ true }}"><span onClick="{{ row.del }}" title="Delete" style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#b07a63;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"></path></svg></span></sc-if>
+                      </div>
+                    </td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- empty -->
+          <sc-if value="{{ mEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:54px 20px;text-align:center;">
+            <div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;margin-bottom:5px;">No matching records</div>
+            <div style="font-size:13px;color:#9aa79f;">Try adjusting your search or filters.</div>
+          </div>
+          </sc-if>
+
+          <!-- pagination -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-top:1px solid #efe9dd;background:#faf8f2;">
+            <span style="font-size:12.5px;color:#9aa79f;">{{ mPageText }}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span onClick="{{ prevPage }}" style="{{ prevStyle }}">‹ Prev</span>
+              <span style="font-size:12.5px;color:#54625b;padding:0 4px;">{{ mPageLabel }}</span>
+              <span onClick="{{ nextPage }}" style="{{ nextStyle }}">Next ›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ REPORTS ============ -->
+      <sc-if value="{{ isReports }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:scIn .25s ease both;">
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;">Range</span>
+          <div style="display:flex;gap:6px;">
+            <span style="font-size:12.5px;color:#9aa79f;padding:7px 12px;border-radius:8px;">30 days</span>
+            <span style="font-size:12.5px;font-weight:600;color:#214a3e;background:#e7eee9;border-radius:8px;padding:7px 12px;">12 months</span>
+            <span style="font-size:12.5px;color:#9aa79f;padding:7px 12px;border-radius:8px;">All time</span>
+          </div>
+          <span style="font-size:12.5px;color:#9aa79f;">Jul 2025 – Jun 2026</span>
+          <div style="margin-left:auto;display:flex;gap:9px;">
+            <span style="display:flex;align-items:center;gap:7px;border:1px solid #cdc4b2;color:#54625b;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;">Export CSV</span>
+            <span style="display:flex;align-items:center;gap:7px;background:#2f5d4f;color:#fff;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;">Download PDF</span>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;">
+          <sc-for list="{{ reportKpis }}" as="k" hint-placeholder-count="4">
+            <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:18px 20px;">
+              <div style="font-size:12.5px;color:#6b7b73;">{{ k.label }}</div>
+              <div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;margin-top:8px;line-height:1;">{{ k.value }}</div>
+              <div style="{{ k.deltaStyle }}">{{ k.delta }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+            <div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;margin-bottom:4px;">Funds disbursed by city</div>
+            <div style="font-size:12.5px;color:#9aa79f;margin-bottom:20px;">Educational support paid out · this year</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <sc-for list="{{ cityBars }}" as="c" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:14px;">
+                  <span style="font-size:12.5px;color:#54625b;width:88px;flex-shrink:0;">{{ c.label }}</span>
+                  <div style="flex:1;height:22px;background:#f1ece2;border-radius:6px;overflow:hidden;"><div style="{{ c.barStyle }}"></div></div>
+                  <span style="font-size:12.5px;font-weight:600;color:#1c352c;width:78px;text-align:right;flex-shrink:0;">{{ c.amount }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+            <div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;margin-bottom:4px;">Continuity Fund flow</div>
+            <div style="font-size:12.5px;color:#9aa79f;margin-bottom:20px;">Inflow vs. bridging outflow</div>
+            <div style="display:flex;align-items:flex-end;gap:12px;height:196px;">
+              <sc-for list="{{ fundBars }}" as="b" hint-placeholder-count="6">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;">
+                  <div style="display:flex;gap:4px;align-items:flex-end;height:100%;width:100%;justify-content:center;">
+                    <div style="{{ b.inStyle }}"></div>
+                    <div style="{{ b.outStyle }}"></div>
+                  </div>
+                  <div style="font-size:11px;color:#9aa79f;">{{ b.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:18px;margin-top:14px;justify-content:center;"><span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#54625b;"><span style="width:10px;height:10px;border-radius:3px;background:#2f5d4f;"></span>Inflow</span><span style="display:inline-flex;align-items:center;gap:7px;font-size:12px;color:#54625b;"><span style="width:10px;height:10px;border-radius:3px;background:#d99a4e;"></span>Bridging</span></div>
+          </div>
+        </div>
+
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:22px 24px;">
+          <div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;margin-bottom:16px;">Partner organisation performance</div>
+          <table style="width:100%;border-collapse:collapse;">
+            <thead><tr style="border-bottom:1px solid #e3dccd;">
+              <th style="text-align:left;padding:0 12px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;font-weight:500;">Organisation</th>
+              <th style="text-align:left;padding:0 12px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;font-weight:500;">City</th>
+              <th style="text-align:left;padding:0 12px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;font-weight:500;">Children</th>
+              <th style="text-align:left;padding:0 12px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;font-weight:500;">Coverage</th>
+              <th style="text-align:left;padding:0 12px 11px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;font-weight:500;">Disbursed</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ orgRows }}" as="o" hint-placeholder-count="5">
+                <tr style="border-bottom:1px solid #f1ece2;">
+                  <td style="padding:13px 12px;font-size:13.5px;font-weight:600;color:#1c352c;">{{ o.name }}</td>
+                  <td style="padding:13px 12px;font-size:13px;color:#54625b;">{{ o.city }}</td>
+                  <td style="padding:13px 12px;font-size:13px;color:#54625b;">{{ o.children }}</td>
+                  <td style="padding:13px 12px;"><div style="display:flex;align-items:center;gap:9px;"><div style="width:90px;height:7px;background:#f1ece2;border-radius:4px;overflow:hidden;"><div style="{{ o.barStyle }}"></div></div><span style="font-size:12.5px;color:#54625b;">{{ o.coverage }}</span></div></td>
+                  <td style="padding:13px 12px;font-size:13px;font-weight:600;color:#1c352c;">{{ o.disbursed }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ NOTIFICATIONS ============ -->
+      <sc-if value="{{ isNotifications }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:scIn .25s ease both;display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start;">
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;overflow:hidden;">
+          <div style="padding:16px 20px;border-bottom:1px solid #efe9dd;display:flex;align-items:center;gap:12px;">
+            <div style="display:flex;gap:6px;">
+              <sc-for list="{{ notifTabs }}" as="t" hint-placeholder-count="3"><span onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</span></sc-for>
+            </div>
+            <span onClick="{{ markAllRead }}" style="margin-left:auto;font-size:12.5px;color:#2f5d4f;font-weight:600;cursor:pointer;">Mark all as read</span>
+          </div>
+          <div>
+            <sc-for list="{{ notifList }}" as="n" hint-placeholder-count="5">
+              <div style="{{ n.rowStyle }}">
+                <span style="{{ n.iconStyle }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ n.icon }}"></path></svg></span>
+                <div style="flex:1;min-width:0;">
+                  <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:13.5px;font-weight:600;color:#1c352c;">{{ n.title }}</span><sc-if value="{{ n.unread }}" hint-placeholder-val="{{ false }}"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span></sc-if></div>
+                  <div style="font-size:12.5px;color:#6b7b73;margin-top:2px;line-height:1.45;">{{ n.body }}</div>
+                </div>
+                <span style="font-size:11px;color:#9aa79f;white-space:nowrap;">{{ n.time }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:20px;">
+            <div style="font-family:'Newsreader',serif;font-size:18px;color:#1c352c;margin-bottom:14px;">Send an announcement</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;margin-bottom:8px;">Audience</div>
+            <select style="width:100%;border:1px solid #ddd5c5;background:#fffdf9;border-radius:9px;padding:10px 12px;font-size:13px;color:#54625b;outline:none;margin-bottom:14px;"><option>All sponsors</option><option>Org admins</option><option>Sponsors with gaps</option></select>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;margin-bottom:8px;">Message</div>
+            <textarea placeholder="Write your update…" style="width:100%;height:96px;border:1px solid #ddd5c5;background:#fffdf9;border-radius:9px;padding:11px 12px;font-size:13px;color:#1c352c;outline:none;resize:none;margin-bottom:14px;"></textarea>
+            <div style="background:#2f5d4f;color:#fff;text-align:center;border-radius:9px;padding:11px;font-size:13.5px;font-weight:600;cursor:pointer;">Send announcement</div>
+          </div>
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:20px;">
+            <div style="font-family:'Newsreader',serif;font-size:18px;color:#1c352c;margin-bottom:14px;">Channels</div>
+            <sc-for list="{{ channels }}" as="c" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f1ece2;">
+                <div><div style="font-size:13.5px;font-weight:600;color:#1c352c;">{{ c.label }}</div><div style="font-size:12px;color:#9aa79f;">{{ c.sub }}</div></div>
+                <span onClick="{{ c.toggle }}" style="{{ c.switchStyle }}"><span style="{{ c.knobStyle }}"></span></span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ============ SETTINGS ============ -->
+      <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div style="animation:scIn .25s ease both;display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start;">
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:2px;">
+          <sc-for list="{{ settingsTabs }}" as="t" hint-placeholder-count="6"><div onClick="{{ t.go }}" style="{{ t.style }}">{{ t.label }}</div></sc-for>
+        </div>
+
+        <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:26px 28px;">
+          <div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;margin-bottom:4px;">{{ settingsTitle }}</div>
+          <div style="font-size:13px;color:#9aa79f;margin-bottom:24px;">{{ settingsSub }}</div>
+
+          <sc-for list="{{ settingsFields }}" as="f" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:30px;padding:16px 0;border-bottom:1px solid #f1ece2;">
+              <div style="max-width:440px;"><div style="font-size:14px;font-weight:600;color:#1c352c;">{{ f.label }}</div><div style="font-size:12.5px;color:#9aa79f;margin-top:2px;line-height:1.45;">{{ f.sub }}</div></div>
+              <sc-if value="{{ f.isToggle }}" hint-placeholder-val="{{ false }}"><span onClick="{{ f.toggle }}" style="{{ f.switchStyle }}"><span style="{{ f.knobStyle }}"></span></span></sc-if>
+              <sc-if value="{{ f.isInput }}" hint-placeholder-val="{{ false }}"><input value="{{ f.value }}" readonly style="border:1px solid #ddd5c5;background:#faf8f2;border-radius:9px;padding:10px 13px;font-size:13px;color:#1c352c;outline:none;width:230px;" /></sc-if>
+              <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}"><div style="border:1px solid #ddd5c5;background:#faf8f2;border-radius:9px;padding:10px 13px;font-size:13px;color:#54625b;width:230px;">{{ f.value }}</div></sc-if>
+            </div>
+          </sc-for>
+
+          <div style="display:flex;gap:10px;margin-top:24px;">
+            <span style="background:#2f5d4f;color:#fff;border-radius:9px;padding:11px 22px;font-size:13.5px;font-weight:600;cursor:pointer;" onClick="{{ saveSettings }}">Save changes</span>
+            <span style="border:1px solid #cdc4b2;color:#54625b;border-radius:9px;padding:11px 22px;font-size:13.5px;font-weight:500;cursor:pointer;">Cancel</span>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+    </main>
+  </div>
+
+  <!-- ===================== VIEW DRAWER ===================== -->
+  <sc-if value="{{ drawerOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(20,40,30,.32);z-index:40;animation:scFade .2s ease both;" onClick="{{ closeOverlay }}"></div>
+  <div style="position:fixed;top:0;right:0;bottom:0;width:440px;background:#fffdf9;z-index:41;box-shadow:-18px 0 50px -30px rgba(20,40,30,.5);display:flex;flex-direction:column;animation:scDrawer .28s cubic-bezier(.2,.8,.2,1) both;">
+    <div style="padding:22px 24px;border-bottom:1px solid #efe9dd;display:flex;align-items:flex-start;gap:14px;">
+      <div style="width:48px;height:48px;border-radius:12px;background:#2f5d4f;color:#fdfaf3;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;flex-shrink:0;">{{ drawerInitials }}</div>
+      <div style="flex:1;min-width:0;"><div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;line-height:1.1;">{{ drawerTitle }}</div><div style="font-size:12.5px;color:#9aa79f;margin-top:3px;">{{ drawerSub }}</div></div>
+      <span onClick="{{ closeOverlay }}" style="width:32px;height:32px;border-radius:8px;border:1px solid #e3dccd;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7b73;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg></span>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:22px 24px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:14px;">Details</div>
+      <div style="display:flex;flex-direction:column;">
+        <sc-for list="{{ drawerFields }}" as="f" hint-placeholder-count="5">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:12px 0;border-bottom:1px solid #f1ece2;">
+            <span style="font-size:13px;color:#6b7b73;">{{ f.label }}</span>
+            <sc-if value="{{ f.isBadge }}" hint-placeholder-val="{{ false }}">
+              <sc-if value="{{ f.green }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#e7eee9;color:#214a3e;font-size:12px;font-weight:600;border-radius:100px;padding:4px 11px;"><span style="width:6px;height:6px;border-radius:50%;background:#2f5d4f;"></span>{{ f.value }}</span></sc-if>
+              <sc-if value="{{ f.amber }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#fdf7ec;color:#8a5f1f;font-size:12px;font-weight:600;border-radius:100px;padding:4px 11px;"><span style="width:6px;height:6px;border-radius:50%;background:#d99a4e;"></span>{{ f.value }}</span></sc-if>
+              <sc-if value="{{ f.grey }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#f1ece2;color:#8a7a5f;font-size:12px;font-weight:600;border-radius:100px;padding:4px 11px;"><span style="width:6px;height:6px;border-radius:50%;background:#9aa79f;"></span>{{ f.value }}</span></sc-if>
+              <sc-if value="{{ f.red }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;gap:6px;background:#f7e8e1;color:#8f432a;font-size:12px;font-weight:600;border-radius:100px;padding:4px 11px;"><span style="width:6px;height:6px;border-radius:50%;background:#b9603f;"></span>{{ f.value }}</span></sc-if>
+            </sc-if>
+            <sc-if value="{{ f.isText }}" hint-placeholder-val="{{ true }}"><span style="font-size:13px;font-weight:600;color:#1c352c;text-align:right;">{{ f.value }}</span></sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#faf8f2;border:1px solid #efe9dd;border-radius:12px;padding:16px;margin-top:20px;">
+        <div style="font-size:12.5px;color:#6b7b73;line-height:1.5;">{{ drawerNote }}</div>
+      </div>
+    </div>
+    <div style="padding:16px 24px;border-top:1px solid #efe9dd;display:flex;gap:10px;">
+      <span onClick="{{ drawerEdit }}" style="flex:1;text-align:center;background:#2f5d4f;color:#fff;border-radius:9px;padding:11px;font-size:13.5px;font-weight:600;cursor:pointer;">Edit record</span>
+      <span onClick="{{ closeOverlay }}" style="text-align:center;border:1px solid #cdc4b2;color:#54625b;border-radius:9px;padding:11px 20px;font-size:13.5px;font-weight:500;cursor:pointer;">Close</span>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== ADD/EDIT MODAL ===================== -->
+  <sc-if value="{{ formOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;inset:0;background:rgba(20,40,30,.36);z-index:50;display:flex;align-items:center;justify-content:center;padding:30px;animation:scFade .2s ease both;" onClick="{{ closeOverlay }}">
+    <div onClick="{{ stop }}" style="background:#fffdf9;border-radius:16px;width:560px;max-width:100%;max-height:90vh;overflow:hidden;box-shadow:0 40px 90px -40px rgba(20,40,30,.6);display:flex;flex-direction:column;animation:scIn .26s cubic-bezier(.2,.8,.2,1) both;">
+      <div style="padding:22px 26px;border-bottom:1px solid #efe9dd;display:flex;align-items:center;">
+        <div><div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;line-height:1.1;">{{ formTitle }}</div><div style="font-size:12.5px;color:#9aa79f;margin-top:2px;">{{ formSub }}</div></div>
+        <span onClick="{{ closeOverlay }}" style="margin-left:auto;width:32px;height:32px;border-radius:8px;border:1px solid #e3dccd;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#6b7b73;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg></span>
+      </div>
+      <form ref="{{ formRef }}" style="flex:1;overflow-y:auto;padding:24px 26px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <sc-for list="{{ formFields }}" as="f" hint-placeholder-count="6">
+          <div style="{{ f.wrapStyle }}">
+            <label style="display:block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#9aa79f;margin-bottom:7px;">{{ f.label }}</label>
+            <sc-if value="{{ f.isSelect }}" hint-placeholder-val="{{ false }}">
+              <select name="{{ f.key }}" style="width:100%;border:1px solid #ddd5c5;background:#fffdf9;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1c352c;outline:none;">
+                <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for>
+              </select>
+            </sc-if>
+            <sc-if value="{{ f.isField }}" hint-placeholder-val="{{ true }}">
+              <input name="{{ f.key }}" type="{{ f.type }}" value="{{ f.value }}" placeholder="{{ f.ph }}" style="width:100%;border:1px solid #ddd5c5;background:#fffdf9;border-radius:9px;padding:10px 12px;font-size:13.5px;color:#1c352c;outline:none;" />
+            </sc-if>
+          </div>
+        </sc-for>
+      </form>
+      <div style="padding:16px 26px;border-top:1px solid #efe9dd;display:flex;justify-content:flex-end;gap:10px;">
+        <span onClick="{{ closeOverlay }}" style="border:1px solid #cdc4b2;color:#54625b;border-radius:9px;padding:11px 20px;font-size:13.5px;font-weight:500;cursor:pointer;">Cancel</span>
+        <span onClick="{{ saveForm }}" style="background:#2f5d4f;color:#fff;border-radius:9px;padding:11px 24px;font-size:13.5px;font-weight:600;cursor:pointer;">{{ formSave }}</span>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===================== TOAST ===================== -->
+  <sc-if value="{{ toastShow }}" hint-placeholder-val="{{ false }}">
+  <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:60;background:#1c352c;color:#fdfaf3;border-radius:11px;padding:13px 20px;font-size:13.5px;font-weight:500;box-shadow:0 20px 44px -22px rgba(20,40,30,.7);display:flex;align-items:center;gap:11px;animation:scToast .3s ease both;">
+    <span style="width:20px;height:20px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;justify-content:center;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg></span>
+    {{ toastMsg }}
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;defaultModule&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dashboard&quot;,&quot;users&quot;,&quot;sponsors&quot;,&quot;children&quot;,&quot;commitments&quot;,&quot;payments&quot;,&quot;reports&quot;,&quot;notifications&quot;,&quot;settings&quot;,&quot;audit&quot;],&quot;default&quot;:&quot;dashboard&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Setup&quot;},&quot;tableDensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;comfortable&quot;,&quot;compact&quot;],&quot;default&quot;:&quot;comfortable&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Setup&quot;},&quot;currency&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Rs&quot;,&quot;$&quot;,&quot;£&quot;],&quot;default&quot;:&quot;Rs&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Setup&quot;}}">
+class Component extends DCLogic {
+  state = {
+    activeModule: 'dashboard',
+    search: '', sortKey: null, sortDir: 'asc',
+    page: 0, statusFilter: 'all', filterVal: 'all', showFilters: true,
+    selected: [], drawerId: null, formMode: null, formId: null,
+    toast: null, notifFilter: 'all', settingsTab: 'general',
+    settings: { gaps: true, weekly: true, autoBridge: true, twoFA: true, sms: false, payAlerts: true },
+    notifRead: [],
+    db: null,
+  };
+
+  componentDidMount() {
+    this.setState({ activeModule: this.props.defaultModule || 'dashboard', db: this.seed() });
+  }
+
+  cur() { return this.props.currency || 'Rs'; }
+  money(n) { return this.cur() + ' ' + Number(n).toLocaleString('en-US'); }
+  pageSize() { return (this.props.tableDensity === 'compact') ? 12 : 8; }
+  initials(name) { return String(name).split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+  tone(s) {
+    const g = ['Sponsored','Active','Paid','Verified','Published','Resolved','Healthy'];
+    const a = ['Bridged','Pending','Invited','Draft','Review'];
+    const r = ['Lapsed','Failed','Suspended','Overdue','Blocked'];
+    if (g.includes(s)) return 'green';
+    if (a.includes(s)) return 'amber';
+    if (r.includes(s)) return 'red';
+    return 'grey';
+  }
+
+  seed() {
+    const C = (id,name,age,grade,school,city,status,sponsor,monthly)=>({id,name,age,grade,school,city,status,sponsor,monthly});
+    const children = [
+      C('c1','Ayesha Bibi',9,4,'Govt. Girls Primary','Karachi','Sponsored','Imran Group',3500),
+      C('c2','Bilal Ahmed',11,5,'Al-Noor School','Lahore','Seeking','',3500),
+      C('c3','Fatima Noor',8,3,'Iqra Public School','Multan','Bridged','Continuity Fund',3000),
+      C('c4','Hassan Raza',10,4,'Govt. Primary No.7','Faisalabad','Sponsored','Sarah Khan',3500),
+      C('c5','Zainab Khan',12,6,'City Foundation School','Peshawar','Seeking','',4000),
+      C('c6','Usman Ali',9,3,'Govt. Primary','Hyderabad','Sponsored','Abdul Malik',3000),
+      C('c7','Mariam Shah',13,7,'Falah Girls School','Rawalpindi','Bridged','Continuity Fund',4200),
+      C('c8','Ahmed Yar',7,2,'Govt. Primary','Sukkur','Seeking','',2800),
+      C('c9','Saima Bibi',11,5,'Al-Falah School','Quetta','Sponsored','Hena Farooq',3500),
+      C('c10','Tariq Mehmood',10,4,'Govt. Primary No.3','Bahawalpur','Seeking','',3500),
+      C('c11','Hina Akhtar',8,3,'Iqra School','Karachi','Sponsored','UK Donor Circle',3000),
+      C('c12','Junaid Khan',12,6,'City School','Lahore','Bridged','Continuity Fund',4000),
+      C('c13','Rabia Bano',9,4,'Govt. Girls Primary','Multan','Seeking','',3500),
+      C('c14','Kamran Shah',11,5,'Al-Noor School','Gujranwala','Sponsored','Faisal Rehman',3500),
+    ];
+    const S = (id,name,country,location,children,total,status,joined)=>({id,name,country,location,children,total,status,joined});
+    const sponsors = [
+      S('s1','Imran Group','Pakistan','Karachi, PK',12,504000,'Active','Mar 2024'),
+      S('s2','Sarah Khan','United Kingdom','London, UK',2,84000,'Active','Jan 2025'),
+      S('s3','Ahsan Tariq','UAE','Dubai, AE',1,42000,'Active','Aug 2025'),
+      S('s4','UK Donor Circle','United Kingdom','Manchester, UK',8,336000,'Active','Nov 2023'),
+      S('s5','Hena Farooq','Canada','Toronto, CA',1,38500,'Active','Feb 2025'),
+      S('s6','Abdul Malik','Pakistan','Karachi, PK',3,126000,'Active','Jun 2024'),
+      S('s7','Bushra Aziz','Pakistan','Lahore, PK',1,14000,'Inactive','Sep 2025'),
+      S('s8','Omar Sheikh','Saudi Arabia','Riyadh, SA',2,70000,'Active','Apr 2025'),
+      S('s9','Nadia Iqbal','United States','New York, US',1,21000,'Inactive','Dec 2024'),
+      S('s10','Faisal Rehman','Australia','Sydney, AU',4,168000,'Active','Oct 2023'),
+    ];
+    const U = (id,name,email,role,org,status,last)=>({id,name,email,role,org,status,last});
+    const users = [
+      U('u1','Asad Mahmood','asad@jjt.org','Super Admin','JJT HQ','Active','2h ago'),
+      U('u2','Komal Riaz','komal@hopeacademy.pk','Org Admin','Hope Academy','Active','1d ago'),
+      U('u3','Bilal Sheikh','bilal@alfalah.pk','Org Admin','Al-Falah Trust','Active','5h ago'),
+      U('u4','Sana Tariq','sana@jjt.org','Reviewer','JJT HQ','Active','30m ago'),
+      U('u5','Yasir Khan','yasir@iqra.pk','Org Admin','Iqra Foundation','Invited',''),
+      U('u6','Hamza Ali','hamza@jjt.org','Support','JJT HQ','Active','3d ago'),
+      U('u7','Mehwish Nadeem','mehwish@cityschool.pk','Reviewer','City Schools','Suspended','2w ago'),
+      U('u8','Imran Qureshi','imran@jjt.org','Super Admin','JJT HQ','Active','1h ago'),
+      U('u9','Rida Fatima','rida@falah.pk','Org Admin','Falah Trust','Active','6h ago'),
+      U('u10','Tariq Jameel','tariq@jjt.org','Support','JJT HQ','Invited',''),
+    ];
+    const M = (id,sponsor,child,plan,amount,started,status)=>({id,sponsor,child,plan,amount,started,status});
+    const commitments = [
+      M('m1','Imran Group','Ayesha Bibi','Monthly',3500,'12 Mar 2024','Active'),
+      M('m2','Sarah Khan','Hassan Raza','Monthly',3500,'08 Jan 2025','Active'),
+      M('m3','Continuity Fund','Fatima Noor','Monthly',3000,'02 May 2025','Bridged'),
+      M('m4','Abdul Malik','Usman Ali','Yearly',36000,'18 Jun 2024','Active'),
+      M('m5','Bushra Aziz','Tariq Mehmood','Monthly',3500,'21 Sep 2025','Lapsed'),
+      M('m6','Hena Farooq','Saima Bibi','Monthly',3500,'14 Feb 2025','Active'),
+      M('m7','Continuity Fund','Mariam Shah','Monthly',4200,'30 Apr 2025','Bridged'),
+      M('m8','UK Donor Circle','Hina Akhtar','Yearly',36000,'05 Nov 2023','Active'),
+      M('m9','Faisal Rehman','Kamran Shah','Monthly',3500,'11 Oct 2023','Active'),
+      M('m10','Nadia Iqbal','Bilal Ahmed','Monthly',3500,'19 Dec 2024','Lapsed'),
+    ];
+    const P = (id,txn,sponsor,amount,method,date,status)=>({id,txn,sponsor,amount,method,date,status});
+    const payments = [
+      P('p1','TXN-9F2A41','Imran Group',3500,'Bank transfer','28 Jun 2026','Paid'),
+      P('p2','TXN-9F2A38','Sarah Khan',3500,'Card','28 Jun 2026','Paid'),
+      P('p3','TXN-9F2A30','Abdul Malik',36000,'JazzCash','27 Jun 2026','Paid'),
+      P('p4','TXN-9F2A22','Bushra Aziz',3500,'Easypaisa','27 Jun 2026','Failed'),
+      P('p5','TXN-9F2A19','Hena Farooq',3500,'Card','26 Jun 2026','Paid'),
+      P('p6','TXN-9F2A11','UK Donor Circle',36000,'Bank transfer','26 Jun 2026','Paid'),
+      P('p7','TXN-9F2A07','Omar Sheikh',7000,'Card','25 Jun 2026','Pending'),
+      P('p8','TXN-9F29F8','Faisal Rehman',3500,'Card','25 Jun 2026','Paid'),
+      P('p9','TXN-9F29E2','Nadia Iqbal',3500,'Easypaisa','24 Jun 2026','Failed'),
+      P('p10','TXN-9F29D5','Ahsan Tariq',3500,'JazzCash','24 Jun 2026','Paid'),
+      P('p11','TXN-9F29C0','Imran Group',3500,'Bank transfer','23 Jun 2026','Paid'),
+      P('p12','TXN-9F29B4','Sarah Khan',3500,'Card','23 Jun 2026','Pending'),
+    ];
+    const A = (id,time,actor,action,cat,entity,ip)=>({id,time,actor,action,category:cat,entity,ip});
+    const audit = [
+      A('a1','12:41 · today','Asad Mahmood','Created','Created','child:Rabia Bano','203.99.x.14'),
+      A('a2','12:18 · today','System','Bridged','Bridged','fund:Mariam Shah','—'),
+      A('a3','11:52 · today','Sana Tariq','Updated','Updated','sponsor:Bushra Aziz','203.99.x.41'),
+      A('a4','10:30 · today','Komal Riaz','Published','Published','update:Ayesha Bibi','119.73.x.08'),
+      A('a5','09:14 · today','Imran Qureshi','Deleted','Deleted','user:test-acct','203.99.x.14'),
+      A('a6','Yesterday','Hamza Ali','Login','Login','session','203.99.x.77'),
+      A('a7','Yesterday','System','Failed','Failed','payment:TXN-9F2A22','—'),
+      A('a8','Yesterday','Bilal Sheikh','Updated','Updated','child:Usman Ali','119.73.x.55'),
+      A('a9','2 days ago','Asad Mahmood','Updated','Updated','settings:Continuity','203.99.x.14'),
+      A('a10','2 days ago','Sana Tariq','Created','Created','sponsor:Omar Sheikh','203.99.x.41'),
+    ];
+    return { users, sponsors, children, commitments, payments, audit };
+  }
+
+  // ---------- config ----------
+  MODS() {
+    return {
+      users: { title:'Users Management', sub:'Platform and partner accounts, roles, and access', entity:'user', plural:'users', crumb:'Management', addLabel:'Invite user',
+        canAdd:true, canBulk:true, canEdit:true, canDelete:true, statusKey:'status', statusOptions:['Active','Invited','Suspended'],
+        filter:{key:'role',label:'Role',options:['Super Admin','Org Admin','Reviewer','Support']}, searchKeys:['name','email','org','role'],
+        columns:[{key:'name',label:'User',sortable:true},{key:'role',label:'Role',sortable:true},{key:'org',label:'Organisation',sortable:true},{key:'status',label:'Status',sortable:true},{key:'last',label:'Last active',sortable:false}],
+        form:[{key:'name',label:'Full name',type:'text'},{key:'email',label:'Email',type:'email'},{key:'role',label:'Role',select:['Super Admin','Org Admin','Reviewer','Support']},{key:'org',label:'Organisation',type:'text'},{key:'status',label:'Status',select:['Active','Invited','Suspended']}] },
+      sponsors: { title:'Sponsors Management', sub:'Donors and donor groups funding children', entity:'sponsor', plural:'sponsors', crumb:'Management', addLabel:'Add sponsor',
+        canAdd:true, canBulk:true, canEdit:true, canDelete:true, statusKey:'status', statusOptions:['Active','Inactive'],
+        filter:{key:'country',label:'Country',options:['Pakistan','United Kingdom','United States','Canada','UAE','Saudi Arabia','Australia']}, searchKeys:['name','location','country'],
+        columns:[{key:'name',label:'Sponsor',sortable:true},{key:'children',label:'Children',sortable:true},{key:'total',label:'Total given',sortable:true},{key:'status',label:'Status',sortable:true},{key:'joined',label:'Joined',sortable:false}],
+        form:[{key:'name',label:'Sponsor name',type:'text'},{key:'country',label:'Country',select:['Pakistan','United Kingdom','United States','Canada','UAE','Saudi Arabia','Australia']},{key:'location',label:'Location',type:'text'},{key:'children',label:'Children',type:'number'},{key:'total',label:'Total given',type:'number'},{key:'status',label:'Status',select:['Active','Inactive']}] },
+      children: { title:'Child Management', sub:'Enrolled children, sponsorship status, and school records', entity:'child', plural:'children', crumb:'Management', addLabel:'Add child',
+        canAdd:true, canBulk:true, canEdit:true, canDelete:true, statusKey:'status', statusOptions:['Sponsored','Bridged','Seeking'],
+        filter:{key:'city',label:'City',options:['Karachi','Lahore','Multan','Faisalabad','Peshawar','Hyderabad','Rawalpindi','Quetta','Sukkur','Bahawalpur','Gujranwala']}, searchKeys:['name','school','city','sponsor'],
+        columns:[{key:'name',label:'Child',sortable:true},{key:'grade',label:'Grade / School',sortable:false},{key:'city',label:'City',sortable:true},{key:'status',label:'Status',sortable:true},{key:'sponsor',label:'Sponsor',sortable:false},{key:'monthly',label:'Monthly',sortable:true}],
+        form:[{key:'name',label:'Child name',type:'text'},{key:'age',label:'Age',type:'number'},{key:'grade',label:'Grade',type:'number'},{key:'school',label:'School',type:'text'},{key:'city',label:'City',type:'text'},{key:'status',label:'Status',select:['Sponsored','Bridged','Seeking']},{key:'sponsor',label:'Sponsor',type:'text'},{key:'monthly',label:'Monthly (Rs)',type:'number'}] },
+      commitments: { title:'Commitments Management', sub:'Active, bridged, and lapsed sponsorship commitments', entity:'commitment', plural:'commitments', crumb:'Management', addLabel:'New commitment',
+        canAdd:true, canBulk:true, canEdit:true, canDelete:true, statusKey:'status', statusOptions:['Active','Bridged','Lapsed'],
+        filter:{key:'plan',label:'Plan',options:['Monthly','Yearly']}, searchKeys:['sponsor','child'],
+        columns:[{key:'sponsor',label:'Sponsor',sortable:true},{key:'child',label:'Child',sortable:true},{key:'plan',label:'Plan',sortable:false},{key:'amount',label:'Amount',sortable:true},{key:'started',label:'Started',sortable:false},{key:'status',label:'Status',sortable:true}],
+        form:[{key:'sponsor',label:'Sponsor',type:'text'},{key:'child',label:'Child',type:'text'},{key:'plan',label:'Plan',select:['Monthly','Yearly']},{key:'amount',label:'Amount (Rs)',type:'number'},{key:'started',label:'Start date',type:'text'},{key:'status',label:'Status',select:['Active','Bridged','Lapsed']}] },
+      payments: { title:'Payments', sub:'Transactions across cards, bank, and mobile wallets', entity:'payment', plural:'payments', crumb:'Management', addLabel:'',
+        canAdd:false, canBulk:true, canEdit:false, canDelete:false, statusKey:'status', statusOptions:['Paid','Pending','Failed'],
+        filter:{key:'method',label:'Method',options:['Card','Bank transfer','JazzCash','Easypaisa']}, searchKeys:['txn','sponsor','method'],
+        columns:[{key:'txn',label:'Transaction',sortable:false},{key:'sponsor',label:'Sponsor',sortable:true},{key:'amount',label:'Amount',sortable:true},{key:'method',label:'Method',sortable:false},{key:'date',label:'Date',sortable:true},{key:'status',label:'Status',sortable:true}],
+        form:[] },
+      audit: { title:'Audit Logs', sub:'Immutable record of every administrative action', entity:'event', plural:'events', crumb:'System', addLabel:'',
+        canAdd:false, canBulk:false, canEdit:false, canDelete:false, statusKey:null, statusOptions:[],
+        filter:{key:'category',label:'Action',options:['Created','Updated','Deleted','Bridged','Published','Login','Failed']}, searchKeys:['actor','entity','action'],
+        columns:[{key:'time',label:'Time',sortable:false},{key:'actor',label:'Actor',sortable:true},{key:'action',label:'Action',sortable:false},{key:'entity',label:'Entity',sortable:false},{key:'ip',label:'IP address',sortable:false}],
+        form:[] },
+    };
+  }
+
+  cell(kind, o) {
+    return Object.assign({ kind, isAvatar:kind==='avatar', isText:kind==='text', isSub:kind==='sub', isBadge:kind==='badge', isMono:kind==='mono', isAmount:kind==='amount' }, o);
+  }
+  badge(label, toneOverride) {
+    const t = toneOverride || this.tone(label);
+    return this.cell('badge', { label, green:t==='green', amber:t==='amber', grey:t==='grey', red:t==='red' });
+  }
+  avatar(name, sub) { return this.cell('avatar', { name, sub, initials:this.initials(name) }); }
+  txt(v) { return this.cell('text', { value: v }); }
+  two(v, sub) { return this.cell('sub', { value: v, sub }); }
+  mono(v) { return this.cell('mono', { value: v }); }
+  amt(v) { return this.cell('amount', { value: this.money(v) }); }
+
+  fmt(key, r) {
+    if (key==='children') return [ this.avatar(r.name,'Age '+r.age), this.two('Grade '+r.grade, r.school), this.txt(r.city), this.badge(r.status), this.txt(r.sponsor||'—'), this.amt(r.monthly) ];
+    if (key==='users') return [ this.avatar(r.name, r.email), this.txt(r.role), this.txt(r.org), this.badge(r.status), this.txt(r.last||'—') ];
+    if (key==='sponsors') return [ this.avatar(r.name, r.location), this.txt(String(r.children)), this.amt(r.total), this.badge(r.status), this.txt(r.joined) ];
+    if (key==='commitments') return [ this.txt(r.sponsor), this.txt(r.child), this.txt(r.plan), this.amt(r.amount), this.txt(r.started), this.badge(r.status) ];
+    if (key==='payments') return [ this.mono(r.txn), this.txt(r.sponsor), this.amt(r.amount), this.txt(r.method), this.txt(r.date), this.badge(r.status) ];
+    if (key==='audit') { const ct={Created:'green',Updated:'amber',Deleted:'red',Bridged:'amber',Published:'green',Login:'grey',Failed:'red'}; return [ this.txt(r.time), this.avatar(r.actor,''), this.badge(r.action, ct[r.category]||'grey'), this.mono(r.entity), this.mono(r.ip) ]; }
+    return [];
+  }
+
+  detailFields(key, r) {
+    const F = (label,value,badge)=>({label,value,badge});
+    if (key==='children') return [ F('Status',r.status,1), F('Age',r.age), F('Grade','Grade '+r.grade), F('School',r.school), F('City',r.city), F('Sponsor',r.sponsor||'Unsponsored'), F('Monthly support',this.money(r.monthly)) ];
+    if (key==='users') return [ F('Status',r.status,1), F('Email',r.email), F('Role',r.role), F('Organisation',r.org), F('Last active',r.last||'—') ];
+    if (key==='sponsors') return [ F('Status',r.status,1), F('Country',r.country), F('Location',r.location), F('Children sponsored',r.children), F('Total contributed',this.money(r.total)), F('Member since',r.joined) ];
+    if (key==='commitments') return [ F('Status',r.status,1), F('Sponsor',r.sponsor), F('Child',r.child), F('Plan',r.plan), F('Amount',this.money(r.amount)), F('Started',r.started) ];
+    if (key==='payments') return [ F('Status',r.status,1), F('Transaction',r.txn), F('Sponsor',r.sponsor), F('Amount',this.money(r.amount)), F('Method',r.method), F('Date',r.date) ];
+    if (key==='audit') return [ F('Action',r.action,1), F('Actor',r.actor), F('Entity',r.entity), F('Time',r.time), F('IP address',r.ip) ];
+    return [];
+  }
+  detailNote(key, r) {
+    if (key==='children') return r.status==='Bridged' ? 'This child is currently supported by the Continuity Fund while a new sponsor is matched.' : 'Educational support covers tuition, books, uniform, and a daily school meal.';
+    if (key==='sponsors') return 'All contributions are reconciled monthly and protected by the Continuity Fund.';
+    return 'Record managed by the JJT platform. All changes are written to the audit log.';
+  }
+
+  // ---------- nav ----------
+  navItem(key, label, p1, p2, badge) {
+    const active = this.state.activeModule === key;
+    const style = { display:'flex', alignItems:'center', gap:11, padding:'9px 12px', borderRadius:9, cursor:'pointer', fontSize:'13.5px', fontWeight: active?600:500, color: active?'#fdfaf3':'#bcd0c5', background: active?'#2f5d4f':'transparent' };
+    const badgeStyle = active ? { background:'rgba(255,255,255,.18)', color:'#fdfaf3', fontSize:'10.5px', fontWeight:700, borderRadius:'100px', padding:'2px 7px' } : { background:'rgba(217,154,78,.2)', color:'#e8b572', fontSize:'10.5px', fontWeight:700, borderRadius:'100px', padding:'2px 7px' };
+    return { key, label, p1, p2:p2||'', style, hasBadge: !!badge, badge: badge||'', badgeStyle, go: ()=>this.go(key) };
+  }
+
+  go(key) { this.setState({ activeModule:key, search:'', sortKey:null, sortDir:'asc', page:0, statusFilter:'all', filterVal:'all', selected:[] }); }
+
+  // ---------- handlers ----------
+  onSearch = (e)=> this.setState({ search:e.target.value, page:0 });
+  toggleFilters = ()=> this.setState(s=>({ showFilters:!s.showFilters }));
+  setStatus(v){ this.setState({ statusFilter:v, page:0 }); }
+  onFilter = (e)=> this.setState({ filterVal:e.target.value, page:0 });
+  resetFilters = ()=> this.setState({ statusFilter:'all', filterVal:'all', search:'', page:0 });
+  setSort(key){ this.setState(s=>({ sortKey:key, sortDir: s.sortKey===key && s.sortDir==='asc' ? 'desc':'asc', page:0 })); }
+  prevPage = ()=> this.setState(s=>({ page:Math.max(0,s.page-1) }));
+  nextPage = ()=> this.setState(s=>({ page:s.page+1 }));
+  toggleSelect(id){ this.setState(s=>({ selected: s.selected.includes(id)? s.selected.filter(x=>x!==id) : [...s.selected,id] })); }
+  clearSelection = ()=> this.setState({ selected:[] });
+  toggleSelectAll = ()=>{ const ids=this.pageIds(); const all=ids.every(i=>this.state.selected.includes(i)) && ids.length>0; this.setState({ selected: all? [] : ids }); };
+  bulkDelete = ()=>{ const key=this.state.activeModule; const sel=this.state.selected; const db={...this.state.db}; db[key]=db[key].filter(r=>!sel.includes(r.id)); this.setState({ db, selected:[], toast:sel.length+' record(s) deleted' }); this.ping(); };
+  deleteRow(id){ const key=this.state.activeModule; const db={...this.state.db}; db[key]=db[key].filter(r=>r.id!==id); this.setState({ db, toast:'Record deleted' }); this.ping(); }
+  openView(id){ this.setState({ drawerId:id }); }
+  openEdit(id){ this.setState({ formMode:'edit', formId:id, drawerId:null }); }
+  openAdd = ()=> this.setState({ formMode:'add', formId:null });
+  closeOverlay = ()=> this.setState({ drawerId:null, formMode:null, formId:null });
+  stop = (e)=> e.stopPropagation();
+  drawerEdit = ()=>{ if(this.state.drawerId) this.openEdit(this.state.drawerId); };
+  exportData = ()=>{ this.setState({ toast:'Export started — CSV will download' }); this.ping(); };
+  ping(){ clearTimeout(this._t); this._t=setTimeout(()=>this.setState({toast:null}),2400); }
+
+  formRef = React.createRef();
+  saveForm = ()=>{
+    const key=this.state.activeModule; const cfg=this.MODS()[key];
+    const fd=new FormData(this.formRef.current); const obj={};
+    cfg.form.forEach(f=>{ let v=fd.get(f.key); if(f.type==='number') v=Number(v||0); obj[f.key]=v; });
+    const db={...this.state.db};
+    if(this.state.formMode==='add'){ obj.id=key[0]+'_'+Date.now(); db[key]=[obj,...db[key]]; }
+    else { db[key]=db[key].map(r=> r.id===this.state.formId ? {...r,...obj} : r); }
+    this.setState({ db, formMode:null, formId:null, page:0, toast: this.state.formMode==='add'?'Record created':'Changes saved' });
+    this.ping();
+  };
+
+  markAllRead = ()=>{ const all=this.curNotifs().map(n=>n.id); this.setState({ notifRead:all, toast:'All notifications marked read' }); this.ping(); };
+  setNotifFilter(v){ this.setState({ notifFilter:v }); }
+  setSettingsTab(v){ this.setState({ settingsTab:v }); }
+  toggleSetting(k){ this.setState(s=>({ settings:{...s.settings,[k]:!s.settings[k]} })); }
+  saveSettings = ()=>{ this.setState({ toast:'Settings saved' }); this.ping(); };
+  goNotifications = ()=> this.setState({ activeModule:'notifications' });
+  goAudit = ()=> this.go('audit');
+
+  pageIds(){ const v=this.computeData(); return v.pageData.map(r=>r.id); }
+  computeData() {
+    const key=this.state.activeModule; const cfg=this.MODS()[key];
+    let data=(this.state.db?.[key]||[]).slice();
+    const q=this.state.search.trim().toLowerCase();
+    if(q) data=data.filter(r=> cfg.searchKeys.some(k=>String(r[k]??'').toLowerCase().includes(q)));
+    if(cfg.statusKey && this.state.statusFilter!=='all') data=data.filter(r=>r[cfg.statusKey]===this.state.statusFilter);
+    if(cfg.filter && this.state.filterVal!=='all') data=data.filter(r=>r[cfg.filter.key]===this.state.filterVal);
+    if(this.state.sortKey){ const dir=this.state.sortDir==='asc'?1:-1; data.sort((a,b)=>{ const x=a[this.state.sortKey], y=b[this.state.sortKey]; if(typeof x==='number'&&typeof y==='number') return (x-y)*dir; return String(x).localeCompare(String(y))*dir; }); }
+    const total=data.length, ps=this.pageSize(), pages=Math.max(1,Math.ceil(total/ps));
+    const page=Math.min(this.state.page,pages-1); const start=page*ps;
+    return { cfg, total, ps, pages, page, start, pageData:data.slice(start,start+ps) };
+  }
+
+  curNotifs(){
+    return [
+      { id:'n1', cat:'alert', icon:'M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01', title:'Sponsorship gap detected', body:'Bushra Aziz\u2019s payment for Tariq Mehmood failed — child auto-bridged.', time:'12m ago' },
+      { id:'n2', cat:'system', icon:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6M3 12h2M19 12h2M12 3v2M12 19v2', title:'Continuity Fund auto-bridge', body:'Fund covered 2 children today. Balance remains healthy at Rs 4.82M.', time:'1h ago' },
+      { id:'n3', cat:'alert', icon:'M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01', title:'Payment failed', body:'Nadia Iqbal\u2019s Easypaisa transaction TXN-9F29E2 was declined.', time:'3h ago' },
+      { id:'n4', cat:'system', icon:'M22 10 12 5 2 10l10 5 10-5zM6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5', title:'New child enrolled', body:'Komal Riaz added Rabia Bano (Multan) — pending review.', time:'5h ago' },
+      { id:'n5', cat:'system', icon:'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l9 9 9-9a5.5 5.5 0 0 0 0-7.8z', title:'New sponsor onboarded', body:'Omar Sheikh (Riyadh) committed to 2 children.', time:'1d ago' },
+    ];
+  }
+
+  renderVals() {
+    const am=this.state.activeModule;
+    const mods=this.MODS();
+    const isMgmt=!!mods[am];
+    const titles={ dashboard:'Dashboard', reports:'Reports & Analytics', notifications:'Notifications', settings:'System Settings' };
+    const crumbs={ dashboard:'Overview', reports:'System', notifications:'Overview', settings:'System' };
+    const pageTitle = isMgmt ? mods[am].title : titles[am];
+    const crumb = isMgmt ? mods[am].crumb : crumbs[am];
+
+    const V = {
+      navTop:[ this.navItem('dashboard','Dashboard','M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z') ],
+      navManage:[
+        this.navItem('users','Users','M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2','M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8'),
+        this.navItem('sponsors','Sponsors','M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l9 9 9-9a5.5 5.5 0 0 0 0-7.8z'),
+        this.navItem('children','Children','M22 10 12 5 2 10l10 5 10-5z','M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5'),
+        this.navItem('commitments','Commitments','M9 12a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1','M15 12a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1'),
+        this.navItem('payments','Payments','M2 5h20v14H2z','M2 10h20'),
+      ],
+      navSystem:[
+        this.navItem('reports','Reports & Analytics','M3 3v18h18','M7 16v-4M12 16V9M17 16v-7'),
+        this.navItem('notifications','Notifications','M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9','M13.7 21a2 2 0 0 1-3.4 0', '3'),
+        this.navItem('settings','System Settings','M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6','M19.4 15a1.6 1.6 0 0 0 .3 1.8 2 2 0 1 1-2.8 2.8 1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0 1.6 1.6 0 0 0-2.7-1.1 2 2 0 1 1-2.8-2.8A1.6 1.6 0 0 0 3 14.5a2 2 0 0 1 0-4 1.6 1.6 0 0 0 1.5-2.7 2 2 0 1 1 2.8-2.8A1.6 1.6 0 0 0 10 4.6 2 2 0 0 1 14 4.6a1.6 1.6 0 0 0 2.7 1.1 2 2 0 1 1 2.8 2.8 1.6 1.6 0 0 0 .9 2.4'),
+        this.navItem('audit','Audit Logs','M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z','M9 12l2 2 4-4'),
+      ],
+      crumb, pageTitle,
+      unreadCount: String(Math.max(0, this.curNotifs().length - this.state.notifRead.length)),
+      goNotifications:this.goNotifications, goAudit:this.goAudit,
+      isDashboard: am==='dashboard', isManagement: isMgmt, isReports: am==='reports', isNotifications: am==='notifications', isSettings: am==='settings',
+      // overlays
+      drawerOpen: !!this.state.drawerId, formOpen: !!this.state.formMode,
+      closeOverlay:this.closeOverlay, stop:this.stop, drawerEdit:this.drawerEdit, formRef:this.formRef, saveForm:this.saveForm,
+      toastShow: !!this.state.toast, toastMsg: this.state.toast||'',
+    };
+
+    if (V.isDashboard) Object.assign(V, this.dashVals());
+    if (isMgmt) Object.assign(V, this.mgmtVals());
+    if (V.isReports) Object.assign(V, this.reportVals());
+    if (V.isNotifications) Object.assign(V, this.notifVals());
+    if (V.isSettings) Object.assign(V, this.settingsVals());
+    if (V.drawerOpen) Object.assign(V, this.drawerVals());
+    if (V.formOpen) Object.assign(V, this.formVals());
+    return V;
+  }
+
+  dashVals() {
+    const ch=this.state.db?.children||[];
+    const sp=ch.filter(c=>c.status==='Sponsored').length, br=ch.filter(c=>c.status==='Bridged').length, sk=ch.filter(c=>c.status==='Seeking').length, tot=ch.length||1;
+    const deltaUp={ fontSize:'11.5px', fontWeight:600, color:'#214a3e', background:'#e7eee9', borderRadius:'100px', padding:'3px 8px' };
+    const deltaFlat={ fontSize:'11.5px', fontWeight:600, color:'#8a5f1f', background:'#fdf7ec', borderRadius:'100px', padding:'3px 8px' };
+    const bars=[['Nov',24],['Dec',31],['Jan',28],['Feb',42],['Mar',38],['Apr',47],['May',44],['Jun',53]];
+    const max=Math.max(...bars.map(b=>b[1]));
+    const segC1=Math.round(sp/tot*100), segC2=segC1+Math.round(br/tot*100);
+    return {
+      kpis:[
+        { label:'Children supported', value:'2,840', sub:'+126 this month', delta:'+4.6%', deltaStyle:deltaUp },
+        { label:'Active sponsors', value:'1,914', sub:'across 11 cities', delta:'+2.1%', deltaStyle:deltaUp },
+        { label:'Continuity Fund', value:'Rs 4.82M', sub:'38 children bridged', delta:'Healthy', deltaStyle:deltaFlat },
+        { label:'Coverage', value:'100%', sub:'days of learning kept', delta:'On target', deltaStyle:deltaUp },
+      ],
+      chartBars: bars.map(b=>({ label:b[0], val:b[1], barStyle:{ width:'100%', height:(b[1]/max*100)+'%', minHeight:'6px', background:'linear-gradient(#3a6e5d,#2f5d4f)', borderRadius:'7px 7px 3px 3px' } })),
+      childTotal:String(ch.length),
+      donutStyle:{ width:'120px', height:'120px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', background:`conic-gradient(#2f5d4f 0 ${segC1}%, #d99a4e ${segC1}% ${segC2}%, #c9bea8 ${segC2}% 100%)` },
+      statusLegend:[
+        { label:'Sponsored', count:String(sp), dotStyle:{ width:'10px',height:'10px',borderRadius:'3px',background:'#2f5d4f' } },
+        { label:'Bridged by Fund', count:String(br), dotStyle:{ width:'10px',height:'10px',borderRadius:'3px',background:'#d99a4e' } },
+        { label:'Seeking sponsor', count:String(sk), dotStyle:{ width:'10px',height:'10px',borderRadius:'3px',background:'#c9bea8' } },
+      ],
+      alertCount:'3',
+      alerts:[
+        { title:'Payment failed — Tariq Mehmood', body:'Bushra Aziz\u2019s Easypaisa charge declined. Auto-bridged by Fund.', time:'12m', dotStyle:{ width:'9px',height:'9px',borderRadius:'50%',background:'#b9603f',marginTop:'5px',flexShrink:0 } },
+        { title:'4 children awaiting review', body:'New enrolments from Hope Academy need verification.', time:'2h', dotStyle:{ width:'9px',height:'9px',borderRadius:'50%',background:'#d99a4e',marginTop:'5px',flexShrink:0 } },
+        { title:'Sponsor lapse risk', body:'Nadia Iqbal has 2 failed payments this cycle.', time:'5h', dotStyle:{ width:'9px',height:'9px',borderRadius:'50%',background:'#d99a4e',marginTop:'5px',flexShrink:0 } },
+      ],
+      activity: this.state.db?.audit?.slice(0,5).map(a=>({ who:this.initials(a.actor==='System'?'SY':a.actor), text:a.actor+' '+a.action.toLowerCase()+' '+a.entity, time:a.time.split(' · ')[0] })) || [],
+    };
+  }
+
+  mgmtVals() {
+    const v=this.computeData(); const cfg=v.cfg; const am=this.state.activeModule;
+    const thBase={ padding:'12px 14px', textAlign:'left', fontFamily:"'IBM Plex Mono',monospace", fontSize:'10.5px', letterSpacing:'.06em', textTransform:'uppercase', color:'#9aa79f', fontWeight:500, cursor:'default', whiteSpace:'nowrap', borderBottom:'1px solid #e3dccd' };
+    const columns=cfg.columns.map(c=>{
+      const sActive=this.state.sortKey===c.key;
+      return { label:c.label, thStyle:{...thBase, cursor:c.sortable?'pointer':'default', color:sActive?'#2f5d4f':'#9aa79f'},
+        caret: sActive?(this.state.sortDir==='asc'?'\u2191':'\u2193'):(c.sortable?'\u2195':''),
+        caretStyle:{ fontSize:'11px', color: sActive?'#2f5d4f':'#cdc4b2' },
+        go: c.sortable? (()=>this.setSort(c.key)) : (()=>{}) };
+    });
+    const rows=v.pageData.map(r=>{
+      const selected=this.state.selected.includes(r.id);
+      return { id:r.id, cells:this.fmt(am,r), canEdit:cfg.canEdit, canDelete:cfg.canDelete,
+        trStyle:{ background: selected?'#f6faf7':'transparent' },
+        checkStyle: this.checkStyle(selected), checkMark: selected?'\u2713':'',
+        toggle: ()=>this.toggleSelect(r.id), view:()=>this.openView(r.id), edit:()=>this.openEdit(r.id), del:()=>this.deleteRow(r.id) };
+    });
+    const pageIds=v.pageData.map(r=>r.id);
+    const allSel=pageIds.length>0 && pageIds.every(i=>this.state.selected.includes(i));
+    const chips=cfg.statusKey? [{v:'all',l:'All'}, ...cfg.statusOptions.map(o=>({v:o,l:o}))].map(o=>({ label:o.l, go:()=>this.setStatus(o.v), style: this.chipStyle(this.state.statusFilter===o.v) })) : [];
+    const start=v.total===0?0:v.start+1, end=v.start+v.pageData.length;
+    return {
+      mCanAdd: cfg.canAdd, mAddLabel: cfg.addLabel, openAdd:this.openAdd, exportData:this.exportData,
+      search:this.state.search, onSearch:this.onSearch, searchPlaceholder:'Search '+(cfg.plural||cfg.entity+'s')+'\u2026',
+      showFilters:this.state.showFilters, toggleFilters:this.toggleFilters, resetFilters:this.resetFilters,
+      filterBtnStyle:{ display:'flex', alignItems:'center', gap:7, border:'1px solid '+(this.state.showFilters?'#cfe0d7':'#cdc4b2'), color:this.state.showFilters?'#214a3e':'#54625b', background:this.state.showFilters?'#eef5f1':'#fffdf9', borderRadius:9, padding:'9px 14px', fontSize:'13px', fontWeight:500, cursor:'pointer' },
+      resultsText: v.total+' '+(v.total===1?cfg.entity:(cfg.plural||cfg.entity+'s')),
+      mHasStatus: !!cfg.statusKey, mStatusChips:chips,
+      mHasFilter: !!cfg.filter, mFilterLabel: cfg.filter?cfg.filter.label:'', filterVal:this.state.filterVal, onFilter:this.onFilter,
+      mFilterOptions: cfg.filter? [{value:'all',label:'All'}, ...cfg.filter.options.map(o=>({value:o,label:o}))] : [],
+      mColumns:columns, mRows:rows, mEmpty: v.total===0,
+      mCanBulk: cfg.canBulk, toggleSelectAll:this.toggleSelectAll, selectAllStyle:this.checkStyle(allSel), selectAllMark: allSel?'\u2713':'',
+      mHasSelection: this.state.selected.length>0, mSelectedCount:String(this.state.selected.length), clearSelection:this.clearSelection, bulkDelete:this.bulkDelete,
+      mPageText: v.total===0?'No records':('Showing '+start+'\u2013'+end+' of '+v.total),
+      mPageLabel:'Page '+(v.page+1)+' of '+v.pages,
+      prevPage:this.prevPage, nextPage:this.nextPage,
+      prevStyle: this.pgStyle(v.page>0), nextStyle: this.pgStyle(v.page<v.pages-1),
+    };
+  }
+  checkStyle(on){ return { width:'18px', height:'18px', borderRadius:'5px', display:'inline-flex', alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:'11px', color:'#fff', border: on?'none':'1px solid #cdc4b2', background: on?'#2f5d4f':'#fffdf9' }; }
+  chipStyle(on){ return { fontSize:'12px', fontWeight:600, borderRadius:'100px', padding:'5px 12px', cursor:'pointer', color: on?'#fff':'#54625b', background: on?'#2f5d4f':'#f4f1ea', border:'1px solid '+(on?'#2f5d4f':'#e3dccd') }; }
+  pgStyle(on){ return { fontSize:'12.5px', fontWeight:600, borderRadius:'8px', padding:'7px 13px', border:'1px solid #ddd5c5', cursor: on?'pointer':'default', color: on?'#54625b':'#cdc4b2', background:'#fffdf9', pointerEvents: on?'auto':'none' }; }
+
+  drawerVals() {
+    const am=this.state.activeModule; const r=(this.state.db?.[am]||[]).find(x=>x.id===this.state.drawerId);
+    if(!r) return { drawerFields:[], drawerTitle:'', drawerSub:'', drawerInitials:'', drawerNote:'' };
+    const titleKey = am==='payments'?'txn': am==='audit'?'entity': am==='commitments'?'child':'name';
+    const subMap = { children:'Grade '+r.grade+' · '+r.city, users:r.role+' · '+r.org, sponsors:r.location, commitments:r.sponsor+' → '+r.child, payments:r.method+' · '+r.date, audit:r.actor };
+    const fields=this.detailFields(am,r).map(f=>{ if(f.badge){ const t=this.tone(f.value); return { label:f.label, value:f.value, isBadge:true, green:t==='green', amber:t==='amber', grey:t==='grey', red:t==='red' }; } return { label:f.label, value:String(f.value), isText:true }; });
+    return { drawerTitle:String(r[titleKey]), drawerSub:subMap[am]||'', drawerInitials:this.initials(am==='payments'?r.sponsor:(r.name||r.actor||r.child||'?')), drawerFields:fields, drawerNote:this.detailNote(am,r) };
+  }
+
+  formVals() {
+    const am=this.state.activeModule; const cfg=this.MODS()[am];
+    const r= this.state.formMode==='edit' ? (this.state.db?.[am]||[]).find(x=>x.id===this.state.formId) : null;
+    const fields=cfg.form.map(f=>{
+      const val = r? (r[f.key]??'') : '';
+      if(f.select) return { label:f.label, key:f.key, isSelect:true, options:f.select, value:String(val), wrapStyle:{} };
+      const full = (f.key==='email'||f.key==='school'||f.key==='location');
+      return { label:f.label, key:f.key, isField:true, type:f.type||'text', value:String(val), ph:f.label, wrapStyle: full?{gridColumn:'1 / -1'}:{} };
+    });
+    return { formTitle: (this.state.formMode==='add'?'Add ':'Edit ')+cfg.entity, formSub:'Fields marked are written to the audit log on save', formFields:fields, formSave: this.state.formMode==='add'?'Create '+cfg.entity:'Save changes' };
+  }
+
+  reportVals() {
+    const deltaUp={ fontSize:'11.5px', fontWeight:600, color:'#214a3e', marginTop:'6px' };
+    const cities=[['Karachi',1240000],['Lahore',980000],['Multan',640000],['Faisalabad',520000],['Peshawar',410000],['Hyderabad',360000]];
+    const cmax=Math.max(...cities.map(c=>c[1]));
+    const fund=[['Jan',62,40],['Feb',70,44],['Mar',58,52],['Apr',74,46],['May',80,50],['Jun',88,42]];
+    const fmax=Math.max(...fund.flatMap(f=>[f[1],f[2]]));
+    const orgs=[['Hope Academy','Karachi',412,92,'Rs 1.24M'],['Al-Falah Trust','Lahore',308,88,'Rs 0.98M'],['Iqra Foundation','Multan',196,79,'Rs 0.64M'],['City Schools','Peshawar',164,84,'Rs 0.41M'],['Falah Trust','Rawalpindi',142,90,'Rs 0.36M']];
+    return {
+      reportKpis:[
+        { label:'Total disbursed (YTD)', value:'Rs 38.4M', delta:'+18% vs last year', deltaStyle:deltaUp },
+        { label:'New sponsorships', value:'1,206', delta:'+312 this year', deltaStyle:deltaUp },
+        { label:'Avg. coverage', value:'98.6%', delta:'+1.2 pts', deltaStyle:deltaUp },
+        { label:'Fund bridges', value:'214', delta:'across 11 cities', deltaStyle:{...deltaUp, color:'#8a5f1f'} },
+      ],
+      cityBars: cities.map(c=>({ label:c[0], amount:this.money(c[1]), barStyle:{ width:(c[1]/cmax*100)+'%', height:'100%', background:'linear-gradient(90deg,#3a6e5d,#2f5d4f)', borderRadius:'6px' } })),
+      fundBars: fund.map(f=>({ label:f[0], inStyle:{ width:'14px', height:(f[1]/fmax*100)+'%', background:'#2f5d4f', borderRadius:'4px 4px 0 0' }, outStyle:{ width:'14px', height:(f[2]/fmax*100)+'%', background:'#d99a4e', borderRadius:'4px 4px 0 0' } })),
+      orgRows: orgs.map(o=>({ name:o[0], city:o[1], children:String(o[2]), coverage:o[3]+'%', disbursed:o[4], barStyle:{ width:o[3]+'%', height:'100%', background:'#2f5d4f', borderRadius:'4px' } })),
+    };
+  }
+
+  notifVals() {
+    const tabs=[['all','All'],['unread','Unread'],['alert','Alerts']];
+    const list=this.curNotifs().filter(n=> this.state.notifFilter==='all'?true: this.state.notifFilter==='unread'? !this.state.notifRead.includes(n.id) : n.cat==='alert');
+    return {
+      notifTabs: tabs.map(t=>({ label:t[1], go:()=>this.setNotifFilter(t[0]), style:{ fontSize:'12.5px', fontWeight:600, borderRadius:'8px', padding:'7px 13px', cursor:'pointer', color:this.state.notifFilter===t[0]?'#214a3e':'#9aa79f', background:this.state.notifFilter===t[0]?'#e7eee9':'transparent' } })),
+      markAllRead:this.markAllRead,
+      notifList: list.map(n=>{ const unread=!this.state.notifRead.includes(n.id); const alert=n.cat==='alert'; return { title:n.title, body:n.body, time:n.time, icon:n.icon, unread,
+        rowStyle:{ display:'flex', gap:14, alignItems:'flex-start', padding:'15px 20px', borderBottom:'1px solid #f1ece2', background: unread?'#fbfdfb':'transparent' },
+        iconStyle:{ width:'34px', height:'34px', borderRadius:'9px', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, color: alert?'#b9603f':'#2f5d4f', background: alert?'#f7e8e1':'#eef2ec' } }; }),
+      channels:[
+        { label:'Email digests', sub:'Daily summary to admins', key:'weekly' },
+        { label:'SMS alerts', sub:'Critical gaps only', key:'sms' },
+        { label:'Payment alerts', sub:'Failed & pending charges', key:'payAlerts' },
+      ].map(c=>({ label:c.label, sub:c.sub, toggle:()=>this.toggleSetting(c.key), switchStyle:this.switchStyle(this.state.settings[c.key]), knobStyle:this.knobStyle(this.state.settings[c.key]) })),
+    };
+  }
+  switchStyle(on){ return { width:'42px', height:'24px', borderRadius:'100px', background: on?'#2f5d4f':'#d8cfbd', position:'relative', cursor:'pointer', flexShrink:0, transition:'background .15s', display:'inline-block' }; }
+  knobStyle(on){ return { position:'absolute', top:'3px', left: on?'21px':'3px', width:'18px', height:'18px', borderRadius:'50%', background:'#fff', transition:'left .15s', boxShadow:'0 1px 3px rgba(0,0,0,.2)' }; }
+
+  settingsVals() {
+    const tabs=[['general','General'],['continuity','Continuity Fund'],['roles','Roles & Permissions'],['payments','Payment Providers'],['notifications','Notifications'],['security','Security']];
+    const tab=this.state.settingsTab;
+    const meta={ general:['General','Organisation profile and platform defaults'], continuity:['Continuity Fund','Rules that govern automatic bridging'], roles:['Roles & Permissions','What each role can see and do'], payments:['Payment Providers','Connected gateways and payout settings'], notifications:['Notifications','Default channels and digests'], security:['Security','Authentication and access policy'] };
+    const F=(label,sub,kind,value,key)=>({ label, sub, isToggle:kind==='toggle', isInput:kind==='input', isSelect:kind==='select', value:value||'', toggle:key?(()=>this.toggleSetting(key)):(()=>{}), switchStyle:key?this.switchStyle(this.state.settings[key]):{}, knobStyle:key?this.knobStyle(this.state.settings[key]):{} });
+    const sets={
+      general:[ F('Platform name','Shown across the console and emails','input','JJT Foundation'), F('Default currency','Currency for new commitments','select','Rs (PKR)'), F('Primary region','Operating region for reporting','select','Pakistan'), F('Time zone','Used for timestamps and digests','select','PKT (UTC+5)') ],
+      continuity:[ F('Auto-bridge gaps','Automatically cover children when a payment fails','toggle',null,'autoBridge'), F('Bridge grace period','Days before a lapse triggers bridging','input','3 days'), F('Minimum fund balance','Alert admins below this threshold','input','Rs 1,000,000'), F('Top-up allocation','Share of each donation routed to the fund','input','5%') ],
+      roles:[ F('Org admins edit children','Allow partner admins to add and edit child records','toggle',null,'gaps'), F('Reviewers approve enrolments','Require reviewer sign-off before publishing','toggle',null,'weekly'), F('Default new-user role','Role assigned on invite','select','Org Admin') ],
+      payments:[ F('JazzCash','Mobile wallet — connected','toggle',null,'autoBridge'), F('Easypaisa','Mobile wallet — connected','toggle',null,'payAlerts'), F('Card processor','Stripe — live','select','Stripe'), F('Payout schedule','When funds reach partner orgs','select','Monthly') ],
+      notifications:[ F('Email digests','Daily admin summary','toggle',null,'weekly'), F('SMS alerts','Critical gaps only','toggle',null,'sms'), F('Payment alerts','Failed and pending charges','toggle',null,'payAlerts') ],
+      security:[ F('Two-factor authentication','Require 2FA for all admin accounts','toggle',null,'twoFA'), F('Session timeout','Auto sign-out after inactivity','input','30 minutes'), F('IP allow-list','Restrict console to approved networks','toggle',null,'gaps') ],
+    };
+    return {
+      settingsTabs: tabs.map(t=>({ label:t[1], go:()=>this.setSettingsTab(t[0]), style:{ padding:'10px 13px', borderRadius:'9px', fontSize:'13px', fontWeight: tab===t[0]?600:500, cursor:'pointer', color: tab===t[0]?'#214a3e':'#54625b', background: tab===t[0]?'#eef5f1':'transparent' } })),
+      settingsTitle: meta[tab][0], settingsSub: meta[tab][1], settingsFields: sets[tab], saveSettings:this.saveSettings,
+    };
+  }
+}
+</script>
+</body>
+</html>
