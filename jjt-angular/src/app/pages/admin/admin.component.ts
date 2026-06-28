@@ -1,8 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SiteHeaderComponent } from '../../components/layout/site-header.component';
-import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 import {
@@ -13,14 +11,18 @@ import {
   UserResponse,
 } from '../../services/api.models';
 
-type TabId =
-  | 'child' | 'sponsor' | 'earlySupport' | 'progress' | 'sponsorship'
-  | 'pending' | 'active' | 'users' | 'docs';
+type SectionId =
+  | 'dashboard' | 'children' | 'sponsors' | 'commitments'
+  | 'earlySupport' | 'progress' | 'users' | 'reports' | 'docs';
+
+type ModalType =
+  | 'addChild' | 'addSponsor' | 'addCommitment'
+  | 'addSponsorUser' | 'addOrgUser' | null;
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule, SiteHeaderComponent, SiteFooterComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
@@ -28,109 +30,171 @@ export class AdminComponent implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly authService  = inject(AuthService);
 
-  activeTab: TabId = 'child';
-  successMessage: string | null = null;
-  errorMessage:   string | null = null;
-  isLoading = false;
+  // ── Navigation ────────────────────────────────────────────────────
+  activeSection: SectionId = 'dashboard';
   isJjtAdmin = false;
+  currentUserEmail = '';
+  currentUserInitials = 'JA';
 
-  // ── Shared dropdown data ───────────────────────────────────────────────────
-  children:  ChildDto[]              = [];
-  sponsors:  CreateSponsorResponse[] = [];
-  loadingDropdowns = false;
+  // ── Modal & Toast ─────────────────────────────────────────────────
+  modalType: ModalType = null;
+  toastMessage: string | null = null;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // ── Create Child ────────────────────────────────────────────────────────
+  // ── Loading / Error ───────────────────────────────────────────────
+  isLoading = false;
+  errorMessage: string | null = null;
+
+  // ── Shared dropdown data ──────────────────────────────────────────
+  children: ChildDto[] = [];
+  sponsors: CreateSponsorResponse[] = [];
+
+  // ── Table search / filter ─────────────────────────────────────────
+  childSearch = '';
+  sponsorSearch = '';
+  commitmentFilter: 'ALL' | 'PENDING' | 'ACTIVE' = 'ALL';
+  userSearch = '';
+
+  // ── Create Child ──────────────────────────────────────────────────
   childForm = {
     rollNumber: '', fullName: '', city: '', campusName: '',
     schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR'
   };
 
-  // ── Create Sponsor ──────────────────────────────────────────────────────
+  // ── Create Sponsor ────────────────────────────────────────────────
   sponsorForm = { displayName: '', contactEmail: '', phone: '' };
   createdSponsorId: string | null = null;
 
-  // ── Record Early Support ─────────────────────────────────────────────────
+  // ── Early Support ─────────────────────────────────────────────────
   earlySupportForm = {
     childId: '', month: '', educationAmount: '2000.00', educationCurrency: 'PKR'
   };
   pastMonths: string[] = this.generatePastMonths(24);
 
-  // ── Add Progress ─────────────────────────────────────────────────────────
+  // ── Progress ──────────────────────────────────────────────────────
   progressForm = { childId: '', month: '', summary: '' };
   progressLedgerMonths: string[] = [];
   loadingProgressMonths = false;
 
-  // ── Commit Sponsorship ───────────────────────────────────────────────────
+  // ── Commit Sponsorship ────────────────────────────────────────────
   sponsorshipForm = {
     sponsorId: '', childId: '', startMonth: '', commitmentType: 'MONTHLY' as 'MONTHLY' | 'YEARLY'
   };
   futureMonths: string[] = this.generateFutureMonths(12);
 
-  // ── Sponsorship lists ─────────────────────────────────────────────────────
+  // ── Sponsorship lists ─────────────────────────────────────────────
   pendingSponsorships: SponsorshipSummaryResponse[] = [];
   activeSponsorships:  SponsorshipSummaryResponse[] = [];
   loadingList = false;
 
-  // ── User management ───────────────────────────────────────────────────────
+  // ── Users ─────────────────────────────────────────────────────────
   users: UserResponse[] = [];
   loadingUsers = false;
   sponsorUserForm     = { sponsorId: '', email: '', password: '' };
   orgUserForm         = { email: '', password: '', orgId: '' };
-  showSponsorUserForm = false;
-  showOrgUserForm     = false;
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
-
-  get visibleTabs(): { id: TabId; label: string }[] {
-    const base: { id: TabId; label: string }[] = [
-      { id: 'child',        label: 'Add Child' },
-      { id: 'sponsor',      label: 'Add Sponsor' },
-      { id: 'earlySupport', label: 'Early Support' },
-      { id: 'progress',     label: 'Add Progress' },
-      { id: 'sponsorship',  label: 'Commit Sponsorship' },
-      { id: 'pending',      label: 'Pending' },
-      { id: 'active',       label: 'Active' },
-      { id: 'docs',         label: 'How It Works' },
-    ];
-    if (this.isJjtAdmin) {
-      base.push({ id: 'users', label: 'Users' });
-    }
-    return base;
-  }
+  // ── Lifecycle ─────────────────────────────────────────────────────
 
   ngOnInit(): void {
     const user = this.authService.getCurrentUser();
     this.isJjtAdmin = user?.role === 'JJT_ADMIN';
+    this.currentUserEmail = user?.email ?? '';
+    this.currentUserInitials = this.toInitials(user?.email ?? 'ja');
     this.loadDropdowns();
+    this.loadList('PENDING');
+    this.loadList('ACTIVE');
   }
 
-  private loadDropdowns(): void {
-    this.loadingDropdowns = true;
-    this.adminService.getOrgChildren().subscribe({
-      next: (data) => { this.children = data; },
-      error: () => {}
-    });
-    this.adminService.listSponsors().subscribe({
-      next: (data) => { this.sponsors = data; this.loadingDropdowns = false; },
-      error: () => { this.loadingDropdowns = false; }
-    });
+  // ── Navigation ────────────────────────────────────────────────────
+
+  setSection(s: SectionId): void {
+    this.activeSection = s;
+    this.errorMessage = null;
+    if (s === 'users') this.loadUsers();
   }
 
-  // ── Tab switching ─────────────────────────────────────────────────────────
-
-  setTab(tab: TabId): void {
-    this.activeTab = tab;
-    this.clearMessages();
-    if (tab === 'pending') this.loadList('PENDING');
-    if (tab === 'active')  this.loadList('ACTIVE');
-    if (tab === 'users')   this.loadUsers();
+  openModal(type: ModalType): void {
+    this.modalType = type;
+    this.errorMessage = null;
   }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
+  closeModal(): void {
+    this.modalType = null;
+    this.errorMessage = null;
+  }
 
-  clearMessages(): void {
-    this.successMessage = null;
-    this.errorMessage   = null;
+  stopProp(e: Event): void { e.stopPropagation(); }
+
+  showToast(msg: string): void {
+    this.toastMessage = msg;
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => { this.toastMessage = null; }, 3000);
+  }
+
+  // ── Derived / computed ────────────────────────────────────────────
+
+  get sponsoredCount(): number {
+    return this.children.filter(c => c.availabilityStatus === 'ALLOCATED').length;
+  }
+
+  get seekingCount(): number {
+    return this.children.filter(c => c.availabilityStatus === 'AVAILABLE').length;
+  }
+
+  get allCommitments(): SponsorshipSummaryResponse[] {
+    if (this.commitmentFilter === 'PENDING') return this.pendingSponsorships;
+    if (this.commitmentFilter === 'ACTIVE')  return this.activeSponsorships;
+    return [...this.pendingSponsorships, ...this.activeSponsorships];
+  }
+
+  get filteredChildren(): ChildDto[] {
+    const q = this.childSearch.toLowerCase().trim();
+    if (!q) return this.children;
+    return this.children.filter(c =>
+      c.fullName.toLowerCase().includes(q) || c.rollNumber.toLowerCase().includes(q)
+    );
+  }
+
+  get filteredSponsors(): CreateSponsorResponse[] {
+    const q = this.sponsorSearch.toLowerCase().trim();
+    if (!q) return this.sponsors;
+    return this.sponsors.filter(s =>
+      s.displayName.toLowerCase().includes(q) || s.contactEmail.toLowerCase().includes(q)
+    );
+  }
+
+  get filteredUsers(): UserResponse[] {
+    const q = this.userSearch.toLowerCase().trim();
+    if (!q) return this.users;
+    return this.users.filter(u => u.email.toLowerCase().includes(q));
+  }
+
+  // ── Helpers ───────────────────────────────────────────────────────
+
+  private toInitials(s: string): string {
+    const parts = s.split('@')[0].split(/[._-]/);
+    return parts.slice(0, 2).map(p => p.charAt(0).toUpperCase()).join('') || 'JA';
+  }
+
+  childName(childId: string): string {
+    const c = this.children.find(x => x.id === childId);
+    return c ? `${c.fullName} (${c.rollNumber})` : childId.substring(0, 8) + '…';
+  }
+
+  initials(name: string): string {
+    return (name || '?').split(' ').slice(0, 2).map(w => w.charAt(0)).join('').toUpperCase();
+  }
+
+  availabilityLabel(status: string): string {
+    if (status === 'ALLOCATED') return 'Sponsored';
+    if (status === 'RESERVED')  return 'Reserved';
+    return 'Seeking';
+  }
+
+  availabilityClass(status: string): string {
+    if (status === 'ALLOCATED') return 'badge-green';
+    if (status === 'RESERVED')  return 'badge-amber';
+    return 'badge-grey';
   }
 
   private handleError(err: any, fallback = 'An error occurred.'): void {
@@ -138,14 +202,7 @@ export class AdminComponent implements OnInit {
     this.errorMessage = err?.error?.message ?? fallback;
   }
 
-  private newUuid(): string {
-    return crypto.randomUUID();
-  }
-
-  childName(childId: string): string {
-    const c = this.children.find(x => x.id === childId);
-    return c ? `${c.fullName} (${c.rollNumber})` : childId;
-  }
+  private newUuid(): string { return crypto.randomUUID(); }
 
   private generatePastMonths(count: number): string[] {
     const months: string[] = [];
@@ -167,12 +224,19 @@ export class AdminComponent implements OnInit {
     return months;
   }
 
-  // ── Child ─────────────────────────────────────────────────────────────────
+  // ── Data loading ──────────────────────────────────────────────────
+
+  private loadDropdowns(): void {
+    this.adminService.getOrgChildren().subscribe({ next: (data) => { this.children = data; } });
+    this.adminService.listSponsors().subscribe({ next: (data) => { this.sponsors = data; } });
+  }
+
+  // ── Child ─────────────────────────────────────────────────────────
 
   createChild(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
 
     this.adminService.createChild({
       ...this.childForm,
@@ -180,9 +244,10 @@ export class AdminComponent implements OnInit {
       ledgerId: this.newUuid(),
       schoolName: this.childForm.schoolName || null,
     }).subscribe({
-      next: (res) => {
+      next: () => {
         this.isLoading = false;
-        this.successMessage = `Child created. ID: ${res.childId}`;
+        this.closeModal();
+        this.showToast('Child created successfully.');
         this.childForm = { rollNumber: '', fullName: '', city: '', campusName: '', schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR' };
         this.loadDropdowns();
       },
@@ -190,12 +255,12 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // ── Sponsor ───────────────────────────────────────────────────────────────
+  // ── Sponsor ───────────────────────────────────────────────────────
 
   createSponsor(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
     this.createdSponsorId = null;
 
     this.adminService.createSponsor({
@@ -206,7 +271,8 @@ export class AdminComponent implements OnInit {
       next: (res) => {
         this.isLoading = false;
         this.createdSponsorId = res.sponsorId;
-        this.successMessage = `Sponsor created. ID: ${res.sponsorId}`;
+        this.closeModal();
+        this.showToast(`Sponsor created. ID: ${res.sponsorId}`);
         this.sponsorForm = { displayName: '', contactEmail: '', phone: '' };
         this.loadDropdowns();
       },
@@ -217,26 +283,27 @@ export class AdminComponent implements OnInit {
   async copySponsorId(): Promise<void> {
     if (!this.createdSponsorId) return;
     await navigator.clipboard.writeText(this.createdSponsorId);
+    this.showToast('Sponsor ID copied to clipboard.');
   }
 
-  // ── Early Support ──────────────────────────────────────────────────────────
+  // ── Early Support ─────────────────────────────────────────────────
 
   recordEarlySupport(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
 
     this.adminService.recordEarlySupport({ ...this.earlySupportForm }).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = 'Early support recorded.';
+        this.showToast('Early support recorded.');
         this.earlySupportForm = { childId: '', month: '', educationAmount: '2000.00', educationCurrency: 'PKR' };
       },
       error: (err) => this.handleError(err, 'Failed to record early support.')
     });
   }
 
-  // ── Progress ───────────────────────────────────────────────────────────────
+  // ── Progress ──────────────────────────────────────────────────────
 
   onProgressChildChange(): void {
     this.progressForm.month = '';
@@ -253,15 +320,15 @@ export class AdminComponent implements OnInit {
   }
 
   addProgress(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
 
     const { childId, ...rest } = this.progressForm;
     this.adminService.addProgress(childId, rest).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = 'Progress update added.';
+        this.showToast('Progress update added.');
         this.progressForm = { childId: '', month: '', summary: '' };
         this.progressLedgerMonths = [];
       },
@@ -269,18 +336,20 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // ── Sponsorship ────────────────────────────────────────────────────────────
+  // ── Sponsorship ───────────────────────────────────────────────────
 
   commitSponsorship(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
 
     this.adminService.commitSponsorship({ ...this.sponsorshipForm }).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = 'Sponsorship committed. Go to Pending tab to activate it.';
+        this.closeModal();
+        this.showToast('Sponsorship committed — activate it from the Commitments view.');
         this.sponsorshipForm = { sponsorId: '', childId: '', startMonth: '', commitmentType: 'MONTHLY' };
+        this.loadList('PENDING');
       },
       error: (err) => this.handleError(err, 'Failed to commit sponsorship.')
     });
@@ -294,57 +363,53 @@ export class AdminComponent implements OnInit {
         if (status === 'PENDING') this.pendingSponsorships = data;
         else this.activeSponsorships = data;
       },
-      error: (err) => {
-        this.loadingList = false;
-        this.errorMessage = err?.error?.message ?? 'Failed to load sponsorships.';
-      }
+      error: () => { this.loadingList = false; }
     });
   }
 
   activate(sponsorshipId: string): void {
-    this.clearMessages();
     this.adminService.activateSponsorship(sponsorshipId).subscribe({
       next: () => {
-        this.successMessage = 'Sponsorship activated.';
+        this.showToast('Sponsorship activated.');
         this.loadList('PENDING');
-        if (this.activeTab === 'active') this.loadList('ACTIVE');
+        this.loadList('ACTIVE');
       },
-      error: (err) => this.handleError(err, 'Failed to activate sponsorship.')
+      error: (err) => this.handleError(err, 'Failed to activate.')
     });
   }
 
   expire(sponsorshipId: string): void {
-    this.clearMessages();
     this.adminService.expireSponsorship(sponsorshipId).subscribe({
       next: () => {
-        this.successMessage = 'Sponsorship expired.';
-        this.loadList(this.activeTab === 'active' ? 'ACTIVE' : 'PENDING');
+        this.showToast('Sponsorship expired.');
+        this.loadList('PENDING');
+        this.loadList('ACTIVE');
       },
-      error: (err) => this.handleError(err, 'Failed to expire sponsorship.')
+      error: (err) => this.handleError(err, 'Failed to expire.')
     });
   }
 
-  // ── User Management ────────────────────────────────────────────────────────
+  // ── Users ─────────────────────────────────────────────────────────
 
   loadUsers(): void {
     this.loadingUsers = true;
     this.adminService.listUsers().subscribe({
       next: (data) => { this.loadingUsers = false; this.users = data; },
-      error: (err) => { this.loadingUsers = false; this.errorMessage = err?.error?.message ?? 'Failed to load users.'; }
+      error: () => { this.loadingUsers = false; }
     });
   }
 
   createSponsorUser(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
 
     this.adminService.createSponsorUser(this.sponsorUserForm).subscribe({
       next: (u) => {
         this.isLoading = false;
-        this.successMessage = `Sponsor user created: ${u.email}`;
+        this.closeModal();
+        this.showToast(`Sponsor user created: ${u.email}`);
         this.sponsorUserForm = { sponsorId: '', email: '', password: '' };
-        this.showSponsorUserForm = false;
         this.loadUsers();
       },
       error: (err) => this.handleError(err, 'Failed to create sponsor user.')
@@ -352,9 +417,9 @@ export class AdminComponent implements OnInit {
   }
 
   createOrgUser(): void {
-    this.clearMessages();
     if (this.isLoading) return;
     this.isLoading = true;
+    this.errorMessage = null;
 
     this.adminService.createOrgAdminUser({
       ...this.orgUserForm,
@@ -362,24 +427,20 @@ export class AdminComponent implements OnInit {
     }).subscribe({
       next: (u) => {
         this.isLoading = false;
-        this.successMessage = `Org admin user created: ${u.email}`;
+        this.closeModal();
+        this.showToast(`Org admin created: ${u.email}`);
         this.orgUserForm = { email: '', password: '', orgId: '' };
-        this.showOrgUserForm = false;
         this.loadUsers();
       },
-      error: (err) => this.handleError(err, 'Failed to create org user.')
+      error: (err) => this.handleError(err, 'Failed to create org admin.')
     });
   }
 
   setUserActive(userId: string, active: boolean): void {
-    this.clearMessages();
-    const call = active
-      ? this.adminService.activateUser(userId)
-      : this.adminService.deactivateUser(userId);
-
+    const call = active ? this.adminService.activateUser(userId) : this.adminService.deactivateUser(userId);
     call.subscribe({
       next: (u) => {
-        this.successMessage = `User ${u.email} ${active ? 'activated' : 'deactivated'}.`;
+        this.showToast(`User ${u.email} ${active ? 'activated' : 'deactivated'}.`);
         this.loadUsers();
       },
       error: (err) => this.handleError(err)
