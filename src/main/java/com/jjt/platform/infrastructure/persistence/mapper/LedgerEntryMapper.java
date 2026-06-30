@@ -19,7 +19,9 @@ public final class LedgerEntryMapper {
                 entity.getChildId(),
                 YearMonthMapper.toDomain(entity.getEntryMonth()),
                 MoneyMapper.toDomain(entity.getEducationAmount(), entity.getEducationCurrency()),
-                coverageType
+                coverageType,
+                entity.getCreatedBy(),   // nullable for Phase 1 rows
+                entity.getCreatedAt()
         );
     }
 
@@ -33,7 +35,9 @@ public final class LedgerEntryMapper {
                 YearMonthMapper.toString(entry.getMonth()),
                 MoneyMapper.amount(entry.getEducationCost()),
                 MoneyMapper.currency(entry.getEducationCost()),
-                entry.getCoverageType()
+                entry.getCoverageType(),
+                entry.getCreatedBy(),
+                entry.getCreatedAt()
         );
     }
 }

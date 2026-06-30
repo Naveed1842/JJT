@@ -7,6 +7,7 @@ import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -28,18 +29,21 @@ public class RecordEarlySupportUseCase {
                 command.childId,
                 command.month,
                 command.educationCost,
-                CoverageType.EARLY_SUPPORT
+                command.coverageType,
+                command.createdBy,
+                Instant.now()
         );
 
         return ledger.appendEntry(entry);
     }
 
-    /** Input for recording early support. */
-    public record Command(UUID ledgerEntryId, UUID childId, YearMonthValue month, Money educationCost) {
+    public record Command(UUID ledgerEntryId, UUID childId, YearMonthValue month, Money educationCost,
+                          CoverageType coverageType, UUID createdBy) {
         public Command {
             Objects.requireNonNull(childId, "childId must not be null");
             Objects.requireNonNull(month, "month must not be null");
             Objects.requireNonNull(educationCost, "educationCost must not be null");
+            Objects.requireNonNull(coverageType, "coverageType must not be null");
         }
     }
 }

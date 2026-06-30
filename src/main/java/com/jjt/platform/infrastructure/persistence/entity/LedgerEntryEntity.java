@@ -13,6 +13,7 @@ import jakarta.persistence.UniqueConstraint;
 import org.hibernate.annotations.Immutable;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -45,12 +46,17 @@ public class LedgerEntryEntity {
     @Column(name = "coverage_type", nullable = false, length = 20, updatable = false)
     private CoverageType coverageType;
 
-    protected LedgerEntryEntity() {
-    }
+    @Column(name = "created_by", updatable = false)
+    private UUID createdBy;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
+
+    protected LedgerEntryEntity() {}
 
     public LedgerEntryEntity(UUID id, EducationSupportLedgerEntity ledger, UUID childId,
                               String entryMonth, BigDecimal educationAmount, String educationCurrency,
-                              CoverageType coverageType) {
+                              CoverageType coverageType, UUID createdBy, Instant createdAt) {
         this.id = id;
         this.ledger = ledger;
         this.childId = childId;
@@ -58,33 +64,17 @@ public class LedgerEntryEntity {
         this.educationAmount = educationAmount;
         this.educationCurrency = educationCurrency;
         this.coverageType = coverageType;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public EducationSupportLedgerEntity getLedger() {
-        return ledger;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getEntryMonth() {
-        return entryMonth;
-    }
-
-    public BigDecimal getEducationAmount() {
-        return educationAmount;
-    }
-
-    public String getEducationCurrency() {
-        return educationCurrency;
-    }
-
-    public CoverageType getCoverageType() {
-        return coverageType;
-    }
+    public UUID getId() { return id; }
+    public EducationSupportLedgerEntity getLedger() { return ledger; }
+    public UUID getChildId() { return childId; }
+    public String getEntryMonth() { return entryMonth; }
+    public BigDecimal getEducationAmount() { return educationAmount; }
+    public String getEducationCurrency() { return educationCurrency; }
+    public CoverageType getCoverageType() { return coverageType; }
+    public UUID getCreatedBy() { return createdBy; }
+    public Instant getCreatedAt() { return createdAt; }
 }

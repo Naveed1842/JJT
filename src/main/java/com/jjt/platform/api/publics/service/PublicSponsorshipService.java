@@ -72,9 +72,10 @@ public class PublicSponsorshipService {
         sponsorRepo.save(sponsorEntity);
 
         YearMonthValue startMonth = YearMonthValue.of(YearMonth.now().plusMonths(1));
+        // Public commits have no authenticated author; createdBy is null (nullable for Phase 1 / public path).
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
                 new CommitFutureSponsorshipUseCase.Command(null, sponsor.getId(), childId, startMonth,
-                        false, SponsorshipStatus.PENDING, Instant.now(), null, commitmentType));
+                        false, Instant.now(), null, commitmentType, null));
         SponsorshipEntity sponsorshipEntity = SponsorshipMapper.toEntity(sponsorship, sponsorEntity);
         sponsorshipRepo.save(sponsorshipEntity);
 

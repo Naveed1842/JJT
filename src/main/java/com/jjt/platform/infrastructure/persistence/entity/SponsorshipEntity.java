@@ -47,12 +47,14 @@ public class SponsorshipEntity {
     @Column(name = "commitment_type", nullable = false, length = 20)
     private CommitmentType commitmentType;
 
-    protected SponsorshipEntity() {
-    }
+    @Column(name = "created_by", updatable = false)
+    private UUID createdBy;
+
+    protected SponsorshipEntity() {}
 
     public SponsorshipEntity(UUID id, SponsorEntity sponsor, UUID childId, String startMonth,
                              SponsorshipStatus status, Instant createdAt, Instant expiresAt,
-                             CommitmentType commitmentType) {
+                             CommitmentType commitmentType, UUID createdBy) {
         this.id = id;
         this.sponsor = sponsor;
         this.childId = childId;
@@ -61,41 +63,17 @@ public class SponsorshipEntity {
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
         this.commitmentType = commitmentType;
+        this.createdBy = createdBy;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public SponsorEntity getSponsor() {
-        return sponsor;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getStartMonth() {
-        return startMonth;
-    }
-
-    public SponsorshipStatus getStatus() {
-        return status;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getExpiresAt() {
-        return expiresAt;
-    }
-
-    public CommitmentType getCommitmentType() {
-        return commitmentType;
-    }
-
-    public void setStatus(SponsorshipStatus status) {
-        this.status = status;
-    }
+    public UUID getId() { return id; }
+    public SponsorEntity getSponsor() { return sponsor; }
+    public UUID getChildId() { return childId; }
+    public String getStartMonth() { return startMonth; }
+    public SponsorshipStatus getStatus() { return status; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getExpiresAt() { return expiresAt; }
+    public CommitmentType getCommitmentType() { return commitmentType; }
+    public UUID getCreatedBy() { return createdBy; }
+    public void setStatus(SponsorshipStatus status) { this.status = status; }
 }

@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.YearMonth;
@@ -26,6 +27,7 @@ import java.util.UUID;
  */
 @Component
 @Profile("dev")
+@Order(3)
 public class TestDataInitializer implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(TestDataInitializer.class);
@@ -88,11 +90,11 @@ public class TestDataInitializer implements ApplicationRunner {
                 CHILD_A_ID,
                 LEDGER_A_ID);
 
-        adminCommands.recordEarlySupport(CHILD_A_ID, previousMonth, educationCost, UUID.nameUUIDFromBytes("LE-A-1".getBytes()));
-        adminCommands.recordEarlySupport(CHILD_A_ID, currentMonth, educationCost, UUID.nameUUIDFromBytes("LE-A-2".getBytes()));
+        adminCommands.recordEarlySupport(CHILD_A_ID, previousMonth, educationCost, UUID.nameUUIDFromBytes("LE-A-1".getBytes()), null, true, "seed data");
+        adminCommands.recordEarlySupport(CHILD_A_ID, currentMonth, educationCost, UUID.nameUUIDFromBytes("LE-A-2".getBytes()), null, true, "seed data");
 
-        adminCommands.addProgress(CHILD_A_ID, previousMonth, "Attended classes and received materials.", UUID.nameUUIDFromBytes("PU-A-1".getBytes()));
-        adminCommands.addProgress(CHILD_A_ID, currentMonth, "Continuing studies with early support.", UUID.nameUUIDFromBytes("PU-A-2".getBytes()));
+        adminCommands.addProgress(CHILD_A_ID, previousMonth, "Attended classes and received materials.", UUID.nameUUIDFromBytes("PU-A-1".getBytes()), null);
+        adminCommands.addProgress(CHILD_A_ID, currentMonth, "Continuing studies with early support.", UUID.nameUUIDFromBytes("PU-A-2".getBytes()), null);
     }
 
     private void seedChildB(YearMonthValue previousMonth, YearMonthValue nextMonth, YearMonthValue currentMonth, Money educationCost) {
@@ -106,17 +108,18 @@ public class TestDataInitializer implements ApplicationRunner {
                 CHILD_B_ID,
                 LEDGER_B_ID);
 
-        adminCommands.recordEarlySupport(CHILD_B_ID, previousMonth, educationCost, UUID.nameUUIDFromBytes("LE-B-1".getBytes()));
-        adminCommands.recordEarlySupport(CHILD_B_ID, currentMonth, educationCost, UUID.nameUUIDFromBytes("LE-B-2".getBytes()));
+        adminCommands.recordEarlySupport(CHILD_B_ID, previousMonth, educationCost, UUID.nameUUIDFromBytes("LE-B-1".getBytes()), null, true, "seed data");
+        adminCommands.recordEarlySupport(CHILD_B_ID, currentMonth, educationCost, UUID.nameUUIDFromBytes("LE-B-2".getBytes()), null, true, "seed data");
 
-        adminCommands.addProgress(CHILD_B_ID, previousMonth, "Prepared for upcoming sponsorship.", UUID.nameUUIDFromBytes("PU-B-1".getBytes()));
-        adminCommands.addProgress(CHILD_B_ID, currentMonth, "Classes underway, sponsorship planned next month.", UUID.nameUUIDFromBytes("PU-B-2".getBytes()));
+        adminCommands.addProgress(CHILD_B_ID, previousMonth, "Prepared for upcoming sponsorship.", UUID.nameUUIDFromBytes("PU-B-1".getBytes()), null);
+        adminCommands.addProgress(CHILD_B_ID, currentMonth, "Classes underway, sponsorship planned next month.", UUID.nameUUIDFromBytes("PU-B-2".getBytes()), null);
 
         adminCommands.commitSponsorship(
                 SPONSOR_ID,
                 CHILD_B_ID,
                 nextMonth,
                 UUID.nameUUIDFromBytes("SP-1".getBytes()),
-                CommitmentType.MONTHLY);
+                CommitmentType.MONTHLY,
+                null);
     }
 }
