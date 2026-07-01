@@ -31,6 +31,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/sponsor-confirmation/sponsor-confirmation.component').then(m => m.SponsorConfirmationComponent)
   },
   {
+    path: 'trust',
+    loadComponent: () => import('./pages/trust/trust.component').then(m => m.TrustComponent)
+  },
+  {
+    path: 'why-give',
+    loadComponent: () => import('./pages/why-give/why-give.component').then(m => m.WhyGiveComponent)
+  },
+  {
     path: 'admin',
     canActivate: [adminAuthGuard],
     loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent)
@@ -43,6 +51,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: ''
+    loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent)
   }
 ];

@@ -47,6 +47,20 @@
         <span *ngIf="pendingSponsorships.length > 0" class="nav-badge amber">{{ pendingSponsorships.length }}</span>
       </button>
 
+      <div class="nav-group-label" style="margin-top:12px;">Finance</div>
+      <button class="nav-item" [class.active]="activeSection === 'funds'" (click)="setSection('funds')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9h18M3 15h18M10 3v18M7 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/>
+        </svg>
+        Fund Accounts
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'reconciliation'" (click)="setSection('reconciliation')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Reconciliation
+      </button>
+
       <div class="nav-group-label" style="margin-top:12px;">Operations</div>
       <button class="nav-item" [class.active]="activeSection === 'earlySupport'" (click)="setSection('earlySupport')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -59,6 +73,13 @@
           <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
         </svg>
         Add Progress
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'alerts'" (click)="setSection('alerts')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+        </svg>
+        Alerts
+        <span *ngIf="alertList.length > 0" class="nav-badge amber">{{ alertList.length }}</span>
       </button>
 
       <div class="nav-group-label" style="margin-top:12px;">System</div>
@@ -74,6 +95,13 @@
           <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
         </svg>
         Reports
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'settings'" (click)="setSection('settings')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
       </button>
       <button class="nav-item" [class.active]="activeSection === 'docs'" (click)="setSection('docs')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -107,10 +135,14 @@
           <ng-container *ngIf="activeSection === 'children'">Management</ng-container>
           <ng-container *ngIf="activeSection === 'sponsors'">Management</ng-container>
           <ng-container *ngIf="activeSection === 'commitments'">Management</ng-container>
+          <ng-container *ngIf="activeSection === 'users'">Management</ng-container>
+          <ng-container *ngIf="activeSection === 'funds'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'reconciliation'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Operations</ng-container>
-          <ng-container *ngIf="activeSection === 'users'">System</ng-container>
+          <ng-container *ngIf="activeSection === 'alerts'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">System</ng-container>
+          <ng-container *ngIf="activeSection === 'settings'">System</ng-container>
           <ng-container *ngIf="activeSection === 'docs'">System</ng-container>
         </div>
         <div class="crumb-title">
@@ -118,10 +150,14 @@
           <ng-container *ngIf="activeSection === 'children'">Child Management</ng-container>
           <ng-container *ngIf="activeSection === 'sponsors'">Sponsors</ng-container>
           <ng-container *ngIf="activeSection === 'commitments'">Commitments</ng-container>
+          <ng-container *ngIf="activeSection === 'users'">User Management</ng-container>
+          <ng-container *ngIf="activeSection === 'funds'">Fund Accounts</ng-container>
+          <ng-container *ngIf="activeSection === 'reconciliation'">Reconciliation</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Early Support</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Add Progress</ng-container>
-          <ng-container *ngIf="activeSection === 'users'">User Management</ng-container>
+          <ng-container *ngIf="activeSection === 'alerts'">Alerts</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">Reports & Analytics</ng-container>
+          <ng-container *ngIf="activeSection === 'settings'">Settings</ng-container>
           <ng-container *ngIf="activeSection === 'docs'">How It Works</ng-container>
         </div>
       </div>
@@ -166,86 +202,109 @@
           </div>
         </div>
 
-        <div class="dash-two-col">
-          <!-- Status breakdown -->
+        <!-- Fund accounts + at-risk two-column -->
+        <div class="dash-two-col" style="margin-bottom:16px;">
+          <!-- Fund accounts panel -->
           <div class="card">
             <div class="card-header">
-              <div class="card-title">Children by Status</div>
-              <div class="card-sub">Current sponsorship coverage</div>
+              <div>
+                <div class="card-title">Fund Accounts</div>
+                <div class="card-sub">Total balance across all funds</div>
+              </div>
+              <button class="btn-sm-primary" (click)="setSection('funds')">View all →</button>
             </div>
-            <div class="status-bars">
-              <div class="status-bar-row">
-                <span class="status-bar-label">Sponsored</span>
-                <div class="status-bar-track">
-                  <div class="status-bar-fill green" [style.width.%]="children.length > 0 ? (sponsoredCount / children.length * 100) : 0"></div>
+            <div *ngIf="loadingFunds" style="font-size:13px;color:var(--text-3);padding:8px 0;">Loading funds…</div>
+            <div *ngIf="!loadingFunds && fundAccounts.length === 0" style="font-size:13px;color:var(--text-3);font-style:italic;">No fund accounts found.</div>
+            <div *ngIf="!loadingFunds && fundAccounts.length > 0">
+              <div *ngFor="let f of fundAccounts" class="fund-row">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13.5px;font-weight:600;color:var(--text-1);">{{ f.name }}</div>
+                  <div style="font-size:11px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;margin-top:2px;">{{ f.currency }}</div>
                 </div>
-                <span class="status-bar-count">{{ sponsoredCount }}</span>
+                <div style="text-align:right;">
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;color:var(--text-1);">
+                    {{ formatAmount(f.balance, f.currency) }}
+                  </div>
+                  <div *ngIf="f.isBelowMinReserve" style="font-size:11px;color:var(--red);margin-top:2px;">Below reserve</div>
+                </div>
               </div>
-              <div class="status-bar-row">
-                <span class="status-bar-label">Reserved</span>
-                <div class="status-bar-track">
-                  <div class="status-bar-fill amber"
-                    [style.width.%]="children.length > 0 ? ((children.length - sponsoredCount - seekingCount) / children.length * 100) : 0"></div>
-                </div>
-                <span class="status-bar-count">{{ children.length - sponsoredCount - seekingCount }}</span>
-              </div>
-              <div class="status-bar-row">
-                <span class="status-bar-label">Seeking</span>
-                <div class="status-bar-track">
-                  <div class="status-bar-fill grey" [style.width.%]="children.length > 0 ? (seekingCount / children.length * 100) : 0"></div>
-                </div>
-                <span class="status-bar-count">{{ seekingCount }}</span>
+              <div class="fund-total-row">
+                <span style="font-size:12.5px;color:var(--text-3);">Combined balance</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:var(--green);">PKR {{ totalFundBalance }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Quick actions -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Quick Actions</div>
-              <div class="card-sub">Common admin tasks</div>
+          <!-- At-risk + quick actions -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <!-- At-risk from recon -->
+            <div class="card" *ngIf="reconData && reconData.atRisk.length > 0">
+              <div class="card-header">
+                <div class="card-title">At-Risk Sponsorships</div>
+                <span class="badge badge-red">{{ reconData.atRisk.length }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div *ngFor="let ar of reconData.atRisk | slice:0:3"
+                     style="border:1px solid #f5c5c5;background:#fef6f5;border-radius:10px;padding:11px 12px;">
+                  <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
+                    <div class="avatar-circle" style="background:#b91c1c;width:28px;height:28px;font-size:10px;">{{ initials(ar.sponsorName) }}</div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-size:13px;font-weight:600;color:var(--text-1);">{{ ar.childName }}</div>
+                      <div style="font-size:11.5px;color:#b91c1c;">{{ ar.consecutiveOverdueMonths }} months overdue</div>
+                    </div>
+                    <span *ngIf="ar.requiresEscalation" class="badge badge-red" style="font-size:10px;">Escalate</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-3);">Sponsor: {{ ar.sponsorName }}</div>
+                </div>
+              </div>
+              <button class="show-all-link" (click)="setSection('reconciliation')">View reconciliation →</button>
             </div>
-            <div class="quick-actions">
-              <button class="qa-btn" (click)="setSection('children'); openModal('addChild')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Add Child
-              </button>
-              <button class="qa-btn" (click)="setSection('sponsors'); openModal('addSponsor')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Add Sponsor
-              </button>
-              <button class="qa-btn" (click)="setSection('earlySupport')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/></svg>
-                Early Support
-              </button>
-              <button class="qa-btn" (click)="setSection('commitments'); openModal('addCommitment')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 12a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/></svg>
-                New Commitment
-              </button>
-              <button class="qa-btn" (click)="setSection('progress')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3v18h18"/></svg>
-                Add Progress
-              </button>
-              <button *ngIf="isJjtAdmin" class="qa-btn" (click)="setSection('users')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/></svg>
-                Manage Users
-              </button>
+
+            <!-- Quick actions -->
+            <div class="card">
+              <div class="card-title" style="margin-bottom:12px;">Quick Actions</div>
+              <div class="quick-actions">
+                <button class="qa-btn" (click)="setSection('children'); openModal('addChild')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Add Child
+                </button>
+                <button class="qa-btn" (click)="setSection('sponsors'); openModal('addSponsor')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Add Sponsor
+                </button>
+                <button class="qa-btn" (click)="setSection('commitments'); openModal('addCommitment')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 12a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/></svg>
+                  New Commitment
+                </button>
+                <button class="qa-btn" (click)="setSection('reconciliation')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 11l3 3L22 4"/></svg>
+                  Reconcile
+                </button>
+                <button class="qa-btn" (click)="setSection('earlySupport')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/></svg>
+                  Early Support
+                </button>
+                <button class="qa-btn" (click)="setSection('progress')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3v18h18"/></svg>
+                  Add Progress
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Pending alerts -->
-        <div *ngIf="pendingSponsorships.length > 0" class="card" style="margin-top:16px;">
+        <!-- Pending sponsorships -->
+        <div *ngIf="pendingSponsorships.length > 0" class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title">Needs Attention</div>
+            <div class="card-title">Pending Commitments</div>
             <span class="badge-pill red">{{ pendingSponsorships.length }} pending</span>
           </div>
           <div class="alert-list">
             <div *ngFor="let s of pendingSponsorships | slice:0:5" class="alert-row">
               <span class="alert-dot amber"></span>
               <div class="alert-body">
-                <div class="alert-title">Pending sponsorship — {{ childName(s.childId) }}</div>
-                <div class="alert-sub">{{ s.sponsorName }} · starts {{ s.startMonth }} · {{ s.commitmentType }}</div>
+                <div class="alert-title">{{ s.sponsorName }} → {{ childName(s.childId) }}</div>
+                <div class="alert-sub">Starts {{ s.startMonth }} · {{ s.commitmentType }}</div>
               </div>
               <button (click)="activate(s.sponsorshipId)" class="btn-sm-primary">Activate</button>
               <button (click)="expire(s.sponsorshipId)" class="btn-sm-ghost">Expire</button>
@@ -254,6 +313,62 @@
           <button *ngIf="pendingSponsorships.length > 5" class="show-all-link" (click)="setSection('commitments'); commitmentFilter = 'PENDING'">
             View all {{ pendingSponsorships.length }} pending →
           </button>
+        </div>
+
+        <!-- Reconciliation snapshot -->
+        <div *ngIf="reconData && reconData.payments.length > 0" class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title">{{ reconMonthLabel }} — Payment Snapshot</div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span style="font-size:12px;color:var(--text-3);">
+                {{ reconData.summary.received }}/{{ reconData.summary.total }} received
+              </span>
+              <button class="btn-sm-primary" (click)="setSection('reconciliation')">Full view →</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" style="min-width:600px;">
+              <thead>
+                <tr>
+                  <th>Sponsor</th>
+                  <th>Child</th>
+                  <th>Expected</th>
+                  <th>Status</th>
+                  <th style="text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of reconPendingPayments | slice:0:6">
+                  <td style="font-weight:600;">{{ p.sponsorId | slice:0:8 }}…</td>
+                  <td>{{ childName(p.childId) }}</td>
+                  <td><span class="amount-text">{{ formatAmount(p.expectedAmount, p.expectedCurrency) }}</span></td>
+                  <td><span class="badge" [ngClass]="paymentStatusClass(p.status)">{{ p.status }}</span></td>
+                  <td style="text-align:right;">
+                    <button (click)="openRecordPayment(p)" class="btn-sm-primary" style="font-size:11px;">Record</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity / alerts feed -->
+        <div *ngIf="alertList.length > 0" class="card">
+          <div class="card-header">
+            <div class="card-title">System Alerts</div>
+            <button class="btn-sm-primary" (click)="setSection('alerts')">View all →</button>
+          </div>
+          <div class="alert-list">
+            <div *ngFor="let a of alertList | slice:0:5" class="alert-row">
+              <span class="alert-dot" [ngClass]="a.severity === 'CRITICAL' || a.severity === 'HIGH' ? 'red' : a.severity === 'MEDIUM' ? 'amber' : 'green'"></span>
+              <div class="alert-body">
+                <div class="alert-title">{{ a.title }}</div>
+                <div class="alert-sub">{{ a.message }}</div>
+              </div>
+              <span style="font-size:11px;color:var(--text-3);white-space:nowrap;">{{ timeAgo(a.createdAt) }}</span>
+              <button (click)="dismissAlert(a.id)" class="btn-sm-ghost" style="font-size:11px;">Dismiss</button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -612,20 +727,319 @@
         </div>
       </section>
 
+      <!-- ========== FUND ACCOUNTS ========== -->
+      <section *ngIf="activeSection === 'funds'" class="section-anim">
+        <div *ngIf="loadingFunds" class="table-empty">
+          <div class="empty-sub">Loading fund accounts…</div>
+        </div>
+
+        <div *ngIf="!loadingFunds && fundAccounts.length === 0" class="table-empty">
+          <div class="empty-title">No fund accounts</div>
+          <div class="empty-sub">No fund accounts have been created yet.</div>
+        </div>
+
+        <div *ngIf="!loadingFunds && fundAccounts.length > 0">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div *ngFor="let f of fundAccounts" class="card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                <div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;color:var(--text-2);background:var(--cream-alt);border:1px solid var(--border);border-radius:6px;padding:3px 9px;">{{ f.currency }}</span>
+                </div>
+                <span *ngIf="f.isBelowMinReserve" class="badge badge-red">Below reserve</span>
+                <span *ngIf="!f.isBelowMinReserve" class="badge badge-green">Healthy</span>
+              </div>
+              <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:6px;">{{ f.name }}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:var(--text-1);line-height:1.1;">
+                {{ formatAmount(f.balance, f.currency) }}
+              </div>
+              <div style="font-size:12.5px;color:var(--text-3);margin-top:5px;">
+                Min. reserve: <span style="font-family:'IBM Plex Mono',monospace;color:var(--amber);">{{ formatAmount(f.minReserve, f.currency) }}</span>
+              </div>
+
+              <!-- Balance bar -->
+              <div style="height:6px;border-radius:100px;overflow:hidden;background:var(--border);margin:14px 0 10px;">
+                <div style="height:100%;background:var(--forest);" [style.width.%]="100 - fundReservedPct(f)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);">
+                <span>Available above reserve</span>
+                <span style="font-family:'IBM Plex Mono',monospace;">{{ 100 - fundReservedPct(f) }}%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary footer -->
+          <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text-1);">Combined balance across all funds</div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:2px;">{{ fundAccounts.length }} fund account(s) · PKR base currency</div>
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--green);">PKR {{ totalFundBalance }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== RECONCILIATION ========== -->
+      <section *ngIf="activeSection === 'reconciliation'" class="section-anim">
+        <!-- Month navigator -->
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:8px 14px;">
+            <button (click)="prevReconMonth()" class="btn-sm-ghost" style="padding:4px 9px;">‹</button>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--text-1);min-width:140px;text-align:center;">
+              {{ reconMonthLabel }}
+            </span>
+            <button (click)="nextReconMonth()" class="btn-sm-ghost" style="padding:4px 9px;">›</button>
+          </div>
+          <div *ngIf="loadingRecon" style="font-size:13px;color:var(--text-3);">Loading…</div>
+        </div>
+
+        <!-- Summary KPIs -->
+        <div *ngIf="reconData" class="kpi-grid" style="margin-bottom:16px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Expected</div>
+            <div class="kpi-value" style="font-size:22px;">{{ reconData.summary.total }}</div>
+            <div class="kpi-sub">Sponsorship payments</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Received</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--green);">{{ reconData.summary.received }}</div>
+            <div class="kpi-sub">Fully cleared</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Overdue</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--red);">{{ reconData.summary.overdue }}</div>
+            <div class="kpi-sub">Need follow-up</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Waived</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--text-3);">{{ reconData.summary.waived }}</div>
+            <div class="kpi-sub">Written off</div>
+          </div>
+        </div>
+
+        <!-- At-risk -->
+        <div *ngIf="reconData && reconData.atRisk.length > 0" class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title">At-Risk Sponsorships</div>
+            <span class="badge badge-red">{{ reconData.atRisk.length }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div *ngFor="let ar of reconData.atRisk"
+                 style="border:1px solid #f5c5c5;background:#fef6f5;border-radius:11px;padding:12px 14px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="avatar-circle" style="background:#b91c1c;width:30px;height:30px;font-size:10.5px;flex-shrink:0;">{{ initials(ar.sponsorName) }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13px;font-weight:600;color:var(--text-1);">{{ ar.childName }}</div>
+                  <div style="font-size:12px;color:var(--text-3);">Sponsor: {{ ar.sponsorName }}</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;color:#b91c1c;font-weight:600;">{{ ar.consecutiveOverdueMonths }} months overdue</div>
+                  <span *ngIf="ar.requiresEscalation" class="badge badge-red" style="font-size:10.5px;margin-top:3px;">Needs escalation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment table -->
+        <div *ngIf="reconData && reconData.payments.length > 0" class="table-card">
+          <div class="table-scroll">
+            <table class="data-table" style="min-width:800px;">
+              <thead>
+                <tr>
+                  <th>Sponsor</th>
+                  <th>Child</th>
+                  <th>Month</th>
+                  <th>Expected</th>
+                  <th>Status</th>
+                  <th>Received</th>
+                  <th>Bank Ref</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of reconData.payments">
+                  <td>
+                    <div class="cell-avatar">
+                      <div class="avatar-circle green" style="width:28px;height:28px;font-size:10px;">{{ initials(p.sponsorId | slice:0:4) }}</div>
+                      <span class="mono-text small">{{ p.sponsorId | slice:0:8 }}…</span>
+                    </div>
+                  </td>
+                  <td>{{ childName(p.childId) }}</td>
+                  <td><span class="mono-text">{{ p.paymentMonth }}</span></td>
+                  <td><span class="amount-text">{{ formatAmount(p.expectedAmount, p.expectedCurrency) }}</span></td>
+                  <td><span class="badge" [ngClass]="paymentStatusClass(p.status)">{{ p.status }}</span></td>
+                  <td>
+                    <span *ngIf="p.receivedAmount" class="amount-text">{{ formatAmount(p.receivedAmount, p.receivedCurrency ?? 'PKR') }}</span>
+                    <span *ngIf="!p.receivedAmount" style="color:var(--text-3);">—</span>
+                  </td>
+                  <td>
+                    <span *ngIf="p.bankReference" class="mono-text small">{{ p.bankReference }}</span>
+                    <span *ngIf="!p.bankReference" style="color:var(--text-3);">—</span>
+                  </td>
+                  <td>
+                    <div class="action-btns">
+                      <button *ngIf="p.status !== 'RECEIVED' && p.status !== 'WAIVED'"
+                              (click)="openRecordPayment(p)" class="btn-sm-primary">Record</button>
+                      <button *ngIf="p.status !== 'RECEIVED' && p.status !== 'WAIVED'"
+                              (click)="submitWaivePayment(p.id)" class="btn-sm-ghost">Waive</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingRecon && (!reconData || reconData.payments.length === 0)" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No payments for {{ reconMonthLabel }}</div>
+            <div class="empty-sub">Generate payments from active sponsorships to start reconciliation.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== ALERTS ========== -->
+      <section *ngIf="activeSection === 'alerts'" class="section-anim">
+        <div class="table-toolbar">
+          <span class="results-text">{{ alertList.length }} active alert{{ alertList.length !== 1 ? 's' : '' }}</span>
+          <div style="margin-left:auto;">
+            <button class="btn-ghost" (click)="loadAlerts()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M20.5 15a9 9 0 1 1-3-7.3L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="loadingAlerts" class="table-empty">
+          <div class="empty-sub">Loading alerts…</div>
+        </div>
+
+        <div *ngIf="!loadingAlerts && alertList.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No active alerts</div>
+            <div class="empty-sub">All alerts have been dismissed or none have been generated yet.</div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingAlerts && alertList.length > 0" class="table-card">
+          <div style="display:flex;flex-direction:column;">
+            <div *ngFor="let a of alertList"
+                 style="display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--border);">
+              <!-- Severity indicator -->
+              <div style="flex-shrink:0;margin-top:3px;">
+                <span class="alert-dot" [ngClass]="a.severity === 'CRITICAL' || a.severity === 'HIGH' ? 'red' : a.severity === 'MEDIUM' ? 'amber' : 'green'"></span>
+              </div>
+              <!-- Content -->
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                  <span style="font-size:13.5px;font-weight:600;color:var(--text-1);">{{ a.title }}</span>
+                  <span class="badge" [ngClass]="alertSeverityClass(a.severity)">{{ a.severity }}</span>
+                  <span class="badge badge-grey" style="font-size:10.5px;">{{ a.alertType | slice:0:20 }}</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-2);line-height:1.5;">{{ a.message }}</div>
+                <div style="font-size:11.5px;color:var(--text-3);margin-top:5px;font-family:'IBM Plex Mono',monospace;">
+                  {{ timeAgo(a.createdAt) }}
+                  <span *ngIf="a.relatedEntityType"> · {{ a.relatedEntityType }}</span>
+                </div>
+              </div>
+              <!-- Actions -->
+              <button (click)="dismissAlert(a.id)" class="btn-sm-ghost" style="flex-shrink:0;">Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ========== REPORTS ========== -->
       <section *ngIf="activeSection === 'reports'" class="section-anim">
-        <div class="coming-soon-card">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2f5d4f" stroke-width="1.5" stroke-linecap="round">
-            <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
-          </svg>
-          <div class="coming-soon-title">Reports & Analytics</div>
-          <div class="coming-soon-sub">Full financial reporting — fund balances, payment reconciliation, sponsor impact, and cash flow forecasts — is coming in Phase 2.</div>
-          <div class="coming-soon-chips">
-            <span class="phase-chip">Monthly Reconciliation</span>
-            <span class="phase-chip">Fund Balance</span>
-            <span class="phase-chip">Donor Summary</span>
-            <span class="phase-chip">Cash Flow</span>
-            <span class="phase-chip">Annual Statement</span>
+        <!-- KPI row -->
+        <div class="kpi-grid" style="margin-bottom:16px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Children Enrolled</div>
+            <div class="kpi-value">{{ children.length }}</div>
+            <div class="kpi-sub">{{ sponsoredCount }} sponsored · {{ seekingCount }} seeking</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Active Sponsorships</div>
+            <div class="kpi-value">{{ activeSponsorships.length }}</div>
+            <div class="kpi-sub">{{ pendingSponsorships.length }} pending activation</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Coverage Rate</div>
+            <div class="kpi-value">{{ children.length > 0 ? ((sponsoredCount / children.length) * 100 | number:'1.0-0') : 0 }}%</div>
+            <div class="kpi-sub">Children with active sponsor</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Sponsors</div>
+            <div class="kpi-value">{{ sponsors.length }}</div>
+            <div class="kpi-sub">Registered sponsor accounts</div>
+          </div>
+        </div>
+
+        <div class="docs-grid">
+          <!-- Children by city -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Children by City</div>
+            <div *ngIf="citySummary.length === 0" style="font-size:13px;color:var(--text-3);">No data yet.</div>
+            <div *ngFor="let row of citySummary" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <span style="font-size:12.5px;color:var(--text-2);min-width:80px;flex-shrink:0;">{{ row.city }}</span>
+              <div style="flex:1;height:20px;background:var(--border);border-radius:6px;overflow:hidden;">
+                <div style="height:100%;background:var(--forest);border-radius:6px;"
+                     [style.width.%]="children.length > 0 ? (row.count / children.length * 100) : 0"></div>
+              </div>
+              <span style="font-size:12.5px;font-weight:600;color:var(--text-1);min-width:24px;text-align:right;">{{ row.count }}</span>
+            </div>
+          </div>
+
+          <!-- Status breakdown -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Children by Status</div>
+            <div class="status-bars">
+              <div class="status-bar-row">
+                <span class="status-bar-label">Sponsored</span>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill green" [style.width.%]="children.length > 0 ? (sponsoredCount / children.length * 100) : 0"></div>
+                </div>
+                <span class="status-bar-count">{{ sponsoredCount }}</span>
+              </div>
+              <div class="status-bar-row">
+                <span class="status-bar-label">Reserved</span>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill amber"
+                    [style.width.%]="children.length > 0 ? ((children.length - sponsoredCount - seekingCount) / children.length * 100) : 0"></div>
+                </div>
+                <span class="status-bar-count">{{ children.length - sponsoredCount - seekingCount }}</span>
+              </div>
+              <div class="status-bar-row">
+                <span class="status-bar-label">Seeking</span>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill grey" [style.width.%]="children.length > 0 ? (seekingCount / children.length * 100) : 0"></div>
+                </div>
+                <span class="status-bar-count">{{ seekingCount }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">
+              <div class="card-title" style="margin-bottom:12px;">Reconciliation Summary</div>
+              <div *ngIf="reconData">
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--text-2);">Expected this month</span>
+                  <span style="font-weight:600;color:var(--text-1);">{{ reconData.summary.total }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--text-2);">Received</span>
+                  <span style="font-weight:600;color:var(--green);">{{ reconData.summary.received }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--text-2);">Overdue</span>
+                  <span style="font-weight:600;color:var(--red);">{{ reconData.summary.overdue }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;">
+                  <span style="color:var(--text-2);">Waived</span>
+                  <span style="font-weight:600;color:var(--text-3);">{{ reconData.summary.waived }}</span>
+                </div>
+              </div>
+              <div *ngIf="!reconData" style="font-size:13px;color:var(--text-3);">No reconciliation data.</div>
+            </div>
           </div>
         </div>
       </section>
@@ -721,6 +1135,128 @@
                   Sponsorship start month must be in the future (next month or later).
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SETTINGS ========== -->
+      <section *ngIf="activeSection === 'settings'" class="section-anim">
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start;">
+          <!-- Settings tabs -->
+          <div class="card" style="padding:10px;">
+            <button class="settings-tab" [class.active]="settingsTab === 'profile'" (click)="settingsTab = 'profile'">
+              Profile
+            </button>
+            <button class="settings-tab" [class.active]="settingsTab === 'org'" (click)="settingsTab = 'org'">
+              Organisation
+            </button>
+            <button class="settings-tab" [class.active]="settingsTab === 'security'" (click)="settingsTab = 'security'">
+              Security
+            </button>
+          </div>
+
+          <!-- Profile tab -->
+          <div *ngIf="settingsTab === 'profile'" class="card">
+            <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:4px;">Profile</div>
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Your account information</div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Email address</div>
+                <div class="settings-row-sub">Your login email</div>
+              </div>
+              <div class="field-input" style="background:var(--cream-alt);width:240px;cursor:default;">{{ currentUserEmail }}</div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Role</div>
+                <div class="settings-row-sub">Access level</div>
+              </div>
+              <span class="badge" [ngClass]="isJjtAdmin ? 'badge-green' : 'badge-grey'">
+                {{ isJjtAdmin ? 'JJT Admin' : 'Org Admin' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Organisation tab -->
+          <div *ngIf="settingsTab === 'org'" class="card">
+            <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:4px;">Organisation</div>
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:24px;">
+              {{ isJjtAdmin ? 'Manage organisation settings.' : 'Organisation configuration (read-only for Org Admin).' }}
+            </div>
+
+            <div *ngIf="loadingOrgConfig" style="font-size:13px;color:var(--text-3);">Loading…</div>
+            <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
+
+            <div *ngIf="!loadingOrgConfig">
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Organisation name</div>
+                  <div class="settings-row-sub">Display name for this org</div>
+                </div>
+                <input *ngIf="isJjtAdmin" class="field-input" style="width:240px;" [(ngModel)]="orgConfigForm.name" [disabled]="!isJjtAdmin" />
+                <div *ngIf="!isJjtAdmin" class="field-input" style="background:var(--cream-alt);width:240px;cursor:default;">{{ orgConfig?.name ?? '—' }}</div>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Base currency</div>
+                  <div class="settings-row-sub">Reporting currency</div>
+                </div>
+                <select *ngIf="isJjtAdmin" class="field-input" style="width:140px;" [(ngModel)]="orgConfigForm.baseCurrency">
+                  <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
+                </select>
+                <div *ngIf="!isJjtAdmin" class="field-input" style="background:var(--cream-alt);width:140px;cursor:default;">{{ orgConfig?.baseCurrency ?? '—' }}</div>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Payment due day</div>
+                  <div class="settings-row-sub">Day of month payments are due</div>
+                </div>
+                <input *ngIf="isJjtAdmin" class="field-input" style="width:80px;" type="number" [(ngModel)]="orgConfigForm.paymentDueDay" min="1" max="28" />
+                <div *ngIf="!isJjtAdmin" class="field-input" style="background:var(--cream-alt);width:80px;cursor:default;">{{ orgConfig?.paymentDueDay ?? '—' }}</div>
+              </div>
+              <div class="settings-row" style="border-bottom:none;">
+                <div>
+                  <div class="settings-row-label">Organisation slug</div>
+                  <div class="settings-row-sub">URL-safe identifier</div>
+                </div>
+                <div class="field-input" style="background:var(--cream-alt);width:200px;cursor:default;font-family:'IBM Plex Mono',monospace;font-size:12.5px;">{{ orgConfig?.slug ?? '—' }}</div>
+              </div>
+              <div *ngIf="isJjtAdmin" style="margin-top:20px;display:flex;gap:10px;">
+                <button class="btn-primary" (click)="saveOrgConfig()" [disabled]="isLoading">
+                  {{ isLoading ? 'Saving…' : 'Save changes' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security tab -->
+          <div *ngIf="settingsTab === 'security'" class="card">
+            <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:4px;">Change Password</div>
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Update your account password</div>
+
+            <div *ngIf="passwordError" class="inline-error">{{ passwordError }}</div>
+            <div *ngIf="passwordSuccess" style="background:#e6f4ef;border:1px solid #cfe0d7;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--forest);margin-bottom:14px;">
+              Password changed successfully.
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px;max-width:380px;">
+              <div class="form-field">
+                <label class="field-label">Current Password *</label>
+                <input class="field-input" type="password" [(ngModel)]="passwordForm.currentPassword" placeholder="Current password" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">New Password *</label>
+                <input class="field-input" type="password" [(ngModel)]="passwordForm.newPassword" placeholder="At least 8 characters" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">Confirm New Password *</label>
+                <input class="field-input" type="password" [(ngModel)]="passwordForm.confirmPassword" placeholder="Repeat new password" />
+              </div>
+              <button class="btn-primary" (click)="changePassword()" [disabled]="isLoading">
+                {{ isLoading ? 'Updating…' : 'Change Password' }}
+              </button>
             </div>
           </div>
         </div>
@@ -955,6 +1491,51 @@
       <button class="btn-ghost" (click)="closeModal()">Cancel</button>
       <button class="btn-primary" (click)="createOrgUser()" [disabled]="isLoading">
         {{ isLoading ? 'Creating…' : 'Create Org Admin' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: RECORD PAYMENT ===== -->
+<div *ngIf="modalType === 'recordPayment'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Record Payment Received</div>
+        <div class="modal-sub">Enter the bank transfer details to mark this payment as received.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="submitRecordPayment()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label">Received Amount *</label>
+          <input class="field-input" type="text" [(ngModel)]="recordPaymentForm.receivedAmount" name="receivedAmount" required />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Currency *</label>
+          <select class="field-input" [(ngModel)]="recordPaymentForm.currency" name="currency">
+            <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Bank Reference *</label>
+          <input class="field-input" type="text" [(ngModel)]="recordPaymentForm.bankReference" name="bankReference" required placeholder="e.g. BNK-20260701-001" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Received Date *</label>
+          <input class="field-input" type="date" [(ngModel)]="recordPaymentForm.receivedDate" name="receivedDate" required />
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="submitRecordPayment()"
+              [disabled]="isLoading || !recordPaymentForm.bankReference || !recordPaymentForm.receivedDate">
+        {{ isLoading ? 'Recording…' : 'Record Payment' }}
       </button>
     </div>
   </div>

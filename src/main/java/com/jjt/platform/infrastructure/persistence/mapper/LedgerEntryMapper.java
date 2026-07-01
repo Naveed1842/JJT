@@ -6,6 +6,7 @@ import com.jjt.platform.infrastructure.persistence.entity.EducationSupportLedger
 import com.jjt.platform.infrastructure.persistence.entity.LedgerEntryEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class LedgerEntryMapper {
 
@@ -25,7 +26,7 @@ public final class LedgerEntryMapper {
         );
     }
 
-    public static LedgerEntryEntity toEntity(LedgerEntry entry, EducationSupportLedgerEntity ledgerEntity) {
+    public static LedgerEntryEntity toEntity(LedgerEntry entry, EducationSupportLedgerEntity ledgerEntity, UUID organisationId) {
         Objects.requireNonNull(entry, "entry");
         Objects.requireNonNull(ledgerEntity, "ledgerEntity");
         return new LedgerEntryEntity(
@@ -37,7 +38,8 @@ public final class LedgerEntryMapper {
                 MoneyMapper.currency(entry.getEducationCost()),
                 entry.getCoverageType(),
                 entry.getCreatedBy(),
-                entry.getCreatedAt()
+                entry.getCreatedAt(),
+                organisationId
         );
     }
 }

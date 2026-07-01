@@ -33,16 +33,20 @@ public class ProgressUpdateEntity {
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
     protected ProgressUpdateEntity() {}
 
     public ProgressUpdateEntity(UUID id, UUID childId, String updateMonth, String summary,
-                                UUID createdBy, Instant createdAt) {
+                                UUID createdBy, Instant createdAt, UUID organisationId) {
         this.id = id;
         this.childId = childId;
         this.updateMonth = updateMonth;
         this.summary = summary;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
+        this.organisationId = organisationId;
     }
 
     public UUID getId() { return id; }
@@ -51,4 +55,5 @@ public class ProgressUpdateEntity {
     public String getSummary() { return summary; }
     public UUID getCreatedBy() { return createdBy; }
     public Instant getCreatedAt() { return createdAt; }
+    public UUID getOrganisationId() { return organisationId; }
 }

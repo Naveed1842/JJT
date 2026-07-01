@@ -52,11 +52,15 @@ public class LedgerEntryEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
     protected LedgerEntryEntity() {}
 
     public LedgerEntryEntity(UUID id, EducationSupportLedgerEntity ledger, UUID childId,
                               String entryMonth, BigDecimal educationAmount, String educationCurrency,
-                              CoverageType coverageType, UUID createdBy, Instant createdAt) {
+                              CoverageType coverageType, UUID createdBy, Instant createdAt,
+                              UUID organisationId) {
         this.id = id;
         this.ledger = ledger;
         this.childId = childId;
@@ -66,6 +70,7 @@ public class LedgerEntryEntity {
         this.coverageType = coverageType;
         this.createdBy = createdBy;
         this.createdAt = createdAt;
+        this.organisationId = organisationId;
     }
 
     public UUID getId() { return id; }
@@ -77,4 +82,5 @@ public class LedgerEntryEntity {
     public CoverageType getCoverageType() { return coverageType; }
     public UUID getCreatedBy() { return createdBy; }
     public Instant getCreatedAt() { return createdAt; }
+    public UUID getOrganisationId() { return organisationId; }
 }

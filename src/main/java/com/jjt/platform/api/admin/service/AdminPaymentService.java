@@ -10,7 +10,13 @@ import com.jjt.platform.infrastructure.persistence.entity.ChildEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorPaymentEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorshipEntity;
 import com.jjt.platform.infrastructure.persistence.mapper.SponsorPaymentMapper;
+import com.jjt.platform.core.domain.entity.AlertSeverity;
+import com.jjt.platform.core.domain.entity.AlertType;
+import com.jjt.platform.infrastructure.notification.NotificationService;
+import com.jjt.platform.infrastructure.persistence.entity.SponsorEntity;
 import com.jjt.platform.infrastructure.persistence.repository.ChildJpaRepository;
+import com.jjt.platform.infrastructure.persistence.repository.OrganisationJpaRepository;
+import com.jjt.platform.infrastructure.persistence.repository.SponsorJpaRepository;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorPaymentJpaRepository;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorshipJpaRepository;
 import org.slf4j.Logger;
@@ -37,36 +43,49 @@ public class AdminPaymentService {
     private final SponsorPaymentJpaRepository paymentRepo;
     private final SponsorshipJpaRepository sponsorshipRepo;
     private final ChildJpaRepository childRepo;
+    private final SponsorJpaRepository sponsorRepo;
+    private final OrganisationJpaRepository orgRepo;
     private final AdminCommandService commandService;
     private final AdminFundService fundService;
+    private final NotificationService notificationService;
+    private final AdminAlertService alertService;
 
     public AdminPaymentService(SponsorPaymentJpaRepository paymentRepo,
                                SponsorshipJpaRepository sponsorshipRepo,
                                ChildJpaRepository childRepo,
+                               SponsorJpaRepository sponsorRepo,
+                               OrganisationJpaRepository orgRepo,
                                AdminCommandService commandService,
-                               AdminFundService fundService) {
+                               AdminFundService fundService,
+                               NotificationService notificationService,
+                               AdminAlertService alertService) {
         this.paymentRepo = paymentRepo;
         this.sponsorshipRepo = sponsorshipRepo;
         this.childRepo = childRepo;
+        this.sponsorRepo = sponsorRepo;
+        this.orgRepo = orgRepo;
         this.commandService = commandService;
         this.fundService = fundService;
+        this.notificationService = notificationService;
+        this.alertService = alertService;
     }
 
     /**
-     * Generates EXPECTED payment records for all ACTIVE sponsorships for the given month.
+     * Generates EXPECTED payment records for all ACTIVE sponsorships in the given org for the given month.
      * Idempotent — skips sponsorships that already have a payment record for that month.
      */
     @Transactional
-    public int generateExpectedPayments(YearMonth forMonth) {
+    public int generateExpectedPayments(YearMonth forMonth, UUID orgId) {
         String monthStr = forMonth.toString();
-        List<SponsorshipEntity> active = sponsorshipRepo.findByStatus(SponsorshipStatus.ACTIVE);
+        List<SponsorshipEntity> active = orgId != null
+                ? sponsorshipRepo.findByOrganisationIdAndStatus(orgId, SponsorshipStatus.ACTIVE)
+                : sponsorshipRepo.findByStatus(SponsorshipStatus.ACTIVE);
         int created = 0;
         for (SponsorshipEntity sponsorship : active) {
             if (paymentRepo.existsBySponsorshipIdAndPaymentMonth(sponsorship.getId(), monthStr)) {
                 continue;
             }
-            ChildEntity child = childRepo.findById(sponsorship.getChildId())
-                    .orElse(null);
+            ChildEntity child = childRepo.findById(sponsorship.getChildId()).orElse(null);
             if (child == null) {
                 log.warn("Skipping payment generation for sponsorship {} — child {} not found",
                         sponsorship.getId(), sponsorship.getChildId());
@@ -84,7 +103,7 @@ public class AdminPaymentService {
                     null,
                     Instant.now()
             );
-            paymentRepo.save(SponsorPaymentMapper.toEntity(payment));
+            paymentRepo.save(SponsorPaymentMapper.toEntity(payment, sponsorship.getOrganisationId()));
             created++;
         }
         log.info("Generated {} EXPECTED payments for {}", created, monthStr);
@@ -93,16 +112,41 @@ public class AdminPaymentService {
 
     /**
      * Marks all EXPECTED payments in months before the given cutoff month as OVERDUE.
-     * Used by the daily scheduler: cutoff = current YYYY-MM when today > payment due day.
      */
     @Transactional
     public int markOverduePayments(String cutoffMonth) {
         List<SponsorPaymentEntity> overdue = paymentRepo.findExpectedBefore(cutoffMonth);
         Instant now = Instant.now();
         for (SponsorPaymentEntity entity : overdue) {
-            SponsorPayment updated = SponsorPaymentMapper.toDomain(entity)
-                    .markOverdue(null, now);
-            paymentRepo.save(SponsorPaymentMapper.toEntity(updated));
+            SponsorPayment updated = SponsorPaymentMapper.toDomain(entity).markOverdue(null, now);
+            paymentRepo.save(SponsorPaymentMapper.toEntity(updated, entity.getOrganisationId()));
+
+            // Notify sponsor and raise an admin alert (each in its own transaction)
+            SponsorshipEntity sponsorship = sponsorshipRepo.findById(entity.getSponsorshipId()).orElse(null);
+            ChildEntity child = childRepo.findById(entity.getChildId()).orElse(null);
+            if (sponsorship != null && child != null) {
+                SponsorEntity sponsor = sponsorship.getSponsor();
+                String orgName = orgRepo.findById(entity.getOrganisationId())
+                        .map(o -> o.getName()).orElse("Junior Jinnah Trust");
+                if (sponsor != null && sponsor.getContactEmail() != null) {
+                    notificationService.sendPaymentOverdue(
+                            entity.getOrganisationId(),
+                            sponsor.getContactEmail(), sponsor.getDisplayName(),
+                            sponsor.getDisplayName(), child.getFullName(),
+                            entity.getPaymentMonth(),
+                            entity.getExpectedAmount().toPlainString(),
+                            entity.getExpectedCurrency(),
+                            orgName, entity.getId());
+                }
+                alertService.raise(
+                        entity.getOrganisationId(),
+                        AlertType.PAYMENT_OVERDUE,
+                        AlertSeverity.WARNING,
+                        "Payment overdue: " + child.getFullName(),
+                        String.format("Sponsorship payment for %s (%s) is overdue.",
+                                child.getFullName(), entity.getPaymentMonth()),
+                        entity.getId(), "SponsorPayment");
+            }
         }
         if (!overdue.isEmpty()) {
             log.info("Marked {} payments as OVERDUE (cutoff={})", overdue.size(), cutoffMonth);
@@ -138,11 +182,10 @@ public class AdminPaymentService {
                 new BigDecimal(entity.getExpectedAmount().toString()),
                 Currency.getInstance(entity.getExpectedCurrency()));
 
-        // Create SPONSOR ledger entry for the child
         var ledgerEntry = commandService.recordSponsorLedgerEntry(
-                entity.getChildId(), paymentMonth, amount, UUID.randomUUID(), actingUserId);
+                entity.getChildId(), paymentMonth, amount, UUID.randomUUID(), actingUserId,
+                entity.getOrganisationId());
 
-        // Credit the fund
         var fundTxn = fundService.findDefaultFundAccount()
                 .map(account -> fundService.credit(
                         account.getId(),
@@ -160,12 +203,27 @@ public class AdminPaymentService {
                         ledgerEntry.getId(),
                         actingUserId, Instant.now());
 
-        paymentRepo.save(SponsorPaymentMapper.toEntity(updated));
+        paymentRepo.save(SponsorPaymentMapper.toEntity(updated, entity.getOrganisationId()));
+
+        // Confirm payment receipt to sponsor
+        SponsorEntity sponsor = sponsorship.getSponsor();
+        ChildEntity child = childRepo.findById(entity.getChildId()).orElse(null);
+        String orgName = orgRepo.findById(entity.getOrganisationId())
+                .map(o -> o.getName()).orElse("Junior Jinnah Trust");
+        if (sponsor != null && sponsor.getContactEmail() != null && child != null) {
+            notificationService.sendPaymentReceived(
+                    entity.getOrganisationId(),
+                    sponsor.getContactEmail(), sponsor.getDisplayName(),
+                    sponsor.getDisplayName(), child.getFullName(),
+                    receivedAmount.toPlainString(), currency,
+                    entity.getPaymentMonth(), orgName, entity.getId());
+        }
+
         return updated;
     }
 
     /**
-     * Waives a payment. Creates an EARLY_SUPPORT ledger entry (funded from general fund)
+     * Waives a payment. Creates an EARLY_SUPPORT ledger entry funded from the general fund,
      * so the child is still covered for the month, then marks the payment as WAIVED.
      */
     @Transactional
@@ -184,15 +242,14 @@ public class AdminPaymentService {
         Money amount = Money.of(entity.getExpectedAmount(),
                 Currency.getInstance(entity.getExpectedCurrency()));
 
-        // Cover the child via early support (auto-debits fund; force=true since this is intentional)
         var ledgerEntry = commandService.recordEarlySupport(
                 entity.getChildId(), paymentMonth, amount, UUID.randomUUID(), actingUserId,
-                true, "Payment waived: " + reason);
+                true, "Payment waived: " + reason, entity.getOrganisationId());
 
         SponsorPayment updated = SponsorPaymentMapper.toDomain(entity)
                 .waive(reason, ledgerEntry.getId(), actingUserId, Instant.now());
 
-        paymentRepo.save(SponsorPaymentMapper.toEntity(updated));
+        paymentRepo.save(SponsorPaymentMapper.toEntity(updated, entity.getOrganisationId()));
         return updated;
     }
 
@@ -210,11 +267,12 @@ public class AdminPaymentService {
     }
 
     @Transactional(readOnly = true)
-    public MonthlyReconciliation getMonthlyReconciliation(int year, int month) {
+    public MonthlyReconciliation getMonthlyReconciliation(int year, int month, UUID orgId) {
         String monthStr = String.format("%d-%02d", year, month);
-        List<SponsorPaymentEntity> payments = paymentRepo.findByPaymentMonth(monthStr);
+        List<SponsorPaymentEntity> payments = orgId != null
+                ? paymentRepo.findByOrganisationIdAndPaymentMonth(orgId, monthStr)
+                : paymentRepo.findByPaymentMonth(monthStr);
 
-        // Batch-load children and sponsorships to avoid N+1
         List<UUID> childIds = payments.stream().map(SponsorPaymentEntity::getChildId).distinct().toList();
         List<UUID> sponsorshipIds = payments.stream().map(SponsorPaymentEntity::getSponsorshipId).distinct().toList();
 
@@ -251,8 +309,7 @@ public class AdminPaymentService {
         }
 
         List<SponsorPayment> domainPayments = payments.stream()
-                .map(e -> enrichToDomain(e, childMap, sponsorshipMap))
-                .toList();
+                .map(SponsorPaymentMapper::toDomain).toList();
 
         return new MonthlyReconciliation(year, String.format("%02d", month),
                 new MonthlyReconciliation.Summary(expected, received, partial, overdue, waived, payments.size()),
@@ -262,7 +319,6 @@ public class AdminPaymentService {
     private int countConsecutiveOverdue(UUID sponsorshipId, String fromMonth) {
         List<SponsorPaymentEntity> history = paymentRepo
                 .findBySponsorshipIdAndStatus(sponsorshipId, SponsorPaymentStatus.OVERDUE);
-        // Sort descending by month and count consecutive months ending at/before fromMonth
         List<String> overdueMonths = history.stream()
                 .map(SponsorPaymentEntity::getPaymentMonth)
                 .filter(m -> m.compareTo(fromMonth) <= 0)
@@ -279,12 +335,6 @@ public class AdminPaymentService {
             }
         }
         return count;
-    }
-
-    private SponsorPayment enrichToDomain(SponsorPaymentEntity e,
-                                          Map<UUID, ChildEntity> childMap,
-                                          Map<UUID, SponsorshipEntity> sponsorshipMap) {
-        return SponsorPaymentMapper.toDomain(e);
     }
 
     public record MonthlyReconciliation(

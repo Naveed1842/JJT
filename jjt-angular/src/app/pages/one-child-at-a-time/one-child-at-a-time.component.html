@@ -3,8 +3,8 @@
 <!-- Page header -->
 <div style="background:#fffdf9;padding:40px 32px 24px;">
   <div style="max-width:1200px;margin:0 auto;">
-    <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;">
-      Children waiting for a sponsor
+    <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;letter-spacing:-.01em;">
+      Children ready to learn — waiting for you
     </h1>
     <p style="font-size:16px;color:#6b7b73;margin:0;">
       Every profile is real, verified by the JJT team.
@@ -30,7 +30,7 @@
 
 <!-- Main: filter sidebar + grid -->
 <div *ngIf="!loading && !error"
-     style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:240px 1fr;
+     style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;
             gap:32px;padding:0 32px 56px;align-items:start;">
 
   <!-- ── Filter sidebar ── -->
@@ -55,10 +55,28 @@
              font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;"
     />
 
+    <!-- Give with intention -->
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                color:#9aa79f;margin-bottom:10px;">Give with intention</div>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:22px;">
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></span>
+        Zakat-eligible (orphans)
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></span>
+        Girls' education
+      </label>
+      <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
+        <span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></span>
+        Most urgent need
+      </label>
+    </div>
+
     <!-- Status filter -->
     <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
                 color:#9aa79f;margin-bottom:10px;">Status</div>
-    <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:8px;">
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:22px;">
       <label style="display:flex;align-items:center;gap:9px;cursor:pointer;">
         <input type="radio" name="status" value="ALL"
                [checked]="statusFilter === 'ALL'"
@@ -80,6 +98,24 @@
                style="accent-color:#2f5d4f;" />
         Bridged (needs sponsor)
       </label>
+    </div>
+
+    <!-- Province chips -->
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                color:#9aa79f;margin-bottom:10px;">Province</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;">
+      <span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;cursor:pointer;">Punjab</span>
+      <span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;cursor:pointer;">Sindh</span>
+      <span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;cursor:pointer;">KP</span>
+      <span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;cursor:pointer;">Balochistan</span>
+    </div>
+
+    <!-- School level -->
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                color:#9aa79f;margin-bottom:10px;">School level</div>
+    <div style="display:flex;flex-wrap:wrap;gap:7px;">
+      <span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;cursor:pointer;">Primary</span>
+      <span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;cursor:pointer;">Secondary</span>
     </div>
   </aside>
 
@@ -112,7 +148,11 @@
         <!-- Photo -->
         <div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);
                     position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:48px;opacity:.4;">👦</span>
+          <span style="font-size:48px;opacity:.3;">👦</span>
+          <span *ngIf="child.availabilityStatus !== 'AVAILABLE'"
+                [style]="child.availabilityStatus === 'RESERVED' ? 'position:absolute;top:10px;right:10px;background:#fdf7ec;color:#8a5f1f;font-size:9.5px;font-weight:600;border-radius:100px;padding:3px 8px;' : 'position:absolute;top:10px;right:10px;background:#214a3e;color:#dff0e7;font-size:9.5px;font-weight:600;border-radius:100px;padding:3px 8px;'">
+            {{ child.availabilityStatus === 'RESERVED' ? 'Bridged' : 'Sponsored' }}
+          </span>
         </div>
 
         <!-- Info -->
@@ -125,8 +165,8 @@
             {{ child.campusName }} · {{ child.city }}
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:13px;color:#54625b;">
-              {{ child.educationCurrency }} {{ child.educationAmount }}/mo
+            <span style="font-size:12.5px;color:#54625b;">
+              from {{ child.educationCurrency }} {{ child.educationAmount }}/mo
             </span>
             <button
               *ngIf="child.availabilityStatus === 'AVAILABLE'"
@@ -143,6 +183,25 @@
             </a>
           </div>
         </div>
+      </div>
+
+      <!-- Give to fund card (always shown at the end of the first page) -->
+      <div *ngIf="page === 0 || visible.length === filtered.length"
+           style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:18px;
+                  display:flex;flex-direction:column;justify-content:center;">
+        <span style="width:30px;height:30px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;
+                     justify-content:center;color:#fff;font-family:'Newsreader',serif;font-size:16px;margin-bottom:12px;">♡</span>
+        <div style="font-family:'Newsreader',serif;font-size:17px;color:#1c352c;line-height:1.2;margin-bottom:7px;">
+          Give to the fund instead
+        </div>
+        <div style="font-size:12.5px;line-height:1.5;color:#6b7b73;margin-bottom:14px;">
+          Any amount keeps a child learning where it's needed most.
+        </div>
+        <a routerLink="/why-give"
+           style="background:#fffdf9;border:1px solid #cdc4b2;color:#1c352c;font-size:12.5px;font-weight:600;
+                  border-radius:8px;padding:10px 0;text-align:center;text-decoration:none;display:block;">
+          Give any amount
+        </a>
       </div>
     </div>
 
@@ -166,8 +225,8 @@
     transform: translateY(-2px);
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @media (max-width: 900px) {
-    div[style*="grid-template-columns:240px 1fr"] {
+  @media (max-width: 960px) {
+    div[style*="grid-template-columns:248px 1fr"] {
       grid-template-columns: 1fr !important;
     }
     aside[style*="position:sticky"] {

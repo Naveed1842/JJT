@@ -7,6 +7,7 @@ import com.jjt.platform.infrastructure.persistence.entity.SponsorPaymentEntity;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class SponsorPaymentMapper {
 
@@ -39,7 +40,7 @@ public final class SponsorPaymentMapper {
         );
     }
 
-    public static SponsorPaymentEntity toEntity(SponsorPayment sp) {
+    public static SponsorPaymentEntity toEntity(SponsorPayment sp, UUID organisationId) {
         Objects.requireNonNull(sp, "sponsorPayment");
         BigDecimal receivedAmount = sp.getReceivedAmount() != null ? sp.getReceivedAmount().getAmount() : null;
         String receivedCurrency = sp.getReceivedAmount() != null ? sp.getReceivedAmount().getCurrency().getCurrencyCode() : null;
@@ -62,7 +63,8 @@ public final class SponsorPaymentMapper {
                 sp.getCreatedBy(),
                 sp.getCreatedAt(),
                 sp.getUpdatedBy(),
-                sp.getUpdatedAt()
+                sp.getUpdatedAt(),
+                organisationId
         );
     }
 }

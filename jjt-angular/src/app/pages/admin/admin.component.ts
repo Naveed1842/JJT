@@ -4,8 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 import {
+  AlertResponse,
   ChildDto,
   CreateSponsorResponse,
+  FundAccountResponse,
+  MonthlyReconciliationResponse,
+  OrgConfigResponse,
+  SponsorPaymentResponse,
   SponsorshipSummaryResponse,
   SponsorshipStatus,
   UserResponse,
@@ -13,11 +18,12 @@ import {
 
 type SectionId =
   | 'dashboard' | 'children' | 'sponsors' | 'commitments'
-  | 'earlySupport' | 'progress' | 'users' | 'reports' | 'docs';
+  | 'earlySupport' | 'progress' | 'users'
+  | 'funds' | 'reconciliation' | 'alerts' | 'reports' | 'settings' | 'docs';
 
 type ModalType =
   | 'addChild' | 'addSponsor' | 'addCommitment'
-  | 'addSponsorUser' | 'addOrgUser' | null;
+  | 'addSponsorUser' | 'addOrgUser' | 'recordPayment' | null;
 
 @Component({
   selector: 'app-admin',
@@ -93,6 +99,33 @@ export class AdminComponent implements OnInit {
   sponsorUserForm     = { sponsorId: '', email: '', password: '' };
   orgUserForm         = { email: '', password: '', orgId: '' };
 
+  // ── Fund accounts ─────────────────────────────────────────────────
+  fundAccounts: FundAccountResponse[] = [];
+  loadingFunds = false;
+
+  // ── Reconciliation ────────────────────────────────────────────────
+  reconYear  = new Date().getFullYear();
+  reconMonth = new Date().getMonth() + 1;
+  reconData: MonthlyReconciliationResponse | null = null;
+  loadingRecon = false;
+
+  // ── Record payment modal ──────────────────────────────────────────
+  recordPaymentId: string | null = null;
+  recordPaymentForm = { receivedAmount: '', currency: 'PKR', bankReference: '', receivedDate: '' };
+
+  // ── Alerts ────────────────────────────────────────────────────────
+  alertList: AlertResponse[] = [];
+  loadingAlerts = false;
+
+  // ── Settings ──────────────────────────────────────────────────────
+  settingsTab: 'profile' | 'org' | 'security' = 'profile';
+  orgConfig: OrgConfigResponse | null = null;
+  loadingOrgConfig = false;
+  orgConfigForm = { name: '', baseCurrency: 'PKR', paymentDueDay: 5 };
+  passwordForm  = { currentPassword: '', newPassword: '', confirmPassword: '' };
+  passwordError: string | null = null;
+  passwordSuccess = false;
+
   // ── Lifecycle ─────────────────────────────────────────────────────
 
   ngOnInit(): void {
@@ -103,6 +136,9 @@ export class AdminComponent implements OnInit {
     this.loadDropdowns();
     this.loadList('PENDING');
     this.loadList('ACTIVE');
+    this.loadFundAccounts();
+    this.loadAlerts();
+    this.loadRecon();
   }
 
   // ── Navigation ────────────────────────────────────────────────────
@@ -110,7 +146,11 @@ export class AdminComponent implements OnInit {
   setSection(s: SectionId): void {
     this.activeSection = s;
     this.errorMessage = null;
-    if (s === 'users') this.loadUsers();
+    if (s === 'users')          this.loadUsers();
+    if (s === 'funds')          this.loadFundAccounts();
+    if (s === 'reconciliation') this.loadRecon();
+    if (s === 'alerts')         this.loadAlerts();
+    if (s === 'settings')       this.loadOrgConfig();
   }
 
   openModal(type: ModalType): void {
@@ -121,6 +161,7 @@ export class AdminComponent implements OnInit {
   closeModal(): void {
     this.modalType = null;
     this.errorMessage = null;
+    this.recordPaymentId = null;
   }
 
   stopProp(e: Event): void { e.stopPropagation(); }
@@ -128,7 +169,7 @@ export class AdminComponent implements OnInit {
   showToast(msg: string): void {
     this.toastMessage = msg;
     if (this.toastTimer) clearTimeout(this.toastTimer);
-    this.toastTimer = setTimeout(() => { this.toastMessage = null; }, 3000);
+    this.toastTimer = setTimeout(() => { this.toastMessage = null; }, 3500);
   }
 
   // ── Derived / computed ────────────────────────────────────────────
@@ -169,6 +210,38 @@ export class AdminComponent implements OnInit {
     return this.users.filter(u => u.email.toLowerCase().includes(q));
   }
 
+  get totalFundBalance(): string {
+    if (!this.fundAccounts.length) return '—';
+    const total = this.fundAccounts.reduce((sum, f) => sum + parseFloat(f.balance || '0'), 0);
+    return total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  get reconMonthLabel(): string {
+    const d = new Date(this.reconYear, this.reconMonth - 1, 1);
+    return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  }
+
+  get reconPendingPayments(): SponsorPaymentResponse[] {
+    return (this.reconData?.payments ?? []).filter(p =>
+      p.status === 'PENDING' || p.status === 'OVERDUE' || p.status === 'PARTIAL'
+    );
+  }
+
+  get citySummary(): { city: string; count: number }[] {
+    const counts = new Map<string, number>();
+    for (const c of this.children) {
+      counts.set(c.city, (counts.get(c.city) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .map(([city, count]) => ({ city, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6);
+  }
+
+  get criticalAlerts(): AlertResponse[] {
+    return this.alertList.filter(a => a.severity === 'HIGH' || a.severity === 'CRITICAL');
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────
 
   private toInitials(s: string): string {
@@ -195,6 +268,43 @@ export class AdminComponent implements OnInit {
     if (status === 'ALLOCATED') return 'badge-green';
     if (status === 'RESERVED')  return 'badge-amber';
     return 'badge-grey';
+  }
+
+  paymentStatusClass(status: string): string {
+    if (status === 'RECEIVED') return 'badge-green';
+    if (status === 'OVERDUE')  return 'badge-red';
+    if (status === 'PARTIAL')  return 'badge-amber';
+    if (status === 'WAIVED')   return 'badge-grey';
+    return 'badge-grey';
+  }
+
+  alertSeverityClass(sev: string): string {
+    if (sev === 'CRITICAL' || sev === 'HIGH') return 'badge-red';
+    if (sev === 'MEDIUM')  return 'badge-amber';
+    return 'badge-grey';
+  }
+
+  formatAmount(val: string | null, currency = 'PKR'): string {
+    if (!val) return '—';
+    const n = parseFloat(val);
+    return `${currency} ${n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  }
+
+  timeAgo(iso: string): string {
+    const diff = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days}d ago`;
+  }
+
+  fundReservedPct(fund: FundAccountResponse): number {
+    const bal = parseFloat(fund.balance || '0');
+    const reserve = parseFloat(fund.minReserve || '0');
+    if (bal === 0) return 0;
+    return Math.min(100, Math.round((reserve / bal) * 100));
   }
 
   private handleError(err: any, fallback = 'An error occurred.'): void {
@@ -373,6 +483,7 @@ export class AdminComponent implements OnInit {
         this.showToast('Sponsorship activated.');
         this.loadList('PENDING');
         this.loadList('ACTIVE');
+        this.loadDropdowns();
       },
       error: (err) => this.handleError(err, 'Failed to activate.')
     });
@@ -384,6 +495,7 @@ export class AdminComponent implements OnInit {
         this.showToast('Sponsorship expired.');
         this.loadList('PENDING');
         this.loadList('ACTIVE');
+        this.loadDropdowns();
       },
       error: (err) => this.handleError(err, 'Failed to expire.')
     });
@@ -444,6 +556,159 @@ export class AdminComponent implements OnInit {
         this.loadUsers();
       },
       error: (err) => this.handleError(err)
+    });
+  }
+
+  // ── Fund accounts ─────────────────────────────────────────────────
+
+  loadFundAccounts(): void {
+    this.loadingFunds = true;
+    this.adminService.listFundAccounts().subscribe({
+      next: (data) => { this.fundAccounts = data; this.loadingFunds = false; },
+      error: () => { this.loadingFunds = false; }
+    });
+  }
+
+  // ── Reconciliation ────────────────────────────────────────────────
+
+  loadRecon(): void {
+    this.loadingRecon = true;
+    this.adminService.getMonthlyReconciliation(this.reconYear, this.reconMonth).subscribe({
+      next: (data) => { this.reconData = data; this.loadingRecon = false; },
+      error: () => { this.loadingRecon = false; }
+    });
+  }
+
+  prevReconMonth(): void {
+    if (this.reconMonth === 1) { this.reconMonth = 12; this.reconYear--; }
+    else this.reconMonth--;
+    this.loadRecon();
+  }
+
+  nextReconMonth(): void {
+    const now = new Date();
+    if (this.reconYear === now.getFullYear() && this.reconMonth === now.getMonth() + 1) return;
+    if (this.reconMonth === 12) { this.reconMonth = 1; this.reconYear++; }
+    else this.reconMonth++;
+    this.loadRecon();
+  }
+
+  openRecordPayment(payment: SponsorPaymentResponse): void {
+    this.recordPaymentId = payment.id;
+    this.recordPaymentForm = {
+      receivedAmount: payment.expectedAmount,
+      currency: payment.expectedCurrency,
+      bankReference: '',
+      receivedDate: new Date().toISOString().split('T')[0]
+    };
+    this.openModal('recordPayment');
+  }
+
+  submitRecordPayment(): void {
+    if (!this.recordPaymentId || this.isLoading) return;
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    this.adminService.receivePayment(this.recordPaymentId, this.recordPaymentForm).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.closeModal();
+        this.showToast('Payment recorded successfully.');
+        this.loadRecon();
+      },
+      error: (err) => this.handleError(err, 'Failed to record payment.')
+    });
+  }
+
+  submitWaivePayment(paymentId: string): void {
+    this.adminService.waivePayment(paymentId, { reason: 'Waived by admin' }).subscribe({
+      next: () => { this.showToast('Payment waived.'); this.loadRecon(); },
+      error: (err) => this.handleError(err, 'Failed to waive payment.')
+    });
+  }
+
+  // ── Alerts ────────────────────────────────────────────────────────
+
+  loadAlerts(): void {
+    this.loadingAlerts = true;
+    this.adminService.listAlerts().subscribe({
+      next: (data) => { this.alertList = data; this.loadingAlerts = false; },
+      error: () => { this.loadingAlerts = false; }
+    });
+  }
+
+  dismissAlert(id: string): void {
+    this.adminService.dismissAlert(id).subscribe({
+      next: () => {
+        this.alertList = this.alertList.filter(a => a.id !== id);
+        this.showToast('Alert dismissed.');
+      },
+      error: (err) => this.handleError(err, 'Failed to dismiss alert.')
+    });
+  }
+
+  // ── Settings ──────────────────────────────────────────────────────
+
+  loadOrgConfig(): void {
+    if (this.orgConfig) return;
+    this.loadingOrgConfig = true;
+    this.adminService.getOrgConfig().subscribe({
+      next: (data) => {
+        this.orgConfig = data;
+        this.orgConfigForm = { name: data.name, baseCurrency: data.baseCurrency, paymentDueDay: data.paymentDueDay };
+        this.loadingOrgConfig = false;
+      },
+      error: () => { this.loadingOrgConfig = false; }
+    });
+  }
+
+  saveOrgConfig(): void {
+    if (this.isLoading || !this.isJjtAdmin) return;
+    this.isLoading = true;
+    this.adminService.updateOrgConfig({
+      name: this.orgConfigForm.name,
+      baseCurrency: this.orgConfigForm.baseCurrency,
+      paymentDueDay: this.orgConfigForm.paymentDueDay,
+    }).subscribe({
+      next: (data) => {
+        this.isLoading = false;
+        this.orgConfig = data;
+        this.showToast('Organisation settings saved.');
+      },
+      error: (err) => this.handleError(err, 'Failed to save settings.')
+    });
+  }
+
+  changePassword(): void {
+    this.passwordError = null;
+    this.passwordSuccess = false;
+
+    if (!this.passwordForm.currentPassword || !this.passwordForm.newPassword) {
+      this.passwordError = 'All fields are required.';
+      return;
+    }
+    if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
+      this.passwordError = 'New passwords do not match.';
+      return;
+    }
+    if (this.passwordForm.newPassword.length < 8) {
+      this.passwordError = 'New password must be at least 8 characters.';
+      return;
+    }
+    if (this.isLoading) return;
+    this.isLoading = true;
+
+    this.adminService.changePassword(this.passwordForm.currentPassword, this.passwordForm.newPassword).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.passwordSuccess = true;
+        this.passwordForm = { currentPassword: '', newPassword: '', confirmPassword: '' };
+        this.showToast('Password changed successfully.');
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.passwordError = err?.error?.message ?? 'Failed to change password.';
+      }
     });
   }
 }

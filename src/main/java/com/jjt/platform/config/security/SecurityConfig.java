@@ -83,7 +83,9 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "https://sponsorone.app",
-                "https://www.sponsorone.app"
+                "https://www.sponsorone.app",
+                "https://sandbox-27e5d.web.app",
+                "https://sandbox-27e5d.firebaseapp.com"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));

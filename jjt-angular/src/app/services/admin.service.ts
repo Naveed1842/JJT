@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import {
   AddProgressRequest,
   AddProgressResponse,
+  AlertResponse,
   ChildDto,
   CommitSponsorshipRequest,
   CommitSponsorshipResponse,
@@ -14,13 +15,23 @@ import {
   CreateSponsorRequest,
   CreateSponsorResponse,
   CreateSponsorUserRequest,
+  CreditFundRequest,
+  FundAccountResponse,
+  FundTransactionResponse,
   LedgerDto,
+  MonthlyReconciliationResponse,
+  OrgConfigResponse,
+  PageResponse,
   ProgressUpdateDto,
   RecordEarlySupportRequest,
   RecordEarlySupportResponse,
+  RecordPaymentRequest,
+  SponsorPaymentResponse,
   SponsorshipSummaryResponse,
   SponsorshipStatus,
+  UpdateOrgConfigRequest,
   UserResponse,
+  WaivePaymentRequest,
 } from './api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -135,5 +146,87 @@ export class AdminService {
 
   deactivateUser(userId: string): Observable<UserResponse> {
     return this.http.put<UserResponse>(`${this.base}/api/admin/users/${userId}/deactivate`, {});
+  }
+
+  // ── Fund accounts ──────────────────────────────────────────────────────────
+
+  listFundAccounts(): Observable<FundAccountResponse[]> {
+    return this.http.get<FundAccountResponse[]>(`${this.base}/api/admin/funds`);
+  }
+
+  getFundBalance(fundId: string): Observable<FundAccountResponse> {
+    return this.http.get<FundAccountResponse>(`${this.base}/api/admin/funds/${fundId}/balance`);
+  }
+
+  getFundTransactions(fundId: string, page = 0): Observable<PageResponse<FundTransactionResponse>> {
+    return this.http.get<PageResponse<FundTransactionResponse>>(
+      `${this.base}/api/admin/funds/${fundId}/transactions?page=${page}&size=20`
+    );
+  }
+
+  creditFund(fundId: string, req: CreditFundRequest): Observable<FundTransactionResponse> {
+    return this.http.post<FundTransactionResponse>(`${this.base}/api/admin/funds/${fundId}/credit`, req);
+  }
+
+  // ── Payments & reconciliation ──────────────────────────────────────────────
+
+  getMonthlyReconciliation(year: number, month: number): Observable<MonthlyReconciliationResponse> {
+    return this.http.get<MonthlyReconciliationResponse>(
+      `${this.base}/api/admin/reconciliation/monthly?year=${year}&month=${month}`
+    );
+  }
+
+  receivePayment(paymentId: string, req: RecordPaymentRequest): Observable<SponsorPaymentResponse> {
+    return this.http.post<SponsorPaymentResponse>(
+      `${this.base}/api/admin/payments/${paymentId}/receive`,
+      req
+    );
+  }
+
+  waivePayment(paymentId: string, req: WaivePaymentRequest): Observable<SponsorPaymentResponse> {
+    return this.http.post<SponsorPaymentResponse>(
+      `${this.base}/api/admin/payments/${paymentId}/waive`,
+      req
+    );
+  }
+
+  getPaymentsBySponsorship(sponsorshipId: string): Observable<SponsorPaymentResponse[]> {
+    return this.http.get<SponsorPaymentResponse[]>(
+      `${this.base}/api/admin/sponsorships/${sponsorshipId}/payments`
+    );
+  }
+
+  generatePayments(month?: string): Observable<{ month: string; created: number }> {
+    const q = month ? `?month=${month}` : '';
+    return this.http.post<{ month: string; created: number }>(
+      `${this.base}/api/admin/payments/generate${q}`,
+      {}
+    );
+  }
+
+  // ── Alerts ─────────────────────────────────────────────────────────────────
+
+  listAlerts(): Observable<AlertResponse[]> {
+    return this.http.get<AlertResponse[]>(`${this.base}/api/admin/alerts`);
+  }
+
+  dismissAlert(id: string): Observable<AlertResponse> {
+    return this.http.post<AlertResponse>(`${this.base}/api/admin/alerts/${id}/dismiss`, {});
+  }
+
+  // ── Org config ─────────────────────────────────────────────────────────────
+
+  getOrgConfig(): Observable<OrgConfigResponse> {
+    return this.http.get<OrgConfigResponse>(`${this.base}/api/admin/org/config`);
+  }
+
+  updateOrgConfig(req: UpdateOrgConfigRequest): Observable<OrgConfigResponse> {
+    return this.http.patch<OrgConfigResponse>(`${this.base}/api/admin/org/config`, req);
+  }
+
+  // ── Change password (via auth endpoint) ────────────────────────────────────
+
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.put<void>(`${this.base}/api/auth/change-password`, { currentPassword, newPassword });
   }
 }

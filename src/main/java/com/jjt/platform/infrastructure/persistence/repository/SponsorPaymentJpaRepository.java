@@ -20,6 +20,8 @@ public interface SponsorPaymentJpaRepository extends JpaRepository<SponsorPaymen
 
     List<SponsorPaymentEntity> findByPaymentMonth(String paymentMonth);
 
+    List<SponsorPaymentEntity> findByOrganisationIdAndPaymentMonth(UUID organisationId, String paymentMonth);
+
     List<SponsorPaymentEntity> findBySponsorshipIdOrderByPaymentMonthDesc(UUID sponsorshipId);
 
     @Query("SELECT sp FROM SponsorPaymentEntity sp WHERE sp.status = 'EXPECTED' AND sp.paymentMonth <= :cutoffMonth")

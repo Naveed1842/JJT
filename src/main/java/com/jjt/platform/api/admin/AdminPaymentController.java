@@ -75,8 +75,9 @@ public class AdminPaymentController {
     @GetMapping("/reconciliation/monthly")
     public MonthlyReconciliationResponse getMonthlyReconciliation(
             @RequestParam("year") int year,
-            @RequestParam("month") int month) {
-        MonthlyReconciliation result = paymentService.getMonthlyReconciliation(year, month);
+            @RequestParam("month") int month,
+            @AuthenticationPrincipal JwtUserDetails principal) {
+        MonthlyReconciliation result = paymentService.getMonthlyReconciliation(year, month, principal.getOrgId());
         return new MonthlyReconciliationResponse(
                 result.year(),
                 result.month(),
@@ -100,9 +101,10 @@ public class AdminPaymentController {
     @PostMapping("/payments/generate")
     @PreAuthorize("hasRole('JJT_ADMIN')")
     public ResponseEntity<java.util.Map<String, Object>> triggerGeneratePayments(
-            @RequestParam(value = "month", required = false) String month) {
+            @RequestParam(value = "month", required = false) String month,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         YearMonth target = month != null ? YearMonth.parse(month) : YearMonth.now();
-        int created = paymentService.generateExpectedPayments(target);
+        int created = paymentService.generateExpectedPayments(target, principal.getOrgId());
         return ResponseEntity.ok(java.util.Map.of("month", target.toString(), "created", created));
     }
 

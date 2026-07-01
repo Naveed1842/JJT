@@ -35,6 +35,8 @@ import com.jjt.platform.infrastructure.persistence.repository.LedgerEntryReposit
 import com.jjt.platform.infrastructure.persistence.repository.ProgressUpdateRepository;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorJpaRepository;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorshipJpaRepository;
+import com.jjt.platform.infrastructure.notification.NotificationService;
+import com.jjt.platform.infrastructure.persistence.repository.OrganisationJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,8 @@ public class AdminCommandService {
     private final SponsorJpaRepository sponsorRepo;
     private final SponsorshipJpaRepository sponsorshipRepo;
     private final AdminFundService fundService;
+    private final NotificationService notificationService;
+    private final OrganisationJpaRepository orgRepo;
 
     public AdminCommandService(ChildJpaRepository childRepo,
                                EducationSupportLedgerJpaRepository ledgerRepo,
@@ -70,7 +74,9 @@ public class AdminCommandService {
                                ProgressUpdateRepository progressRepo,
                                SponsorJpaRepository sponsorRepo,
                                SponsorshipJpaRepository sponsorshipRepo,
-                               AdminFundService fundService) {
+                               AdminFundService fundService,
+                               NotificationService notificationService,
+                               OrganisationJpaRepository orgRepo) {
         this.childRepo = childRepo;
         this.ledgerRepo = ledgerRepo;
         this.ledgerEntryRepo = ledgerEntryRepo;
@@ -78,15 +84,18 @@ public class AdminCommandService {
         this.sponsorRepo = sponsorRepo;
         this.sponsorshipRepo = sponsorshipRepo;
         this.fundService = fundService;
+        this.notificationService = notificationService;
+        this.orgRepo = orgRepo;
     }
 
     @Transactional
-    public CreateChildResult createChild(String rollNumber, String fullName, String city, String campusName, String schoolName,
-                                         Money educationCost, UUID childId, UUID ledgerId) {
+    public CreateChildResult createChild(String rollNumber, String fullName, String city, String campusName,
+                                         String schoolName, Money educationCost, UUID childId, UUID ledgerId,
+                                         UUID orgId) {
         CreateChildUseCase.Result result = createChildUseCase.create(
                 new CreateChildUseCase.Command(childId, ledgerId, fullName, educationCost, rollNumber, city, campusName, schoolName));
-        ChildEntity childEntity = ChildMapper.toEntity(result.child());
-        EducationSupportLedgerEntity ledgerEntity = EducationSupportLedgerMapper.toEntity(result.ledger(), childEntity);
+        ChildEntity childEntity = ChildMapper.toEntity(result.child(), orgId);
+        EducationSupportLedgerEntity ledgerEntity = EducationSupportLedgerMapper.toEntity(result.ledger(), childEntity, orgId);
         childRepo.save(childEntity);
         ledgerRepo.save(ledgerEntity);
         return new CreateChildResult(result.child(), result.ledger());
@@ -95,11 +104,10 @@ public class AdminCommandService {
     @Transactional
     public LedgerEntry recordEarlySupport(UUID childId, YearMonthValue month, Money educationCost,
                                           UUID ledgerEntryId, UUID actingUserId,
-                                          boolean force, String forceReason) {
+                                          boolean force, String forceReason, UUID orgId) {
         EducationSupportLedger ledger = loadLedgerDomain(childId)
                 .orElseThrow(() -> new DomainException("Ledger not found for child"));
 
-        // Balance check before saving — throws InsufficientFundsException (422) unless forced.
         fundService.findDefaultFundAccount().ifPresentOrElse(
                 account -> {
                     if (!force) {
@@ -116,10 +124,9 @@ public class AdminCommandService {
         EducationSupportLedger updated = recordEarlySupportUseCase.record(command, ledger);
         LedgerEntry entry = updated.getEntriesByMonth().get(month);
         EducationSupportLedgerEntity ledgerEntity = ledgerRepo.findByChild_Id(childId).orElseThrow();
-        LedgerEntryEntity entryEntity = LedgerEntryMapper.toEntity(entry, ledgerEntity);
+        LedgerEntryEntity entryEntity = LedgerEntryMapper.toEntity(entry, ledgerEntity, orgId);
         ledgerEntryRepo.save(entryEntity);
 
-        // Auto-debit fund after ledger entry is saved.
         fundService.findDefaultFundAccount().ifPresent(account ->
                 fundService.debitForEarlySupport(
                         account.getId(),
@@ -132,13 +139,9 @@ public class AdminCommandService {
         return entry;
     }
 
-    /**
-     * Creates a SPONSOR-coverage ledger entry when a sponsor payment is received.
-     * Does not perform any fund debit (fund is credited by the payment, not debited).
-     */
     @Transactional
     public LedgerEntry recordSponsorLedgerEntry(UUID childId, YearMonthValue month, Money amount,
-                                                UUID ledgerEntryId, UUID actingUserId) {
+                                                UUID ledgerEntryId, UUID actingUserId, UUID orgId) {
         EducationSupportLedger ledger = loadLedgerDomain(childId)
                 .orElseThrow(() -> new DomainException("Ledger not found for child"));
         RecordEarlySupportUseCase.Command command = new RecordEarlySupportUseCase.Command(
@@ -146,36 +149,54 @@ public class AdminCommandService {
         EducationSupportLedger updated = recordEarlySupportUseCase.record(command, ledger);
         LedgerEntry entry = updated.getEntriesByMonth().get(month);
         EducationSupportLedgerEntity ledgerEntity = ledgerRepo.findByChild_Id(childId).orElseThrow();
-        LedgerEntryEntity entryEntity = LedgerEntryMapper.toEntity(entry, ledgerEntity);
+        LedgerEntryEntity entryEntity = LedgerEntryMapper.toEntity(entry, ledgerEntity, orgId);
         ledgerEntryRepo.save(entryEntity);
         return entry;
     }
 
     @Transactional
     public ProgressUpdate addProgress(UUID childId, YearMonthValue month, String summary,
-                                      UUID progressId, UUID actingUserId) {
+                                      UUID progressId, UUID actingUserId, UUID orgId) {
         EducationSupportLedger ledger = loadLedgerDomain(childId)
                 .orElseThrow(() -> new DomainException("Ledger not found for child"));
         ProgressUpdate progress = addMonthlyProgressUseCase.add(
                 new AddMonthlyProgressUseCase.Command(progressId, childId, month, summary, actingUserId),
                 ledger);
-        ProgressUpdateEntity entity = ProgressUpdateMapper.toEntity(progress);
+        ProgressUpdateEntity entity = ProgressUpdateMapper.toEntity(progress, orgId);
         progressRepo.save(entity);
+
+        // Notify active sponsor of this child's progress update
+        sponsorshipRepo.findByOrganisationIdAndStatus(orgId, SponsorshipStatus.ACTIVE).stream()
+                .filter(s -> childId.equals(s.getChildId()))
+                .findFirst()
+                .ifPresent(sponsorship -> {
+                    SponsorEntity sponsor = sponsorship.getSponsor();
+                    ChildEntity child = childRepo.findById(childId).orElse(null);
+                    String orgName = orgRepo.findById(orgId).map(o -> o.getName()).orElse("Junior Jinnah Trust");
+                    if (sponsor != null && sponsor.getContactEmail() != null && child != null) {
+                        notificationService.sendProgressUpdate(
+                                orgId, sponsor.getContactEmail(), sponsor.getDisplayName(),
+                                sponsor.getDisplayName(), child.getFullName(),
+                                month.toString(), summary, orgName, progressId);
+                    }
+                });
+
         return progress;
     }
 
     @Transactional
-    public Sponsor createSponsor(String displayName, String contactEmail, String phone, UUID sponsorId) {
+    public Sponsor createSponsor(String displayName, String contactEmail, String phone, UUID sponsorId, UUID orgId) {
         Sponsor sponsor = createSponsorUseCase.create(
                 new CreateSponsorUseCase.Command(sponsorId, displayName, contactEmail, phone));
-        SponsorEntity entity = SponsorMapper.toEntity(sponsor);
+        SponsorEntity entity = SponsorMapper.toEntity(sponsor, orgId);
         sponsorRepo.save(entity);
         return sponsor;
     }
 
     @Transactional
     public Sponsorship commitSponsorship(UUID sponsorId, UUID childId, YearMonthValue startMonth,
-                                         UUID sponsorshipId, CommitmentType commitmentType, UUID actingUserId) {
+                                         UUID sponsorshipId, CommitmentType commitmentType,
+                                         UUID actingUserId, UUID orgId) {
         SponsorEntity sponsor = sponsorRepo.findById(sponsorId)
                 .orElseThrow(() -> new DomainException("Sponsor not found"));
         if (childRepo.findById(childId).isEmpty()) {
@@ -189,14 +210,14 @@ public class AdminCommandService {
                         commitmentType != null ? commitmentType : CommitmentType.MONTHLY,
                         actingUserId
                 ));
-        SponsorshipEntity entity = SponsorshipMapper.toEntity(sponsorship, sponsor);
+        SponsorshipEntity entity = SponsorshipMapper.toEntity(sponsorship, sponsor, orgId);
         sponsorshipRepo.save(entity);
         return sponsorship;
     }
 
     @Transactional(readOnly = true)
-    public List<SponsorshipEntity> findEntitiesByStatus(SponsorshipStatus status) {
-        return sponsorshipRepo.findByStatus(status);
+    public List<SponsorshipEntity> findEntitiesByStatus(SponsorshipStatus status, UUID orgId) {
+        return sponsorshipRepo.findByOrganisationIdAndStatus(orgId, status);
     }
 
     @Transactional(readOnly = true)
@@ -220,7 +241,20 @@ public class AdminCommandService {
             throw new DomainException("Another active sponsorship exists for this child");
         }
         Sponsorship updated = SponsorshipMapper.toDomain(entity).withStatus(SponsorshipStatus.ACTIVE);
-        sponsorshipRepo.save(SponsorshipMapper.toEntity(updated, entity.getSponsor()));
+        sponsorshipRepo.save(SponsorshipMapper.toEntity(updated, entity.getSponsor(), entity.getOrganisationId()));
+
+        // Welcome email to sponsor
+        SponsorEntity sponsor = entity.getSponsor();
+        ChildEntity child = childRepo.findById(childId).orElse(null);
+        UUID orgId = entity.getOrganisationId();
+        String orgName = orgRepo.findById(orgId).map(o -> o.getName()).orElse("Junior Jinnah Trust");
+        if (sponsor != null && sponsor.getContactEmail() != null && child != null) {
+            notificationService.sendSponsorshipActivated(
+                    orgId, sponsor.getContactEmail(), sponsor.getDisplayName(),
+                    sponsor.getDisplayName(), child.getFullName(),
+                    updated.getStartMonth().toString(), orgName, sponsorshipId);
+        }
+
         return updated;
     }
 
@@ -229,7 +263,7 @@ public class AdminCommandService {
         SponsorshipEntity entity = sponsorshipRepo.findById(sponsorshipId)
                 .orElseThrow(() -> new DomainException("Sponsorship not found"));
         Sponsorship updated = SponsorshipMapper.toDomain(entity).withStatus(SponsorshipStatus.EXPIRED);
-        sponsorshipRepo.save(SponsorshipMapper.toEntity(updated, entity.getSponsor()));
+        sponsorshipRepo.save(SponsorshipMapper.toEntity(updated, entity.getSponsor(), entity.getOrganisationId()));
         return updated;
     }
 

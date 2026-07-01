@@ -206,3 +206,140 @@ export interface ApiError {
   code: string;
   message: string;
 }
+
+// ---- Fund accounts ----------------------------------------------------------
+
+export interface FundAccountResponse {
+  id: string;
+  name: string;
+  currency: string;
+  balance: string;
+  minReserve: string;
+  isBelowMinReserve: boolean;
+}
+
+export interface FundTransactionResponse {
+  id: string;
+  fundAccountId: string;
+  transactionType: 'CREDIT' | 'DEBIT';
+  amount: string;
+  currency: string;
+  reason: string;
+  description: string | null;
+  externalReference: string | null;
+  ledgerEntryId: string | null;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface CreditFundRequest {
+  amount: string;
+  currency: string;
+  description: string;
+  externalReference?: string | null;
+}
+
+// ---- Payments & Reconciliation -----------------------------------------------
+
+export interface SponsorPaymentResponse {
+  id: string;
+  sponsorshipId: string;
+  sponsorId: string;
+  childId: string;
+  paymentMonth: string;
+  status: 'PENDING' | 'RECEIVED' | 'OVERDUE' | 'WAIVED' | 'PARTIAL';
+  expectedAmount: string;
+  expectedCurrency: string;
+  receivedAmount: string | null;
+  receivedCurrency: string | null;
+  bankReference: string | null;
+  receivedDate: string | null;
+  waiverReason: string | null;
+  fundTransactionId: string | null;
+  ledgerEntryId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReconciliationSummary {
+  expected: number;
+  received: number;
+  partial: number;
+  overdue: number;
+  waived: number;
+  total: number;
+}
+
+export interface AtRiskSponsorship {
+  sponsorshipId: string;
+  sponsorId: string;
+  sponsorName: string;
+  childId: string;
+  childName: string;
+  consecutiveOverdueMonths: number;
+  requiresEscalation: boolean;
+}
+
+export interface MonthlyReconciliationResponse {
+  year: number;
+  month: number;
+  summary: ReconciliationSummary;
+  atRisk: AtRiskSponsorship[];
+  payments: SponsorPaymentResponse[];
+}
+
+export interface RecordPaymentRequest {
+  receivedAmount: string;
+  currency: string;
+  bankReference: string;
+  receivedDate: string;
+}
+
+export interface WaivePaymentRequest {
+  reason: string;
+}
+
+// ---- Alerts -----------------------------------------------------------------
+
+export interface AlertResponse {
+  id: string;
+  alertType: string;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  title: string;
+  message: string;
+  relatedEntityId: string | null;
+  relatedEntityType: string | null;
+  dismissed: boolean;
+  dismissedAt: string | null;
+  createdAt: string;
+}
+
+// ---- Org config -------------------------------------------------------------
+
+export interface OrgConfigResponse {
+  id: string;
+  name: string;
+  slug: string;
+  baseCurrency: string;
+  paymentDueDay: number;
+  minReserve: string;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface UpdateOrgConfigRequest {
+  name?: string | null;
+  baseCurrency?: string | null;
+  paymentDueDay?: number | null;
+  minFundReserve?: string | null;
+}
+
+// ---- Spring Page wrapper ----------------------------------------------------
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+}

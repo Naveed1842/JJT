@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -43,14 +44,23 @@ public class AdminController {
     }
 
     @GetMapping("/sponsors")
-    public List<CreateSponsorResponse> listSponsors() {
-        return sponsorRepo.findAll().stream()
-                .map(s -> new CreateSponsorResponse(s.getId(), s.getDisplayName(), s.getContactEmail()))
+    public List<CreateSponsorResponse> listSponsors(@AuthenticationPrincipal JwtUserDetails principal) {
+        UUID orgId = principal.getOrgId();
+        List<?> sponsors = orgId != null
+                ? sponsorRepo.findByOrganisationId(orgId)
+                : sponsorRepo.findAll();
+        return sponsors.stream()
+                .map(s -> {
+                    var sp = (com.jjt.platform.infrastructure.persistence.entity.SponsorEntity) s;
+                    return new CreateSponsorResponse(sp.getId(), sp.getDisplayName(), sp.getContactEmail());
+                })
                 .toList();
     }
 
     @PostMapping("/children")
-    public ResponseEntity<CreateChildResponse> createChild(@Valid @RequestBody CreateChildRequest request) {
+    public ResponseEntity<CreateChildResponse> createChild(
+            @Valid @RequestBody CreateChildRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var result = adminService.createChild(
                 request.rollNumber(),
                 request.fullName(),
@@ -59,19 +69,23 @@ public class AdminController {
                 request.schoolName(),
                 Money.of(new BigDecimal(request.educationAmount()), Currency.getInstance(request.educationCurrency())),
                 request.childId(),
-                request.ledgerId()
+                request.ledgerId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateChildResponse(result.child().getId(), result.ledger().getId()));
     }
 
     @PostMapping("/sponsors")
-    public ResponseEntity<CreateSponsorResponse> createSponsor(@Valid @RequestBody CreateSponsorRequest request) {
+    public ResponseEntity<CreateSponsorResponse> createSponsor(
+            @Valid @RequestBody CreateSponsorRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var sponsor = adminService.createSponsor(
                 request.displayName(),
                 request.contactEmail(),
                 request.phone(),
-                request.sponsorId()
+                request.sponsorId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateSponsorResponse(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail()));
@@ -88,7 +102,8 @@ public class AdminController {
                 request.ledgerEntryId(),
                 principal.getId(),
                 request.force(),
-                request.forceReason()
+                request.forceReason(),
+                principal.getOrgId()
         );
         LedgerEntryDto dto = DtoMapper.toLedgerEntryDto(entry);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -105,7 +120,8 @@ public class AdminController {
                 YearMonthValue.of(YearMonth.parse(request.month())),
                 request.summary(),
                 request.progressUpdateId(),
-                principal.getId()
+                principal.getId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AddProgressResponse(progress.getId(), progress.getChildId(), progress.getMonth().getValue().toString()));
@@ -121,7 +137,8 @@ public class AdminController {
                 YearMonthValue.of(YearMonth.parse(request.startMonth())),
                 request.sponsorshipId(),
                 request.commitmentType(),
-                principal.getId()
+                principal.getId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CommitSponsorshipResponse(
@@ -134,9 +151,10 @@ public class AdminController {
 
     @GetMapping("/sponsorships")
     public List<SponsorshipSummaryResponse> listSponsorships(
-            @org.springframework.web.bind.annotation.RequestParam(name = "status", required = false) String status) {
+            @RequestParam(name = "status", required = false) String status,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         SponsorshipStatus target = status != null ? SponsorshipStatus.valueOf(status) : SponsorshipStatus.PENDING;
-        return adminService.findEntitiesByStatus(target).stream()
+        return adminService.findEntitiesByStatus(target, principal.getOrgId()).stream()
                 .map(s -> new SponsorshipSummaryResponse(
                         s.getId(),
                         s.getChildId(),

@@ -5,6 +5,7 @@ import com.jjt.platform.infrastructure.persistence.entity.SponsorEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorshipEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class SponsorshipMapper {
 
@@ -27,7 +28,7 @@ public final class SponsorshipMapper {
         );
     }
 
-    public static SponsorshipEntity toEntity(Sponsorship sponsorship, SponsorEntity sponsorEntity) {
+    public static SponsorshipEntity toEntity(Sponsorship sponsorship, SponsorEntity sponsorEntity, UUID organisationId) {
         Objects.requireNonNull(sponsorship, "sponsorship");
         Objects.requireNonNull(sponsorEntity, "sponsorEntity");
         return new SponsorshipEntity(
@@ -39,7 +40,8 @@ public final class SponsorshipMapper {
                 sponsorship.getCreatedAt(),
                 sponsorship.getExpiresAt(),
                 sponsorship.getCommitmentType(),
-                sponsorship.getCreatedBy()
+                sponsorship.getCreatedBy(),
+                organisationId
         );
     }
 }

@@ -76,6 +76,9 @@ public class SponsorPaymentEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
     protected SponsorPaymentEntity() {}
 
     public SponsorPaymentEntity(UUID id, UUID sponsorshipId, UUID sponsorId, UUID childId,
@@ -84,7 +87,8 @@ public class SponsorPaymentEntity {
                                 BigDecimal receivedAmount, String receivedCurrency,
                                 String bankReference, LocalDate receivedDate, String waiverReason,
                                 UUID fundTransactionId, UUID ledgerEntryId,
-                                UUID createdBy, Instant createdAt, UUID updatedBy, Instant updatedAt) {
+                                UUID createdBy, Instant createdAt, UUID updatedBy, Instant updatedAt,
+                                UUID organisationId) {
         this.id = id;
         this.sponsorshipId = sponsorshipId;
         this.sponsorId = sponsorId;
@@ -104,6 +108,7 @@ public class SponsorPaymentEntity {
         this.createdAt = createdAt;
         this.updatedBy = updatedBy;
         this.updatedAt = updatedAt;
+        this.organisationId = organisationId;
     }
 
     public UUID getId() { return id; }
@@ -125,4 +130,5 @@ public class SponsorPaymentEntity {
     public Instant getCreatedAt() { return createdAt; }
     public UUID getUpdatedBy() { return updatedBy; }
     public Instant getUpdatedAt() { return updatedAt; }
+    public UUID getOrganisationId() { return organisationId; }
 }

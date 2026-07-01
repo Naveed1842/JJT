@@ -61,4 +61,9 @@ public class OrganisationEntity {
     public BigDecimal getMinFundReserve() { return minFundReserve; }
     public boolean isActive() { return active; }
     public Instant getCreatedAt() { return createdAt; }
+
+    public void setName(String name) { this.name = name; }
+    public void setBaseCurrency(String baseCurrency) { this.baseCurrency = baseCurrency; }
+    public void setPaymentDueDay(int paymentDueDay) { this.paymentDueDay = paymentDueDay; }
+    public void setMinFundReserve(BigDecimal minFundReserve) { this.minFundReserve = minFundReserve; }
 }

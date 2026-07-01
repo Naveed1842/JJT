@@ -3,6 +3,8 @@ package com.jjt.platform.api.admin.service;
 import com.jjt.platform.core.domain.entity.FundAccount;
 import com.jjt.platform.core.domain.entity.FundTransaction;
 import com.jjt.platform.core.domain.entity.FundTransactionType;
+import com.jjt.platform.core.domain.entity.AlertSeverity;
+import com.jjt.platform.core.domain.entity.AlertType;
 import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.exceptions.InsufficientFundsException;
 import com.jjt.platform.infrastructure.persistence.entity.FundAccountEntity;
@@ -27,11 +29,14 @@ public class AdminFundService {
 
     private final FundAccountJpaRepository fundAccountRepo;
     private final FundTransactionJpaRepository fundTransactionRepo;
+    private final AdminAlertService alertService;
 
     public AdminFundService(FundAccountJpaRepository fundAccountRepo,
-                            FundTransactionJpaRepository fundTransactionRepo) {
+                            FundTransactionJpaRepository fundTransactionRepo,
+                            AdminAlertService alertService) {
         this.fundAccountRepo = fundAccountRepo;
         this.fundTransactionRepo = fundTransactionRepo;
+        this.alertService = alertService;
     }
 
     @Transactional(readOnly = true)
@@ -94,7 +99,26 @@ public class AdminFundService {
                 createdBy,
                 Instant.now()
         );
-        return FundTransactionMapper.toDomain(fundTransactionRepo.save(entity));
+        FundTransaction result = FundTransactionMapper.toDomain(fundTransactionRepo.save(entity));
+
+        // Raise alert if balance has dropped below the minimum reserve
+        FundAccountEntity account = fundAccountRepo.findById(fundAccountId).orElse(null);
+        if (account != null) {
+            BigDecimal balanceAfter = fundTransactionRepo.computeBalance(fundAccountId);
+            if (balanceAfter.compareTo(account.getMinReserve()) < 0) {
+                alertService.raise(
+                        account.getOrganisationId(),
+                        AlertType.FUND_BELOW_RESERVE,
+                        AlertSeverity.CRITICAL,
+                        "Fund balance below minimum reserve",
+                        String.format("Fund '%s' balance %s %s is below minimum reserve of %s %s.",
+                                account.getName(), balanceAfter.toPlainString(), account.getCurrency(),
+                                account.getMinReserve().toPlainString(), account.getCurrency()),
+                        fundAccountId, "FundAccount");
+            }
+        }
+
+        return result;
     }
 
     /**

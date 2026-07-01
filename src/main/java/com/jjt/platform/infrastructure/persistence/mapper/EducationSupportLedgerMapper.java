@@ -7,6 +7,7 @@ import com.jjt.platform.infrastructure.persistence.entity.EducationSupportLedger
 import com.jjt.platform.infrastructure.persistence.entity.LedgerEntryEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class EducationSupportLedgerMapper {
 
@@ -22,11 +23,11 @@ public final class EducationSupportLedgerMapper {
         return ledger;
     }
 
-    public static EducationSupportLedgerEntity toEntity(EducationSupportLedger ledger, ChildEntity childEntity) {
+    public static EducationSupportLedgerEntity toEntity(EducationSupportLedger ledger, ChildEntity childEntity, UUID organisationId) {
         Objects.requireNonNull(ledger, "ledger");
         Objects.requireNonNull(childEntity, "childEntity");
-        EducationSupportLedgerEntity entity = new EducationSupportLedgerEntity(ledger.getId(), childEntity);
-        ledger.getEntriesByMonth().values().forEach(entry -> entity.getEntries().add(LedgerEntryMapper.toEntity(entry, entity)));
+        EducationSupportLedgerEntity entity = new EducationSupportLedgerEntity(ledger.getId(), childEntity, organisationId);
+        ledger.getEntriesByMonth().values().forEach(entry -> entity.getEntries().add(LedgerEntryMapper.toEntity(entry, entity, organisationId)));
         return entity;
     }
 }

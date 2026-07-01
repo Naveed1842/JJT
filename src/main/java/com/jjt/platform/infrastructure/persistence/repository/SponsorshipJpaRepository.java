@@ -14,6 +14,10 @@ public interface SponsorshipJpaRepository extends JpaRepository<SponsorshipEntit
 
     List<SponsorshipEntity> findByStatus(SponsorshipStatus status);
 
+    List<SponsorshipEntity> findByOrganisationIdAndStatus(UUID organisationId, SponsorshipStatus status);
+
+    List<SponsorshipEntity> findByOrganisationId(UUID organisationId);
+
     boolean existsByChildIdAndStatus(UUID childId, SponsorshipStatus status);
 
     List<SponsorshipEntity> findByChildIdOrderByCreatedAtDesc(UUID childId);

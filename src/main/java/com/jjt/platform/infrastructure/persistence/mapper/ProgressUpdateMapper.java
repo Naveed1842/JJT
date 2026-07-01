@@ -6,6 +6,7 @@ import com.jjt.platform.core.domain.value.YearMonthValue;
 import com.jjt.platform.infrastructure.persistence.entity.ProgressUpdateEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class ProgressUpdateMapper {
 
@@ -26,7 +27,7 @@ public final class ProgressUpdateMapper {
         );
     }
 
-    public static ProgressUpdateEntity toEntity(ProgressUpdate progressUpdate) {
+    public static ProgressUpdateEntity toEntity(ProgressUpdate progressUpdate, UUID organisationId) {
         Objects.requireNonNull(progressUpdate, "progressUpdate");
         return new ProgressUpdateEntity(
                 progressUpdate.getId(),
@@ -34,7 +35,8 @@ public final class ProgressUpdateMapper {
                 YearMonthMapper.toString(progressUpdate.getMonth()),
                 progressUpdate.getSummary(),
                 progressUpdate.getCreatedBy(),
-                progressUpdate.getCreatedAt()
+                progressUpdate.getCreatedAt(),
+                organisationId
         );
     }
 }
