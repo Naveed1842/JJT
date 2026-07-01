@@ -93,15 +93,28 @@ export class SponsorCommitComponent implements OnInit {
     return this.commitmentType === 'YEARLY' ? this.yearlyPrice : this.monthlyCost;
   }
 
+  private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  get emailValid(): boolean {
+    return this.emailRegex.test(this.email.trim());
+  }
+
   get stepValid(): boolean {
     if (this.step === 1) return true;
     if (this.step === 2) return true;
-    if (this.step === 3) return !!this.sponsorName.trim() && !!this.email.trim();
+    if (this.step === 3) return !!this.sponsorName.trim() && this.emailValid;
     return true;
   }
 
   nextStep(): void {
-    if (!this.stepValid) { this.error = 'Please fill in all required fields.'; return; }
+    if (!this.stepValid) {
+      if (this.step === 3 && !!this.sponsorName.trim() && !this.emailValid) {
+        this.error = 'Please enter a valid email address.';
+      } else {
+        this.error = 'Please fill in all required fields.';
+      }
+      return;
+    }
     this.error = null;
     if (this.step === 4) { this.submit(); return; }
     this.step = (this.step + 1) as 1 | 2 | 3 | 4 | 5;

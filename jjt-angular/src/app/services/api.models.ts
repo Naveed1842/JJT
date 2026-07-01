@@ -343,3 +343,95 @@ export interface PageResponse<T> {
   number: number;
   size: number;
 }
+
+// ---- Donors & Donations -----------------------------------------------------
+
+export type DonorType = 'INDIVIDUAL' | 'CORPORATE' | 'TRUST' | 'ANONYMOUS';
+export type DonationType = 'GENERAL' | 'ZAKAT' | 'SADAQAH' | 'SPONSORSHIP_TOP_UP' | 'CORPORATE' | 'IN_KIND';
+export type DonationFrequency = 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+export type DonationStatus = 'EXPECTED' | 'RECEIPTED' | 'REVERSED';
+export type RecurringDonationStatus = 'ACTIVE' | 'PAUSED' | 'CANCELLED' | 'COMPLETED';
+
+export interface DonorResponse {
+  id: string;
+  displayName: string;
+  email: string | null;
+  phone: string | null;
+  donorType: DonorType;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface CreateDonorRequest {
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  donorType: DonorType;
+  notes?: string | null;
+}
+
+export interface DonationResponse {
+  id: string;
+  donorId: string | null;
+  donorName: string | null;
+  donationType: DonationType;
+  amount: number;
+  currency: string;
+  donationDate: string;
+  receiptNumber: string | null;
+  status: DonationStatus;
+  fundAccountId: string | null;
+  fundTransactionId: string | null;
+  recurringScheduleId: string | null;
+  createdAt: string;
+}
+
+export interface RecordDonationRequest {
+  donorId?: string | null;
+  donationType: DonationType;
+  amount: string;
+  currency: string;
+  donationDate: string;
+  notes?: string | null;
+  fundAccountId?: string | null;
+}
+
+export interface DonationReceiptResponse {
+  receiptNumber: string;
+  donorName: string;
+  donorEmail: string | null;
+  donorPhone: string | null;
+  amount: number;
+  currency: string;
+  donationDate: string;
+  donationType: string;
+  organisationName: string;
+  issuedDate: string;
+}
+
+export interface RecurringDonationResponse {
+  id: string;
+  donorId: string;
+  donorName: string | null;
+  donationType: DonationType;
+  amount: number;
+  currency: string;
+  frequency: DonationFrequency;
+  startDate: string;
+  endDate: string | null;
+  nextDueDate: string | null;
+  status: RecurringDonationStatus;
+  createdAt: string;
+}
+
+export interface CreateRecurringDonationRequest {
+  donorId: string;
+  donationType: DonationType;
+  amount: string;
+  currency: string;
+  frequency: DonationFrequency;
+  startDate: string;
+  endDate?: string | null;
+  fundAccountId?: string | null;
+  notes?: string | null;
+}

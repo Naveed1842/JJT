@@ -11,11 +11,16 @@ import {
   CommitSponsorshipResponse,
   CreateChildRequest,
   CreateChildResponse,
+  CreateDonorRequest,
   CreateOrgAdminUserRequest,
+  CreateRecurringDonationRequest,
   CreateSponsorRequest,
   CreateSponsorResponse,
   CreateSponsorUserRequest,
   CreditFundRequest,
+  DonationReceiptResponse,
+  DonationResponse,
+  DonorResponse,
   FundAccountResponse,
   FundTransactionResponse,
   LedgerDto,
@@ -23,9 +28,11 @@ import {
   OrgConfigResponse,
   PageResponse,
   ProgressUpdateDto,
+  RecordDonationRequest,
   RecordEarlySupportRequest,
   RecordEarlySupportResponse,
   RecordPaymentRequest,
+  RecurringDonationResponse,
   SponsorPaymentResponse,
   SponsorshipSummaryResponse,
   SponsorshipStatus,
@@ -228,5 +235,74 @@ export class AdminService {
 
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
     return this.http.put<void>(`${this.base}/api/auth/change-password`, { currentPassword, newPassword });
+  }
+
+  // ── Donors ─────────────────────────────────────────────────────────────────
+
+  createDonor(req: CreateDonorRequest): Observable<DonorResponse> {
+    return this.http.post<DonorResponse>(`${this.base}/api/admin/donors`, req);
+  }
+
+  listDonors(): Observable<DonorResponse[]> {
+    return this.http.get<DonorResponse[]>(`${this.base}/api/admin/donors`);
+  }
+
+  getDonor(id: string): Observable<DonorResponse> {
+    return this.http.get<DonorResponse>(`${this.base}/api/admin/donors/${id}`);
+  }
+
+  // ── Donations ──────────────────────────────────────────────────────────────
+
+  recordDonation(req: RecordDonationRequest): Observable<DonationResponse> {
+    return this.http.post<DonationResponse>(`${this.base}/api/admin/donations`, req);
+  }
+
+  listDonations(page = 0): Observable<PageResponse<DonationResponse>> {
+    return this.http.get<PageResponse<DonationResponse>>(
+      `${this.base}/api/admin/donations?page=${page}&size=20`
+    );
+  }
+
+  getDonation(id: string): Observable<DonationResponse> {
+    return this.http.get<DonationResponse>(`${this.base}/api/admin/donations/${id}`);
+  }
+
+  getDonationReceipt(id: string): Observable<DonationReceiptResponse> {
+    return this.http.get<DonationReceiptResponse>(`${this.base}/api/admin/donations/${id}/receipt`);
+  }
+
+  receiveDonation(id: string, actualAmount?: string): Observable<DonationResponse> {
+    const q = actualAmount ? `?actualAmount=${actualAmount}` : '';
+    return this.http.post<DonationResponse>(`${this.base}/api/admin/donations/${id}/receive${q}`, {});
+  }
+
+  reverseDonation(id: string): Observable<DonationResponse> {
+    return this.http.post<DonationResponse>(`${this.base}/api/admin/donations/${id}/reverse`, {});
+  }
+
+  // ── Recurring donations ────────────────────────────────────────────────────
+
+  createRecurringDonation(req: CreateRecurringDonationRequest): Observable<RecurringDonationResponse> {
+    return this.http.post<RecurringDonationResponse>(`${this.base}/api/admin/donations/recurring`, req);
+  }
+
+  listRecurringDonations(): Observable<RecurringDonationResponse[]> {
+    return this.http.get<RecurringDonationResponse[]>(`${this.base}/api/admin/donations/recurring`);
+  }
+
+  pauseRecurring(id: string): Observable<RecurringDonationResponse> {
+    return this.http.patch<RecurringDonationResponse>(
+      `${this.base}/api/admin/donations/recurring/${id}/pause`, {}
+    );
+  }
+
+  cancelRecurring(id: string): Observable<RecurringDonationResponse> {
+    return this.http.patch<RecurringDonationResponse>(
+      `${this.base}/api/admin/donations/recurring/${id}/cancel`, {}
+    );
+  }
+
+  generateRecurringDonations(): Observable<number> {
+    return this.http.post<number>(`${this.base}/api/admin/donations/recurring/generate`, {});
   }
 }

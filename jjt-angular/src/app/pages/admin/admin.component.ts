@@ -7,9 +7,15 @@ import {
   AlertResponse,
   ChildDto,
   CreateSponsorResponse,
+  DonationResponse,
+  DonorResponse,
+  DonorType,
+  DonationType,
+  DonationFrequency,
   FundAccountResponse,
   MonthlyReconciliationResponse,
   OrgConfigResponse,
+  RecurringDonationResponse,
   SponsorPaymentResponse,
   SponsorshipSummaryResponse,
   SponsorshipStatus,
@@ -19,11 +25,13 @@ import {
 type SectionId =
   | 'dashboard' | 'children' | 'sponsors' | 'commitments'
   | 'earlySupport' | 'progress' | 'users'
-  | 'funds' | 'reconciliation' | 'alerts' | 'reports' | 'settings' | 'docs';
+  | 'funds' | 'reconciliation' | 'alerts' | 'reports' | 'settings' | 'docs'
+  | 'donors' | 'donations';
 
 type ModalType =
   | 'addChild' | 'addSponsor' | 'addCommitment'
-  | 'addSponsorUser' | 'addOrgUser' | 'recordPayment' | null;
+  | 'addSponsorUser' | 'addOrgUser' | 'recordPayment'
+  | 'addDonor' | 'addDonation' | 'addRecurring' | null;
 
 @Component({
   selector: 'app-admin',
@@ -117,6 +125,35 @@ export class AdminComponent implements OnInit {
   alertList: AlertResponse[] = [];
   loadingAlerts = false;
 
+  // ── Donors ────────────────────────────────────────────────────────
+  donors: DonorResponse[] = [];
+  donorSearch = '';
+  loadingDonors = false;
+  donorForm: { displayName: string; email: string; phone: string; donorType: DonorType; notes: string } = {
+    displayName: '', email: '', phone: '', donorType: 'INDIVIDUAL', notes: ''
+  };
+  readonly donorTypes: DonorType[] = ['INDIVIDUAL', 'CORPORATE', 'TRUST', 'ANONYMOUS'];
+
+  // ── Donations ─────────────────────────────────────────────────────
+  donations: DonationResponse[] = [];
+  donationsPage = 0;
+  donationsTotalPages = 1;
+  loadingDonations = false;
+  donationsTab: 'one-time' | 'recurring' = 'one-time';
+  donationForm: { donorId: string; donationType: DonationType; amount: string; currency: string; donationDate: string; notes: string; fundAccountId: string } = {
+    donorId: '', donationType: 'GENERAL', amount: '', currency: 'PKR',
+    donationDate: new Date().toISOString().split('T')[0], notes: '', fundAccountId: ''
+  };
+  recurringDonations: RecurringDonationResponse[] = [];
+  loadingRecurring = false;
+  recurringForm: { donorId: string; donationType: DonationType; amount: string; currency: string; frequency: DonationFrequency; startDate: string; endDate: string; fundAccountId: string; notes: string } = {
+    donorId: '', donationType: 'GENERAL', amount: '', currency: 'PKR',
+    frequency: 'MONTHLY', startDate: new Date().toISOString().split('T')[0],
+    endDate: '', fundAccountId: '', notes: ''
+  };
+  readonly donationTypes: DonationType[] = ['GENERAL', 'ZAKAT', 'SADAQAH', 'SPONSORSHIP_TOP_UP', 'CORPORATE', 'IN_KIND'];
+  readonly frequencies: DonationFrequency[] = ['MONTHLY', 'QUARTERLY', 'ANNUAL'];
+
   // ── Settings ──────────────────────────────────────────────────────
   settingsTab: 'profile' | 'org' | 'security' = 'profile';
   orgConfig: OrgConfigResponse | null = null;
@@ -151,6 +188,8 @@ export class AdminComponent implements OnInit {
     if (s === 'reconciliation') this.loadRecon();
     if (s === 'alerts')         this.loadAlerts();
     if (s === 'settings')       this.loadOrgConfig();
+    if (s === 'donors')         this.loadDonors();
+    if (s === 'donations')      { this.loadDonations(); this.loadRecurring(); }
   }
 
   openModal(type: ModalType): void {
@@ -709,6 +748,218 @@ export class AdminComponent implements OnInit {
         this.isLoading = false;
         this.passwordError = err?.error?.message ?? 'Failed to change password.';
       }
+    });
+  }
+
+  // ── Generate payments (JJT_ADMIN only) ───────────────────────────
+
+  generatePayments(): void {
+    if (!this.isJjtAdmin || this.isLoading) return;
+    this.isLoading = true;
+    this.adminService.generatePayments().subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.showToast(`Generated ${res.created} payment record(s) for ${res.month}.`);
+        this.loadRecon();
+      },
+      error: (err) => this.handleError(err, 'Failed to generate payments.')
+    });
+  }
+
+  // ── Donors ────────────────────────────────────────────────────────
+
+  get filteredDonors(): DonorResponse[] {
+    const q = this.donorSearch.toLowerCase().trim();
+    if (!q) return this.donors;
+    return this.donors.filter(d =>
+      d.displayName.toLowerCase().includes(q) ||
+      (d.email ?? '').toLowerCase().includes(q)
+    );
+  }
+
+  loadDonors(): void {
+    this.loadingDonors = true;
+    this.adminService.listDonors().subscribe({
+      next: (data) => { this.donors = data; this.loadingDonors = false; },
+      error: () => { this.loadingDonors = false; }
+    });
+  }
+
+  createDonor(): void {
+    if (this.isLoading || !this.donorForm.displayName.trim()) {
+      this.errorMessage = 'Display name is required.';
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.adminService.createDonor({
+      displayName: this.donorForm.displayName.trim(),
+      email:       this.donorForm.email.trim() || null,
+      phone:       this.donorForm.phone.trim() || null,
+      donorType:   this.donorForm.donorType,
+      notes:       this.donorForm.notes.trim() || null,
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.closeModal();
+        this.showToast('Donor created.');
+        this.donorForm = { displayName: '', email: '', phone: '', donorType: 'INDIVIDUAL', notes: '' };
+        this.loadDonors();
+      },
+      error: (err) => this.handleError(err, 'Failed to create donor.')
+    });
+  }
+
+  // ── Donations ─────────────────────────────────────────────────────
+
+  loadDonations(page = 0): void {
+    this.loadingDonations = true;
+    this.adminService.listDonations(page).subscribe({
+      next: (res) => {
+        this.donations = res.content;
+        this.donationsPage = res.number;
+        this.donationsTotalPages = res.totalPages;
+        this.loadingDonations = false;
+      },
+      error: () => { this.loadingDonations = false; }
+    });
+  }
+
+  recordDonation(): void {
+    if (this.isLoading || !this.donationForm.amount.trim() || !this.donationForm.donationDate) {
+      this.errorMessage = 'Amount and date are required.';
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.adminService.recordDonation({
+      donorId:       this.donationForm.donorId || null,
+      donationType:  this.donationForm.donationType,
+      amount:        this.donationForm.amount.trim(),
+      currency:      this.donationForm.currency,
+      donationDate:  this.donationForm.donationDate,
+      notes:         this.donationForm.notes.trim() || null,
+      fundAccountId: this.donationForm.fundAccountId || null,
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.closeModal();
+        this.showToast('Donation recorded.');
+        this.donationForm = { donorId: '', donationType: 'GENERAL', amount: '', currency: 'PKR', donationDate: new Date().toISOString().split('T')[0], notes: '', fundAccountId: '' };
+        this.loadDonations();
+      },
+      error: (err) => this.handleError(err, 'Failed to record donation.')
+    });
+  }
+
+  receiveDonation(id: string): void {
+    this.adminService.receiveDonation(id).subscribe({
+      next: () => { this.showToast('Donation marked as received.'); this.loadDonations(this.donationsPage); },
+      error: (err) => this.handleError(err, 'Failed to receive donation.')
+    });
+  }
+
+  reverseDonation(id: string): void {
+    this.adminService.reverseDonation(id).subscribe({
+      next: () => { this.showToast('Donation reversed.'); this.loadDonations(this.donationsPage); },
+      error: (err) => this.handleError(err, 'Failed to reverse donation.')
+    });
+  }
+
+  viewReceipt(id: string): void {
+    this.adminService.getDonationReceipt(id).subscribe({
+      next: (receipt) => {
+        const lines = [
+          `Receipt: ${receipt.receiptNumber}`,
+          `Donor: ${receipt.donorName}`,
+          `Amount: ${receipt.currency} ${receipt.amount}`,
+          `Date: ${receipt.donationDate}`,
+          `Type: ${receipt.donationType}`,
+          `Organisation: ${receipt.organisationName}`,
+          `Issued: ${receipt.issuedDate}`,
+        ].join('\n');
+        alert(lines);
+      },
+      error: (err) => this.handleError(err, 'Failed to load receipt.')
+    });
+  }
+
+  donationStatusClass(status: string): string {
+    if (status === 'RECEIPTED') return 'badge-green';
+    if (status === 'REVERSED')  return 'badge-red';
+    return 'badge-grey';
+  }
+
+  recurringStatusClass(status: string): string {
+    if (status === 'ACTIVE')    return 'badge-green';
+    if (status === 'PAUSED')    return 'badge-amber';
+    if (status === 'CANCELLED') return 'badge-red';
+    return 'badge-grey';
+  }
+
+  // ── Recurring donations ───────────────────────────────────────────
+
+  loadRecurring(): void {
+    this.loadingRecurring = true;
+    this.adminService.listRecurringDonations().subscribe({
+      next: (data) => { this.recurringDonations = data; this.loadingRecurring = false; },
+      error: () => { this.loadingRecurring = false; }
+    });
+  }
+
+  createRecurring(): void {
+    if (this.isLoading || !this.recurringForm.donorId || !this.recurringForm.amount.trim()) {
+      this.errorMessage = 'Donor and amount are required.';
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.adminService.createRecurringDonation({
+      donorId:       this.recurringForm.donorId,
+      donationType:  this.recurringForm.donationType,
+      amount:        this.recurringForm.amount.trim(),
+      currency:      this.recurringForm.currency,
+      frequency:     this.recurringForm.frequency,
+      startDate:     this.recurringForm.startDate,
+      endDate:       this.recurringForm.endDate || null,
+      fundAccountId: this.recurringForm.fundAccountId || null,
+      notes:         this.recurringForm.notes.trim() || null,
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.closeModal();
+        this.showToast('Recurring schedule created.');
+        this.recurringForm = { donorId: '', donationType: 'GENERAL', amount: '', currency: 'PKR', frequency: 'MONTHLY', startDate: new Date().toISOString().split('T')[0], endDate: '', fundAccountId: '', notes: '' };
+        this.loadRecurring();
+      },
+      error: (err) => this.handleError(err, 'Failed to create recurring donation.')
+    });
+  }
+
+  pauseRecurring(id: string): void {
+    this.adminService.pauseRecurring(id).subscribe({
+      next: () => { this.showToast('Schedule paused.'); this.loadRecurring(); },
+      error: (err) => this.handleError(err, 'Failed to pause.')
+    });
+  }
+
+  cancelRecurring(id: string): void {
+    this.adminService.cancelRecurring(id).subscribe({
+      next: () => { this.showToast('Schedule cancelled.'); this.loadRecurring(); },
+      error: (err) => this.handleError(err, 'Failed to cancel.')
+    });
+  }
+
+  generateRecurringDonations(): void {
+    if (!this.isJjtAdmin || this.isLoading) return;
+    this.isLoading = true;
+    this.adminService.generateRecurringDonations().subscribe({
+      next: (count) => {
+        this.isLoading = false;
+        this.showToast(`${count} expected donation(s) generated from recurring schedules.`);
+        this.loadDonations();
+      },
+      error: (err) => this.handleError(err, 'Failed to generate recurring donations.')
     });
   }
 }

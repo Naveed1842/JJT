@@ -60,6 +60,20 @@
         </svg>
         Reconciliation
       </button>
+      <button class="nav-item" [class.active]="activeSection === 'donors'" (click)="setSection('donors')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Donors
+        <span *ngIf="donors.length > 0" class="nav-badge">{{ donors.length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'donations'" (click)="setSection('donations')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Donations
+      </button>
 
       <div class="nav-group-label" style="margin-top:12px;">Operations</div>
       <button class="nav-item" [class.active]="activeSection === 'earlySupport'" (click)="setSection('earlySupport')">
@@ -138,6 +152,8 @@
           <ng-container *ngIf="activeSection === 'users'">Management</ng-container>
           <ng-container *ngIf="activeSection === 'funds'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'reconciliation'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'donors'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'donations'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'alerts'">Operations</ng-container>
@@ -153,6 +169,8 @@
           <ng-container *ngIf="activeSection === 'users'">User Management</ng-container>
           <ng-container *ngIf="activeSection === 'funds'">Fund Accounts</ng-container>
           <ng-container *ngIf="activeSection === 'reconciliation'">Reconciliation</ng-container>
+          <ng-container *ngIf="activeSection === 'donors'">Donors</ng-container>
+          <ng-container *ngIf="activeSection === 'donations'">Donations</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Early Support</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Add Progress</ng-container>
           <ng-container *ngIf="activeSection === 'alerts'">Alerts</ng-container>
@@ -790,6 +808,10 @@
             <button (click)="nextReconMonth()" class="btn-sm-ghost" style="padding:4px 9px;">›</button>
           </div>
           <div *ngIf="loadingRecon" style="font-size:13px;color:var(--text-3);">Loading…</div>
+          <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generatePayments()" [disabled]="isLoading"
+            style="margin-left:auto;" title="Generate expected payment records for all active sponsorships this month">
+            {{ isLoading ? 'Generating…' : '⚡ Generate Payments' }}
+          </button>
         </div>
 
         <!-- Summary KPIs -->
@@ -896,6 +918,149 @@
             <div class="empty-sub">Generate payments from active sponsorships to start reconciliation.</div>
           </div>
         </div>
+      </section>
+
+      <!-- ========== DONORS ========== -->
+      <section *ngIf="activeSection === 'donors'" class="section-anim">
+        <div class="table-toolbar">
+          <input class="search-input" [(ngModel)]="donorSearch" placeholder="Search donors…">
+          <div style="margin-left:auto;">
+            <button class="btn-primary" (click)="openModal('addDonor')">+ Add Donor</button>
+          </div>
+        </div>
+
+        <div *ngIf="loadingDonors" class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading donors…</div></div>
+        </div>
+        <div *ngIf="!loadingDonors && filteredDonors.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No donors yet</div>
+            <div class="empty-sub">Donors are individuals or organisations who contribute funds outside of regular sponsorships.</div>
+          </div>
+        </div>
+        <div *ngIf="!loadingDonors && filteredDonors.length > 0" class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Email</th><th>Phone</th><th>Notes</th><th>Added</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of filteredDonors">
+                <td style="font-weight:600;color:var(--text-1);">{{ d.displayName }}</td>
+                <td><span class="badge badge-grey" style="text-transform:capitalize;">{{ d.donorType.toLowerCase().replace('_', ' ') }}</span></td>
+                <td style="color:var(--text-2);">{{ d.email || '—' }}</td>
+                <td style="color:var(--text-2);">{{ d.phone || '—' }}</td>
+                <td style="color:var(--text-3);font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ d.notes || '—' }}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-3);">{{ timeAgo(d.createdAt) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== DONATIONS ========== -->
+      <section *ngIf="activeSection === 'donations'" class="section-anim">
+        <!-- Tabs -->
+        <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;margin-bottom:18px;">
+          <button class="settings-tab" [class.active]="donationsTab === 'one-time'" (click)="donationsTab = 'one-time'; loadDonations()">One-time</button>
+          <button class="settings-tab" [class.active]="donationsTab === 'recurring'" (click)="donationsTab = 'recurring'; loadRecurring()">Recurring</button>
+        </div>
+
+        <!-- One-time donations -->
+        <ng-container *ngIf="donationsTab === 'one-time'">
+          <div class="table-toolbar">
+            <span class="results-text">{{ donations.length }} donation{{ donations.length !== 1 ? 's' : '' }}</span>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generateRecurringDonations()" [disabled]="isLoading">
+                {{ isLoading ? 'Generating…' : '⚡ Generate Recurring' }}
+              </button>
+              <button class="btn-primary" (click)="openModal('addDonation')">+ Record Donation</button>
+            </div>
+          </div>
+
+          <div *ngIf="loadingDonations" class="table-card">
+            <div class="table-empty"><div class="empty-sub">Loading donations…</div></div>
+          </div>
+          <div *ngIf="!loadingDonations && donations.length === 0" class="table-card">
+            <div class="table-empty">
+              <div class="empty-title">No donations recorded</div>
+              <div class="empty-sub">Record a one-time donation from a donor or an anonymous gift.</div>
+            </div>
+          </div>
+          <div *ngIf="!loadingDonations && donations.length > 0" class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Donor</th><th>Type</th><th>Amount</th><th>Date</th><th>Receipt</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let d of donations">
+                  <td style="font-weight:600;color:var(--text-1);">{{ d.donorName || 'Anonymous' }}</td>
+                  <td style="font-size:12px;color:var(--text-3);">{{ d.donationType }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ formatAmount(d.amount != null ? d.amount.toString() : null, d.currency) }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-3);">{{ d.donationDate }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-2);">{{ d.receiptNumber || '—' }}</td>
+                  <td><span class="badge" [ngClass]="donationStatusClass(d.status)">{{ d.status }}</span></td>
+                  <td>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                      <button *ngIf="d.status === 'EXPECTED'" class="btn-sm-ghost" (click)="receiveDonation(d.id)">Receive</button>
+                      <button *ngIf="d.receiptNumber" class="btn-sm-ghost" (click)="viewReceipt(d.id)">Receipt</button>
+                      <button *ngIf="d.status === 'RECEIPTED'" class="btn-sm-ghost" style="color:var(--red);" (click)="reverseDonation(d.id)">Reverse</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Pagination -->
+            <div *ngIf="donationsTotalPages > 1" style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3);">
+              <button class="btn-sm-ghost" (click)="loadDonations(donationsPage - 1)" [disabled]="donationsPage === 0">‹ Prev</button>
+              <span>Page {{ donationsPage + 1 }} of {{ donationsTotalPages }}</span>
+              <button class="btn-sm-ghost" (click)="loadDonations(donationsPage + 1)" [disabled]="donationsPage >= donationsTotalPages - 1">Next ›</button>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Recurring schedules -->
+        <ng-container *ngIf="donationsTab === 'recurring'">
+          <div class="table-toolbar">
+            <span class="results-text">{{ recurringDonations.length }} schedule{{ recurringDonations.length !== 1 ? 's' : '' }}</span>
+            <div style="margin-left:auto;">
+              <button class="btn-primary" (click)="openModal('addRecurring')">+ New Schedule</button>
+            </div>
+          </div>
+
+          <div *ngIf="loadingRecurring" class="table-card">
+            <div class="table-empty"><div class="empty-sub">Loading schedules…</div></div>
+          </div>
+          <div *ngIf="!loadingRecurring && recurringDonations.length === 0" class="table-card">
+            <div class="table-empty">
+              <div class="empty-title">No recurring schedules</div>
+              <div class="empty-sub">Set up a recurring schedule to automatically track expected donations from committed donors.</div>
+            </div>
+          </div>
+          <div *ngIf="!loadingRecurring && recurringDonations.length > 0" class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Donor</th><th>Type</th><th>Amount</th><th>Frequency</th><th>Next Due</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of recurringDonations">
+                  <td style="font-weight:600;color:var(--text-1);">{{ r.donorName || r.donorId }}</td>
+                  <td style="font-size:12px;color:var(--text-3);">{{ r.donationType }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ formatAmount(r.amount != null ? r.amount.toString() : null, r.currency) }}</td>
+                  <td style="font-size:13px;color:var(--text-2);">{{ r.frequency }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-3);">{{ r.nextDueDate || '—' }}</td>
+                  <td><span class="badge" [ngClass]="recurringStatusClass(r.status)">{{ r.status }}</span></td>
+                  <td>
+                    <div style="display:flex;gap:6px;">
+                      <button *ngIf="r.status === 'ACTIVE'" class="btn-sm-ghost" (click)="pauseRecurring(r.id)">Pause</button>
+                      <button *ngIf="r.status === 'PAUSED'" class="btn-sm-ghost" (click)="pauseRecurring(r.id)">Resume</button>
+                      <button *ngIf="r.status !== 'CANCELLED'" class="btn-sm-ghost" style="color:var(--red);" (click)="cancelRecurring(r.id)">Cancel</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
       </section>
 
       <!-- ========== ALERTS ========== -->
@@ -1536,6 +1701,171 @@
       <button class="btn-primary" (click)="submitRecordPayment()"
               [disabled]="isLoading || !recordPaymentForm.bankReference || !recordPaymentForm.receivedDate">
         {{ isLoading ? 'Recording…' : 'Record Payment' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD DONOR MODAL ===== -->
+<div *ngIf="modalType === 'addDonor'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-box" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div class="modal-title">Add Donor</div>
+      <button class="modal-close" (click)="closeModal()">×</button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
+    <form (ngSubmit)="createDonor()">
+      <div class="field-group">
+        <label class="field-label">Display Name *</label>
+        <input class="field-input" [(ngModel)]="donorForm.displayName" name="displayName" required placeholder="Full name or organisation name" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Donor Type *</label>
+        <select class="field-input" [(ngModel)]="donorForm.donorType" name="donorType">
+          <option *ngFor="let t of donorTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Email</label>
+        <input class="field-input" type="email" [(ngModel)]="donorForm.email" name="email" placeholder="contact@example.com" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Phone</label>
+        <input class="field-input" [(ngModel)]="donorForm.phone" name="phone" placeholder="+92 300 0000000" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Notes</label>
+        <textarea class="field-input" [(ngModel)]="donorForm.notes" name="notes" rows="2" placeholder="Any notes about this donor…"></textarea>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="createDonor()" [disabled]="isLoading || !donorForm.displayName.trim()">
+        {{ isLoading ? 'Saving…' : 'Add Donor' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD DONATION MODAL ===== -->
+<div *ngIf="modalType === 'addDonation'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-box" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div class="modal-title">Record Donation</div>
+      <button class="modal-close" (click)="closeModal()">×</button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
+    <form (ngSubmit)="recordDonation()">
+      <div class="field-group">
+        <label class="field-label">Donor (optional)</label>
+        <select class="field-input" [(ngModel)]="donationForm.donorId" name="donorId">
+          <option value="">— Anonymous —</option>
+          <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Donation Type *</label>
+        <select class="field-input" [(ngModel)]="donationForm.donationType" name="donationType">
+          <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field-group">
+          <label class="field-label">Amount *</label>
+          <input class="field-input" [(ngModel)]="donationForm.amount" name="amount" placeholder="0.00" required />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Currency</label>
+          <input class="field-input" [(ngModel)]="donationForm.currency" name="currency" placeholder="PKR" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Donation Date *</label>
+        <input class="field-input" type="date" [(ngModel)]="donationForm.donationDate" name="donationDate" required />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Fund Account</label>
+        <select class="field-input" [(ngModel)]="donationForm.fundAccountId" name="fundAccountId">
+          <option value="">— No specific fund —</option>
+          <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Notes</label>
+        <textarea class="field-input" [(ngModel)]="donationForm.notes" name="notes" rows="2" placeholder="Reference, occasion, or context…"></textarea>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="recordDonation()"
+              [disabled]="isLoading || !donationForm.amount.trim() || !donationForm.donationDate">
+        {{ isLoading ? 'Saving…' : 'Record Donation' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD RECURRING DONATION MODAL ===== -->
+<div *ngIf="modalType === 'addRecurring'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-box" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div class="modal-title">New Recurring Schedule</div>
+      <button class="modal-close" (click)="closeModal()">×</button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
+    <form (ngSubmit)="createRecurring()">
+      <div class="field-group">
+        <label class="field-label">Donor *</label>
+        <select class="field-input" [(ngModel)]="recurringForm.donorId" name="donorId" required>
+          <option value="">Select a donor…</option>
+          <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Donation Type *</label>
+        <select class="field-input" [(ngModel)]="recurringForm.donationType" name="donationType">
+          <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field-group">
+          <label class="field-label">Amount *</label>
+          <input class="field-input" [(ngModel)]="recurringForm.amount" name="amount" placeholder="0.00" required />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Currency</label>
+          <input class="field-input" [(ngModel)]="recurringForm.currency" name="currency" placeholder="PKR" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Frequency *</label>
+        <select class="field-input" [(ngModel)]="recurringForm.frequency" name="frequency">
+          <option *ngFor="let f of frequencies" [value]="f">{{ f }}</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field-group">
+          <label class="field-label">Start Date *</label>
+          <input class="field-input" type="date" [(ngModel)]="recurringForm.startDate" name="startDate" required />
+        </div>
+        <div class="field-group">
+          <label class="field-label">End Date (optional)</label>
+          <input class="field-input" type="date" [(ngModel)]="recurringForm.endDate" name="endDate" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Fund Account</label>
+        <select class="field-input" [(ngModel)]="recurringForm.fundAccountId" name="fundAccountId">
+          <option value="">— No specific fund —</option>
+          <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="createRecurring()"
+              [disabled]="isLoading || !recurringForm.donorId || !recurringForm.amount.trim()">
+        {{ isLoading ? 'Saving…' : 'Create Schedule' }}
       </button>
     </div>
   </div>

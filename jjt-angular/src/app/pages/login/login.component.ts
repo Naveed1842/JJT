@@ -24,7 +24,7 @@ export class LoginComponent {
     try {
       await this.auth.login(this.email, this.password);
       const user = this.auth.getCurrentUser();
-      await this.router.navigate(user?.role === 'SPONSOR' ? ['/'] : ['/admin']);
+      await this.router.navigate(user?.role === 'SPONSOR' ? ['/sponsor/portal'] : ['/admin']);
     } catch (err: any) {
       this.error = err?.error?.message ?? 'Invalid email or password.';
     } finally {
