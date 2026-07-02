@@ -55,4 +55,9 @@ public class SponsorEntity {
     }
 
     public UUID getOrganisationId() { return organisationId; }
+
+    public void updateProfile(String displayName, String phone) {
+        this.displayName = displayName;
+        this.phone = phone;
+    }
 }

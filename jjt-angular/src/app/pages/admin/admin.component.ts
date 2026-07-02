@@ -26,12 +26,13 @@ type SectionId =
   | 'dashboard' | 'children' | 'sponsors' | 'commitments'
   | 'earlySupport' | 'progress' | 'users'
   | 'funds' | 'reconciliation' | 'alerts' | 'reports' | 'settings' | 'docs'
-  | 'donors' | 'donations';
+  | 'donors' | 'donations' | 'campaigns' | 'audit';
 
 type ModalType =
   | 'addChild' | 'addSponsor' | 'addCommitment'
   | 'addSponsorUser' | 'addOrgUser' | 'recordPayment'
-  | 'addDonor' | 'addDonation' | 'addRecurring' | null;
+  | 'addDonor' | 'addDonation' | 'addRecurring'
+  | 'addCampaign' | null;
 
 @Component({
   selector: 'app-admin',
@@ -154,6 +155,25 @@ export class AdminComponent implements OnInit {
   readonly donationTypes: DonationType[] = ['GENERAL', 'ZAKAT', 'SADAQAH', 'SPONSORSHIP_TOP_UP', 'CORPORATE', 'IN_KIND'];
   readonly frequencies: DonationFrequency[] = ['MONTHLY', 'QUARTERLY', 'ANNUAL'];
 
+  // ── Campaigns ─────────────────────────────────────────────────────
+  campaigns: any[] = [];
+  loadingCampaigns = false;
+  campaignForm = {
+    name: '', description: '', targetAmount: '', targetCurrency: 'PKR',
+    startDate: '', endDate: '', fundAccountId: ''
+  };
+
+  // ── Audit log ─────────────────────────────────────────────────────
+  auditEvents: any[] = [];
+  auditTotalPages = 1;
+  auditPage = 0;
+  loadingAudit = false;
+
+  // ── Reports ───────────────────────────────────────────────────────
+  cashFlowData: any = null;
+  portfolioData: any = null;
+  loadingReports = false;
+
   // ── Settings ──────────────────────────────────────────────────────
   settingsTab: 'profile' | 'org' | 'security' = 'profile';
   orgConfig: OrgConfigResponse | null = null;
@@ -190,6 +210,9 @@ export class AdminComponent implements OnInit {
     if (s === 'settings')       this.loadOrgConfig();
     if (s === 'donors')         this.loadDonors();
     if (s === 'donations')      { this.loadDonations(); this.loadRecurring(); }
+    if (s === 'campaigns')      this.loadCampaigns();
+    if (s === 'audit')          this.loadAuditLog();
+    if (s === 'reports')        this.loadReportData();
   }
 
   openModal(type: ModalType): void {
@@ -960,6 +983,94 @@ export class AdminComponent implements OnInit {
         this.loadDonations();
       },
       error: (err) => this.handleError(err, 'Failed to generate recurring donations.')
+    });
+  }
+
+  // ── Campaigns ─────────────────────────────────────────────────────
+
+  loadCampaigns(): void {
+    this.loadingCampaigns = true;
+    this.adminService.listCampaigns().subscribe({
+      next: (data) => { this.campaigns = data; this.loadingCampaigns = false; },
+      error: () => { this.loadingCampaigns = false; }
+    });
+  }
+
+  createCampaign(): void {
+    if (this.isLoading || !this.campaignForm.name.trim()) {
+      this.errorMessage = 'Campaign name is required.';
+      return;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.adminService.createCampaign({
+      name:           this.campaignForm.name.trim(),
+      description:    this.campaignForm.description.trim() || null,
+      targetAmount:   this.campaignForm.targetAmount.trim() || null,
+      targetCurrency: this.campaignForm.targetCurrency,
+      startDate:      this.campaignForm.startDate || null,
+      endDate:        this.campaignForm.endDate || null,
+      fundAccountId:  this.campaignForm.fundAccountId || null,
+    }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.closeModal();
+        this.showToast('Campaign created.');
+        this.campaignForm = { name: '', description: '', targetAmount: '', targetCurrency: 'PKR', startDate: '', endDate: '', fundAccountId: '' };
+        this.loadCampaigns();
+      },
+      error: (err) => this.handleError(err, 'Failed to create campaign.')
+    });
+  }
+
+  openCampaign(id: string): void {
+    this.adminService.openCampaign(id).subscribe({
+      next: () => { this.showToast('Campaign opened.'); this.loadCampaigns(); },
+      error: (err) => this.handleError(err, 'Failed to open campaign.')
+    });
+  }
+
+  closeCampaign(id: string): void {
+    this.adminService.closeCampaign(id).subscribe({
+      next: () => { this.showToast('Campaign closed.'); this.loadCampaigns(); },
+      error: (err) => this.handleError(err, 'Failed to close campaign.')
+    });
+  }
+
+  campaignStatusClass(status: string): string {
+    if (status === 'ACTIVE')  return 'badge-green';
+    if (status === 'FUNDED')  return 'badge-green';
+    if (status === 'CLOSED')  return 'badge-grey';
+    if (status === 'DRAFT')   return 'badge-amber';
+    return 'badge-grey';
+  }
+
+  // ── Audit log ─────────────────────────────────────────────────────
+
+  loadAuditLog(page = 0): void {
+    this.loadingAudit = true;
+    this.auditPage = page;
+    this.adminService.getAuditLog(page, 50).subscribe({
+      next: (data) => {
+        this.auditEvents = data.content ?? data;
+        this.auditTotalPages = data.totalPages ?? 1;
+        this.loadingAudit = false;
+      },
+      error: () => { this.loadingAudit = false; }
+    });
+  }
+
+  // ── Reports ───────────────────────────────────────────────────────
+
+  loadReportData(): void {
+    this.loadingReports = true;
+    this.adminService.getCashFlow(6).subscribe({
+      next: (data) => { this.cashFlowData = data; },
+      error: () => {}
+    });
+    this.adminService.getPortfolioReport().subscribe({
+      next: (data) => { this.portfolioData = data; this.loadingReports = false; },
+      error: () => { this.loadingReports = false; }
     });
   }
 }

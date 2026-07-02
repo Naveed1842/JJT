@@ -305,4 +305,48 @@ export class AdminService {
   generateRecurringDonations(): Observable<number> {
     return this.http.post<number>(`${this.base}/api/admin/donations/recurring/generate`, {});
   }
+
+  // ── Dashboard ──────────────────────────────────────────────────────────────
+
+  getDashboard(): Observable<any> {
+    return this.http.get<any>(`${this.base}/api/admin/dashboard`);
+  }
+
+  // ── Reports ────────────────────────────────────────────────────────────────
+
+  getCashFlow(months = 6): Observable<any> {
+    return this.http.get<any>(`${this.base}/api/admin/reports/cash-flow?months=${months}`);
+  }
+
+  getPortfolioReport(): Observable<any> {
+    return this.http.get<any>(`${this.base}/api/admin/reports/portfolio`);
+  }
+
+  // ── Campaigns ──────────────────────────────────────────────────────────────
+
+  listCampaigns(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.base}/api/admin/campaigns`);
+  }
+
+  createCampaign(req: {
+    name: string; description?: string | null; targetAmount?: string | null;
+    targetCurrency: string; startDate?: string | null; endDate?: string | null;
+    fundAccountId?: string | null;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.base}/api/admin/campaigns`, req);
+  }
+
+  openCampaign(id: string): Observable<any> {
+    return this.http.post<any>(`${this.base}/api/admin/campaigns/${id}/open`, {});
+  }
+
+  closeCampaign(id: string): Observable<any> {
+    return this.http.post<any>(`${this.base}/api/admin/campaigns/${id}/close`, {});
+  }
+
+  // ── Audit log ──────────────────────────────────────────────────────────────
+
+  getAuditLog(page = 0, size = 50): Observable<any> {
+    return this.http.get<any>(`${this.base}/api/admin/audit-log?page=${page}&size=${size}`);
+  }
 }

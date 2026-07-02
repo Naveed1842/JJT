@@ -74,6 +74,13 @@
         </svg>
         Donations
       </button>
+      <button class="nav-item" [class.active]="activeSection === 'campaigns'" (click)="setSection('campaigns')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        Campaigns
+        <span *ngIf="campaigns.length > 0" class="nav-badge">{{ campaigns.length }}</span>
+      </button>
 
       <div class="nav-group-label" style="margin-top:12px;">Operations</div>
       <button class="nav-item" [class.active]="activeSection === 'earlySupport'" (click)="setSection('earlySupport')">
@@ -109,6 +116,12 @@
           <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
         </svg>
         Reports
+      </button>
+      <button *ngIf="isJjtAdmin" class="nav-item" [class.active]="activeSection === 'audit'" (click)="setSection('audit')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Audit Log
       </button>
       <button class="nav-item" [class.active]="activeSection === 'settings'" (click)="setSection('settings')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -154,10 +167,12 @@
           <ng-container *ngIf="activeSection === 'reconciliation'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'donors'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'donations'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'campaigns'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'alerts'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">System</ng-container>
+          <ng-container *ngIf="activeSection === 'audit'">System</ng-container>
           <ng-container *ngIf="activeSection === 'settings'">System</ng-container>
           <ng-container *ngIf="activeSection === 'docs'">System</ng-container>
         </div>
@@ -171,10 +186,12 @@
           <ng-container *ngIf="activeSection === 'reconciliation'">Reconciliation</ng-container>
           <ng-container *ngIf="activeSection === 'donors'">Donors</ng-container>
           <ng-container *ngIf="activeSection === 'donations'">Donations</ng-container>
+          <ng-container *ngIf="activeSection === 'campaigns'">Campaigns</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Early Support</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Add Progress</ng-container>
           <ng-container *ngIf="activeSection === 'alerts'">Alerts</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">Reports & Analytics</ng-container>
+          <ng-container *ngIf="activeSection === 'audit'">Audit Log</ng-container>
           <ng-container *ngIf="activeSection === 'settings'">Settings</ng-container>
           <ng-container *ngIf="activeSection === 'docs'">How It Works</ng-container>
         </div>
@@ -1207,6 +1224,176 @@
             </div>
           </div>
         </div>
+
+        <!-- Cash flow + Portfolio from API -->
+        <div *ngIf="loadingReports" style="font-size:13px;color:var(--text-3);padding:24px 0;">Loading financial data…</div>
+
+        <div *ngIf="!loadingReports && cashFlowData" class="docs-grid" style="margin-top:16px;">
+          <!-- Cash flow table -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Cash Flow (Last {{ cashFlowData.months?.length ?? 0 }} Months)</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+              <div style="text-align:center;">
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">3-MONTH IN</div>
+                <div style="font-size:16px;font-weight:700;color:var(--green);">{{ cashFlowData.totalCredits3Month | number:'1.0-0' }}</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">3-MONTH OUT</div>
+                <div style="font-size:16px;font-weight:700;color:var(--red);">{{ cashFlowData.totalDebits3Month | number:'1.0-0' }}</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">CURRENT BAL</div>
+                <div style="font-size:16px;font-weight:700;color:var(--text-1);">{{ cashFlowData.currentBalance | number:'1.0-0' }}</div>
+              </div>
+            </div>
+            <div *ngIf="cashFlowData.months?.length > 0">
+              <div *ngFor="let m of cashFlowData.months" style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--text-2);font-family:'IBM Plex Mono',monospace;">{{ m.yearMonth }}</span>
+                <span style="color:var(--green);">+{{ m.credits | number:'1.0-0' }}</span>
+                <span style="color:var(--red);">−{{ m.debits | number:'1.0-0' }}</span>
+                <span style="font-weight:600;color:var(--text-1);">{{ m.closingBalance | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Portfolio report -->
+          <div *ngIf="portfolioData" class="card">
+            <div class="card-title" style="margin-bottom:16px;">Sponsorship Portfolio</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div style="text-align:center;padding:12px;background:var(--cream);border-radius:8px;">
+                <div style="font-size:20px;font-weight:700;color:var(--forest);">{{ portfolioData.activeCount }}</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Active</div>
+              </div>
+              <div style="text-align:center;padding:12px;background:var(--cream);border-radius:8px;">
+                <div style="font-size:20px;font-weight:700;color:var(--forest);">{{ portfolioData.pendingCount }}</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Pending</div>
+              </div>
+            </div>
+            <div style="padding:12px;background:var(--cream);border-radius:8px;margin-bottom:12px;">
+              <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">MONTHLY PORTFOLIO VALUE</div>
+              <div style="font-size:18px;font-weight:700;color:var(--forest);">{{ portfolioData.currency }} {{ portfolioData.totalMonthlyValue | number:'1.0-0' }}</div>
+            </div>
+            <div *ngIf="portfolioData.commitmentBreakdown">
+              <div style="font-size:12.5px;font-weight:600;color:var(--text-2);margin-bottom:8px;">By Commitment Type</div>
+              <div *ngFor="let entry of portfolioData.commitmentBreakdown | keyvalue" style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;">
+                <span style="color:var(--text-2);">{{ entry.key }}</span>
+                <span style="font-weight:600;color:var(--text-1);">{{ entry.value }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== CAMPAIGNS ========== -->
+      <section *ngIf="activeSection === 'campaigns'" class="section-anim">
+        <div class="section-actions">
+          <span class="results-text">{{ campaigns.length }} campaign{{ campaigns.length !== 1 ? 's' : '' }}</span>
+          <button class="btn-primary" (click)="openModal('addCampaign')">+ New Campaign</button>
+        </div>
+
+        <div *ngIf="loadingCampaigns" class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading campaigns…</div></div>
+        </div>
+
+        <div *ngIf="!loadingCampaigns && campaigns.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No campaigns yet</div>
+            <div class="empty-sub">Create a campaign to group fundraising goals and track progress.</div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingCampaigns && campaigns.length > 0" class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Target</th>
+                <th>Period</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of campaigns">
+                <td>
+                  <div style="font-weight:600;color:var(--text-1);">{{ c.name }}</div>
+                  <div *ngIf="c.description" style="font-size:12px;color:var(--text-3);margin-top:2px;">{{ c.description }}</div>
+                </td>
+                <td><span class="badge" [ngClass]="campaignStatusClass(c.status)">{{ c.status }}</span></td>
+                <td>
+                  <span *ngIf="c.targetAmount">{{ c.targetCurrency }} {{ c.targetAmount | number }}</span>
+                  <span *ngIf="!c.targetAmount" style="color:var(--text-3);">—</span>
+                </td>
+                <td style="font-size:12px;color:var(--text-2);">
+                  <span *ngIf="c.startDate">{{ c.startDate }}</span>
+                  <span *ngIf="c.startDate && c.endDate"> → </span>
+                  <span *ngIf="c.endDate">{{ c.endDate }}</span>
+                  <span *ngIf="!c.startDate && !c.endDate" style="color:var(--text-3);">Open-ended</span>
+                </td>
+                <td>
+                  <div style="display:flex;gap:6px;">
+                    <button *ngIf="c.status === 'DRAFT'" class="btn-sm" (click)="openCampaign(c.id)">Open</button>
+                    <button *ngIf="c.status === 'ACTIVE'" class="btn-sm-ghost" (click)="closeCampaign(c.id)">Close</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== AUDIT LOG ========== -->
+      <section *ngIf="activeSection === 'audit'" class="section-anim">
+        <div class="section-actions">
+          <span class="results-text">Audit trail — all system events</span>
+        </div>
+
+        <div *ngIf="loadingAudit" class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading audit log…</div></div>
+        </div>
+
+        <div *ngIf="!loadingAudit && auditEvents.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No audit events</div>
+            <div class="empty-sub">Events will appear here as admin actions are performed.</div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingAudit && auditEvents.length > 0" class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Entity</th>
+                <th>Actor</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of auditEvents">
+                <td style="font-size:12px;color:var(--text-3);white-space:nowrap;">{{ timeAgo(e.createdAt) }}</td>
+                <td>
+                  <span class="badge badge-grey" style="font-family:'IBM Plex Mono',monospace;font-size:11px;">{{ e.eventType }}</span>
+                </td>
+                <td style="font-size:12.5px;">
+                  <div style="font-weight:600;color:var(--text-1);">{{ e.entityType }}</div>
+                  <div style="font-size:11px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;">{{ e.entityId?.toString().substring(0, 8) }}…</div>
+                </td>
+                <td style="font-size:12.5px;color:var(--text-2);">{{ e.actorEmail ?? '—' }}</td>
+                <td style="font-size:12px;color:var(--text-3);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                  {{ e.description ?? '—' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div *ngIf="auditTotalPages > 1" style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3);">
+            <button class="btn-sm-ghost" (click)="loadAuditLog(auditPage - 1)" [disabled]="auditPage === 0">‹ Prev</button>
+            <span>Page {{ auditPage + 1 }} of {{ auditTotalPages }}</span>
+            <button class="btn-sm-ghost" (click)="loadAuditLog(auditPage + 1)" [disabled]="auditPage >= auditTotalPages - 1">Next ›</button>
+          </div>
+        </div>
       </section>
 
       <!-- ========== HOW IT WORKS ========== -->
@@ -1866,6 +2053,61 @@
       <button class="btn-primary" (click)="createRecurring()"
               [disabled]="isLoading || !recurringForm.donorId || !recurringForm.amount.trim()">
         {{ isLoading ? 'Saving…' : 'Create Schedule' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD CAMPAIGN MODAL ===== -->
+<div *ngIf="modalType === 'addCampaign'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal-box" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div class="modal-title">New Campaign</div>
+      <button class="modal-close" (click)="closeModal()">✕</button>
+    </div>
+    <div *ngIf="errorMessage" class="modal-error">{{ errorMessage }}</div>
+    <form class="modal-body" (ngSubmit)="createCampaign()">
+      <div class="field-group">
+        <label class="field-label">Campaign Name *</label>
+        <input class="field-input" [(ngModel)]="campaignForm.name" name="name" placeholder="e.g. Ramadan 2025 Fund Drive" required />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Description</label>
+        <textarea class="field-input" [(ngModel)]="campaignForm.description" name="description" rows="2" placeholder="Optional campaign description"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field-group">
+          <label class="field-label">Target Amount</label>
+          <input class="field-input" [(ngModel)]="campaignForm.targetAmount" name="targetAmount" placeholder="0.00" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Currency</label>
+          <input class="field-input" [(ngModel)]="campaignForm.targetCurrency" name="targetCurrency" placeholder="PKR" />
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="field-group">
+          <label class="field-label">Start Date</label>
+          <input class="field-input" type="date" [(ngModel)]="campaignForm.startDate" name="startDate" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">End Date</label>
+          <input class="field-input" type="date" [(ngModel)]="campaignForm.endDate" name="endDate" />
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Fund Account</label>
+        <select class="field-input" [(ngModel)]="campaignForm.fundAccountId" name="fundAccountId">
+          <option value="">— No specific fund —</option>
+          <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+        </select>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="createCampaign()"
+              [disabled]="isLoading || !campaignForm.name.trim()">
+        {{ isLoading ? 'Saving…' : 'Create Campaign' }}
       </button>
     </div>
   </div>

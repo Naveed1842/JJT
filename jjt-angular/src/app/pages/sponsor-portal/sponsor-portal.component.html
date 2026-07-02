@@ -4,12 +4,71 @@
   <div style="max-width:860px;margin:0 auto;">
 
     <!-- Header -->
-    <div style="margin-bottom:32px;">
+    <div style="margin-bottom:24px;">
       <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:36px;color:#1c352c;margin:0 0 6px;">
-        My Sponsored Children
+        Sponsor Portal
       </h1>
       <p style="font-size:14px;color:#8a958d;margin:0;">Logged in as {{ sponsorEmail }}</p>
     </div>
+
+    <!-- Tab bar -->
+    <div style="display:flex;gap:4px;border-bottom:1px solid #e3dccd;margin-bottom:28px;">
+      <button (click)="setTab('children')"
+              [style]="'padding:10px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:600;border-bottom:2px solid ' + (activeTab === 'children' ? '#2f5d4f' : 'transparent') + ';color:' + (activeTab === 'children' ? '#2f5d4f' : '#8a958d') + ';font-family:Hanken Grotesk,sans-serif;'">
+        My Children
+      </button>
+      <button (click)="setTab('profile')"
+              [style]="'padding:10px 18px;border:none;background:none;cursor:pointer;font-size:14px;font-weight:600;border-bottom:2px solid ' + (activeTab === 'profile' ? '#2f5d4f' : 'transparent') + ';color:' + (activeTab === 'profile' ? '#2f5d4f' : '#8a958d') + ';font-family:Hanken Grotesk,sans-serif;'">
+        My Profile
+      </button>
+    </div>
+
+    <!-- ── Profile tab ──────────────────────────────────────────────── -->
+    <div *ngIf="activeTab === 'profile'">
+      <div *ngIf="loadingProfile" style="text-align:center;padding:60px 0;">
+        <div style="display:inline-block;width:32px;height:32px;border:3px solid #e3dccd;border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      </div>
+
+      <div *ngIf="!loadingProfile" style="max-width:480px;">
+        <div style="border:1px solid #e3dccd;border-radius:14px;padding:28px;background:#fff;">
+          <h2 style="font-family:'Newsreader',serif;font-size:22px;font-weight:500;color:#1c352c;margin:0 0 24px;">Account Details</h2>
+
+          <!-- Read-only email -->
+          <div style="margin-bottom:20px;">
+            <label style="display:block;font-size:12px;font-weight:600;color:#8a958d;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Email</label>
+            <div style="padding:11px 14px;background:#f9f7f2;border:1px solid #e3dccd;border-radius:8px;font-size:15px;color:#1c352c;">
+              {{ profile?.contactEmail ?? sponsorEmail }}
+            </div>
+          </div>
+
+          <!-- Editable display name -->
+          <div style="margin-bottom:20px;">
+            <label style="display:block;font-size:12px;font-weight:600;color:#8a958d;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Display Name</label>
+            <input [(ngModel)]="profileForm.displayName"
+                   style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;color:#1c352c;background:#fff;outline:none;font-family:Hanken Grotesk,sans-serif;box-sizing:border-box;" />
+          </div>
+
+          <!-- Editable phone -->
+          <div style="margin-bottom:24px;">
+            <label style="display:block;font-size:12px;font-weight:600;color:#8a958d;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Phone (optional)</label>
+            <input [(ngModel)]="profileForm.phone" placeholder="+92 300 0000000"
+                   style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;color:#1c352c;background:#fff;outline:none;font-family:Hanken Grotesk,sans-serif;box-sizing:border-box;" />
+          </div>
+
+          <div *ngIf="profileError" style="margin-bottom:14px;font-size:13px;color:#b45454;">{{ profileError }}</div>
+          <div *ngIf="profileSuccess" style="margin-bottom:14px;font-size:13px;color:#2f5d4f;font-weight:600;">Profile saved successfully.</div>
+
+          <button (click)="saveProfile()" [disabled]="savingProfile"
+                  style="background:#1c352c;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:Hanken Grotesk,sans-serif;opacity:1;"
+                  [style.opacity]="savingProfile ? '0.6' : '1'">
+            {{ savingProfile ? 'Saving…' : 'Save Changes' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Children tab ────────────────────────────────────────────── -->
+    <div *ngIf="activeTab === 'children'">
 
     <!-- Loading -->
     <div *ngIf="loading" style="text-align:center;padding:60px 0;">
@@ -120,6 +179,8 @@
         </div>
       </div>
     </div>
+
+    </div><!-- end activeTab === 'children' -->
 
   </div>
 </main>
