@@ -35,8 +35,8 @@ public class AdminAuditController {
     @GetMapping
     @Transactional(readOnly = true)
     public ResponseEntity<Page<AuditEventResponse>> listAuditLog(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "50") int size,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<AuditEventResponse> result = auditRepo

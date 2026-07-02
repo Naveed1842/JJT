@@ -46,7 +46,7 @@ public class AdminReportController {
     @GetMapping("/cash-flow")
     @Transactional(readOnly = true)
     public ResponseEntity<CashFlowReport> getCashFlow(
-            @RequestParam(defaultValue = "6") int months,
+            @RequestParam(name = "months", defaultValue = "6") int months,
             @AuthenticationPrincipal JwtUserDetails principal) {
         if (months < 1) months = 1;
         if (months > 12) months = 12;

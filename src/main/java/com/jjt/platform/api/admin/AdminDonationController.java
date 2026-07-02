@@ -135,7 +135,7 @@ public class AdminDonationController {
     @PostMapping("/donations/{id}/receive")
     public ResponseEntity<DonationResponse> receiveExpected(
             @PathVariable("id") UUID id,
-            @RequestParam(required = false) BigDecimal actualAmount,
+            @RequestParam(name = "actualAmount", required = false) BigDecimal actualAmount,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.receiveExpectedDonation(
                 id, actualAmount, principal.getOrgId(), principal.getId());
