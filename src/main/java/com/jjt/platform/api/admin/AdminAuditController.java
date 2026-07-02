@@ -48,8 +48,8 @@ public class AdminAuditController {
     @GetMapping("/{entityType}/{entityId}")
     @Transactional(readOnly = true)
     public ResponseEntity<List<AuditEventResponse>> listByEntity(
-            @PathVariable String entityType,
-            @PathVariable UUID entityId,
+            @PathVariable("entityType") String entityType,
+            @PathVariable("entityId") UUID entityId,
             @AuthenticationPrincipal JwtUserDetails principal) {
         List<AuditEventResponse> result = auditRepo
                 .findByEntityTypeAndEntityIdOrderByCreatedAtDesc(entityType, entityId)

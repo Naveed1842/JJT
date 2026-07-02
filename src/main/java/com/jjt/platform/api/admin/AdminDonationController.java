@@ -71,7 +71,7 @@ public class AdminDonationController {
 
     @GetMapping("/donors/{id}")
     public ResponseEntity<DonorResponse> getDonor(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donor donor = donationService.getDonor(id, principal.getOrgId());
         return ResponseEntity.ok(toDonorResponse(donor));
@@ -107,7 +107,7 @@ public class AdminDonationController {
 
     @GetMapping("/donations/{id}")
     public ResponseEntity<DonationResponse> getDonation(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.getDonation(id, principal.getOrgId());
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
@@ -115,7 +115,7 @@ public class AdminDonationController {
 
     @GetMapping("/donations/{id}/receipt")
     public ResponseEntity<DonationReceiptResponse> getReceipt(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         AdminDonationService.ReceiptData receipt = donationService.getReceiptData(id, principal.getOrgId());
         return ResponseEntity.ok(new DonationReceiptResponse(
@@ -134,7 +134,7 @@ public class AdminDonationController {
 
     @PostMapping("/donations/{id}/receive")
     public ResponseEntity<DonationResponse> receiveExpected(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @RequestParam(required = false) BigDecimal actualAmount,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.receiveExpectedDonation(
@@ -144,7 +144,7 @@ public class AdminDonationController {
 
     @PostMapping("/donations/{id}/reverse")
     public ResponseEntity<DonationResponse> reverseDonation(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.reverseDonation(id, principal.getOrgId(), principal.getId());
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
@@ -181,7 +181,7 @@ public class AdminDonationController {
 
     @PatchMapping("/donations/recurring/{id}/pause")
     public ResponseEntity<RecurringDonationResponse> pauseRecurring(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         RecurringDonationSchedule schedule = donationService.updateRecurringStatus(
                 id, RecurringDonationStatus.PAUSED, principal.getOrgId());
@@ -190,7 +190,7 @@ public class AdminDonationController {
 
     @PatchMapping("/donations/recurring/{id}/cancel")
     public ResponseEntity<RecurringDonationResponse> cancelRecurring(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         RecurringDonationSchedule schedule = donationService.updateRecurringStatus(
                 id, RecurringDonationStatus.CANCELLED, principal.getOrgId());

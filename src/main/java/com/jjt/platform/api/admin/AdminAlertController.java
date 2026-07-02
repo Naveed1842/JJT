@@ -39,7 +39,7 @@ public class AdminAlertController {
     /** Dismisses an alert so it no longer appears in the active list. */
     @PostMapping("/{id}/dismiss")
     public ResponseEntity<AlertResponse> dismiss(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         AdminAlert alert = alertService.dismiss(id, principal.getOrgId(), principal.getId());
         return ResponseEntity.ok(toResponse(alert));

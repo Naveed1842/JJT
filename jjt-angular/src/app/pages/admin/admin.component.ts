@@ -905,17 +905,47 @@ export class AdminComponent implements OnInit {
 
   viewReceipt(id: string): void {
     this.adminService.getDonationReceipt(id).subscribe({
-      next: (receipt) => {
-        const lines = [
-          `Receipt: ${receipt.receiptNumber}`,
-          `Donor: ${receipt.donorName}`,
-          `Amount: ${receipt.currency} ${receipt.amount}`,
-          `Date: ${receipt.donationDate}`,
-          `Type: ${receipt.donationType}`,
-          `Organisation: ${receipt.organisationName}`,
-          `Issued: ${receipt.issuedDate}`,
-        ].join('\n');
-        alert(lines);
+      next: (r) => {
+        const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Receipt ${r.receiptNumber}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:#f3ede3;display:flex;justify-content:center;padding:40px 20px;min-height:100vh}
+  .card{background:#fff;border-radius:12px;padding:40px 48px;max-width:520px;width:100%;box-shadow:0 4px 24px rgba(0,0,0,.1)}
+  .org{font-size:13px;font-weight:600;color:#2f5d4f;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+  h1{font-size:22px;font-weight:700;color:#1c352c;margin-bottom:4px}
+  .receipt-no{font-size:13px;color:#8a958d;margin-bottom:28px}
+  hr{border:none;border-top:1px solid #e8e2d6;margin:20px 0}
+  .row{display:flex;justify-content:space-between;padding:9px 0;font-size:14px;border-bottom:1px solid #f3ede3}
+  .row:last-child{border-bottom:none}
+  .label{color:#8a958d;font-weight:500}
+  .value{color:#1c352c;font-weight:600;text-align:right;max-width:60%}
+  .amount-block{background:#f3ede3;border-radius:8px;padding:16px 20px;margin:24px 0;text-align:center}
+  .amount-label{font-size:12px;color:#8a958d;font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+  .amount-val{font-size:30px;font-weight:700;color:#2f5d4f}
+  .footer{margin-top:28px;font-size:11px;color:#b0b8b3;text-align:center;line-height:1.6}
+  @media print{body{background:#fff;padding:0}.card{box-shadow:none;border-radius:0;padding:30px}button{display:none!important}}
+</style></head><body>
+<div class="card">
+  <div class="org">${r.organisationName}</div>
+  <h1>Donation Receipt</h1>
+  <div class="receipt-no"># ${r.receiptNumber}</div>
+  <div class="amount-block">
+    <div class="amount-label">Amount Received</div>
+    <div class="amount-val">${r.currency} ${Number(r.amount).toLocaleString()}</div>
+  </div>
+  <div class="row"><span class="label">Donor</span><span class="value">${r.donorName ?? 'Anonymous'}</span></div>
+  ${r.donorEmail ? `<div class="row"><span class="label">Email</span><span class="value">${r.donorEmail}</span></div>` : ''}
+  ${r.donorPhone ? `<div class="row"><span class="label">Phone</span><span class="value">${r.donorPhone}</span></div>` : ''}
+  <div class="row"><span class="label">Donation Type</span><span class="value">${r.donationType}</span></div>
+  <div class="row"><span class="label">Donation Date</span><span class="value">${r.donationDate}</span></div>
+  <div class="row"><span class="label">Issued Date</span><span class="value">${r.issuedDate}</span></div>
+  <div class="footer">This receipt is issued by ${r.organisationName}.<br>Please retain for your records.</div>
+  <div style="text-align:center;margin-top:28px;">
+    <button onclick="window.print()" style="background:#2f5d4f;color:#fff;border:none;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">Print / Save as PDF</button>
+  </div>
+</div></body></html>`;
+        const win = window.open('', '_blank', 'width=620,height=700');
+        if (win) { win.document.write(html); win.document.close(); }
       },
       error: (err) => this.handleError(err, 'Failed to load receipt.')
     });
