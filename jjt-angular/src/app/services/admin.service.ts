@@ -52,6 +52,44 @@ export class AdminService {
     return this.http.post<CreateChildResponse>(`${this.base}/api/admin/children`, req);
   }
 
+  listAdminChildren(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.base}/api/admin/children/list`);
+  }
+
+  getAdminChildDetail(id: string): Observable<any> {
+    return this.http.get<any>(`${this.base}/api/admin/children/${id}/detail`);
+  }
+
+  // ── Import ────────────────────────────────────────────────────────────────
+
+  importChildren(file: File): Observable<any> {
+    const form = new FormData();
+    form.append('file', file);
+    return this.http.post<any>(`${this.base}/api/admin/children/import`, form);
+  }
+
+  downloadImportTemplate(): string {
+    return `${this.base}/api/admin/children/import/template`;
+  }
+
+  // ── Export (authenticated blob downloads) ─────────────────────────────────
+
+  exportChildren(): Observable<Blob> {
+    return this.http.get(`${this.base}/api/admin/export/children.xlsx`, { responseType: 'blob' });
+  }
+
+  exportDonations(): Observable<Blob> {
+    return this.http.get(`${this.base}/api/admin/export/donations.xlsx`, { responseType: 'blob' });
+  }
+
+  exportReconciliation(year: number, month: number): Observable<Blob> {
+    return this.http.get(`${this.base}/api/admin/export/reconciliation/${year}/${month}.xlsx`, { responseType: 'blob' });
+  }
+
+  exportChildReport(childId: string): Observable<Blob> {
+    return this.http.get(`${this.base}/api/admin/export/children/${childId}/report.pdf`, { responseType: 'blob' });
+  }
+
   // ── Sponsors ──────────────────────────────────────────────────────────────
 
   createSponsor(req: CreateSponsorRequest): Observable<CreateSponsorResponse> {

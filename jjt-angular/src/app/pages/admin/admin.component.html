@@ -83,6 +83,12 @@
       </button>
 
       <div class="nav-group-label" style="margin-top:12px;">Operations</div>
+      <button class="nav-item" [class.active]="activeSection === 'import'" (click)="setSection('import')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Bulk Import
+      </button>
       <button class="nav-item" [class.active]="activeSection === 'earlySupport'" (click)="setSection('earlySupport')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
@@ -171,6 +177,7 @@
           <ng-container *ngIf="activeSection === 'earlySupport'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'alerts'">Operations</ng-container>
+          <ng-container *ngIf="activeSection === 'import'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">System</ng-container>
           <ng-container *ngIf="activeSection === 'audit'">System</ng-container>
           <ng-container *ngIf="activeSection === 'settings'">System</ng-container>
@@ -190,6 +197,7 @@
           <ng-container *ngIf="activeSection === 'earlySupport'">Early Support</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Add Progress</ng-container>
           <ng-container *ngIf="activeSection === 'alerts'">Alerts</ng-container>
+          <ng-container *ngIf="activeSection === 'import'">Bulk Import</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">Reports & Analytics</ng-container>
           <ng-container *ngIf="activeSection === 'audit'">Audit Log</ng-container>
           <ng-container *ngIf="activeSection === 'settings'">Settings</ng-container>
@@ -412,10 +420,14 @@
         <div class="table-toolbar">
           <div class="search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9aa79f" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-            <input [(ngModel)]="childSearch" placeholder="Search children…" class="search-input" />
+            <input [(ngModel)]="adminChildSearch" placeholder="Search children…" class="search-input" />
           </div>
-          <span class="results-text">{{ filteredChildren.length }} children</span>
-          <div style="margin-left:auto;">
+          <span class="results-text">{{ filteredAdminChildren.length }} children</span>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <button class="btn-secondary" (click)="exportChildren()" title="Export to Excel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
             <button class="btn-primary" (click)="openModal('addChild')">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
               Add Child
@@ -423,21 +435,74 @@
           </div>
         </div>
 
+        <!-- Child detail panel -->
+        <div *ngIf="selectedChildDetail" style="margin-bottom:16px;border:1px solid #e3dccd;border-radius:12px;background:#fff;overflow:hidden;">
+          <div style="background:#f3eee4;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e3dccd;">
+            <div style="font-weight:600;color:#1c352c;font-size:15px;">{{ selectedChildDetail.fullName }}
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;margin-left:8px;">{{ selectedChildDetail.rollNumber }}</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-secondary" style="font-size:12px;padding:6px 12px;" (click)="downloadChildPdf(selectedChildDetail.id)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                PDF Report
+              </button>
+              <button class="btn-secondary" style="font-size:12px;padding:6px 12px;" (click)="closeChildDetail()">Close</button>
+            </div>
+          </div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+              <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Child Info</p>
+              <div style="font-size:13px;color:#54625b;line-height:1.9;">
+                <div><strong>City:</strong> {{ selectedChildDetail.city }}</div>
+                <div><strong>Campus:</strong> {{ selectedChildDetail.campusName }}</div>
+                <div *ngIf="selectedChildDetail.schoolName"><strong>School:</strong> {{ selectedChildDetail.schoolName }}</div>
+                <div><strong>Education Support:</strong> {{ selectedChildDetail.educationCurrency }} {{ selectedChildDetail.educationAmount }}/mo</div>
+                <div><strong>Status:</strong> <span class="badge" [ngClass]="availabilityClass(selectedChildDetail.availabilityStatus)">{{ availabilityLabel(selectedChildDetail.availabilityStatus) }}</span></div>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Sponsorship History ({{ selectedChildDetail.sponsorshipHistory?.length ?? 0 }})</p>
+              <div *ngFor="let s of selectedChildDetail.sponsorshipHistory" style="font-size:12px;color:#54625b;border:1px solid #e3dccd;border-radius:8px;padding:8px 12px;margin-bottom:6px;">
+                <div style="font-weight:600;color:#1c352c;">{{ s.sponsorName }}</div>
+                <div style="color:#8a958d;">{{ s.startMonth }} · <span class="badge" [ngClass]="availabilityClass(s.status === 'ACTIVE' ? 'ALLOCATED' : s.status === 'PENDING' ? 'RESERVED' : 'AVAILABLE')">{{ s.status }}</span></div>
+              </div>
+              <div *ngIf="!selectedChildDetail.sponsorshipHistory?.length" style="font-size:12px;color:#8a958d;font-style:italic;">No sponsorships yet.</div>
+            </div>
+          </div>
+          <div style="padding:0 20px 20px;">
+            <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">
+              Ledger ({{ selectedChildDetail.ledgerEntries?.length ?? 0 }} entries) &nbsp;·&nbsp; Progress ({{ selectedChildDetail.progressUpdates?.length ?? 0 }} updates)
+            </p>
+            <div *ngIf="selectedChildDetail.progressUpdates?.length > 0" style="max-height:120px;overflow-y:auto;">
+              <div *ngFor="let p of selectedChildDetail.progressUpdates" style="font-size:12px;color:#54625b;border-left:3px solid #2f5d4f;padding:4px 10px;margin-bottom:4px;">
+                <strong>{{ p.month }}</strong> — {{ p.summary }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading indicator for detail -->
+        <div *ngIf="loadingChildDetail" style="text-align:center;padding:20px 0;font-size:13px;color:#8a958d;">Loading detail…</div>
+
         <div class="table-card">
-          <div class="table-scroll">
+          <div *ngIf="loadingAdminChildren" style="padding:40px;text-align:center;">
+            <div style="display:inline-block;width:28px;height:28px;border:3px solid #e3dccd;border-top-color:#2f5d4f;border-radius:50%;animation:spin .8s linear infinite;"></div>
+          </div>
+          <div class="table-scroll" *ngIf="!loadingAdminChildren">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Child</th>
                   <th>Roll Number</th>
-                  <th>Campus</th>
-                  <th>City</th>
+                  <th>Campus / City</th>
                   <th>Monthly</th>
                   <th>Status</th>
+                  <th>Current Sponsor</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let c of filteredChildren">
+                <tr *ngFor="let c of filteredAdminChildren" style="cursor:pointer;" (click)="openChildDetail(c.id)">
                   <td>
                     <div class="cell-avatar">
                       <div class="avatar-circle green">{{ initials(c.fullName) }}</div>
@@ -445,21 +510,112 @@
                     </div>
                   </td>
                   <td><span class="mono-text">{{ c.rollNumber }}</span></td>
-                  <td>{{ c.campusName }}</td>
-                  <td>{{ c.city }}</td>
-                  <td><span class="amount-text">PKR {{ c.educationAmount }}</span></td>
+                  <td>{{ c.campusName }}<br><span style="font-size:11px;color:#8a958d;">{{ c.city }}</span></td>
+                  <td><span class="amount-text">{{ c.educationCurrency }} {{ c.educationAmount }}</span></td>
                   <td>
                     <span class="badge" [ngClass]="availabilityClass(c.availabilityStatus)">
                       {{ availabilityLabel(c.availabilityStatus) }}
                     </span>
                   </td>
+                  <td style="font-size:13px;color:#54625b;">{{ c.currentSponsorName ?? '—' }}</td>
+                  <td>
+                    <button class="btn-icon" (click)="$event.stopPropagation(); downloadChildPdf(c.id)" title="PDF Report">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div *ngIf="filteredChildren.length === 0" class="table-empty">
+          <div *ngIf="!loadingAdminChildren && filteredAdminChildren.length === 0" class="table-empty">
             <div class="empty-title">No children found</div>
             <div class="empty-sub">Try adjusting your search, or add a new child.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== BULK IMPORT ========== -->
+      <section *ngIf="activeSection === 'import'" class="section-anim">
+        <div class="table-toolbar">
+          <span class="results-text">Upload a .xlsx file to import children in bulk</span>
+          <div style="margin-left:auto;">
+            <button class="btn-ghost" (click)="downloadImportTemplate()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Template
+            </button>
+          </div>
+        </div>
+
+        <div class="table-card" style="padding:32px;">
+          <!-- Upload area -->
+          <label for="importFileInput" style="display:block;border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;background:var(--cream);margin-bottom:24px;cursor:pointer;transition:border-color 0.2s;" [style.border-color]="importFile ? 'var(--forest)' : 'var(--border)'">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 12px;display:block;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p style="font-size:15px;color:var(--text-1);margin:0 0 6px;font-weight:600;">
+              {{ importFile ? importFile.name : 'Click to select Excel file (.xlsx)' }}
+            </p>
+            <p style="font-size:13px;color:var(--text-3);margin:0;">Columns: Roll Number, Full Name*, City*, Campus Name*, School, Education Amount, Currency</p>
+            <input id="importFileInput" type="file" accept=".xlsx" (change)="onImportFileSelected($event)" style="display:none;" />
+          </label>
+
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;">
+            <button class="btn-primary" (click)="submitImport()" [disabled]="!importFile || importLoading">
+              {{ importLoading ? 'Importing…' : 'Import Children' }}
+            </button>
+            <button class="btn-ghost" *ngIf="importFile && !importLoading" (click)="importFile = null">Clear</button>
+            <div *ngIf="importError" style="font-size:13px;color:#b45454;">{{ importError }}</div>
+          </div>
+
+          <!-- Results -->
+          <div *ngIf="importResult" style="border:1px solid #e3dccd;border-radius:12px;overflow:hidden;">
+            <div style="background:#f3eee4;padding:14px 20px;border-bottom:1px solid #e3dccd;">
+              <span style="font-weight:600;color:#1c352c;">Import Results</span>
+            </div>
+            <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border-bottom:1px solid #e3dccd;">
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#2f5d4f;">{{ importResult.importedRows }}</div>
+                <div style="font-size:12px;color:#8a958d;">Imported</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#8a5f1f;">{{ importResult.skippedMissingName + importResult.skippedMissingCampus + importResult.skippedDuplicateRollNumber }}</div>
+                <div style="font-size:12px;color:#8a958d;">Skipped</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#b45454;">{{ importResult.failedRows }}</div>
+                <div style="font-size:12px;color:#8a958d;">Failed</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#54625b;">{{ importResult.totalRows }}</div>
+                <div style="font-size:12px;color:#8a958d;">Total Rows</div>
+              </div>
+            </div>
+            <div class="table-scroll" style="max-height:320px;overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width:60px;">Row</th>
+                    <th style="width:90px;">Status</th>
+                    <th>Roll Number</th>
+                    <th>Full Name</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of importResult.rows">
+                    <td><span class="mono-text">{{ r.rowNumber }}</span></td>
+                    <td>
+                      <span class="badge" [ngClass]="r.status === 'IMPORTED' ? 'badge-green' : r.status === 'FAILED' ? 'badge-red' : 'badge-amber'">
+                        {{ r.status }}
+                      </span>
+                    </td>
+                    <td><span class="mono-text">{{ r.rollNumber }}</span></td>
+                    <td>{{ r.fullName }}</td>
+                    <td style="font-size:12px;color:#8a958d;">{{ r.reason ?? '' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -825,10 +981,16 @@
             <button (click)="nextReconMonth()" class="btn-sm-ghost" style="padding:4px 9px;">›</button>
           </div>
           <div *ngIf="loadingRecon" style="font-size:13px;color:var(--text-3);">Loading…</div>
-          <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generatePayments()" [disabled]="isLoading"
-            style="margin-left:auto;" title="Generate expected payment records for all active sponsorships this month">
-            {{ isLoading ? 'Generating…' : '⚡ Generate Payments' }}
-          </button>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <button class="btn-secondary" (click)="exportReconciliation()" title="Export to Excel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+            <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generatePayments()" [disabled]="isLoading"
+              title="Generate expected payment records for all active sponsorships this month">
+              {{ isLoading ? 'Generating…' : '⚡ Generate Payments' }}
+            </button>
+          </div>
         </div>
 
         <!-- Summary KPIs -->
@@ -987,6 +1149,10 @@
           <div class="table-toolbar">
             <span class="results-text">{{ donations.length }} donation{{ donations.length !== 1 ? 's' : '' }}</span>
             <div style="margin-left:auto;display:flex;gap:8px;">
+              <button class="btn-secondary" (click)="exportDonations()" title="Export to Excel">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+              </button>
               <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generateRecurringDonations()" [disabled]="isLoading">
                 {{ isLoading ? 'Generating…' : '⚡ Generate Recurring' }}
               </button>
@@ -1286,9 +1452,11 @@
 
       <!-- ========== CAMPAIGNS ========== -->
       <section *ngIf="activeSection === 'campaigns'" class="section-anim">
-        <div class="section-actions">
+        <div class="table-toolbar">
           <span class="results-text">{{ campaigns.length }} campaign{{ campaigns.length !== 1 ? 's' : '' }}</span>
-          <button class="btn-primary" (click)="openModal('addCampaign')">+ New Campaign</button>
+          <div style="margin-left:auto;">
+            <button class="btn-primary" (click)="openModal('addCampaign')">+ New Campaign</button>
+          </div>
         </div>
 
         <div *ngIf="loadingCampaigns" class="table-card">
@@ -1332,7 +1500,7 @@
                 </td>
                 <td>
                   <div style="display:flex;gap:6px;">
-                    <button *ngIf="c.status === 'DRAFT'" class="btn-sm" (click)="openCampaign(c.id)">Open</button>
+                    <button *ngIf="c.status === 'DRAFT'" class="btn-sm-primary" (click)="openCampaign(c.id)">Open</button>
                     <button *ngIf="c.status === 'ACTIVE'" class="btn-sm-ghost" (click)="closeCampaign(c.id)">Close</button>
                   </div>
                 </td>
@@ -1895,34 +2063,41 @@
 
 <!-- ===== ADD DONOR MODAL ===== -->
 <div *ngIf="modalType === 'addDonor'" class="modal-backdrop" (click)="closeModal()">
-  <div class="modal-box" (click)="stopProp($event)">
+  <div class="modal" (click)="stopProp($event)">
     <div class="modal-header">
-      <div class="modal-title">Add Donor</div>
-      <button class="modal-close" (click)="closeModal()">×</button>
+      <div>
+        <div class="modal-title">Add Donor</div>
+        <div class="modal-sub">Create a donor profile to track contributions.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
-    <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
-    <form (ngSubmit)="createDonor()">
-      <div class="field-group">
-        <label class="field-label">Display Name *</label>
-        <input class="field-input" [(ngModel)]="donorForm.displayName" name="displayName" required placeholder="Full name or organisation name" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Donor Type *</label>
-        <select class="field-input" [(ngModel)]="donorForm.donorType" name="donorType">
-          <option *ngFor="let t of donorTypes" [value]="t">{{ t }}</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Email</label>
-        <input class="field-input" type="email" [(ngModel)]="donorForm.email" name="email" placeholder="contact@example.com" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Phone</label>
-        <input class="field-input" [(ngModel)]="donorForm.phone" name="phone" placeholder="+92 300 0000000" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Notes</label>
-        <textarea class="field-input" [(ngModel)]="donorForm.notes" name="notes" rows="2" placeholder="Any notes about this donor…"></textarea>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="createDonor()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label">Display Name *</label>
+          <input class="field-input" [(ngModel)]="donorForm.displayName" name="displayName" required placeholder="Full name or organisation name" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donor Type *</label>
+          <select class="field-input" [(ngModel)]="donorForm.donorType" name="donorType">
+            <option *ngFor="let t of donorTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Email</label>
+          <input class="field-input" type="email" [(ngModel)]="donorForm.email" name="email" placeholder="contact@example.com" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Phone</label>
+          <input class="field-input" [(ngModel)]="donorForm.phone" name="phone" placeholder="+92 300 0000000" />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Notes</label>
+          <textarea class="field-input" [(ngModel)]="donorForm.notes" name="notes" rows="2" placeholder="Any notes about this donor…"></textarea>
+        </div>
       </div>
     </form>
     <div class="modal-footer">
@@ -1936,50 +2111,55 @@
 
 <!-- ===== ADD DONATION MODAL ===== -->
 <div *ngIf="modalType === 'addDonation'" class="modal-backdrop" (click)="closeModal()">
-  <div class="modal-box" (click)="stopProp($event)">
+  <div class="modal" (click)="stopProp($event)">
     <div class="modal-header">
-      <div class="modal-title">Record Donation</div>
-      <button class="modal-close" (click)="closeModal()">×</button>
+      <div>
+        <div class="modal-title">Record Donation</div>
+        <div class="modal-sub">Log a new donation against a donor or as anonymous.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
-    <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
-    <form (ngSubmit)="recordDonation()">
-      <div class="field-group">
-        <label class="field-label">Donor (optional)</label>
-        <select class="field-input" [(ngModel)]="donationForm.donorId" name="donorId">
-          <option value="">— Anonymous —</option>
-          <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Donation Type *</label>
-        <select class="field-input" [(ngModel)]="donationForm.donationType" name="donationType">
-          <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
-        </select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="field-group">
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="recordDonation()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label class="field-label">Donor (optional)</label>
+          <select class="field-input" [(ngModel)]="donationForm.donorId" name="donorId">
+            <option value="">— Anonymous —</option>
+            <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donation Type *</label>
+          <select class="field-input" [(ngModel)]="donationForm.donationType" name="donationType">
+            <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donation Date *</label>
+          <input class="field-input" type="date" [(ngModel)]="donationForm.donationDate" name="donationDate" required />
+        </div>
+        <div class="form-field">
           <label class="field-label">Amount *</label>
           <input class="field-input" [(ngModel)]="donationForm.amount" name="amount" placeholder="0.00" required />
         </div>
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">Currency</label>
           <input class="field-input" [(ngModel)]="donationForm.currency" name="currency" placeholder="PKR" />
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Donation Date *</label>
-        <input class="field-input" type="date" [(ngModel)]="donationForm.donationDate" name="donationDate" required />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Fund Account</label>
-        <select class="field-input" [(ngModel)]="donationForm.fundAccountId" name="fundAccountId">
-          <option value="">— No specific fund —</option>
-          <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Notes</label>
-        <textarea class="field-input" [(ngModel)]="donationForm.notes" name="notes" rows="2" placeholder="Reference, occasion, or context…"></textarea>
+        <div class="form-field full-width">
+          <label class="field-label">Fund Account</label>
+          <select class="field-input" [(ngModel)]="donationForm.fundAccountId" name="fundAccountId">
+            <option value="">— No specific fund —</option>
+            <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+          </select>
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Notes</label>
+          <textarea class="field-input" [(ngModel)]="donationForm.notes" name="notes" rows="2" placeholder="Reference, occasion, or context…"></textarea>
+        </div>
       </div>
     </form>
     <div class="modal-footer">
@@ -1994,58 +2174,61 @@
 
 <!-- ===== ADD RECURRING DONATION MODAL ===== -->
 <div *ngIf="modalType === 'addRecurring'" class="modal-backdrop" (click)="closeModal()">
-  <div class="modal-box" (click)="stopProp($event)">
+  <div class="modal" (click)="stopProp($event)">
     <div class="modal-header">
-      <div class="modal-title">New Recurring Schedule</div>
-      <button class="modal-close" (click)="closeModal()">×</button>
+      <div>
+        <div class="modal-title">New Recurring Schedule</div>
+        <div class="modal-sub">Set up automatic recurring donations for a donor.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
-    <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
-    <form (ngSubmit)="createRecurring()">
-      <div class="field-group">
-        <label class="field-label">Donor *</label>
-        <select class="field-input" [(ngModel)]="recurringForm.donorId" name="donorId" required>
-          <option value="">Select a donor…</option>
-          <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Donation Type *</label>
-        <select class="field-input" [(ngModel)]="recurringForm.donationType" name="donationType">
-          <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
-        </select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="field-group">
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="createRecurring()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label class="field-label">Donor *</label>
+          <select class="field-input" [(ngModel)]="recurringForm.donorId" name="donorId" required>
+            <option value="">Select a donor…</option>
+            <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donation Type *</label>
+          <select class="field-input" [(ngModel)]="recurringForm.donationType" name="donationType">
+            <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Frequency *</label>
+          <select class="field-input" [(ngModel)]="recurringForm.frequency" name="frequency">
+            <option *ngFor="let f of frequencies" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+        <div class="form-field">
           <label class="field-label">Amount *</label>
           <input class="field-input" [(ngModel)]="recurringForm.amount" name="amount" placeholder="0.00" required />
         </div>
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">Currency</label>
           <input class="field-input" [(ngModel)]="recurringForm.currency" name="currency" placeholder="PKR" />
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Frequency *</label>
-        <select class="field-input" [(ngModel)]="recurringForm.frequency" name="frequency">
-          <option *ngFor="let f of frequencies" [value]="f">{{ f }}</option>
-        </select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">Start Date *</label>
           <input class="field-input" type="date" [(ngModel)]="recurringForm.startDate" name="startDate" required />
         </div>
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">End Date (optional)</label>
           <input class="field-input" type="date" [(ngModel)]="recurringForm.endDate" name="endDate" />
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Fund Account</label>
-        <select class="field-input" [(ngModel)]="recurringForm.fundAccountId" name="fundAccountId">
-          <option value="">— No specific fund —</option>
-          <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
-        </select>
+        <div class="form-field full-width">
+          <label class="field-label">Fund Account</label>
+          <select class="field-input" [(ngModel)]="recurringForm.fundAccountId" name="fundAccountId">
+            <option value="">— No specific fund —</option>
+            <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+          </select>
+        </div>
       </div>
     </form>
     <div class="modal-footer">
@@ -2060,47 +2243,50 @@
 
 <!-- ===== ADD CAMPAIGN MODAL ===== -->
 <div *ngIf="modalType === 'addCampaign'" class="modal-backdrop" (click)="closeModal()">
-  <div class="modal-box" (click)="stopProp($event)">
+  <div class="modal" (click)="stopProp($event)">
     <div class="modal-header">
-      <div class="modal-title">New Campaign</div>
-      <button class="modal-close" (click)="closeModal()">✕</button>
+      <div>
+        <div class="modal-title">New Campaign</div>
+        <div class="modal-sub">Create a fundraising campaign to track donations toward a goal.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
-    <div *ngIf="errorMessage" class="modal-error">{{ errorMessage }}</div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
     <form class="modal-body" (ngSubmit)="createCampaign()">
-      <div class="field-group">
-        <label class="field-label">Campaign Name *</label>
-        <input class="field-input" [(ngModel)]="campaignForm.name" name="name" placeholder="e.g. Ramadan 2025 Fund Drive" required />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Description</label>
-        <textarea class="field-input" [(ngModel)]="campaignForm.description" name="description" rows="2" placeholder="Optional campaign description"></textarea>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="field-group">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label class="field-label">Campaign Name *</label>
+          <input class="field-input" [(ngModel)]="campaignForm.name" name="name" placeholder="e.g. Ramadan 2025 Fund Drive" required />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Description</label>
+          <textarea class="field-input" [(ngModel)]="campaignForm.description" name="description" rows="2" placeholder="Optional campaign description"></textarea>
+        </div>
+        <div class="form-field">
           <label class="field-label">Target Amount</label>
           <input class="field-input" [(ngModel)]="campaignForm.targetAmount" name="targetAmount" placeholder="0.00" />
         </div>
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">Currency</label>
           <input class="field-input" [(ngModel)]="campaignForm.targetCurrency" name="targetCurrency" placeholder="PKR" />
         </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">Start Date</label>
           <input class="field-input" type="date" [(ngModel)]="campaignForm.startDate" name="startDate" />
         </div>
-        <div class="field-group">
+        <div class="form-field">
           <label class="field-label">End Date</label>
           <input class="field-input" type="date" [(ngModel)]="campaignForm.endDate" name="endDate" />
         </div>
-      </div>
-      <div class="field-group">
-        <label class="field-label">Fund Account</label>
-        <select class="field-input" [(ngModel)]="campaignForm.fundAccountId" name="fundAccountId">
-          <option value="">— No specific fund —</option>
-          <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
-        </select>
+        <div class="form-field full-width">
+          <label class="field-label">Fund Account</label>
+          <select class="field-input" [(ngModel)]="campaignForm.fundAccountId" name="fundAccountId">
+            <option value="">— No specific fund —</option>
+            <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+          </select>
+        </div>
       </div>
     </form>
     <div class="modal-footer">

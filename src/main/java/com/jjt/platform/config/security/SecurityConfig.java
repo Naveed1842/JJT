@@ -56,6 +56,8 @@ public class SecurityConfig {
                 // Public read access for the children-browsing pages (no account required)
                 .requestMatchers(HttpMethod.GET, "/api/org/children").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/org/children/**").permitAll()
+                // Import template is a blank file — no sensitive data, allow direct browser download
+                .requestMatchers(HttpMethod.GET, "/api/admin/children/import/template").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex

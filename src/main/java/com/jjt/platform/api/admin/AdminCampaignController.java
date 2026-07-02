@@ -68,7 +68,7 @@ public class AdminCampaignController {
     @GetMapping("/{id}")
     @Transactional(readOnly = true)
     public ResponseEntity<CampaignResponse> getCampaign(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         CampaignEntity entity = campaignRepo.findById(id)
                 .orElseThrow(() -> new DomainException("Campaign not found"));
@@ -81,7 +81,7 @@ public class AdminCampaignController {
     @PostMapping("/{id}/open")
     @Transactional
     public ResponseEntity<CampaignResponse> openCampaign(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         CampaignEntity entity = campaignRepo.findById(id)
                 .orElseThrow(() -> new DomainException("Campaign not found"));
@@ -99,7 +99,7 @@ public class AdminCampaignController {
     @PostMapping("/{id}/close")
     @Transactional
     public ResponseEntity<CampaignResponse> closeCampaign(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         CampaignEntity entity = campaignRepo.findById(id)
                 .orElseThrow(() -> new DomainException("Campaign not found"));

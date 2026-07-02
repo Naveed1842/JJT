@@ -26,7 +26,7 @@ type SectionId =
   | 'dashboard' | 'children' | 'sponsors' | 'commitments'
   | 'earlySupport' | 'progress' | 'users'
   | 'funds' | 'reconciliation' | 'alerts' | 'reports' | 'settings' | 'docs'
-  | 'donors' | 'donations' | 'campaigns' | 'audit';
+  | 'donors' | 'donations' | 'campaigns' | 'audit' | 'import';
 
 type ModalType =
   | 'addChild' | 'addSponsor' | 'addCommitment'
@@ -174,6 +174,19 @@ export class AdminComponent implements OnInit {
   portfolioData: any = null;
   loadingReports = false;
 
+  // ── Admin Children list (rich detail view) ────────────────────────
+  adminChildren: any[] = [];
+  loadingAdminChildren = false;
+  selectedChildDetail: any = null;
+  loadingChildDetail = false;
+  adminChildSearch = '';
+
+  // ── Bulk import ───────────────────────────────────────────────────
+  importFile: File | null = null;
+  importResult: any = null;
+  importLoading = false;
+  importError: string | null = null;
+
   // ── Settings ──────────────────────────────────────────────────────
   settingsTab: 'profile' | 'org' | 'security' = 'profile';
   orgConfig: OrgConfigResponse | null = null;
@@ -213,6 +226,7 @@ export class AdminComponent implements OnInit {
     if (s === 'campaigns')      this.loadCampaigns();
     if (s === 'audit')          this.loadAuditLog();
     if (s === 'reports')        this.loadReportData();
+    if (s === 'children')       this.loadAdminChildren();
   }
 
   openModal(type: ModalType): void {
@@ -1072,5 +1086,108 @@ export class AdminComponent implements OnInit {
       next: (data) => { this.portfolioData = data; this.loadingReports = false; },
       error: () => { this.loadingReports = false; }
     });
+  }
+
+  // ── Admin Children list ───────────────────────────────────────────
+
+  loadAdminChildren(): void {
+    this.loadingAdminChildren = true;
+    this.selectedChildDetail = null;
+    this.adminService.listAdminChildren().subscribe({
+      next: (data) => { this.adminChildren = data; this.loadingAdminChildren = false; },
+      error: () => { this.loadingAdminChildren = false; }
+    });
+  }
+
+  get filteredAdminChildren(): any[] {
+    const q = this.adminChildSearch.toLowerCase().trim();
+    if (!q) return this.adminChildren;
+    return this.adminChildren.filter((c: any) =>
+      c.fullName.toLowerCase().includes(q) || c.rollNumber.toLowerCase().includes(q)
+    );
+  }
+
+  openChildDetail(id: string): void {
+    this.loadingChildDetail = true;
+    this.selectedChildDetail = null;
+    this.adminService.getAdminChildDetail(id).subscribe({
+      next: (data) => { this.selectedChildDetail = data; this.loadingChildDetail = false; },
+      error: () => { this.loadingChildDetail = false; }
+    });
+  }
+
+  closeChildDetail(): void { this.selectedChildDetail = null; }
+
+  downloadChildPdf(childId: string): void {
+    this.adminService.exportChildReport(childId).subscribe({
+      next: (blob) => this.triggerDownload(blob, 'student-report.pdf'),
+      error: () => this.showToast('Failed to generate PDF report.')
+    });
+  }
+
+  // ── Bulk import ───────────────────────────────────────────────────
+
+  onImportFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.importFile = input?.files?.[0] ?? null;
+    this.importResult = null;
+    this.importError = null;
+  }
+
+  submitImport(): void {
+    if (!this.importFile || this.importLoading) return;
+    this.importLoading = true;
+    this.importError = null;
+    this.importResult = null;
+    this.adminService.importChildren(this.importFile).subscribe({
+      next: (result) => {
+        this.importResult = result;
+        this.importLoading = false;
+        this.importFile = null;
+        if (result.importedRows > 0) this.loadDropdowns();
+        this.showToast(`Import complete: ${result.importedRows} imported, ${result.failedRows + result.skippedMissingName + result.skippedMissingCampus + result.skippedDuplicateRollNumber} skipped.`);
+      },
+      error: (err) => {
+        this.importLoading = false;
+        this.importError = err?.error?.message ?? 'Import failed.';
+      }
+    });
+  }
+
+  downloadImportTemplate(): void {
+    window.location.href = this.adminService.downloadImportTemplate();
+  }
+
+  // ── Exports ───────────────────────────────────────────────────────
+
+  exportChildren(): void {
+    this.adminService.exportChildren().subscribe({
+      next: (blob) => this.triggerDownload(blob, 'children.xlsx'),
+      error: () => this.showToast('Export failed.')
+    });
+  }
+
+  exportDonations(): void {
+    this.adminService.exportDonations().subscribe({
+      next: (blob) => this.triggerDownload(blob, 'donations.xlsx'),
+      error: () => this.showToast('Export failed.')
+    });
+  }
+
+  exportReconciliation(): void {
+    const filename = `reconciliation-${this.reconYear}-${String(this.reconMonth).padStart(2, '0')}.xlsx`;
+    this.adminService.exportReconciliation(this.reconYear, this.reconMonth).subscribe({
+      next: (blob) => this.triggerDownload(blob, filename),
+      error: () => this.showToast('Export failed.')
+    });
+  }
+
+  private triggerDownload(blob: Blob, filename: string): void {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }

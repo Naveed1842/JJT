@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface ChildJpaRepository extends JpaRepository<ChildEntity, UUID> {
 
     List<ChildEntity> findByOrganisationId(UUID organisationId);
+
+    boolean existsByRollNumber(String rollNumber);
 }
