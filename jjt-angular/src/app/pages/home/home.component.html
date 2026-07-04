@@ -1,8 +1,8 @@
 <app-site-header />
 
 <!-- ── HERO ─────────────────────────────────────────────────── -->
-<section style="background:#fffdf9;padding:64px 32px;">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;">
+<section class="hero-section" style="background:#fffdf9;padding:64px 32px;">
+  <div class="hero-grid" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;">
     <!-- Left: copy -->
     <div>
       <!-- Sadaqah Jariyah pill badge -->
@@ -12,18 +12,18 @@
         <span style="font-size:12.5px;color:#214a3e;font-weight:500;">Sadaqah Jariyah · ongoing reward through education</span>
       </div>
 
-      <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:52px;line-height:1.05;
+      <h1 class="hero-h1" style="font-family:'Newsreader',serif;font-weight:500;font-size:52px;line-height:1.05;
                  letter-spacing:-.015em;color:#1c352c;margin:0 0 20px;">
         Educate a child. Leave a reward that never ends.
       </h1>
 
-      <p style="font-size:18px;line-height:1.6;color:#54625b;margin:0 0 30px;max-width:490px;">
+      <p class="hero-body" style="font-size:18px;line-height:1.6;color:#54625b;margin:0 0 30px;max-width:490px;">
         A child kept in school is knowledge that keeps giving — to them, their family, and your record
         of good. Sponsor a child in Pakistan and follow their real progress, or give any amount to keep
         a child learning today.
       </p>
 
-      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+      <div class="hero-ctas" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
         <a routerLink="/children"
            style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
                   padding:15px 28px;text-decoration:none;transition:background .15s;"
@@ -34,19 +34,19 @@
       </div>
 
       <!-- Stats -->
-      <div style="display:flex;gap:38px;margin-top:42px;flex-wrap:wrap;">
+      <div class="hero-stats" style="display:flex;gap:38px;margin-top:42px;flex-wrap:wrap;">
         <div>
-          <div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">
+          <div class="stat-num" style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">
             {{ loadingFeatured ? '—' : totalChildren }}
           </div>
           <div style="font-size:13px;color:#8a958d;margin-top:2px;">children in our programme</div>
         </div>
         <div>
-          <div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">87%</div>
+          <div class="stat-num" style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">87%</div>
           <div style="font-size:13px;color:#8a958d;margin-top:2px;">of every rupee reaches a child</div>
         </div>
         <div>
-          <div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">
+          <div class="stat-num" style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">
             {{ loadingFeatured ? '—' : availableCount }}
           </div>
           <div style="font-size:13px;color:#8a958d;margin-top:2px;">currently seeking a sponsor</div>
@@ -55,7 +55,7 @@
     </div>
 
     <!-- Right: hero image -->
-    <div style="border-radius:16px;height:470px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 11px,#e5dccb 11px,#e5dccb 22px);
+    <div class="hero-img" style="border-radius:16px;height:470px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 11px,#e5dccb 11px,#e5dccb 22px);
                 border:1px solid #e3dccd;display:flex;align-items:flex-end;justify-content:center;
                 padding:18px;position:relative;overflow:hidden;">
       <img src="assets/images/P1.png" alt="Child in classroom"
@@ -85,10 +85,10 @@
 </section>
 
 <!-- ── SADAQAH JARIYAH BAND ───────────────────────────────── -->
-<section style="background:#1c352c;padding:54px 32px;text-align:center;">
+<section class="sadaqah-section" style="background:#1c352c;padding:54px 32px;text-align:center;">
   <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
               color:#9cc3b3;margin-bottom:16px;">A charity that does not end</div>
-  <div style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;
+  <div class="sadaqah-quote" style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;
               line-height:1.4;color:#fdfaf3;max-width:780px;margin:0 auto 14px;">
     "When a person dies, their deeds end — except three: ongoing charity, beneficial knowledge,
     and a righteous child who prays for them."
@@ -103,23 +103,23 @@
 </section>
 
 <!-- ── FEATURED CHILDREN ──────────────────────────────────── -->
-<section style="padding:56px 32px;background:#fffdf9;">
+<section class="featured-section" style="padding:56px 32px;background:#fffdf9;">
   <div style="max-width:1200px;margin:0 auto;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;">
+    <div class="featured-header" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;">
       <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0;">
         Children ready to learn — waiting for you
       </h2>
       <a routerLink="/children"
          style="font-size:14px;color:#2f5d4f;font-weight:600;text-decoration:none;">View all →</a>
     </div>
-    <p style="font-size:15px;color:#6b7b73;margin:0 0 26px;">
+    <p class="featured-sub" style="font-size:15px;color:#6b7b73;margin:0 0 26px;">
       Every profile is real and verified by our local team.
     </p>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+    <div class="feat-scroll" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
 
       <!-- Loading skeletons -->
       <ng-container *ngIf="loadingFeatured">
-        <div *ngFor="let _ of [1,2,3]"
+        <div *ngFor="let _ of [1,2,3]" class="feat-card"
              style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
           <div style="height:170px;background:linear-gradient(90deg,#ece4d6 25%,#f3eee4 50%,#ece4d6 75%);
                       background-size:200%;animation:shimmer 1.4s infinite;"></div>
@@ -131,7 +131,7 @@
       </ng-container>
 
       <!-- Live child cards from API -->
-      <div *ngFor="let child of featuredChildren"
+      <div *ngFor="let child of featuredChildren" class="feat-card"
            style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
         <div style="height:170px;overflow:hidden;background:#ece4d6;position:relative;">
           <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;
@@ -162,7 +162,7 @@
       </div>
 
       <!-- No children available state -->
-      <div *ngIf="!loadingFeatured && featuredChildren.length === 0"
+      <div *ngIf="!loadingFeatured && featuredChildren.length === 0" class="feat-card"
            style="border:1px solid #e3dccd;border-radius:14px;padding:32px 20px;text-align:center;
                   background:#fffdf9;grid-column:span 3;">
         <div style="font-size:28px;margin-bottom:12px;">🌱</div>
@@ -175,7 +175,7 @@
       </div>
 
       <!-- Give to fund card (always shown) -->
-      <div style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:22px;
+      <div class="feat-card" style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:22px;
                   display:flex;flex-direction:column;justify-content:center;">
         <span style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;
                      justify-content:center;color:#fff;font-family:'Newsreader',serif;font-size:18px;margin-bottom:14px;">♡</span>
@@ -196,23 +196,23 @@
 </section>
 
 <!-- ── HOW IT WORKS ───────────────────────────────────────── -->
-<section id="how-it-works" style="background:#f3eee4;border-top:1px solid #e3dccd;padding:56px 32px;">
+<section id="how-it-works" class="how-works-section" style="background:#f3eee4;border-top:1px solid #e3dccd;padding:56px 32px;">
   <div style="max-width:1200px;margin:0 auto;">
     <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0 0 30px;">
       How sponsorship works
     </h2>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;">
-      <div>
+    <div class="how-works-items" style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;">
+      <div class="how-works-item">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">01</div>
         <div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Choose a child or the fund</div>
         <div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Find a child whose story moves you, or give any amount to the central fund.</div>
       </div>
-      <div>
+      <div class="how-works-item">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">02</div>
         <div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Give with your intention</div>
         <div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Mark your gift as Zakat or Sadaqah. Set up monthly, yearly, or one-time. Cancel anytime.</div>
       </div>
-      <div>
+      <div class="how-works-item">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">03</div>
         <div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Follow their progress</div>
         <div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Receive updates, grades, and photos as your child grows through the years.</div>
@@ -222,9 +222,9 @@
 </section>
 
 <!-- ── TRUST STRIP ────────────────────────────────────────── -->
-<section style="padding:40px 32px;border-top:1px solid #e3dccd;">
-  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;">
-    <div style="display:flex;gap:36px;flex-wrap:wrap;">
+<section class="trust-strip" style="padding:40px 32px;border-top:1px solid #e3dccd;">
+  <div class="trust-inner" style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;">
+    <div class="trust-items" style="display:flex;gap:36px;flex-wrap:wrap;">
       <div style="display:flex;gap:11px;align-items:flex-start;">
         <span style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;margin-top:5px;flex-shrink:0;"></span>
         <div>
@@ -263,19 +263,44 @@
     100% { background-position: -200% 0; }
   }
   @media (max-width: 960px) {
-    section > div[style*="grid-template-columns:1.05fr"] {
-      grid-template-columns: 1fr !important;
-    }
-    section > div[style*="grid-template-columns:repeat(4"] {
-      grid-template-columns: repeat(2,1fr) !important;
-    }
-    section > div[style*="grid-template-columns:repeat(3"] {
-      grid-template-columns: 1fr !important;
-    }
+    .hero-grid { grid-template-columns: 1fr !important; }
   }
-  @media (max-width: 600px) {
-    section > div[style*="grid-template-columns:repeat(4"] {
-      grid-template-columns: 1fr !important;
+  @media (max-width: 768px) {
+    /* Hero */
+    .hero-section { padding: 26px 18px 8px !important; }
+    .hero-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+    .hero-img { height: 240px !important; }
+    .hero-h1 { font-size: 33px !important; line-height: 1.08 !important; }
+    .hero-body { max-width: 100% !important; font-size: 16px !important; }
+    .hero-ctas { flex-direction: column !important; gap: 10px !important; }
+    .hero-ctas a { text-align: center !important; border-radius: 12px !important; }
+    .stat-num { font-size: 22px !important; }
+    /* Sadaqah band */
+    .sadaqah-section { padding: 34px 22px !important; }
+    .sadaqah-quote { font-size: 19px !important; }
+    /* Featured */
+    .featured-section { padding: 30px 0 8px !important; }
+    .featured-header { padding: 0 18px !important; }
+    .featured-sub { padding: 0 18px 0 !important; }
+    .feat-scroll {
+      display: flex !important;
+      overflow-x: auto !important;
+      gap: 12px !important;
+      padding: 0 18px 12px !important;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      grid-template-columns: unset !important;
     }
+    .feat-scroll::-webkit-scrollbar { display: none; }
+    .feat-card { flex: 0 0 210px !important; scroll-snap-align: start; min-width: 0; }
+    /* How it works */
+    .how-works-section { padding: 30px 18px !important; }
+    .how-works-items { display: flex !important; flex-direction: column !important; gap: 16px !important; }
+    .how-works-item { display: flex !important; gap: 14px !important; align-items: flex-start !important; }
+    /* Trust strip */
+    .trust-strip { padding: 28px 18px !important; }
+    .trust-inner { flex-direction: column !important; gap: 16px !important; align-items: flex-start !important; }
+    .trust-items { flex-direction: column !important; gap: 12px !important; }
   }
 </style>

@@ -9,7 +9,7 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
     <header style="background:#fffdf9;border-bottom:1px solid #efe9dd;position:sticky;top:0;z-index:30;">
-      <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px 32px;">
+      <div class="header-inner" style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px 32px;">
 
         <!-- Logo -->
         <a routerLink="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
@@ -75,7 +75,7 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
       </div>
 
       <!-- Mobile drawer -->
-      <div *ngIf="mobileOpen"
+      <div *ngIf="mobileOpen" class="mobile-drawer"
            style="border-top:1px solid #efe9dd;background:#fffdf9;padding:16px 32px;
                   display:flex;flex-direction:column;gap:14px;">
         <a routerLink="/" (click)="mobileOpen=false"
@@ -109,6 +109,8 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
         .desktop-nav { display: none !important; }
         .hamburger   { display: block !important; }
         .hide-sm     { display: none !important; }
+        .header-inner { padding: 14px 18px !important; }
+        .mobile-drawer { padding: 16px 18px !important; }
       }
     </style>
   `

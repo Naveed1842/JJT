@@ -1,9 +1,9 @@
 <app-site-header />
 
 <!-- Page header -->
-<div style="background:#fffdf9;padding:40px 32px 24px;">
+<div class="listing-header" style="background:#fffdf9;padding:40px 32px 24px;">
   <div style="max-width:1200px;margin:0 auto;">
-    <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;letter-spacing:-.01em;">
+    <h1 class="listing-h1" style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;letter-spacing:-.01em;">
       Children ready to learn — waiting for you
     </h1>
     <p style="font-size:16px;color:#6b7b73;margin:0;">
@@ -28,13 +28,36 @@
   </div>
 </div>
 
+<!-- Mobile filter bar -->
+<div class="mobile-filter-bar" style="display:none;">
+  <div style="max-width:1200px;margin:0 auto;padding:12px 16px;display:flex;gap:8px;align-items:center;border-bottom:1px solid #efe9dd;">
+    <input
+      type="text"
+      [(ngModel)]="searchQuery"
+      placeholder="Search…"
+      style="flex:1;border:1px solid #ddd5c5;border-radius:100px;padding:10px 16px;
+             font-size:13px;color:#1c352c;background:#fff;outline:none;
+             font-family:'Hanken Grotesk',sans-serif;"
+    />
+    <button (click)="setFilter('ALL')"
+            [style]="'border:1px solid ' + (statusFilter === 'ALL' ? '#2f5d4f' : '#cdc4b2') + ';background:' + (statusFilter === 'ALL' ? '#2f5d4f' : '#fffdf9') + ';color:' + (statusFilter === 'ALL' ? '#fff' : '#54625b') + ';font-size:12.5px;font-weight:600;border-radius:100px;padding:10px 14px;cursor:pointer;white-space:nowrap;'">
+      All
+    </button>
+    <button (click)="setFilter('AVAILABLE')"
+            [style]="'border:1px solid ' + (statusFilter === 'AVAILABLE' ? '#2f5d4f' : '#cdc4b2') + ';background:' + (statusFilter === 'AVAILABLE' ? '#2f5d4f' : '#fffdf9') + ';color:' + (statusFilter === 'AVAILABLE' ? '#fff' : '#54625b') + ';font-size:12.5px;font-weight:600;border-radius:100px;padding:10px 14px;cursor:pointer;white-space:nowrap;'">
+      Seeking
+    </button>
+  </div>
+</div>
+
 <!-- Main: filter sidebar + grid -->
 <div *ngIf="!loading && !error"
+     class="children-layout"
      style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:248px 1fr;
             gap:32px;padding:0 32px 56px;align-items:start;">
 
   <!-- ── Filter sidebar ── -->
-  <aside style="border:1px solid #e3dccd;border-radius:14px;padding:22px;position:sticky;top:80px;">
+  <aside class="filter-panel" style="border:1px solid #e3dccd;border-radius:14px;padding:22px;position:sticky;top:80px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
       <span style="font-weight:600;font-size:15px;color:#1c352c;">Filter</span>
       <button (click)="resetFilters()"
@@ -103,15 +126,15 @@
     </div>
 
     <!-- Child grid -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;" *ngIf="filtered.length > 0">
+    <div class="children-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;" *ngIf="filtered.length > 0">
       <div *ngFor="let child of visible"
            (click)="openChild(child.id)"
            style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;
                   cursor:pointer;transition:box-shadow .15s,transform .15s;"
-           class="child-grid-card">
+           class="child-grid-card child-card-item">
 
         <!-- Photo -->
-        <div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);
+        <div class="card-photo" style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);
                     position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
           <span style="font-size:48px;opacity:.3;">👦</span>
           <span *ngIf="child.availabilityStatus !== 'AVAILABLE'"
@@ -121,7 +144,7 @@
         </div>
 
         <!-- Info -->
-        <div style="padding:16px;">
+        <div class="card-body" style="padding:16px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
             <span style="font-weight:600;font-size:15px;color:#1c352c;">{{ child.fullName }}</span>
             <span [style]="badgeStyle(child.availabilityStatus)">{{ statusLabel(child.availabilityStatus) }}</span>
@@ -152,6 +175,7 @@
 
       <!-- Give to fund card (always shown at the end of the first page) -->
       <div *ngIf="page === 0 || visible.length === filtered.length"
+           class="fund-card"
            style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:18px;
                   display:flex;flex-direction:column;justify-content:center;">
         <span style="width:30px;height:30px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;
@@ -190,20 +214,52 @@
     transform: translateY(-2px);
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+
   @media (max-width: 960px) {
-    div[style*="grid-template-columns:248px 1fr"] {
-      grid-template-columns: 1fr !important;
-    }
-    aside[style*="position:sticky"] {
-      position: static !important;
-    }
-    div[style*="grid-template-columns:repeat(3,1fr)"] {
-      grid-template-columns: repeat(2,1fr) !important;
-    }
+    .children-layout { grid-template-columns: 1fr !important; }
+    .filter-panel    { position: static !important; }
+    .children-grid   { grid-template-columns: repeat(2,1fr) !important; }
   }
-  @media (max-width: 540px) {
-    div[style*="grid-template-columns:repeat(3,1fr)"] {
+
+  @media (max-width: 768px) {
+    /* Page header */
+    .listing-header { padding: 20px 16px 12px !important; }
+    .listing-h1     { font-size: 26px !important; }
+    /* Show mobile filter bar */
+    .mobile-filter-bar { display: block !important; }
+    /* Outer layout: single column, no padding */
+    .filter-panel    { display: none !important; }
+    .children-layout { padding: 0 !important; gap: 0 !important; }
+    .children-layout > div { padding: 12px 16px 56px !important; }
+    /* Grid → single column */
+    .children-grid {
       grid-template-columns: 1fr !important;
+      gap: 10px !important;
     }
+    /* Cards → horizontal list */
+    .child-card-item {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 0 !important;
+      border-radius: 12px !important;
+    }
+    .child-card-item:hover { transform: none !important; }
+    .card-photo {
+      width: 86px !important;
+      height: auto !important;
+      min-height: 86px !important;
+      flex-shrink: 0 !important;
+      border-radius: 12px 0 0 12px !important;
+    }
+    .card-body {
+      flex: 1 !important;
+      padding: 12px 14px !important;
+      min-width: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: center !important;
+    }
+    /* Fund card full width */
+    .fund-card { margin-top: 4px !important; }
   }
 </style>

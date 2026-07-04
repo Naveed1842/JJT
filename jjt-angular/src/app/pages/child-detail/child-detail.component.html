@@ -22,20 +22,20 @@
 
   <div *ngIf="!error">
     <!-- Breadcrumb -->
-    <div style="max-width:1200px;margin:0 auto;padding:24px 32px 0;font-size:13px;color:#8a958d;">
+    <div class="detail-breadcrumb" style="max-width:1200px;margin:0 auto;padding:24px 32px 0;font-size:13px;color:#8a958d;">
       <a routerLink="/children" style="color:#8a958d;text-decoration:none;">Children</a>
       <span style="margin:0 8px;">›</span>
       <span style="color:#1c352c;">{{ childName }}</span>
     </div>
 
     <!-- Two-column layout -->
-    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;
+    <div class="detail-grid" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 380px;
                 gap:36px;padding:16px 32px 56px;align-items:start;">
 
       <!-- ── Left column: content ── -->
       <div>
         <!-- Hero image -->
-        <div style="border-radius:18px;height:420px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);
+        <div class="detail-hero-img" style="border-radius:18px;height:420px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);
                     border:1px solid #e3dccd;position:relative;margin-bottom:18px;
                     display:flex;align-items:center;justify-content:center;">
           <span style="font-size:80px;opacity:.3;">👦</span>
@@ -66,7 +66,7 @@
         </p>
 
         <!-- Selection basis -->
-        <div style="display:flex;gap:11px;align-items:flex-start;background:#f4faf6;border:1px solid #cfe0d7;
+        <div class="selection-basis" style="display:flex;gap:11px;align-items:flex-start;background:#f4faf6;border:1px solid #cfe0d7;
                     border-radius:12px;padding:16px 18px;margin-top:24px;">
           <span style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;margin-top:5px;flex-shrink:0;"></span>
           <div style="font-size:13.5px;line-height:1.55;color:#2f4a40;">
@@ -79,7 +79,7 @@
         <!-- What sponsorship covers -->
         <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;margin-top:24px;background:#faf8f2;">
           <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:16px;">What your sponsorship covers</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div class="covers-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
             <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;">
               <span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
               School tuition &amp; fees
@@ -152,7 +152,7 @@
       </div>
 
       <!-- ── Right column: sticky sponsor card ── -->
-      <div style="position:sticky;top:84px;">
+      <div class="sponsor-sidebar" style="position:sticky;top:84px;">
         <div style="border:1px solid #e3dccd;border-radius:16px;overflow:hidden;
                     box-shadow:0 20px 40px -28px rgba(20,40,30,.4);">
           <div style="padding:24px;background:#fffdf9;">
@@ -249,16 +249,47 @@
   </div>
 </div>
 
+<!-- Mobile sticky sponsor bar -->
+<div class="mobile-sponsor-bar" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;
+     background:#fffdf9;border-top:1px solid #e3dccd;padding:14px 18px 20px;
+     align-items:center;gap:14px;box-shadow:0 -8px 20px -10px rgba(20,40,30,.25);">
+  <div *ngIf="!loading && !error" style="flex-shrink:0;">
+    <div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;line-height:1;">
+      {{ monthlyCost }}<span style="font-size:12px;color:#8a958d;">/mo</span>
+    </div>
+    <div style="font-size:11px;color:#8a958d;margin-top:2px;">education support</div>
+  </div>
+  <a *ngIf="!loading && !error && supportStatus === 'AVAILABLE'"
+     [routerLink]="['/children', childId, 'sponsor']"
+     style="flex:1;display:block;background:#2f5d4f;color:#fff;text-align:center;font-size:15px;
+            font-weight:600;border-radius:12px;padding:16px 0;text-decoration:none;">
+    Sponsor {{ childName }}
+  </a>
+  <div *ngIf="!loading && !error && supportStatus !== 'AVAILABLE'"
+       style="flex:1;display:block;background:#9aa79f;color:#fff;text-align:center;font-size:15px;
+              font-weight:600;border-radius:12px;padding:16px 0;opacity:.75;">
+    {{ supportStatus === 'ALLOCATED' ? 'Already sponsored' : 'Pending activation' }}
+  </div>
+</div>
+
 <app-site-footer />
 
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }
   @media (max-width: 960px) {
-    div[style*="grid-template-columns:1fr 380px"] {
+    .detail-grid {
       grid-template-columns: 1fr !important;
     }
-    div[style*="position:sticky;top:84px"] {
-      position: static !important;
+    .sponsor-sidebar {
+      display: none !important;
     }
+  }
+  @media (max-width: 768px) {
+    .mobile-sponsor-bar { display: flex !important; }
+    .detail-breadcrumb { padding: 16px 18px 0 !important; }
+    .detail-grid { padding: 12px 18px 100px !important; }
+    .detail-hero-img { height: 220px !important; border-radius: 12px !important; }
+    .selection-basis { margin-top: 16px !important; }
+    .covers-grid { grid-template-columns: 1fr !important; }
   }
 </style>

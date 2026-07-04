@@ -1,10 +1,10 @@
 <app-site-header />
 
 <!-- ── HERO VERSE ─────────────────────────────────────────── -->
-<section style="background:#1c352c;padding:64px 32px;text-align:center;">
+<section class="verse-section" style="background:#1c352c;padding:64px 32px;text-align:center;">
   <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
               color:#9cc3b3;margin-bottom:18px;">Why education is a noble cause</div>
-  <div style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;
+  <div class="verse-quote" style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;
               line-height:1.4;color:#fdfaf3;max-width:800px;margin:0 auto 14px;">
     "The likeness of those who spend their wealth in the way of Allah is as the likeness of a grain
     that grows seven ears, in every ear a hundred grains."
@@ -15,7 +15,7 @@
 </section>
 
 <!-- ── THREE PILLARS ─────────────────────────────────────── -->
-<section style="padding:56px 32px;">
+<section class="pillars-section" style="padding:56px 32px;">
   <div style="max-width:1200px;margin:0 auto;">
     <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0 0 8px;">
       Educating a child carries three rewards at once
@@ -23,7 +23,7 @@
     <p style="font-size:15px;color:#6b7b73;margin:0 0 30px;max-width:640px;">
       References below are well-known and authentic from the major hadith collections.
     </p>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+    <div class="pillars-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
       <div style="border:1px solid #e3dccd;border-radius:14px;padding:26px;background:#faf8f2;">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#b07d3a;margin-bottom:12px;
                     text-transform:uppercase;letter-spacing:.08em;">01 · Ongoing charity</div>
@@ -62,8 +62,8 @@
 </section>
 
 <!-- ── EVERY AMOUNT MATTERS ───────────────────────────────── -->
-<section style="background:#f3eee4;border-top:1px solid #e3dccd;padding:54px 32px;">
-  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;">
+<section class="amounts-section" style="background:#f3eee4;border-top:1px solid #e3dccd;padding:54px 32px;">
+  <div class="amounts-grid" style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;">
     <div>
       <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 14px;">
         Even one rupee has value
@@ -80,7 +80,7 @@
            style="font-size:14px;color:#2f5d4f;font-weight:600;text-decoration:none;">Or give to the fund →</a>
       </div>
     </div>
-    <div style="display:flex;gap:12px;">
+    <div class="amount-tiles" style="display:flex;gap:12px;">
       <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;padding:20px;text-align:center;">
         <div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">Rs 100</div>
         <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">a week of meals</div>
@@ -98,7 +98,7 @@
 </section>
 
 <!-- ── HOW TO GIVE ────────────────────────────────────────── -->
-<section style="padding:56px 32px;background:#fffdf9;">
+<section class="howtogive-section" style="padding:56px 32px;background:#fffdf9;">
   <div style="max-width:1200px;margin:0 auto;">
     <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
       How to give
@@ -106,7 +106,7 @@
     <p style="font-size:15px;color:#6b7b73;margin:0 0 28px;">
       Transfer to JJT's account and mention your name or child's name in the reference.
     </p>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+    <div class="howtogive-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
       <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;background:#fffdf9;">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:8px;
                     text-transform:uppercase;letter-spacing:.08em;">Bank transfer</div>
@@ -144,11 +144,11 @@
 </section>
 
 <!-- ── INTENTION SECTION ──────────────────────────────────── -->
-<section style="background:#1c352c;padding:54px 32px;text-align:center;">
+<section class="dark-cta" style="background:#1c352c;padding:54px 32px;text-align:center;">
   <div style="max-width:640px;margin:0 auto;">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
                 color:#9cc3b3;margin-bottom:14px;">After you give</div>
-    <div style="font-family:'Newsreader',serif;font-style:italic;font-size:26px;line-height:1.45;color:#fdfaf3;margin-bottom:12px;">
+    <div class="dark-cta-quote" style="font-family:'Newsreader',serif;font-style:italic;font-size:26px;line-height:1.45;color:#fdfaf3;margin-bottom:12px;">
       "May Allah accept your sadaqah and make it a continuing reward."
     </div>
     <div style="font-size:13px;color:#9cc3b3;">A quiet thank-you from the JJT team — never an upsell.</div>
@@ -159,9 +159,20 @@
 
 <style>
   @media (max-width: 820px) {
-    div[style*="grid-template-columns:1fr 1fr"],
-    div[style*="grid-template-columns:repeat(3,1fr)"] {
-      grid-template-columns: 1fr !important;
-    }
+    .amounts-grid, .pillars-grid, .howtogive-grid { grid-template-columns: 1fr !important; }
+  }
+  @media (max-width: 768px) {
+    .verse-section { padding: 36px 22px !important; }
+    .verse-quote { font-size: 19px !important; line-height: 1.5 !important; }
+    .pillars-section { padding: 28px 18px !important; }
+    .pillars-grid { gap: 10px !important; }
+    .amounts-section { padding: 26px 18px !important; }
+    .amounts-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+    .amount-tiles > div { padding: 12px 6px !important; }
+    .amount-tiles > div > div:first-child { font-size: 16px !important; }
+    .howtogive-section { padding: 28px 18px !important; }
+    .howtogive-grid { gap: 10px !important; }
+    .dark-cta { padding: 34px 22px !important; }
+    .dark-cta-quote { font-size: 20px !important; line-height: 1.4 !important; }
   }
 </style>

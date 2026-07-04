@@ -9,14 +9,14 @@ import { RouterLink } from '@angular/router';
   template: `
     <footer style="background:#1c352c;color:#9cc3b3;padding:40px 32px;margin-top:auto;">
       <div style="max-width:1200px;margin:0 auto;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px;">
+        <div class="footer-top" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px;">
           <div>
             <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
             <p style="margin:10px 0 0;font-size:13px;max-width:300px;line-height:1.6;color:#9cc3b3;">
               Junior Jinnah Trust — educating orphan, needy, and underprivileged children across Pakistan since 2014.
             </p>
           </div>
-          <div style="display:flex;gap:40px;flex-wrap:wrap;">
+          <div class="footer-links" style="display:flex;gap:40px;flex-wrap:wrap;">
             <div>
               <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">Pages</p>
               <a routerLink="/children" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Children</a>
@@ -38,13 +38,23 @@ import { RouterLink } from '@angular/router';
             </div>
           </div>
         </div>
-        <div style="margin-top:32px;padding-top:20px;border-top:1px solid #2b4a3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+        <div class="footer-bottom" style="margin-top:32px;padding-top:20px;border-top:1px solid #2b4a3d;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
           <p style="font-size:12px;margin:0;color:#6b9c8b;">
             © 2026 Junior Jinnah Trust · Registered under Trust Act 1882
           </p>
           <p style="font-size:12px;margin:0;color:#6b9c8b;">Powered by TeleNoc</p>
         </div>
       </div>
+    <style>
+      footer a:hover { color: #fdfaf3 !important; }
+      @media (max-width: 768px) {
+        footer { padding: 32px 18px !important; }
+        .footer-top { flex-direction: column !important; gap: 20px !important; }
+        .footer-top > div:first-child p { max-width: 100% !important; }
+        .footer-links { gap: 20px !important; flex-wrap: wrap !important; }
+        .footer-bottom { flex-direction: column !important; gap: 6px !important; }
+      }
+    </style>
     </footer>
   `
 })
