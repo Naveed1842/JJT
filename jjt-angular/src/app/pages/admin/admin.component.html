@@ -1185,7 +1185,7 @@
                   <td>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;">
                       <button *ngIf="d.status === 'EXPECTED'" class="btn-sm-ghost" (click)="receiveDonation(d.id)">Receive</button>
-                      <button *ngIf="d.receiptNumber" class="btn-sm-ghost" (click)="viewReceipt(d.id)">Receipt</button>
+                      <button *ngIf="d.receiptNumber && d.status === 'RECEIPTED'" class="btn-sm-ghost" (click)="viewReceipt(d.id)">Receipt</button>
                       <button *ngIf="d.status === 'RECEIPTED'" class="btn-sm-ghost" style="color:var(--red);" (click)="reverseDonation(d.id)">Reverse</button>
                     </div>
                   </td>

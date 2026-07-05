@@ -41,11 +41,14 @@ public class AdminDonationController {
 
     private final AdminDonationService donationService;
     private final DonorJpaRepository donorRepo;
+    private final com.jjt.platform.infrastructure.audit.AuditService auditService;
 
     public AdminDonationController(AdminDonationService donationService,
-                                   DonorJpaRepository donorRepo) {
+                                   DonorJpaRepository donorRepo,
+                                   com.jjt.platform.infrastructure.audit.AuditService auditService) {
         this.donationService = donationService;
         this.donorRepo = donorRepo;
+        this.auditService = auditService;
     }
 
     // ── Donors ───────────────────────────────────────────────────────────────
@@ -93,6 +96,9 @@ public class AdminDonationController {
                 request.fundAccountId(),
                 principal.getOrgId(),
                 principal.getId());
+        auditService.log(principal.getOrgId(), "DONATION_RECORDED", principal.getId(), principal.getUsername(),
+                "Donation", donation.getId(),
+                "Recorded " + request.donationType() + " donation of " + request.currency() + " " + request.amount());
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
     }
 
@@ -139,6 +145,10 @@ public class AdminDonationController {
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.receiveExpectedDonation(
                 id, actualAmount, principal.getOrgId(), principal.getId());
+        auditService.log(principal.getOrgId(), "DONATION_RECEIVED", principal.getId(), principal.getUsername(),
+                "Donation", id,
+                "Marked expected donation as received"
+                        + (actualAmount != null ? " (actual amount " + actualAmount + ")" : ""));
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
     }
 
@@ -147,6 +157,17 @@ public class AdminDonationController {
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.reverseDonation(id, principal.getOrgId(), principal.getId());
+        auditService.log(principal.getOrgId(), "DONATION_REVERSED", principal.getId(), principal.getUsername(),
+                "Donation", id,
+                "Reversed " + donation.getDonationType() + " donation of "
+                        + donation.getAmount().getCurrency().getCurrencyCode() + " "
+                        + donation.getAmount().getAmount()
+                        + (donation.getReceiptNumber() != null
+                                ? " (receipt " + donation.getReceiptNumber() + " voided)"
+                                : "")
+                        + (donation.getFundTransactionId() != null
+                                ? " — compensating fund debit issued"
+                                : ""));
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
     }
 

@@ -122,6 +122,55 @@ public class AdminFundService {
     }
 
     /**
+     * Creates a compensating DEBIT that undoes a donation's original CREDIT when the
+     * donation is reversed. The original CREDIT row is never touched — the journal stays
+     * append-only and the balance derivation (SUM CREDIT − SUM DEBIT) self-corrects.
+     *
+     * Deliberately does NOT call {@link #assertSufficientFunds}: a correction must never
+     * be blockable by the reserve check. If the balance drops below the minimum reserve
+     * as a result, a FUND_BELOW_RESERVE alert is raised instead (same contract as
+     * {@link #debitForEarlySupport}).
+     */
+    @Transactional
+    public FundTransaction debitForDonationReversal(UUID fundAccountId, UUID donationId,
+                                                    String receiptNumber, BigDecimal amount,
+                                                    String currency, UUID createdBy) {
+        FundTransactionEntity entity = new FundTransactionEntity(
+                UUID.randomUUID(),
+                fundAccountId,
+                FundTransactionType.DEBIT,
+                amount,
+                currency,
+                "DONATION_REVERSAL",
+                "Compensating debit for reversed donation " + donationId
+                        + (receiptNumber != null ? " (receipt " + receiptNumber + ")" : ""),
+                receiptNumber,
+                null,
+                createdBy,
+                Instant.now()
+        );
+        FundTransaction result = FundTransactionMapper.toDomain(fundTransactionRepo.save(entity));
+
+        FundAccountEntity account = fundAccountRepo.findById(fundAccountId).orElse(null);
+        if (account != null) {
+            BigDecimal balanceAfter = fundTransactionRepo.computeBalance(fundAccountId);
+            if (balanceAfter.compareTo(account.getMinReserve()) < 0) {
+                alertService.raise(
+                        account.getOrganisationId(),
+                        AlertType.FUND_BELOW_RESERVE,
+                        AlertSeverity.CRITICAL,
+                        "Fund balance below minimum reserve",
+                        String.format("Fund '%s' balance %s %s fell below minimum reserve of %s %s after a donation reversal.",
+                                account.getName(), balanceAfter.toPlainString(), account.getCurrency(),
+                                account.getMinReserve().toPlainString(), account.getCurrency()),
+                        fundAccountId, "FundAccount");
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Records a manual CREDIT to the fund (e.g. a cash donation received by admin).
      */
     @Transactional

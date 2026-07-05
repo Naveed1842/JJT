@@ -1,13 +1,17 @@
 package com.jjt.platform.api.publics.service;
 
+import com.jjt.platform.api.admin.service.AdminAlertService;
 import com.jjt.platform.application.usecase.CommitFutureSponsorshipUseCase;
 import com.jjt.platform.application.usecase.CreateSponsorUseCase;
+import com.jjt.platform.core.domain.entity.AlertSeverity;
+import com.jjt.platform.core.domain.entity.AlertType;
 import com.jjt.platform.core.domain.entity.Sponsor;
 import com.jjt.platform.core.domain.entity.Sponsorship;
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.exceptions.DomainException;
 import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import com.jjt.platform.core.domain.value.YearMonthValue;
+import com.jjt.platform.infrastructure.audit.AuditService;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorshipEntity;
 import com.jjt.platform.infrastructure.persistence.mapper.SponsorMapper;
@@ -31,13 +35,19 @@ public class PublicSponsorshipService {
     private final ChildJpaRepository childRepo;
     private final SponsorJpaRepository sponsorRepo;
     private final SponsorshipJpaRepository sponsorshipRepo;
+    private final AdminAlertService alertService;
+    private final AuditService auditService;
 
     public PublicSponsorshipService(ChildJpaRepository childRepo,
                                     SponsorJpaRepository sponsorRepo,
-                                    SponsorshipJpaRepository sponsorshipRepo) {
+                                    SponsorshipJpaRepository sponsorshipRepo,
+                                    AdminAlertService alertService,
+                                    AuditService auditService) {
         this.childRepo = childRepo;
         this.sponsorRepo = sponsorRepo;
         this.sponsorshipRepo = sponsorshipRepo;
+        this.alertService = alertService;
+        this.auditService = auditService;
     }
 
     @Transactional
@@ -78,6 +88,18 @@ public class PublicSponsorshipService {
                         false, Instant.now(), null, commitmentType, null));
         SponsorshipEntity sponsorshipEntity = SponsorshipMapper.toEntity(sponsorship, sponsorEntity, orgId);
         sponsorshipRepo.save(sponsorshipEntity);
+
+        // Notify admins: a public commitment sits PENDING until an admin activates it.
+        alertService.raise(orgId, AlertType.GENERAL, AlertSeverity.INFO,
+                "New sponsorship commitment: " + childEntity.getFullName(),
+                String.format("%s (%s) committed to sponsor %s (%s). Verify payment and activate the sponsorship.",
+                        sponsorName.trim(), sponsorEmail.trim(),
+                        childEntity.getFullName(), commitmentType.name()),
+                sponsorship.getId(), "Sponsorship");
+        auditService.log(orgId, "PUBLIC_SPONSORSHIP_COMMITTED", null, sponsorEmail.trim(),
+                "Sponsorship", sponsorship.getId(),
+                "Public sponsorship commitment by " + sponsorName.trim() + " for child "
+                        + childEntity.getFullName() + " starting " + startMonth.getValue());
 
         return sponsorship;
     }

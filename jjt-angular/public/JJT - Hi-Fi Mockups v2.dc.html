@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,ital,wght@6..72,0,400;6..72,0,500;6..72,0,600;6..72,1,400;6..72,1,500&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased;}
+</style>
+</helmet>
+
+<!-- ===== BOARD TITLE ===== -->
+<div style="position:absolute;left:0px;top:0px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">JJT · Product Design</div>
+  <div style="background:#1c352c;border-radius:6px;box-shadow:0 18px 40px -22px rgba(20,40,30,.5);padding:34px 42px;display:flex;justify-content:space-between;align-items:center;gap:40px;">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#9cc3b3;margin-bottom:10px;">Public pages · v2 · strategy applied</div>
+      <div style="font-family:'Newsreader',serif;font-weight:500;font-size:36px;line-height:1.05;color:#fdfaf3;letter-spacing:-.01em;">Put one child in school. Earn a reward that never ends.</div>
+    </div>
+    <div style="font-size:13px;color:#9cc3b3;text-align:right;line-height:1.6;max-width:330px;">Re-based to Pakistan · PKR · Islamic framing · trust proof · small-gift doors. Photos shown as placeholders — drop in real, dignified imagery.</div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 1 — LANDING                                            -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:0px;top:320px;width:1360px;">
+  <div data-drags-parent="1" data-screen-label="Landing" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">01 · Landing page</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <!-- nav -->
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:24px;margin-left:18px;font-size:14px;color:#54625b;"><span>Children</span><span>Why give</span><span>Trust</span><span>Stories</span></div>
+        <div style="margin-left:auto;display:flex;gap:18px;align-items:center;"><span style="font-size:14px;color:#2f5d4f;font-weight:600;">Give any amount</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <!-- hero -->
+      <div style="display:grid;grid-template-columns:1.05fr .95fr;gap:48px;padding:60px 40px 56px;align-items:center;">
+        <div>
+          <div style="display:inline-flex;align-items:center;gap:8px;background:#eef5f1;border:1px solid #cfe0d7;border-radius:100px;padding:6px 14px;margin-bottom:24px;"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span><span style="font-size:12.5px;color:#214a3e;font-weight:500;">Sadaqah Jariyah · the gift that keeps giving</span></div>
+          <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:52px;line-height:1.05;letter-spacing:-.015em;color:#1c352c;margin:0 0 20px;">Put one child in school. Earn a reward that never ends.</h1>
+          <p style="font-size:18px;line-height:1.6;color:#54625b;margin:0 0 30px;max-width:490px;">Right now in Pakistan, a child is hoping to stay in school this year. Your gift pays the fees, the books, the uniform, a warm meal — and you watch them grow, term by term. Every rupee is written in your book of good deeds.</p>
+          <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+            <span style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;padding:15px 28px;">Sponsor a child</span>
+            <span style="border:1px solid #cdc4b2;color:#1c352c;font-size:16px;font-weight:500;border-radius:10px;padding:15px 24px;">Give any amount →</span>
+          </div>
+          <div style="display:flex;gap:38px;margin-top:42px;">
+            <div><div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">3,100+</div><div style="font-size:13px;color:#8a958d;margin-top:2px;">children learning today</div></div>
+            <div><div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">87%</div><div style="font-size:13px;color:#8a958d;margin-top:2px;">of every rupee reaches a child</div></div>
+            <div><div style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">52</div><div style="font-size:13px;color:#8a958d;margin-top:2px;">partner schools</div></div>
+          </div>
+        </div>
+        <div style="border-radius:16px;height:470px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 11px,#e5dccb 11px,#e5dccb 22px);border:1px solid #e3dccd;display:flex;align-items:flex-end;justify-content:center;padding:18px;position:relative;">
+          <span style="position:absolute;top:18px;left:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;border-radius:5px;padding:4px 9px;">HERO PHOTO · child in class, warm &amp; candid</span>
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;width:100%;box-shadow:0 10px 24px -16px rgba(20,40,30,.4);">
+            <div style="width:44px;height:44px;border-radius:50%;background:repeating-linear-gradient(135deg,#dcd2bf,#dcd2bf 6px,#d3c8b2 6px,#d3c8b2 12px);border:1px solid #d3c8b2;flex-shrink:0;"></div>
+            <div style="flex:1;"><div style="font-weight:600;font-size:14px;color:#1c352c;">Ayesha, 9</div><div style="font-size:12.5px;color:#8a958d;">Grade 4 · Multan · "I love to read"</div></div>
+            <span style="background:#eef5f1;color:#214a3e;font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">Sponsored</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sadaqah Jariyah band -->
+      <sc-if value="{{ showSadaqah }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#1c352c;padding:54px 40px;text-align:center;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9cc3b3;margin-bottom:16px;">A charity that does not end</div>
+        <div style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;line-height:1.4;color:#fdfaf3;max-width:780px;margin:0 auto 14px;">"When a person dies, their deeds end — except three: ongoing charity, beneficial knowledge, and a righteous child who prays for them."</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9cc3b3;">Reported in Sahih Muslim · translation to be verified before launch</div>
+        <div style="font-size:15px;line-height:1.6;color:#cfe0d7;max-width:620px;margin:22px auto 0;">School fees are spent once. Knowledge keeps working. When you educate a child, your charity lives on — long after the day you gave it.</div>
+      </div>
+      </sc-if>
+
+      <!-- featured children -->
+      <div style="padding:56px 40px;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;"><h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0;">They are ready to learn. They are waiting for you.</h2><span style="font-size:14px;color:#2f5d4f;font-weight:600;">View all →</span></div>
+        <p style="font-size:15px;color:#6b7b73;margin:0 0 26px;">Every child here is real — our team has sat with their family and checked every detail. <strong style="color:#1c352c;">1,180 children</strong> are waiting for a sponsor today.</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
+          <!-- card a -->
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Bilal, 10</span><span style="background:#f1ece2;color:#8a7a5f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Seeking</span></div><div style="font-size:13px;color:#8a958d;">Grade 5 · Lahore</div><div style="font-size:13.5px;color:#54625b;font-style:italic;margin:8px 0 14px;">"I want to build bridges."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">from <strong style="color:#1c352c;">Rs 2,500</strong>/mo</span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+          <!-- card b zakat -->
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span><span style="position:absolute;top:12px;right:12px;background:#214a3e;color:#dff0e7;font-size:10px;font-weight:600;border-radius:100px;padding:4px 9px;">Zakat-eligible</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Ayesha, 9</span><span style="background:#fdf7ec;color:#8a5f1f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Bridged</span></div><div style="font-size:13px;color:#8a958d;">Grade 4 · Multan · orphan</div><div style="font-size:13.5px;color:#54625b;font-style:italic;margin:8px 0 14px;">"I love to read stories."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">from <strong style="color:#1c352c;">Rs 2,500</strong>/mo</span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+          <!-- card c -->
+          <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:170px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div>
+            <div style="padding:18px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Hassan, 11</span><span style="background:#f1ece2;color:#8a7a5f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;">Seeking</span></div><div style="font-size:13px;color:#8a958d;">Grade 6 · Karachi</div><div style="font-size:13.5px;color:#54625b;font-style:italic;margin:8px 0 14px;">"I want to be a teacher."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:13px;color:#54625b;">from <strong style="color:#1c352c;">Rs 2,500</strong>/mo</span><span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:7px;padding:8px 13px;">Sponsor</span></div></div>
+          </div>
+          <!-- give to fund card -->
+          <div style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:22px;display:flex;flex-direction:column;justify-content:center;">
+            <span style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Newsreader',serif;font-size:18px;margin-bottom:14px;">♡</span>
+            <div style="font-family:'Newsreader',serif;font-size:19px;color:#1c352c;line-height:1.2;margin-bottom:8px;">Can't choose just one?</div>
+            <div style="font-size:13.5px;line-height:1.55;color:#6b7b73;margin-bottom:16px;">Give whatever feels right — Rs 100 or Rs 10,000. We will use it where a child needs it most.</div>
+            <span style="background:#fffdf9;border:1px solid #cdc4b2;color:#1c352c;font-size:13.5px;font-weight:600;border-radius:8px;padding:11px 0;text-align:center;">Give any amount</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- how it works -->
+      <div style="background:#f3eee4;border-top:1px solid #e3dccd;padding:56px 40px;">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0 0 30px;">How sponsorship works</h2>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;">
+          <div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">01</div><div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Pick a child, or simply give</div><div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Read their stories and choose one child to walk with — or give to the fund and help wherever the need is greatest.</div></div>
+          <div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">02</div><div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Give with your intention</div><div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Tell us if it is Zakat or Sadaqah. Give monthly, yearly, or just once — and stop anytime, no questions asked.</div></div>
+          <div><div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">03</div><div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Watch them grow</div><div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Photos, report cards, little wins — you will see exactly what your giving is building, year after year.</div></div>
+        </div>
+      </div>
+
+      <!-- trust strip -->
+      <div style="padding:40px;border-top:1px solid #e3dccd;display:flex;align-items:center;justify-content:space-between;gap:30px;flex-wrap:wrap;">
+        <div style="display:flex;gap:36px;flex-wrap:wrap;">
+          <div style="display:flex;gap:11px;align-items:flex-start;"><span style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;margin-top:5px;"></span><div><div style="font-weight:600;font-size:14px;color:#1c352c;">Registered, audited, answerable</div><div style="font-size:12.5px;color:#8a958d;">Independent audit every year · report published</div></div></div>
+          <div style="display:flex;gap:11px;align-items:flex-start;"><span style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;margin-top:5px;"></span><div><div style="font-weight:600;font-size:14px;color:#1c352c;">87 of every 100 rupees reaches a child</div><div style="font-size:12.5px;color:#8a958d;">The full breakdown is public</div></div></div>
+          <div style="display:flex;gap:11px;align-items:flex-start;"><span style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;margin-top:5px;"></span><div><div style="font-weight:600;font-size:14px;color:#1c352c;">Your Zakat, kept sacred</div><div style="font-size:12.5px;color:#8a958d;">Separate account · scholar-guided</div></div></div>
+        </div>
+        <span style="font-size:14px;color:#2f5d4f;font-weight:600;">See exactly where your money goes →</span>
+      </div>
+
+      <!-- footer -->
+      <div style="background:#1c352c;padding:40px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+        <div style="display:flex;gap:24px;font-size:13.5px;color:#9cc3b3;"><span>Why give</span><span>Trust</span><span>Stories</span><span>FAQ</span><span>Contact</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 2 — BROWSE CHILDREN                                    -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:1480px;top:320px;width:1360px;">
+  <div data-drags-parent="1" data-screen-label="Browse" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">02 · Browse children</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/children</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:24px;margin-left:18px;font-size:14px;color:#54625b;"><span style="color:#2f5d4f;font-weight:600;">Children</span><span>Why give</span><span>Trust</span><span>Stories</span></div>
+        <div style="margin-left:auto;display:flex;gap:18px;align-items:center;"><span style="font-size:14px;color:#2f5d4f;font-weight:600;">Give any amount</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <div style="padding:40px 40px 24px;">
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:40px;color:#1c352c;margin:0 0 8px;letter-spacing:-.01em;">They are ready to learn. They are waiting for you.</h1>
+        <p style="font-size:16px;color:#6b7b73;margin:0;">Every child here is real — our team has sat with their family and checked every detail. <strong style="color:#1c352c;">1,180 children</strong> are waiting for a sponsor today.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:248px 1fr;gap:32px;padding:0 40px 48px;align-items:start;">
+        <!-- filters -->
+        <div style="border:1px solid #e3dccd;border-radius:14px;padding:22px;position:sticky;top:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Filter</span><span style="font-size:12.5px;color:#2f5d4f;">Reset</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Give with intention</div>
+          <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:22px;">
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;background:#2f5d4f;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;">✓</span>Zakat-eligible (orphans)</span>
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;"></span>Girls' education</span>
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;"></span>Most urgent need</span>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Status</div>
+          <div style="display:flex;flex-direction:column;gap:9px;font-size:13.5px;color:#3c4a43;margin-bottom:22px;">
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;"></span>Seeking sponsor</span>
+            <span style="display:flex;align-items:center;gap:9px;"><span style="width:16px;height:16px;border-radius:4px;border:1px solid #cdc4b2;"></span>Bridged by fund</span>
+          </div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Province</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px;"><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Punjab</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Sindh</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">KP</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Balochistan</span></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">School level</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;"><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Primary</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:5px 12px;font-size:12.5px;color:#54625b;">Secondary</span></div>
+        </div>
+
+        <!-- grid -->
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;"><span style="font-size:13.5px;color:#8a958d;">Showing 12 of 1,180</span><span style="font-size:13.5px;color:#54625b;border:1px solid #ddd5c5;border-radius:8px;padding:8px 14px;">Sort: Most urgent ▾</span></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;">Bilal, 10</div><div style="font-size:12.5px;color:#8a958d;">Grade 5 · Lahore</div><div style="font-size:13px;color:#54625b;font-style:italic;margin:7px 0 12px;">"I want to build bridges."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12.5px;color:#54625b;">from Rs 2,500/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span><span style="position:absolute;top:10px;right:10px;background:#214a3e;color:#dff0e7;font-size:9.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Zakat-eligible</span></div><div style="padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;">Ayesha, 9</div><div style="font-size:12.5px;color:#8a958d;">Grade 4 · Multan · orphan</div><div style="font-size:13px;color:#54625b;font-style:italic;margin:7px 0 12px;">"I love to read stories."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12.5px;color:#54625b;">from Rs 2,500/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;">Hassan, 11</div><div style="font-size:12.5px;color:#8a958d;">Grade 6 · Karachi</div><div style="font-size:13px;color:#54625b;font-style:italic;margin:7px 0 12px;">"I want to be a teacher."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12.5px;color:#54625b;">from Rs 2,500/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span></div><div style="padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;">Fatima, 8</div><div style="font-size:12.5px;color:#8a958d;">Grade 3 · Peshawar</div><div style="font-size:13px;color:#54625b;font-style:italic;margin:7px 0 12px;">"I want to be a doctor."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12.5px;color:#54625b;">from Rs 2,500/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;"><div style="height:150px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:3px 7px;">PHOTO</span><span style="position:absolute;top:10px;right:10px;background:#fdf7ec;color:#8a5f1f;font-size:9.5px;font-weight:600;border-radius:100px;padding:3px 8px;">Bridged</span></div><div style="padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;">Zainab, 12</div><div style="font-size:12.5px;color:#8a958d;">Class 7 · Hyderabad</div><div style="font-size:13px;color:#54625b;font-style:italic;margin:7px 0 12px;">"I love mathematics."</div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12.5px;color:#54625b;">from Rs 2,900/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:7px;padding:7px 12px;">Sponsor</span></div></div></div>
+            <div style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:18px;display:flex;flex-direction:column;justify-content:center;"><span style="width:30px;height:30px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Newsreader',serif;font-size:16px;margin-bottom:12px;">♡</span><div style="font-family:'Newsreader',serif;font-size:17px;color:#1c352c;line-height:1.2;margin-bottom:7px;">Not sure who to choose?</div><div style="font-size:12.5px;line-height:1.5;color:#6b7b73;margin-bottom:14px;">Any gift, big or small, keeps a child learning where the need is greatest.</div><span style="background:#fffdf9;border:1px solid #cdc4b2;color:#1c352c;font-size:12.5px;font-weight:600;border-radius:8px;padding:10px 0;text-align:center;">Give any amount</span></div>
+          </div>
+          <div style="display:flex;justify-content:center;margin-top:30px;"><span style="border:1px solid #cdc4b2;color:#1c352c;font-size:14px;font-weight:500;border-radius:10px;padding:13px 26px;">Meet more children</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 3 — CHILD PROFILE                                      -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:2960px;top:320px;width:1360px;">
+  <div data-drags-parent="1" data-screen-label="Child profile" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">03 · Child profile</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/children/bilal</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:24px;margin-left:18px;font-size:14px;color:#54625b;"><span style="color:#2f5d4f;font-weight:600;">Children</span><span>Why give</span><span>Trust</span><span>Stories</span></div>
+        <div style="margin-left:auto;display:flex;gap:18px;align-items:center;"><span style="font-size:14px;color:#2f5d4f;font-weight:600;">Give any amount</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <div style="padding:24px 40px 12px;font-size:13px;color:#8a958d;">Children &nbsp;›&nbsp; Bilal</div>
+
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:36px;padding:12px 40px 48px;align-items:start;">
+        <div>
+          <div style="border-radius:18px;height:420px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);border:1px solid #e3dccd;position:relative;margin-bottom:18px;"><span style="position:absolute;top:16px;left:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;border-radius:5px;padding:4px 9px;">PORTRAIT · Bilal</span></div>
+          <div style="display:flex;gap:10px;">
+            <div style="flex:1;height:80px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+            <div style="flex:1;height:80px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+            <div style="flex:1;height:80px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;"></div>
+          </div>
+
+          <!-- first-person quote -->
+          <div style="border-left:3px solid #2f5d4f;padding:6px 0 6px 22px;margin:34px 0 24px;"><div style="font-family:'Newsreader',serif;font-style:italic;font-size:24px;line-height:1.4;color:#1c352c;">"I want to be the first in my family to finish school — and one day build bridges."</div><div style="font-size:13px;color:#8a958d;margin-top:10px;">— Bilal, in his own words</div></div>
+
+          <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:0 0 12px;">Bilal's story</h2>
+          <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0 0 14px;">Bilal is ten, in Grade 5, and he loves mathematics. Every morning he walks half an hour to his school in Lahore — and he almost never misses a day.</p>
+          <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0;">His father earns day to day, so school fees do not always come easy. Every month, you give Bilal Bilal's fees, books, uniform and a warm meal each school day — and the Continuity Fund makes sure his learning never stops, even if a payment is late.</p>
+
+          <!-- selection basis -->
+          <div style="display:flex;gap:11px;align-items:flex-start;background:#f4faf6;border:1px solid #cfe0d7;border-radius:12px;padding:16px 18px;margin-top:24px;"><span style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;margin-top:5px;flex-shrink:0;"></span><div style="font-size:13.5px;line-height:1.55;color:#2f4a40;"><strong>How Bilal was chosen:</strong> by need, not by chance. Our team sat with his family and verified everything in person. <span style="color:#2f5d4f;font-weight:600;">See our selection process →</span></div></div>
+
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;margin-top:24px;background:#faf8f2;">
+            <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:16px;">What your gift gives Bilal, every month</div>
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;">
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>School tuition &amp; fees</div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>Books &amp; supplies</div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>Uniform &amp; shoes</div>
+              <div style="display:flex;gap:10px;align-items:center;font-size:14px;color:#3c4a43;"><span style="width:8px;height:8px;border-radius:50%;background:#2f5d4f;"></span>Daily school meal</div>
+            </div>
+          </div>
+
+          <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:38px 0 20px;">Progress timeline</h2>
+          <div style="border-left:2px solid #e3dccd;padding-left:24px;display:flex;flex-direction:column;gap:24px;">
+            <div style="position:relative;"><span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:#2f5d4f;border:2px solid #fffdf9;"></span><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;">MAR 2026 · TERM REPORT</div><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:4px;">Top of class in mathematics</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">Bilal scored 92% in his end-of-term maths exam with 96% attendance.</div></div>
+            <div style="position:relative;"><span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;background:#d99a4e;border:2px solid #fffdf9;"></span><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;">JAN 2026 · PHOTO UPDATE</div><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:4px;">New school year, new uniform</div><div style="font-size:14px;line-height:1.55;color:#6b7b73;">Bilal started Grade 5 with a fresh set of books and a big smile.</div></div>
+          </div>
+        </div>
+
+        <!-- sticky sponsor card -->
+        <div style="position:sticky;top:20px;">
+          <div style="border:1px solid #e3dccd;border-radius:16px;overflow:hidden;box-shadow:0 20px 40px -28px rgba(20,40,30,.4);">
+            <div style="padding:24px;background:#fffdf9;">
+              <div style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;">Bilal, 10</div><div style="font-size:13.5px;color:#8a958d;margin-top:2px;">Grade 5 · Lahore, Punjab</div>
+              <span style="display:inline-flex;align-items:center;gap:7px;background:#f1ece2;color:#8a7a5f;font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;margin-top:12px;"><span style="width:7px;height:7px;border-radius:50%;background:#9aa79f;"></span>Seeking sponsor</span>
+
+              <div style="display:flex;background:#f3eee4;border-radius:10px;padding:4px;margin:22px 0 16px;">
+                <span style="flex:1;text-align:center;background:#fffdf9;border:1px solid #e3dccd;color:#1c352c;font-weight:600;font-size:13.5px;border-radius:7px;padding:9px 0;">Monthly</span>
+                <span style="flex:1;text-align:center;color:#8a958d;font-size:13.5px;font-weight:500;padding:9px 0;">Yearly · save 10%</span>
+              </div>
+
+              <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:2px;"><span style="font-family:'Newsreader',serif;font-size:40px;color:#1c352c;">{{ heroPrice }}</span><span style="font-size:15px;color:#8a958d;">{{ heroPeriod }}</span></div>
+              <div style="font-size:13px;color:#8a958d;margin-bottom:18px;">{{ heroSub }}</div>
+
+              <div style="background:#2f5d4f;color:#fff;text-align:center;font-size:16px;font-weight:600;border-radius:10px;padding:15px 0;margin-bottom:10px;">Sponsor Bilal</div>
+              <div style="border:1px solid #cdc4b2;color:#1c352c;text-align:center;font-size:14px;font-weight:500;border-radius:10px;padding:12px 0;">Give a one-time gift</div>
+
+              <!-- what happens next -->
+              <div style="margin-top:20px;padding-top:18px;border-top:1px solid #efe9dd;">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">What happens after you sponsor</div>
+                <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.45;color:#54625b;">
+                  <div style="display:flex;gap:9px;"><span style="color:#2f5d4f;font-weight:700;">1.</span>A welcome from Bilal, right away.</div>
+                  <div style="display:flex;gap:9px;"><span style="color:#2f5d4f;font-weight:700;">2.</span>Your first photo update within 60 days.</div>
+                  <div style="display:flex;gap:9px;"><span style="color:#2f5d4f;font-weight:700;">3.</span>Report cards and progress, twice a year.</div>
+                </div>
+              </div>
+            </div>
+            <div style="background:#fdf7ec;border-top:1px solid #ecd6b0;padding:16px 24px;display:flex;gap:11px;align-items:flex-start;">
+              <span style="width:9px;height:9px;border-radius:50%;background:#d99a4e;margin-top:4px;flex-shrink:0;"></span>
+              <div style="font-size:12.5px;line-height:1.5;color:#8a6a38;">Protected by the <strong>Continuity Fund</strong> — if a payment is ever delayed, Bilal's education keeps going.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 4 — SPONSORSHIP / CHECKOUT                             -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:4440px;top:320px;width:1360px;">
+  <div data-drags-parent="1" data-screen-label="Checkout" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">04 · Sponsorship flow · checkout</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/sponsor/bilal</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <div style="display:flex;align-items:center;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <span style="margin-left:auto;font-size:13px;color:#8a958d;">Secure checkout 🔒</span>
+      </div>
+
+      <!-- stepper -->
+      <div style="display:flex;align-items:center;gap:0;padding:28px 40px;border-bottom:1px solid #efe9dd;">
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#2f5d4f;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">1</span><span style="font-size:14px;font-weight:600;color:#1c352c;">Intention</span></div>
+        <span style="flex:1;height:1px;background:#e3dccd;margin:0 14px;"></span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">2</span><span style="font-size:14px;color:#8a958d;">Plan</span></div>
+        <span style="flex:1;height:1px;background:#e3dccd;margin:0 14px;"></span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">3</span><span style="font-size:14px;color:#8a958d;">Account</span></div>
+        <span style="flex:1;height:1px;background:#e3dccd;margin:0 14px;"></span>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:26px;height:26px;border-radius:50%;background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;">4</span><span style="font-size:14px;color:#8a958d;">Payment</span></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:36px;padding:40px;align-items:start;">
+        <div>
+          <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:32px;color:#1c352c;margin:0 0 6px;letter-spacing:-.01em;">First, set your intention</h1>
+          <p style="font-size:15.5px;color:#6b7b73;margin:0 0 26px;">The Prophet ﷺ taught that deeds are by intentions. Tell us what this gift is, and we will handle it exactly as it should be.</p>
+
+          <!-- gift type -->
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">This gift is</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px;">
+            <div style="border:2px solid #2f5d4f;border-radius:12px;padding:16px;background:#f6faf7;"><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">Sadaqah</div><div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">A gift from the heart, any amount.</div></div>
+            <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">Zakat</div><div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Spent only on eligible children.</div></div>
+            <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;"><div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">General</div><div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">We use it where the need is greatest.</div></div>
+          </div>
+
+          <!-- plan -->
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">How often</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:26px;">
+            <div style="border:2px solid #2f5d4f;border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;background:#f6faf7;">
+              <span style="width:20px;height:20px;border-radius:50%;border:6px solid #2f5d4f;background:#fff;flex-shrink:0;"></span>
+              <div style="flex:1;"><div style="font-weight:600;font-size:16px;color:#1c352c;">Monthly</div><div style="font-size:13px;color:#6b7b73;">Billed monthly · cancel anytime</div></div>
+              <div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">Rs 2,500<span style="font-size:13px;color:#8a958d;">/mo</span></div>
+            </div>
+            <div style="display:flex;gap:12px;">
+              <div style="flex:1;border:1px solid #e3dccd;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:12px;"><span style="width:18px;height:18px;border-radius:50%;border:1px solid #cdc4b2;flex-shrink:0;"></span><div style="flex:1;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;">Yearly</div><div style="font-size:12px;color:#6b7b73;">Save 10%</div></div><div style="font-family:'Newsreader',serif;font-size:18px;color:#1c352c;">Rs 27,000</div></div>
+              <div style="flex:1;border:1px solid #e3dccd;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:12px;"><span style="width:18px;height:18px;border-radius:50%;border:1px solid #cdc4b2;flex-shrink:0;"></span><div style="flex:1;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;">One-time</div><div style="font-size:12px;color:#6b7b73;">Any amount</div></div><div style="font-family:'Newsreader',serif;font-size:18px;color:#1c352c;">Rs ___</div></div>
+            </div>
+          </div>
+
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">Pay with</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;"><span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Card</span><span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Bank transfer</span><span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">JazzCash</span><span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Easypaisa</span></div>
+
+          <div style="display:flex;gap:14px;align-items:center;">
+            <span style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;padding:15px 32px;">Continue →</span>
+            <span style="font-size:14px;color:#8a958d;">Step 1 of 4</span>
+          </div>
+        </div>
+
+        <!-- order summary -->
+        <div style="position:sticky;top:20px;">
+          <div style="border:1px solid #e3dccd;border-radius:16px;overflow:hidden;">
+            <div style="padding:22px;border-bottom:1px solid #efe9dd;">
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:16px;">You're sponsoring</div>
+              <div style="display:flex;gap:14px;align-items:center;">
+                <div style="width:56px;height:56px;border-radius:12px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 7px,#e5dccb 7px,#e5dccb 14px);border:1px solid #e3dccd;flex-shrink:0;"></div>
+                <div><div style="font-weight:600;font-size:16px;color:#1c352c;">Bilal, 10</div><div style="font-size:13px;color:#8a958d;">Grade 5 · Lahore</div></div>
+              </div>
+            </div>
+            <div style="padding:22px;">
+              <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:12px;"><span>Intention</span><span style="color:#1c352c;font-weight:600;">Sadaqah</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:12px;"><span>Monthly sponsorship</span><span>Rs 2,500</span></div>
+              <div style="height:1px;background:#efe9dd;margin:14px 0;"></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Due today</span><span style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">Rs 2,500</span></div>
+              <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">Then Rs 2,500/month · ≈ $9</div>
+            </div>
+            <div style="background:#fdf7ec;border-top:1px solid #ecd6b0;padding:16px 22px;display:flex;gap:11px;align-items:flex-start;">
+              <span style="width:9px;height:9px;border-radius:50%;background:#d99a4e;margin-top:4px;flex-shrink:0;"></span>
+              <div style="font-size:12.5px;line-height:1.5;color:#8a6a38;">A portion supports the <strong>Continuity Fund</strong>, protecting every sponsored child from gaps.</div>
+            </div>
+          </div>
+          <!-- intention / du'a confirmation preview -->
+          <div style="margin-top:16px;background:#1c352c;border-radius:16px;padding:22px;">
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#9cc3b3;margin-bottom:10px;">After you give</div>
+            <div style="font-family:'Newsreader',serif;font-style:italic;font-size:17px;line-height:1.45;color:#fdfaf3;">"May Allah accept your sadaqah and make it a continuing reward."</div>
+            <div style="font-size:12px;color:#9cc3b3;margin-top:10px;">A quiet thank-you — and nothing else.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 5 — TRUST & TRANSPARENCY (NEW)                         -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:5920px;top:320px;width:1360px;">
+  <div data-drags-parent="1" data-screen-label="Trust" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">05 · Trust &amp; transparency · NEW</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/trust</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:24px;margin-left:18px;font-size:14px;color:#54625b;"><span>Children</span><span>Why give</span><span style="color:#2f5d4f;font-weight:600;">Trust</span><span>Stories</span></div>
+        <div style="margin-left:auto;display:flex;gap:18px;align-items:center;"><span style="font-size:14px;color:#2f5d4f;font-weight:600;">Give any amount</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <div style="padding:56px 40px 36px;max-width:760px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#b07d3a;margin-bottom:14px;">Trust, before we ask</div>
+        <h1 style="font-family:'Newsreader',serif;font-weight:500;font-size:42px;line-height:1.08;color:#1c352c;margin:0 0 16px;letter-spacing:-.01em;">Your amanah, handled with care.</h1>
+        <p style="font-size:17px;line-height:1.65;color:#54625b;margin:0;">When you give, you place a trust — an amanah — in our hands. Here is where every rupee goes, how we choose each child, and who checks our work. Plain words, real documents.</p>
+      </div>
+
+      <!-- where money goes -->
+      <div style="padding:0 40px 40px;">
+        <div style="display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;background:#f3eee4;border:1px solid #e3dccd;border-radius:16px;padding:34px;">
+          <div>
+            <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:0 0 18px;">Where every 100 rupees goes</h2>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;color:#3c4a43;margin-bottom:6px;"><span>Directly to children's education</span><strong>87%</strong></div><div style="height:8px;background:#e0d8c8;border-radius:4px;overflow:hidden;"><div style="width:87%;height:100%;background:#2f5d4f;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;color:#3c4a43;margin-bottom:6px;"><span>Field operations &amp; verification</span><strong>9%</strong></div><div style="height:8px;background:#e0d8c8;border-radius:4px;overflow:hidden;"><div style="width:9%;height:100%;background:#7da08f;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:14px;color:#3c4a43;margin-bottom:6px;"><span>Administration</span><strong>4%</strong></div><div style="height:8px;background:#e0d8c8;border-radius:4px;overflow:hidden;"><div style="width:4%;height:100%;background:#d99a4e;"></div></div></div>
+            </div>
+          </div>
+          <div style="background:#fffdf9;border:1px solid #e3dccd;border-radius:14px;padding:24px;"><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:10px;">VERIFIED BY</div><div style="font-size:14.5px;line-height:1.6;color:#54625b;">These figures come straight from our latest audited annual report.</div><span style="display:inline-block;margin-top:14px;font-size:13.5px;color:#2f5d4f;font-weight:600;">Download the report (PDF) →</span></div>
+        </div>
+      </div>
+
+      <!-- four trust answers -->
+      <div style="padding:0 40px 48px;">
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;">
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;"><div style="font-weight:600;font-size:17px;color:#1c352c;margin-bottom:8px;">How are children selected?</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">We look for the families who need help most. Partner schools point us to them, and our own team visits each home before a child ever appears on this site.</div></div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;"><div style="font-weight:600;font-size:17px;color:#1c352c;margin-bottom:8px;">How is Zakat handled?</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">Zakat is kept in its own account and spent only on children who qualify, with the guidance of qualified scholars.</div></div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;"><div style="font-weight:600;font-size:17px;color:#1c352c;margin-bottom:8px;">Can I see progress?</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">Yes. Twice a year you receive photos, report cards and attendance for your child.</div></div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:24px;"><div style="font-weight:600;font-size:17px;color:#1c352c;margin-bottom:8px;">Who governs JJT?</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">A registered board, published accounts, and an outside audit every year. Our registration number sits at the bottom of every page.</div></div>
+        </div>
+      </div>
+
+      <div style="background:#1c352c;padding:40px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+        <div style="display:flex;gap:24px;font-size:13.5px;color:#9cc3b3;"><span>Reg. no. ·········</span><span>Annual report</span><span>Contact</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCREEN 6 — WHY EDUCATE A CHILD (NEW)                          -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:7400px;top:320px;width:1360px;">
+  <div data-drags-parent="1" data-screen-label="Why give" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">06 · Why educate a child · NEW</div>
+  <div style="border-radius:12px;box-shadow:0 1px 3px rgba(20,40,30,.08),0 30px 70px -40px rgba(20,40,30,.45);overflow:hidden;">
+    <div style="background:#ece7dc;padding:11px 16px;display:flex;align-items:center;gap:8px;border:1px solid #e3dccd;border-bottom:none;">
+      <span style="width:11px;height:11px;border-radius:50%;background:#d7b9a8;"></span><span style="width:11px;height:11px;border-radius:50%;background:#e3d3ab;"></span><span style="width:11px;height:11px;border-radius:50%;background:#bcd0c0;"></span>
+      <div style="margin-left:14px;background:#fffdf9;border:1px solid #ddd5c5;border-radius:6px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;">jjt.org/why-give</div>
+    </div>
+    <div style="background:#fffdf9;border:1px solid #e3dccd;border-top:none;">
+      <div style="display:flex;align-items:center;gap:16px;padding:20px 40px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:24px;margin-left:18px;font-size:14px;color:#54625b;"><span>Children</span><span style="color:#2f5d4f;font-weight:600;">Why give</span><span>Trust</span><span>Stories</span></div>
+        <div style="margin-left:auto;display:flex;gap:18px;align-items:center;"><span style="font-size:14px;color:#2f5d4f;font-weight:600;">Give any amount</span><span style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;padding:10px 18px;">Sponsor a child</span></div>
+      </div>
+
+      <!-- hero verse -->
+      <div style="background:#1c352c;padding:64px 40px;text-align:center;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9cc3b3;margin-bottom:18px;">Why educate a child?</div>
+        <div style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;line-height:1.4;color:#fdfaf3;max-width:800px;margin:0 auto 14px;">"The likeness of those who spend their wealth in the way of Allah is as the likeness of a grain that grows seven ears, in every ear a hundred grains."</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9cc3b3;">Surah Al-Baqarah, 2:261 · translation to be verified before launch</div>
+      </div>
+
+      <!-- three pillars -->
+      <div style="padding:56px 40px;">
+        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0 0 8px;">One gift. Three rewards.</h2>
+        <p style="font-size:15px;color:#6b7b73;margin:0 0 30px;max-width:640px;">References below are well-known and authentic; exact wording will be confirmed against an approved translation and reviewed by a qualified scholar before publishing.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:26px;background:#faf8f2;"><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#b07d3a;margin-bottom:12px;">01 · ONGOING CHARITY</div><div style="font-family:'Newsreader',serif;font-size:20px;color:#1c352c;margin-bottom:8px;">Sadaqah Jariyah</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">When a person dies, their deeds end — except a few. Ongoing charity and beneficial knowledge are two of them. Education is both. <span style="color:#8a958d;">— Sahih Muslim</span></div></div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:26px;background:#faf8f2;"><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#b07d3a;margin-bottom:12px;">02 · CARING FOR ORPHANS</div><div style="font-family:'Newsreader',serif;font-size:20px;color:#1c352c;margin-bottom:8px;">Standing beside the orphan</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">The Prophet ﷺ said the one who cares for an orphan will be close to him in Paradise — like two fingers held together. <span style="color:#8a958d;">— Sahih al-Bukhari</span></div></div>
+          <div style="border:1px solid #e3dccd;border-radius:14px;padding:26px;background:#faf8f2;"><div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#b07d3a;margin-bottom:12px;">03 · GIVING DOES NOT DIMINISH</div><div style="font-family:'Newsreader',serif;font-size:20px;color:#1c352c;margin-bottom:8px;">Wealth is not decreased by charity</div><div style="font-size:14px;line-height:1.6;color:#6b7b73;">Giving does not make you poorer. The Prophet ﷺ taught that charity never decreases wealth. <span style="color:#8a958d;">— Sahih Muslim</span></div></div>
+        </div>
+      </div>
+
+      <!-- every amount matters -->
+      <div style="background:#f3eee4;border-top:1px solid #e3dccd;padding:54px 40px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;">
+          <div>
+            <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 14px;">No gift is too small</h2>
+            <p style="font-size:16px;line-height:1.65;color:#54625b;margin:0 0 20px;">Not everyone can sponsor a whole child — and that is okay. Your Rs 100 joins someone else's Rs 100, and together a child stays in school. In the sight of Allah, no sincere gift is small.</p>
+            <div style="display:flex;gap:12px;align-items:center;"><span style="background:#2f5d4f;color:#fff;font-size:15px;font-weight:600;border-radius:10px;padding:13px 24px;">Give any amount</span><span style="font-size:14px;color:#2f5d4f;font-weight:600;">Or sponsor a child →</span></div>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;padding:20px;text-align:center;"><div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">Rs 100</div><div style="font-size:12.5px;color:#8a958d;margin-top:4px;">a week of meals</div></div>
+            <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;padding:20px;text-align:center;"><div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">Rs 500</div><div style="font-size:12.5px;color:#8a958d;margin-top:4px;">books for a term</div></div>
+            <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;padding:20px;text-align:center;"><div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">Rs 2,500</div><div style="font-size:12.5px;color:#8a958d;margin-top:4px;">a month in school</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#1c352c;padding:40px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+        <div style="display:flex;gap:24px;font-size:13.5px;color:#9cc3b3;"><span>Why give</span><span>Trust</span><span>Stories</span><span>FAQ</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- MOBILE ROW — PUBLIC PAGES @ 390px                             -->
+<!-- ============================================================ -->
+<div style="position:absolute;left:0px;top:3360px;width:1360px;">
+  <div data-drags-parent="1" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">Mobile · all public pages · 390px</div>
+  <div style="background:#1c352c;border-radius:6px;padding:26px 34px;display:flex;justify-content:space-between;align-items:center;gap:30px;">
+    <div style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;color:#fdfaf3;">The same pages, rebuilt for one thumb.</div>
+    <div style="font-size:12.5px;color:#9cc3b3;line-height:1.6;max-width:520px;">Hamburger nav + persistent Sponsor button · 48px touch targets · horizontal card rails · filters in a bottom sheet · sticky sponsor bar on profiles · single-column checkout with a collapsed summary.</div>
+  </div>
+</div>
+
+<!-- M1 · LANDING -->
+<div style="position:absolute;left:0px;top:3520px;width:390px;">
+  <div data-drags-parent="1" data-screen-label="Mobile Landing" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">M1 · Landing</div>
+  <div style="background:#1c352c;border-radius:40px;padding:10px;box-shadow:0 30px 60px -38px rgba(20,40,30,.6);">
+    <div style="background:#fffdf9;border-radius:31px;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;"><span style="font-size:12px;font-weight:600;color:#1c352c;">9:41</span><span style="width:74px;height:22px;border-radius:100px;background:#1c352c;"></span><span style="font-size:11px;color:#1c352c;">●●●</span></div>
+      <!-- nav -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:20px;color:#1c352c;">JJT</span>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span style="background:#2f5d4f;color:#fff;font-size:13px;font-weight:600;border-radius:8px;padding:10px 14px;">Sponsor a child</span>
+          <span style="width:44px;height:44px;border:1px solid #e3dccd;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;"><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span></span>
+        </div>
+      </div>
+      <!-- hero -->
+      <div style="padding:26px 18px 8px;">
+        <div style="display:inline-flex;align-items:center;gap:7px;background:#eef5f1;border:1px solid #cfe0d7;border-radius:100px;padding:5px 12px;margin-bottom:16px;"><span style="width:6px;height:6px;border-radius:50%;background:#2f5d4f;"></span><span style="font-size:11.5px;color:#214a3e;font-weight:500;">Sadaqah Jariyah</span></div>
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:33px;line-height:1.08;letter-spacing:-.015em;color:#1c352c;margin-bottom:14px;">Put one child in school. Earn a reward that never ends.</div>
+        <div style="font-size:15px;line-height:1.6;color:#54625b;margin-bottom:20px;">A child in Pakistan is hoping to stay in school this year. Your gift keeps them learning — and you watch them grow.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+          <span style="background:#2f5d4f;color:#fff;font-size:15.5px;font-weight:600;border-radius:12px;padding:16px 0;text-align:center;">Sponsor a child</span>
+          <span style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:12px;padding:15px 0;text-align:center;">Give any amount →</span>
+        </div>
+        <div style="border-radius:14px;height:190px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);border:1px solid #e3dccd;position:relative;margin-bottom:18px;"><span style="position:absolute;top:12px;left:12px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;border-radius:4px;padding:3px 8px;">HERO PHOTO</span></div>
+        <div style="display:flex;justify-content:space-between;padding:0 4px 4px;">
+          <div><div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;">3,100+</div><div style="font-size:11px;color:#8a958d;">in school</div></div>
+          <div><div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;">87%</div><div style="font-size:11px;color:#8a958d;">reaches a child</div></div>
+          <div><div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;">52</div><div style="font-size:11px;color:#8a958d;">schools</div></div>
+        </div>
+      </div>
+      <!-- sadaqah band -->
+      <div style="background:#1c352c;padding:34px 22px;text-align:center;margin-top:16px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#9cc3b3;margin-bottom:12px;">A charity that does not end</div>
+        <div style="font-family:'Newsreader',serif;font-style:italic;font-size:19px;line-height:1.5;color:#fdfaf3;">"When a person dies, their deeds end — except three: ongoing charity, beneficial knowledge, and a righteous child who prays for them."</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9cc3b3;margin-top:10px;">Sahih Muslim</div>
+      </div>
+      <!-- featured rail -->
+      <div style="padding:30px 0 8px;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 18px;margin-bottom:4px;"><span style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;">Ready to learn</span><span style="font-size:13px;color:#2f5d4f;font-weight:600;">View all →</span></div>
+        <div style="font-size:13px;color:#6b7b73;padding:0 18px;margin-bottom:14px;"><strong style="color:#1c352c;">1,180 children</strong> waiting for a sponsor.</div>
+        <div style="display:flex;gap:12px;padding:0 18px;overflow:hidden;">
+          <div style="flex:0 0 210px;border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:120px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;left:10px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#a99e88;background:#fffdf9;border-radius:4px;padding:2px 6px;">PHOTO</span></div>
+            <div style="padding:14px;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;">Bilal, 10</div><div style="font-size:11.5px;color:#8a958d;margin-bottom:10px;">Grade 5 · Lahore</div><span style="display:block;background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:8px;padding:10px 0;text-align:center;">Sponsor · Rs 2,500/mo</span></div>
+          </div>
+          <div style="flex:0 0 210px;border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
+            <div style="height:120px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);position:relative;"><span style="position:absolute;top:10px;right:10px;background:#214a3e;color:#dff0e7;font-size:9px;font-weight:600;border-radius:100px;padding:3px 7px;">Zakat-eligible</span></div>
+            <div style="padding:14px;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;">Ayesha, 9</div><div style="font-size:11.5px;color:#8a958d;margin-bottom:10px;">Grade 4 · Multan</div><span style="display:block;background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:8px;padding:10px 0;text-align:center;">Sponsor · Rs 2,500/mo</span></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;justify-content:center;margin-top:14px;"><span style="width:16px;height:5px;border-radius:100px;background:#2f5d4f;"></span><span style="width:5px;height:5px;border-radius:50%;background:#d8d0bf;"></span><span style="width:5px;height:5px;border-radius:50%;background:#d8d0bf;"></span></div>
+      </div>
+      <!-- how it works stacked -->
+      <div style="background:#f3eee4;border-top:1px solid #e3dccd;padding:30px 18px;margin-top:20px;">
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin-bottom:18px;">How sponsorship works</div>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;gap:14px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#b07d3a;flex-shrink:0;margin-top:2px;">01</span><div><div style="font-weight:600;font-size:15px;color:#1c352c;">Pick a child, or simply give</div><div style="font-size:13px;line-height:1.5;color:#6b7b73;margin-top:3px;">Read their stories, choose one child — or give to the fund.</div></div></div>
+          <div style="display:flex;gap:14px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#b07d3a;flex-shrink:0;margin-top:2px;">02</span><div><div style="font-weight:600;font-size:15px;color:#1c352c;">Give with your intention</div><div style="font-size:13px;line-height:1.5;color:#6b7b73;margin-top:3px;">Zakat or Sadaqah · monthly, yearly, or once.</div></div></div>
+          <div style="display:flex;gap:14px;"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#b07d3a;flex-shrink:0;margin-top:2px;">03</span><div><div style="font-weight:600;font-size:15px;color:#1c352c;">Watch them grow</div><div style="font-size:13px;line-height:1.5;color:#6b7b73;margin-top:3px;">Photos, report cards, little wins — year after year.</div></div></div>
+        </div>
+      </div>
+      <div style="background:#1c352c;padding:26px 18px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Newsreader',serif;font-weight:600;font-size:18px;color:#fdfaf3;">JJT</span><span style="font-size:12px;color:#9cc3b3;">Trust · Stories · FAQ</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- M2 · BROWSE -->
+<div style="position:absolute;left:470px;top:3520px;width:390px;">
+  <div data-drags-parent="1" data-screen-label="Mobile Browse" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">M2 · Browse + filter sheet</div>
+  <div style="background:#1c352c;border-radius:40px;padding:10px;box-shadow:0 30px 60px -38px rgba(20,40,30,.6);">
+    <div style="background:#fffdf9;border-radius:31px;overflow:hidden;position:relative;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;"><span style="font-size:12px;font-weight:600;color:#1c352c;">9:41</span><span style="width:74px;height:22px;border-radius:100px;background:#1c352c;"></span><span style="font-size:11px;color:#1c352c;">●●●</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:20px;color:#1c352c;">JJT</span>
+        <span style="width:44px;height:44px;border:1px solid #e3dccd;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;"><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span></span>
+      </div>
+      <div style="padding:22px 18px 10px;">
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;line-height:1.15;color:#1c352c;margin-bottom:6px;">Ready to learn. Waiting for you.</div>
+        <div style="font-size:13.5px;color:#6b7b73;"><strong style="color:#1c352c;">1,180 children</strong> waiting for a sponsor today.</div>
+      </div>
+      <!-- filter bar -->
+      <div style="display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid #efe9dd;overflow:hidden;">
+        <span style="display:inline-flex;align-items:center;gap:7px;background:#2f5d4f;color:#fff;font-size:12.5px;font-weight:600;border-radius:100px;padding:10px 16px;flex-shrink:0;">⛭ Filter · 1</span>
+        <span style="border:1px solid #2f5d4f;background:#eef5f1;color:#214a3e;font-size:12.5px;font-weight:600;border-radius:100px;padding:10px 14px;flex-shrink:0;">Zakat ✓</span>
+        <span style="border:1px solid #cdc4b2;color:#54625b;font-size:12.5px;border-radius:100px;padding:10px 14px;flex-shrink:0;">Girls</span>
+        <span style="border:1px solid #cdc4b2;color:#54625b;font-size:12.5px;border-radius:100px;padding:10px 14px;flex-shrink:0;">Urgent</span>
+      </div>
+      <!-- list cards -->
+      <div style="padding:14px 18px;display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;gap:14px;border:1px solid #e3dccd;border-radius:14px;padding:12px;background:#fffdf9;">
+          <div style="width:86px;height:86px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Bilal, 10</span><span style="background:#f1ece2;color:#8a7a5f;font-size:10px;font-weight:600;border-radius:100px;padding:3px 8px;">Seeking</span></div><div style="font-size:12px;color:#8a958d;">Grade 5 · Lahore</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;"><span style="font-size:12px;color:#54625b;">Rs 2,500/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12px;font-weight:600;border-radius:7px;padding:8px 14px;">Sponsor</span></div></div>
+        </div>
+        <div style="display:flex;gap:14px;border:1px solid #e3dccd;border-radius:14px;padding:12px;background:#fffdf9;">
+          <div style="width:86px;height:86px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;flex-shrink:0;"></div>
+          <div style="flex:1;min-width:0;"><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-weight:600;font-size:15px;color:#1c352c;">Ayesha, 9</span><span style="background:#214a3e;color:#dff0e7;font-size:10px;font-weight:600;border-radius:100px;padding:3px 8px;">Zakat</span></div><div style="font-size:12px;color:#8a958d;">Grade 4 · Multan · orphan</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;"><span style="font-size:12px;color:#54625b;">Rs 2,500/mo</span><span style="background:#2f5d4f;color:#fff;font-size:12px;font-weight:600;border-radius:7px;padding:8px 14px;">Sponsor</span></div></div>
+        </div>
+        <div style="display:flex;gap:14px;border:1px solid #e3dccd;border-radius:14px;padding:12px;background:#fffdf9;opacity:.55;">
+          <div style="width:86px;height:86px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 8px,#e5dccb 8px,#e5dccb 16px);border:1px solid #e3dccd;flex-shrink:0;"></div>
+          <div style="flex:1;"><div style="font-weight:600;font-size:15px;color:#1c352c;">Hassan, 11</div><div style="font-size:12px;color:#8a958d;">Grade 6 · Karachi</div></div>
+        </div>
+      </div>
+      <!-- bottom sheet -->
+      <div style="position:absolute;inset:0;background:rgba(28,42,35,.35);border-radius:31px;"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fffdf9;border-radius:24px 24px 31px 31px;padding:14px 18px 20px;box-shadow:0 -16px 40px -20px rgba(20,40,30,.5);">
+        <div style="display:flex;justify-content:center;margin-bottom:12px;"><span style="width:44px;height:5px;border-radius:100px;background:#ddd5c5;"></span></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><span style="font-weight:600;font-size:16px;color:#1c352c;">Filter</span><span style="font-size:13px;color:#2f5d4f;font-weight:600;">Reset</span></div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Give with intention</div>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:14px;color:#3c4a43;margin-bottom:18px;">
+          <span style="display:flex;align-items:center;gap:11px;"><span style="width:22px;height:22px;border-radius:6px;background:#2f5d4f;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:13px;">✓</span>Zakat-eligible (orphans)</span>
+          <span style="display:flex;align-items:center;gap:11px;"><span style="width:22px;height:22px;border-radius:6px;border:1px solid #cdc4b2;"></span>Girls' education</span>
+          <span style="display:flex;align-items:center;gap:11px;"><span style="width:22px;height:22px;border-radius:6px;border:1px solid #cdc4b2;"></span>Most urgent need</span>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Province</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;"><span style="border:1px solid #cdc4b2;border-radius:100px;padding:9px 15px;font-size:12.5px;color:#54625b;">Punjab</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:9px 15px;font-size:12.5px;color:#54625b;">Sindh</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:9px 15px;font-size:12.5px;color:#54625b;">KP</span><span style="border:1px solid #cdc4b2;border-radius:100px;padding:9px 15px;font-size:12.5px;color:#54625b;">Balochistan</span></div>
+        <span style="display:block;background:#2f5d4f;color:#fff;font-size:15px;font-weight:600;border-radius:12px;padding:15px 0;text-align:center;">Show 214 children</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M3 · PROFILE -->
+<div style="position:absolute;left:940px;top:3520px;width:390px;">
+  <div data-drags-parent="1" data-screen-label="Mobile Profile" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">M3 · Child profile + sticky bar</div>
+  <div style="background:#1c352c;border-radius:40px;padding:10px;box-shadow:0 30px 60px -38px rgba(20,40,30,.6);">
+    <div style="background:#fffdf9;border-radius:31px;overflow:hidden;position:relative;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;"><span style="font-size:12px;font-weight:600;color:#1c352c;">9:41</span><span style="width:74px;height:22px;border-radius:100px;background:#1c352c;"></span><span style="font-size:11px;color:#1c352c;">●●●</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #efe9dd;">
+        <span style="display:flex;align-items:center;gap:10px;"><span style="width:34px;height:34px;border:1px solid #e3dccd;border-radius:9px;display:flex;align-items:center;justify-content:center;color:#1c352c;">‹</span><span style="font-size:13px;color:#8a958d;">Children</span></span>
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:20px;color:#1c352c;">JJT</span>
+      </div>
+      <div style="border-radius:0;height:230px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);position:relative;"><span style="position:absolute;top:14px;left:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;border-radius:4px;padding:3px 8px;">PORTRAIT · Bilal</span></div>
+      <div style="padding:20px 18px 8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;">Bilal, 10</span><span style="background:#f1ece2;color:#8a7a5f;font-size:11px;font-weight:600;border-radius:100px;padding:4px 10px;">Seeking</span></div>
+        <div style="font-size:13px;color:#8a958d;margin-top:2px;">Grade 5 · Lahore, Punjab</div>
+        <div style="border-left:3px solid #2f5d4f;padding:4px 0 4px 16px;margin:18px 0;"><div style="font-family:'Newsreader',serif;font-style:italic;font-size:17px;line-height:1.45;color:#1c352c;">"I want to be the first in my family to finish school — and one day build bridges."</div></div>
+        <div style="font-size:14px;line-height:1.65;color:#54625b;">Bilal is ten and loves mathematics. He walks half an hour to school and almost never misses a day. His father earns day to day, so fees do not always come easy.</div>
+        <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;margin-top:16px;background:#faf8f2;">
+          <div style="font-weight:600;font-size:14px;color:#1c352c;margin-bottom:12px;">Every month, you give Bilal</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;color:#3c4a43;">
+            <span style="display:flex;gap:8px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span>Tuition &amp; fees</span>
+            <span style="display:flex;gap:8px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span>Books</span>
+            <span style="display:flex;gap:8px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span>Uniform</span>
+            <span style="display:flex;gap:8px;align-items:center;"><span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span>Daily meal</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:11px;align-items:flex-start;background:#fdf7ec;border:1px solid #ecd6b0;border-radius:12px;padding:13px 15px;margin:14px 0 90px;"><span style="width:8px;height:8px;border-radius:50%;background:#d99a4e;margin-top:5px;flex-shrink:0;"></span><div style="font-size:12px;line-height:1.5;color:#8a6a38;">Protected by the <strong>Continuity Fund</strong> — education never lapses between payments.</div></div>
+      </div>
+      <!-- sticky sponsor bar -->
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fffdf9;border-top:1px solid #e3dccd;border-radius:0 0 31px 31px;padding:14px 18px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 -12px 30px -18px rgba(20,40,30,.4);">
+        <div><div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;line-height:1;">Rs 2,500<span style="font-size:12px;color:#8a958d;">/mo</span></div><div style="font-size:11px;color:#8a958d;margin-top:3px;">≈ $9 · cancel anytime</div></div>
+        <span style="flex:1;background:#2f5d4f;color:#fff;font-size:15px;font-weight:600;border-radius:12px;padding:16px 0;text-align:center;">Sponsor Bilal</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M4 · CHECKOUT -->
+<div style="position:absolute;left:1410px;top:3520px;width:390px;">
+  <div data-drags-parent="1" data-screen-label="Mobile Checkout" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">M4 · Checkout · single column</div>
+  <div style="background:#1c352c;border-radius:40px;padding:10px;box-shadow:0 30px 60px -38px rgba(20,40,30,.6);">
+    <div style="background:#fffdf9;border-radius:31px;overflow:hidden;position:relative;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;"><span style="font-size:12px;font-weight:600;color:#1c352c;">9:41</span><span style="width:74px;height:22px;border-radius:100px;background:#1c352c;"></span><span style="font-size:11px;color:#1c352c;">●●●</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:20px;color:#1c352c;">JJT</span>
+        <span style="font-size:12px;color:#8a958d;">Secure checkout 🔒</span>
+      </div>
+      <!-- progress -->
+      <div style="padding:16px 18px 0;">
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#8a958d;margin-bottom:8px;"><span style="color:#1c352c;font-weight:600;">Step 1 of 4 · Intention</span><span>Plan · Account · Payment</span></div>
+        <div style="height:5px;background:#efe9dd;border-radius:100px;overflow:hidden;"><div style="width:25%;height:100%;background:#2f5d4f;"></div></div>
+      </div>
+      <!-- collapsed summary -->
+      <div style="margin:16px 18px 0;border:1px solid #e3dccd;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;background:#faf8f2;">
+        <div style="width:42px;height:42px;border-radius:10px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 7px,#e5dccb 7px,#e5dccb 14px);border:1px solid #e3dccd;flex-shrink:0;"></div>
+        <div style="flex:1;"><div style="font-weight:600;font-size:13.5px;color:#1c352c;">Sponsoring Bilal, 10</div><div style="font-size:11.5px;color:#8a958d;">Rs 2,500/month · Sadaqah</div></div>
+        <span style="font-size:12px;color:#2f5d4f;font-weight:600;">Details ⌄</span>
+      </div>
+      <div style="padding:22px 18px 8px;">
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;color:#1c352c;margin-bottom:4px;">First, set your intention</div>
+        <div style="font-size:13.5px;color:#6b7b73;margin-bottom:18px;">Deeds are by intentions — tell us what this gift is.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px;">
+          <div style="border:2px solid #2f5d4f;border-radius:12px;padding:14px 16px;background:#f6faf7;display:flex;align-items:center;gap:12px;"><span style="width:20px;height:20px;border-radius:50%;border:6px solid #2f5d4f;background:#fff;flex-shrink:0;"></span><div><div style="font-weight:600;font-size:14.5px;color:#1c352c;">Sadaqah</div><div style="font-size:12px;color:#6b7b73;">A gift from the heart, any amount.</div></div></div>
+          <div style="border:1px solid #e3dccd;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;"><span style="width:18px;height:18px;border-radius:50%;border:1px solid #cdc4b2;flex-shrink:0;"></span><div><div style="font-weight:600;font-size:14.5px;color:#1c352c;">Zakat</div><div style="font-size:12px;color:#6b7b73;">Spent only on eligible children.</div></div></div>
+          <div style="border:1px solid #e3dccd;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;"><span style="width:18px;height:18px;border-radius:50%;border:1px solid #cdc4b2;flex-shrink:0;"></span><div><div style="font-weight:600;font-size:14.5px;color:#1c352c;">General</div><div style="font-size:12px;color:#6b7b73;">We use it where the need is greatest.</div></div></div>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9aa79f;margin-bottom:10px;">Pay with</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:96px;"><span style="border:1px solid #2f5d4f;background:#eef5f1;border-radius:9px;padding:11px 16px;font-size:12.5px;font-weight:600;color:#214a3e;">Card</span><span style="border:1px solid #cdc4b2;border-radius:9px;padding:11px 16px;font-size:12.5px;color:#54625b;">Bank</span><span style="border:1px solid #cdc4b2;border-radius:9px;padding:11px 16px;font-size:12.5px;color:#54625b;">JazzCash</span><span style="border:1px solid #cdc4b2;border-radius:9px;padding:11px 16px;font-size:12.5px;color:#54625b;">Easypaisa</span></div>
+      </div>
+      <!-- sticky continue -->
+      <div style="position:absolute;left:0;right:0;bottom:0;background:#fffdf9;border-top:1px solid #e3dccd;border-radius:0 0 31px 31px;padding:14px 18px 20px;box-shadow:0 -12px 30px -18px rgba(20,40,30,.4);">
+        <span style="display:block;background:#2f5d4f;color:#fff;font-size:15.5px;font-weight:600;border-radius:12px;padding:16px 0;text-align:center;">Continue → · Rs 2,500 due today</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M5 · TRUST -->
+<div style="position:absolute;left:1880px;top:3520px;width:390px;">
+  <div data-drags-parent="1" data-screen-label="Mobile Trust" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">M5 · Trust &amp; transparency</div>
+  <div style="background:#1c352c;border-radius:40px;padding:10px;box-shadow:0 30px 60px -38px rgba(20,40,30,.6);">
+    <div style="background:#fffdf9;border-radius:31px;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;"><span style="font-size:12px;font-weight:600;color:#1c352c;">9:41</span><span style="width:74px;height:22px;border-radius:100px;background:#1c352c;"></span><span style="font-size:11px;color:#1c352c;">●●●</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:20px;color:#1c352c;">JJT</span>
+        <span style="width:44px;height:44px;border:1px solid #e3dccd;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;"><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span></span>
+      </div>
+      <div style="padding:26px 18px 20px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b07d3a;margin-bottom:10px;">Trust, before we ask</div>
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:29px;line-height:1.12;color:#1c352c;margin-bottom:12px;">Your amanah, handled with care.</div>
+        <div style="font-size:14px;line-height:1.6;color:#54625b;">Where every rupee goes, how we choose each child, and who checks our work — with proof.</div>
+      </div>
+      <div style="margin:0 18px;background:#f3eee4;border:1px solid #e3dccd;border-radius:14px;padding:20px;">
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:19px;color:#1c352c;margin-bottom:14px;">Where every 100 rupees goes</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div><div style="display:flex;justify-content:space-between;font-size:12.5px;color:#3c4a43;margin-bottom:5px;"><span>Children's education</span><strong>87%</strong></div><div style="height:7px;background:#e0d8c8;border-radius:4px;overflow:hidden;"><div style="width:87%;height:100%;background:#2f5d4f;"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12.5px;color:#3c4a43;margin-bottom:5px;"><span>Field ops &amp; verification</span><strong>9%</strong></div><div style="height:7px;background:#e0d8c8;border-radius:4px;overflow:hidden;"><div style="width:9%;height:100%;background:#7da08f;"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12.5px;color:#3c4a43;margin-bottom:5px;"><span>Administration</span><strong>4%</strong></div><div style="height:7px;background:#e0d8c8;border-radius:4px;overflow:hidden;"><div style="width:4%;height:100%;background:#d99a4e;"></div></div></div>
+        </div>
+        <div style="font-size:12px;color:#8a958d;margin-top:14px;">From our independently audited annual report. <span style="color:#2f5d4f;font-weight:600;">Download PDF →</span></div>
+      </div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:10px;">
+        <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;margin-bottom:5px;">How are children selected?</div><div style="font-size:13px;line-height:1.55;color:#6b7b73;">Our team visits each family in person before a child appears on this site.</div></div>
+        <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;margin-bottom:5px;">How is Zakat handled?</div><div style="font-size:13px;line-height:1.55;color:#6b7b73;">Kept in its own account, spent only on those who qualify.</div></div>
+        <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;"><div style="font-weight:600;font-size:14.5px;color:#1c352c;margin-bottom:5px;">Can I see progress?</div><div style="font-size:13px;line-height:1.55;color:#6b7b73;">Photo updates, term reports, and attendance — twice a year.</div></div>
+      </div>
+      <div style="background:#1c352c;padding:24px 18px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Newsreader',serif;font-weight:600;font-size:18px;color:#fdfaf3;">JJT</span><span style="font-size:12px;color:#9cc3b3;">Reg. no. ········· · Annual report</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- M6 · WHY GIVE -->
+<div style="position:absolute;left:2350px;top:3520px;width:390px;">
+  <div data-drags-parent="1" data-screen-label="Mobile Why give" style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7c8a82;margin-bottom:14px;cursor:grab;">M6 · Why educate a child</div>
+  <div style="background:#1c352c;border-radius:40px;padding:10px;box-shadow:0 30px 60px -38px rgba(20,40,30,.6);">
+    <div style="background:#fffdf9;border-radius:31px;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;"><span style="font-size:12px;font-weight:600;color:#1c352c;">9:41</span><span style="width:74px;height:22px;border-radius:100px;background:#1c352c;"></span><span style="font-size:11px;color:#1c352c;">●●●</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid #efe9dd;">
+        <span style="font-family:'Newsreader',serif;font-weight:600;font-size:20px;color:#1c352c;">JJT</span>
+        <span style="width:44px;height:44px;border:1px solid #e3dccd;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;"><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span><span style="width:16px;height:1.5px;background:#1c352c;"></span></span>
+      </div>
+      <div style="background:#1c352c;padding:36px 22px;text-align:center;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#9cc3b3;margin-bottom:14px;">Why educate a child?</div>
+        <div style="font-family:'Newsreader',serif;font-style:italic;font-size:19px;line-height:1.5;color:#fdfaf3;">"The likeness of those who spend their wealth in the way of Allah is as a grain that grows seven ears, in every ear a hundred grains."</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#9cc3b3;margin-top:12px;">Surah Al-Baqarah 2:261</div>
+      </div>
+      <div style="padding:26px 18px 8px;">
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:22px;color:#1c352c;margin-bottom:16px;">One gift. Three rewards.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;background:#faf8f2;"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#b07d3a;margin-bottom:6px;">01 · ONGOING CHARITY</div><div style="font-family:'Newsreader',serif;font-size:16.5px;color:#1c352c;margin-bottom:4px;">Sadaqah Jariyah</div><div style="font-size:12.5px;line-height:1.55;color:#6b7b73;">Charity that continues, knowledge that benefits — education is both. <span style="color:#8a958d;">— Sahih Muslim</span></div></div>
+          <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;background:#faf8f2;"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#b07d3a;margin-bottom:6px;">02 · CARING FOR ORPHANS</div><div style="font-family:'Newsreader',serif;font-size:16.5px;color:#1c352c;margin-bottom:4px;">Standing beside the orphan</div><div style="font-size:12.5px;line-height:1.55;color:#6b7b73;">Care for an orphan, and be near the Prophet ﷺ in Paradise. <span style="color:#8a958d;">— Sahih al-Bukhari</span></div></div>
+          <div style="border:1px solid #e3dccd;border-radius:12px;padding:16px;background:#faf8f2;"><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:#b07d3a;margin-bottom:6px;">03 · GIVING DOES NOT DIMINISH</div><div style="font-family:'Newsreader',serif;font-size:16.5px;color:#1c352c;margin-bottom:4px;">Wealth is not decreased</div><div style="font-size:12.5px;line-height:1.55;color:#6b7b73;">Charity never decreases wealth. <span style="color:#8a958d;">— Sahih Muslim</span></div></div>
+        </div>
+      </div>
+      <div style="background:#f3eee4;border-top:1px solid #e3dccd;padding:26px 18px;margin-top:18px;">
+        <div style="font-family:'Newsreader',serif;font-weight:500;font-size:20px;color:#1c352c;margin-bottom:10px;">No gift is too small</div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:10px;padding:12px 6px;text-align:center;"><div style="font-family:'Newsreader',serif;font-size:16px;color:#1c352c;">Rs 100</div><div style="font-size:10px;color:#8a958d;margin-top:2px;">week of meals</div></div>
+          <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:10px;padding:12px 6px;text-align:center;"><div style="font-family:'Newsreader',serif;font-size:16px;color:#1c352c;">Rs 500</div><div style="font-size:10px;color:#8a958d;margin-top:2px;">books, a term</div></div>
+          <div style="flex:1;background:#fffdf9;border:1px solid #e3dccd;border-radius:10px;padding:12px 6px;text-align:center;"><div style="font-family:'Newsreader',serif;font-size:16px;color:#1c352c;">Rs 2,500</div><div style="font-size:10px;color:#8a958d;margin-top:2px;">month in school</div></div>
+        </div>
+        <span style="display:block;background:#2f5d4f;color:#fff;font-size:15px;font-weight:600;border-radius:12px;padding:15px 0;text-align:center;">Give any amount</span>
+      </div>
+      <div style="background:#1c352c;padding:24px 18px;display:flex;justify-content:space-between;align-items:center;"><span style="font-family:'Newsreader',serif;font-weight:600;font-size:18px;color:#fdfaf3;">JJT</span><span style="font-size:12px;color:#9cc3b3;">Trust · Stories · FAQ</span></div>
+    </div>
+  </div>
+</div></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1360,&quot;height&quot;:1400},&quot;planView&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;monthly&quot;,&quot;yearly&quot;],&quot;default&quot;:&quot;monthly&quot;,&quot;tsType&quot;:&quot;'monthly'|'yearly'&quot;},&quot;showSadaqah&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const yearly = (this.props.planView ?? 'monthly') === 'yearly';
+    return {
+      showSadaqah: this.props.showSadaqah ?? true,
+      heroPrice: yearly ? 'Rs 27,000' : 'Rs 2,500',
+      heroPeriod: yearly ? '/year' : '/month',
+      heroSub: yearly ? 'Billed once a year · saves 10%' : 'Billed monthly · cancel anytime · ≈ $9',
+    };
+  }
+}
+</script>
+</body>
+</html>
