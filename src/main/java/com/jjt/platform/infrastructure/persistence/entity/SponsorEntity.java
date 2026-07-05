@@ -24,14 +24,18 @@ public class SponsorEntity {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
     protected SponsorEntity() {
     }
 
-    public SponsorEntity(UUID id, String displayName, String contactEmail, String phone) {
+    public SponsorEntity(UUID id, String displayName, String contactEmail, String phone, UUID organisationId) {
         this.id = id;
         this.displayName = displayName;
         this.contactEmail = contactEmail;
         this.phone = phone;
+        this.organisationId = organisationId;
     }
 
     public UUID getId() {
@@ -48,5 +52,12 @@ public class SponsorEntity {
 
     public String getPhone() {
         return phone;
+    }
+
+    public UUID getOrganisationId() { return organisationId; }
+
+    public void updateProfile(String displayName, String phone) {
+        this.displayName = displayName;
+        this.phone = phone;
     }
 }

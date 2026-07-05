@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -26,29 +27,33 @@ public class ProgressUpdateEntity {
     @Column(name = "summary", nullable = false, length = 2000)
     private String summary;
 
-    protected ProgressUpdateEntity() {
-    }
+    @Column(name = "created_by", updatable = false)
+    private UUID createdBy;
 
-    public ProgressUpdateEntity(UUID id, UUID childId, String updateMonth, String summary) {
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt;
+
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
+    protected ProgressUpdateEntity() {}
+
+    public ProgressUpdateEntity(UUID id, UUID childId, String updateMonth, String summary,
+                                UUID createdBy, Instant createdAt, UUID organisationId) {
         this.id = id;
         this.childId = childId;
         this.updateMonth = updateMonth;
         this.summary = summary;
+        this.createdBy = createdBy;
+        this.createdAt = createdAt;
+        this.organisationId = organisationId;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getUpdateMonth() {
-        return updateMonth;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
+    public UUID getId() { return id; }
+    public UUID getChildId() { return childId; }
+    public String getUpdateMonth() { return updateMonth; }
+    public String getSummary() { return summary; }
+    public UUID getCreatedBy() { return createdBy; }
+    public Instant getCreatedAt() { return createdAt; }
+    public UUID getOrganisationId() { return organisationId; }
 }

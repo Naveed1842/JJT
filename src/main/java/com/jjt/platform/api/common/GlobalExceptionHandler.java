@@ -4,11 +4,14 @@ import com.jjt.platform.api.common.dto.ErrorResponse;
 import com.jjt.platform.api.common.security.ForbiddenException;
 import com.jjt.platform.api.common.security.UnauthorizedException;
 import com.jjt.platform.core.domain.exceptions.DomainException;
+import com.jjt.platform.core.domain.exceptions.InsufficientFundsException;
 import com.jjt.platform.core.domain.exceptions.LedgerInvariantViolationException;
 import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import java.math.BigDecimal;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -46,6 +49,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("UNAUTHORIZED", "Authentication failed"));
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<Map<String, Object>> handleInsufficientFunds(InsufficientFundsException ex) {
+        Map<String, Object> body = Map.of(
+                "code", "INSUFFICIENT_FUNDS",
+                "message", ex.getMessage(),
+                "currentBalance", ex.getCurrentBalance(),
+                "debitAmount", ex.getDebitAmount(),
+                "minReserve", ex.getMinReserve(),
+                "currency", ex.getCurrency()
+        );
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(body);
     }
 
     @ExceptionHandler(LedgerInvariantViolationException.class)

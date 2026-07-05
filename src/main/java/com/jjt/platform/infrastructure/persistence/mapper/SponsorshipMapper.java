@@ -1,12 +1,11 @@
 package com.jjt.platform.infrastructure.persistence.mapper;
 
 import com.jjt.platform.core.domain.entity.Sponsorship;
-import com.jjt.platform.core.domain.entity.SponsorshipStatus;
-import com.jjt.platform.core.domain.entity.CommitmentType;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorEntity;
 import com.jjt.platform.infrastructure.persistence.entity.SponsorshipEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class SponsorshipMapper {
 
@@ -14,7 +13,9 @@ public final class SponsorshipMapper {
 
     public static Sponsorship toDomain(SponsorshipEntity entity) {
         Objects.requireNonNull(entity, "entity");
-        return Sponsorship.create(
+        // restore() is used here — not create/createPending — because DB rows may have
+        // past start months and must not be re-validated against "future start" invariant.
+        return Sponsorship.restore(
                 entity.getId(),
                 entity.getSponsor().getId(),
                 entity.getChildId(),
@@ -22,11 +23,12 @@ public final class SponsorshipMapper {
                 entity.getStatus(),
                 entity.getCreatedAt(),
                 entity.getExpiresAt(),
-                entity.getCommitmentType()
+                entity.getCommitmentType(),
+                entity.getCreatedBy()    // nullable for Phase 1 rows
         );
     }
 
-    public static SponsorshipEntity toEntity(Sponsorship sponsorship, SponsorEntity sponsorEntity) {
+    public static SponsorshipEntity toEntity(Sponsorship sponsorship, SponsorEntity sponsorEntity, UUID organisationId) {
         Objects.requireNonNull(sponsorship, "sponsorship");
         Objects.requireNonNull(sponsorEntity, "sponsorEntity");
         return new SponsorshipEntity(
@@ -37,7 +39,9 @@ public final class SponsorshipMapper {
                 sponsorship.getStatus(),
                 sponsorship.getCreatedAt(),
                 sponsorship.getExpiresAt(),
-                sponsorship.getCommitmentType()
+                sponsorship.getCommitmentType(),
+                sponsorship.getCreatedBy(),
+                organisationId
         );
     }
 }

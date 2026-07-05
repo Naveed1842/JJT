@@ -1,11 +1,13 @@
 spring:
   application:
     name: jjt-platform
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/jjt}
     username: ${SPRING_DATASOURCE_USERNAME:jjt}
     password: ${SPRING_DATASOURCE_PASSWORD:jjt}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -13,14 +15,27 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   flyway:
     enabled: true
     locations: classpath:db/migration
+
+  mail:
+    host: ${MAIL_HOST:}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 server:
   port: ${PORT:8080}
+
 logging:
   level:
     root: INFO
+
 management:
   endpoints:
     web:
@@ -39,3 +54,21 @@ jwt:
 admin:
   default-email: ${ADMIN_EMAIL:admin@jjt.org}
   default-password: ${ADMIN_PASSWORD:Admin@JJT2024!}
+
+jjt:
+  notifications:
+    enabled: ${NOTIFICATIONS_ENABLED:false}
+    from-email: ${NOTIFICATION_FROM_EMAIL:noreply@sponsorone.app}
+    from-name: ${NOTIFICATION_FROM_NAME:Junior Jinnah Trust}
+
+  org:
+    slug: ${JJT_ORG_SLUG:jjt}
+    name: ${JJT_ORG_NAME:Junior Jinnah Trust}
+    base-currency: ${JJT_ORG_BASE_CURRENCY:PKR}
+
+  fund:
+    initial-balance: ${JJT_FUND_INITIAL_BALANCE:0.00}
+    min-reserve: ${JJT_FUND_MIN_RESERVE:20000.00}
+
+  payment:
+    due-day: ${JJT_PAYMENT_DUE_DAY:15}

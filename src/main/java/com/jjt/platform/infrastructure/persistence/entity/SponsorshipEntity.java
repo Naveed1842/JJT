@@ -47,12 +47,17 @@ public class SponsorshipEntity {
     @Column(name = "commitment_type", nullable = false, length = 20)
     private CommitmentType commitmentType;
 
-    protected SponsorshipEntity() {
-    }
+    @Column(name = "created_by", updatable = false)
+    private UUID createdBy;
+
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
+    protected SponsorshipEntity() {}
 
     public SponsorshipEntity(UUID id, SponsorEntity sponsor, UUID childId, String startMonth,
                              SponsorshipStatus status, Instant createdAt, Instant expiresAt,
-                             CommitmentType commitmentType) {
+                             CommitmentType commitmentType, UUID createdBy, UUID organisationId) {
         this.id = id;
         this.sponsor = sponsor;
         this.childId = childId;
@@ -61,41 +66,19 @@ public class SponsorshipEntity {
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
         this.commitmentType = commitmentType;
+        this.createdBy = createdBy;
+        this.organisationId = organisationId;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public SponsorEntity getSponsor() {
-        return sponsor;
-    }
-
-    public UUID getChildId() {
-        return childId;
-    }
-
-    public String getStartMonth() {
-        return startMonth;
-    }
-
-    public SponsorshipStatus getStatus() {
-        return status;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getExpiresAt() {
-        return expiresAt;
-    }
-
-    public CommitmentType getCommitmentType() {
-        return commitmentType;
-    }
-
-    public void setStatus(SponsorshipStatus status) {
-        this.status = status;
-    }
+    public UUID getId() { return id; }
+    public SponsorEntity getSponsor() { return sponsor; }
+    public UUID getChildId() { return childId; }
+    public String getStartMonth() { return startMonth; }
+    public SponsorshipStatus getStatus() { return status; }
+    public Instant getCreatedAt() { return createdAt; }
+    public Instant getExpiresAt() { return expiresAt; }
+    public CommitmentType getCommitmentType() { return commitmentType; }
+    public UUID getCreatedBy() { return createdBy; }
+    public UUID getOrganisationId() { return organisationId; }
+    public void setStatus(SponsorshipStatus status) { this.status = status; }
 }

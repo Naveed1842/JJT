@@ -1,8 +1,7 @@
 package com.jjt.platform.application.usecase;
 
-import com.jjt.platform.core.domain.entity.Sponsorship;
-import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.entity.CommitmentType;
+import com.jjt.platform.core.domain.entity.Sponsorship;
 import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationException;
 import com.jjt.platform.core.domain.value.YearMonthValue;
 
@@ -12,6 +11,7 @@ import java.util.UUID;
 
 /**
  * Use case: Commit a sponsor to future support starting in a future month.
+ * Always creates a PENDING sponsorship; use activateSponsorship to transition to ACTIVE.
  */
 public class CommitFutureSponsorshipUseCase {
 
@@ -21,26 +21,30 @@ public class CommitFutureSponsorshipUseCase {
             throw new SponsorshipInvariantViolationException("Child already has an active sponsorship.");
         }
         UUID sponsorshipId = command.sponsorshipId != null ? command.sponsorshipId : UUID.randomUUID();
-        Instant createdAt = command.createdAt != null ? command.createdAt : Instant.now();
-        return Sponsorship.create(sponsorshipId, command.sponsorId, command.childId, command.startMonth,
-                command.status, createdAt, command.expiresAt, command.commitmentType);
+        return Sponsorship.createPending(
+                sponsorshipId,
+                command.sponsorId,
+                command.childId,
+                command.startMonth,
+                command.now,
+                command.commitmentType,
+                command.createdBy
+        );
     }
 
-    /** Input for creating a future sponsorship commitment. */
     public record Command(UUID sponsorshipId,
                           UUID sponsorId,
                           UUID childId,
                           YearMonthValue startMonth,
                           boolean hasActiveSponsorship,
-                          SponsorshipStatus status,
-                          Instant createdAt,
+                          Instant now,
                           Instant expiresAt,
-                          CommitmentType commitmentType) {
+                          CommitmentType commitmentType,
+                          UUID createdBy) {
         public Command {
             Objects.requireNonNull(sponsorId, "sponsorId must not be null");
             Objects.requireNonNull(childId, "childId must not be null");
             Objects.requireNonNull(startMonth, "startMonth must not be null");
-            Objects.requireNonNull(status, "status must not be null");
             Objects.requireNonNull(commitmentType, "commitmentType must not be null");
         }
     }

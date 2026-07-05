@@ -56,6 +56,8 @@ public class SecurityConfig {
                 // Public read access for the children-browsing pages (no account required)
                 .requestMatchers(HttpMethod.GET, "/api/org/children").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/org/children/**").permitAll()
+                // Import template is a blank file — no sensitive data, allow direct browser download
+                .requestMatchers(HttpMethod.GET, "/api/admin/children/import/template").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
@@ -83,9 +85,11 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "https://sponsorone.app",
-                "https://www.sponsorone.app"
+                "https://www.sponsorone.app",
+                "https://sandbox-27e5d.web.app",
+                "https://sandbox-27e5d.firebaseapp.com"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);

@@ -9,7 +9,7 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
   imports: [CommonModule, RouterLink, RouterLinkActive],
   template: `
     <header style="background:#fffdf9;border-bottom:1px solid #efe9dd;position:sticky;top:0;z-index:30;">
-      <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px 32px;">
+      <div class="header-inner" style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px 32px;">
 
         <!-- Logo -->
         <a routerLink="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
@@ -20,10 +20,13 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
         <nav style="display:flex;gap:24px;margin-left:20px;" class="desktop-nav">
           <a routerLink="/children" routerLinkActive="nav-active"
              style="font-size:14px;color:#54625b;text-decoration:none;transition:color .15s;"
-             class="nav-link">Sponsor a Child</a>
-          <a routerLink="/" [routerLinkActiveOptions]="{exact:true}" routerLinkActive="nav-active"
+             class="nav-link">Children</a>
+          <a routerLink="/why-give" routerLinkActive="nav-active"
              style="font-size:14px;color:#54625b;text-decoration:none;"
-             class="nav-link">How it Works</a>
+             class="nav-link">Why give</a>
+          <a routerLink="/trust" routerLinkActive="nav-active"
+             style="font-size:14px;color:#54625b;text-decoration:none;"
+             class="nav-link">Trust</a>
           <a *ngIf="user && (user.role === 'JJT_ADMIN' || user.role === 'ORG_ADMIN')"
              routerLink="/admin" routerLinkActive="nav-active"
              style="font-size:14px;color:#54625b;text-decoration:none;"
@@ -37,8 +40,8 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
         <!-- Auth area -->
         <div style="margin-left:auto;display:flex;align-items:center;gap:12px;">
           <!-- Logged out -->
-          <a *ngIf="!user" routerLink="/login"
-             style="font-size:14px;color:#54625b;text-decoration:none;">Sign in</a>
+          <a *ngIf="!user" routerLink="/why-give"
+             style="font-size:14px;color:#2f5d4f;font-weight:600;text-decoration:none;" class="hide-sm">Give any amount</a>
           <a *ngIf="!user" routerLink="/children"
              style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;
                     padding:10px 18px;text-decoration:none;transition:background .15s;"
@@ -72,13 +75,17 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
       </div>
 
       <!-- Mobile drawer -->
-      <div *ngIf="mobileOpen"
+      <div *ngIf="mobileOpen" class="mobile-drawer"
            style="border-top:1px solid #efe9dd;background:#fffdf9;padding:16px 32px;
                   display:flex;flex-direction:column;gap:14px;">
         <a routerLink="/" (click)="mobileOpen=false"
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Home</a>
         <a routerLink="/children" (click)="mobileOpen=false"
-           style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Sponsor a Child</a>
+           style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Children</a>
+        <a routerLink="/why-give" (click)="mobileOpen=false"
+           style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Why give</a>
+        <a routerLink="/trust" (click)="mobileOpen=false"
+           style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Trust</a>
         <a *ngIf="user && (user.role === 'JJT_ADMIN' || user.role === 'ORG_ADMIN')"
            routerLink="/admin" (click)="mobileOpen=false"
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Admin</a>
@@ -102,6 +109,8 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
         .desktop-nav { display: none !important; }
         .hamburger   { display: block !important; }
         .hide-sm     { display: none !important; }
+        .header-inner { padding: 14px 18px !important; }
+        .mobile-drawer { padding: 16px 18px !important; }
       }
     </style>
   `

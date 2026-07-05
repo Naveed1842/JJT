@@ -19,10 +19,18 @@ export class SponsorCommitComponent implements OnInit {
   city = '';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
 
-  // Step
-  step: 1 | 2 | 3 | 4 = 1;
+  // Step (1=Intention, 2=Plan, 3=Details, 4=Payment, 5=Confirmed)
+  step: 1 | 2 | 3 | 4 | 5 = 1;
+
+  readonly stepDefs = [
+    { n: 1, label: 'Intention' },
+    { n: 2, label: 'Plan' },
+    { n: 3, label: 'Account' },
+    { n: 4, label: 'Payment' },
+  ];
 
   // Form
+  intention: 'SADAQAH' | 'ZAKAT' | 'GENERAL' = 'SADAQAH';
   commitmentType: CommitmentType = 'MONTHLY';
   sponsorName = '';
   email = '';
@@ -85,21 +93,35 @@ export class SponsorCommitComponent implements OnInit {
     return this.commitmentType === 'YEARLY' ? this.yearlyPrice : this.monthlyCost;
   }
 
+  private emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  get emailValid(): boolean {
+    return this.emailRegex.test(this.email.trim());
+  }
+
   get stepValid(): boolean {
     if (this.step === 1) return true;
-    if (this.step === 2) return !!this.sponsorName.trim() && !!this.email.trim();
+    if (this.step === 2) return true;
+    if (this.step === 3) return !!this.sponsorName.trim() && this.emailValid;
     return true;
   }
 
   nextStep(): void {
-    if (!this.stepValid) { this.error = 'Please fill in all required fields.'; return; }
+    if (!this.stepValid) {
+      if (this.step === 3 && !!this.sponsorName.trim() && !this.emailValid) {
+        this.error = 'Please enter a valid email address.';
+      } else {
+        this.error = 'Please fill in all required fields.';
+      }
+      return;
+    }
     this.error = null;
-    if (this.step === 3) { this.submit(); return; }
-    this.step = (this.step + 1) as 1 | 2 | 3 | 4;
+    if (this.step === 4) { this.submit(); return; }
+    this.step = (this.step + 1) as 1 | 2 | 3 | 4 | 5;
   }
 
   prevStep(): void {
-    if (this.step > 1) this.step = (this.step - 1) as 1 | 2 | 3 | 4;
+    if (this.step > 1) this.step = (this.step - 1) as 1 | 2 | 3 | 4 | 5;
   }
 
   submit(): void {
@@ -121,13 +143,21 @@ export class SponsorCommitComponent implements OnInit {
       next: (res) => {
         this.submitting = false;
         this.startMonth = res.startMonth;
-        this.step = 4;
+        this.step = 5;
       },
       error: (err) => {
         this.submitting = false;
         this.error = err?.error?.message ?? 'Unable to submit sponsorship. Please try again.';
       }
     });
+  }
+
+  intentionLabel(): string {
+    switch (this.intention) {
+      case 'SADAQAH': return 'Sadaqah';
+      case 'ZAKAT':   return 'Zakat';
+      case 'GENERAL': return 'General';
+    }
   }
 
   async copy(value: string, field: string): Promise<void> {

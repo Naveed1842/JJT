@@ -5,6 +5,7 @@ import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.infrastructure.persistence.entity.ChildEntity;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public final class ChildMapper {
 
@@ -23,7 +24,7 @@ public final class ChildMapper {
                 entity.getSchoolName());
     }
 
-    public static ChildEntity toEntity(Child child) {
+    public static ChildEntity toEntity(Child child, UUID organisationId) {
         Objects.requireNonNull(child, "child");
         return new ChildEntity(
                 child.getId(),
@@ -33,7 +34,8 @@ public final class ChildMapper {
                 child.getRollNumber(),
                 child.getCity(),
                 child.getCampusName(),
-                child.getSchoolName()
+                child.getSchoolName(),
+                organisationId
         );
     }
 }

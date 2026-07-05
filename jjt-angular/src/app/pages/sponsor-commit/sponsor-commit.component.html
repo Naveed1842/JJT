@@ -1,5 +1,5 @@
 <!-- Minimal header for checkout -->
-<nav style="background:#fffdf9;border-bottom:1px solid #efe9dd;padding:0 32px;height:60px;
+<nav class="checkout-nav" style="background:#fffdf9;border-bottom:1px solid #efe9dd;padding:0 32px;height:60px;
             display:flex;align-items:center;justify-content:space-between;">
   <a routerLink="/" style="font-family:'Newsreader',serif;font-size:22px;font-weight:500;color:#1c352c;text-decoration:none;">JJT</a>
   <span style="font-size:13px;color:#8a958d;display:flex;align-items:center;gap:7px;">
@@ -15,80 +15,155 @@
   <p style="color:#8a958d;margin-top:16px;font-size:14px;">Loading child details…</p>
 </div>
 
-<!-- Error banner (steps 1-3) -->
-<div *ngIf="!pageLoading && error && step < 4"
-     style="max-width:640px;margin:32px auto;padding:0 32px;">
+<!-- Error banner (steps 1-4) -->
+<div *ngIf="!pageLoading && error && step < 5"
+     style="max-width:960px;margin:32px auto;padding:0 32px;">
   <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:14px;color:#b45454;font-size:14px;">
     {{ error }}
   </div>
 </div>
 
-<!-- Main checkout (steps 1-3) -->
-<div *ngIf="!pageLoading && step < 4"
+<!-- Stepper + forms (steps 1-4) -->
+<div *ngIf="!pageLoading && step < 5" class="checkout-outer"
      style="background:#fffdf9;min-height:calc(100vh - 60px);padding:40px 32px;">
-  <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:36px;align-items:start;">
+  <div class="checkout-content" style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start;">
 
     <!-- ── Left: stepper + forms ── -->
     <div>
       <!-- Stepper -->
-      <div style="display:flex;align-items:center;margin-bottom:36px;">
-        <ng-container *ngFor="let s of [1,2,3]; let i = index; let last = last">
-          <div style="display:flex;align-items:center;">
-            <div [style]="'width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;' + (step > s ? 'background:#2f5d4f;color:#fff;' : step === s ? 'background:#1c352c;color:#fff;' : 'background:#e3dccd;color:#8a958d;')">
-              {{ step > s ? '✓' : s }}
-            </div>
-            <span [style]="'font-size:13px;font-weight:500;margin:0 8px;' + (step === s ? 'color:#1c352c;' : 'color:#9aa79f;')">
-              {{ s === 1 ? 'Plan' : s === 2 ? 'Your details' : 'Payment' }}
+      <div class="step-bar-desktop" style="display:flex;align-items:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid #efe9dd;">
+        <ng-container *ngFor="let s of stepDefs; let i = index; let last = last">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span [style]="'width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;' + (step > s.n ? 'background:#2f5d4f;color:#fff;' : step === s.n ? 'background:#1c352c;color:#fff;' : 'background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;')">
+              {{ step > s.n ? '✓' : s.n }}
             </span>
+            <span [style]="'font-size:14px;font-weight:' + (step === s.n ? '600' : '500') + ';color:' + (step === s.n ? '#1c352c' : '#8a958d') + ';'">{{ s.label }}</span>
           </div>
-          <div *ngIf="!last" style="flex:1;height:1px;background:#e3dccd;min-width:20px;"></div>
+          <div *ngIf="!last" style="flex:1;height:1px;background:#e3dccd;margin:0 14px;min-width:16px;"></div>
         </ng-container>
       </div>
 
-      <!-- ── Step 1: Plan selection ── -->
+      <!-- Mobile progress -->
+      <div class="step-bar-mobile" style="display:none;padding:14px 18px 0;">
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#8a958d;margin-bottom:6px;">
+          <span style="color:#1c352c;font-weight:600;">Step {{ step }} of 4 · {{ stepDefs[step-1]?.label }}</span>
+          <span *ngIf="step < 4">{{ stepDefs[step]?.label }} → {{ stepDefs[step < 3 ? step+1 : 3]?.label }}</span>
+        </div>
+        <div style="height:5px;background:#efe9dd;border-radius:100px;overflow:hidden;">
+          <div [style]="'width:' + (step * 25) + '%;height:100%;background:#2f5d4f;border-radius:100px;transition:width .3s;'"></div>
+        </div>
+      </div>
+
+      <!-- Mobile collapsed summary -->
+      <div class="mobile-summary" style="display:none;border:1px solid #e3dccd;border-radius:12px;
+           padding:12px 14px;margin-bottom:20px;align-items:center;gap:12px;background:#faf8f2;">
+        <div style="width:42px;height:42px;border-radius:10px;flex-shrink:0;
+                    background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 7px,#e5dccb 7px,#e5dccb 14px);
+                    border:1px solid #e3dccd;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:600;font-size:13.5px;color:#1c352c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Sponsoring {{ childName }}</div>
+          <div style="font-size:11.5px;color:#8a958d;">{{ displayPrice }} · {{ intentionLabel() }}</div>
+        </div>
+      </div>
+
+      <!-- ── Step 1: Intention ── -->
       <div *ngIf="step === 1">
+        <h1 class="step-h1" style="font-family:'Newsreader',serif;font-weight:500;font-size:32px;color:#1c352c;margin:0 0 6px;letter-spacing:-.01em;">
+          First, set your intention
+        </h1>
+        <p style="font-size:15.5px;color:#6b7b73;margin:0 0 26px;">
+          Deeds are by intention. Tell us how you'd like this gift recorded so we handle it correctly.
+        </p>
+
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                    color:#9aa79f;margin-bottom:12px;">This gift is</div>
+        <div class="intention-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px;">
+          <div (click)="intention = 'SADAQAH'"
+               [style]="'border-radius:12px;padding:16px;cursor:pointer;border:' + (intention === 'SADAQAH' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
+            <div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">Sadaqah</div>
+            <div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Voluntary charity, any amount.</div>
+          </div>
+          <div (click)="intention = 'ZAKAT'"
+               [style]="'border-radius:12px;padding:16px;cursor:pointer;border:' + (intention === 'ZAKAT' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
+            <div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">Zakat</div>
+            <div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Spent only on eligible children.</div>
+          </div>
+          <div (click)="intention = 'GENERAL'"
+               [style]="'border-radius:12px;padding:16px;cursor:pointer;border:' + (intention === 'GENERAL' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
+            <div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">General</div>
+            <div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Use where needed most.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:14px;align-items:center;">
+          <button (click)="nextStep()" class="step-continue-btn"
+                  style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
+                         padding:15px 32px;border:none;cursor:pointer;">
+            Continue →
+          </button>
+          <span style="font-size:14px;color:#8a958d;">Step 1 of 4</span>
+        </div>
+      </div>
+
+      <!-- ── Step 2: Plan selection ── -->
+      <div *ngIf="step === 2">
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
           Choose a plan
         </h2>
         <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">
           Sponsoring <strong style="color:#1c352c;">{{ childName }}</strong>'s education.
         </p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
-          <!-- Monthly card -->
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                    color:#9aa79f;margin-bottom:12px;">How often</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:26px;">
+          <!-- Monthly -->
           <div (click)="commitmentType = 'MONTHLY'"
-               [style]="'border:2px solid ' + (commitmentType === 'MONTHLY' ? '#2f5d4f' : '#e3dccd') + ';border-radius:14px;padding:20px;cursor:pointer;transition:border-color .15s;background:' + (commitmentType === 'MONTHLY' ? '#f0f5f2' : '#fff') + ';'">
-            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-              <span style="font-weight:600;font-size:15px;color:#1c352c;">Monthly</span>
-              <div [style]="'width:18px;height:18px;border-radius:50%;border:2px solid ' + (commitmentType === 'MONTHLY' ? '#2f5d4f' : '#cdc4b2') + ';display:flex;align-items:center;justify-content:center;'">
-                <div *ngIf="commitmentType === 'MONTHLY'" style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;"></div>
-              </div>
+               [style]="'border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;' + (commitmentType === 'MONTHLY' ? 'border:2px solid #2f5d4f;background:#f6faf7;' : 'border:1px solid #e3dccd;background:#fffdf9;')">
+            <span [style]="'width:20px;height:20px;border-radius:50%;flex-shrink:0;' + (commitmentType === 'MONTHLY' ? 'border:6px solid #2f5d4f;background:#fff;' : 'border:1.5px solid #cdc4b2;background:#fff;')"></span>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:16px;color:#1c352c;">Monthly</div>
+              <div style="font-size:13px;color:#6b7b73;">Billed monthly · cancel anytime</div>
             </div>
-            <div style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">{{ monthlyCost }}</div>
-            <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">per month</div>
+            <div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">{{ monthlyCost }}<span style="font-size:13px;color:#8a958d;">/mo</span></div>
           </div>
-          <!-- Yearly card -->
+          <!-- Yearly -->
           <div (click)="commitmentType = 'YEARLY'"
-               [style]="'border:2px solid ' + (commitmentType === 'YEARLY' ? '#2f5d4f' : '#e3dccd') + ';border-radius:14px;padding:20px;cursor:pointer;transition:border-color .15s;background:' + (commitmentType === 'YEARLY' ? '#f0f5f2' : '#fff') + ';position:relative;'">
+               [style]="'border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;position:relative;' + (commitmentType === 'YEARLY' ? 'border:2px solid #2f5d4f;background:#f6faf7;' : 'border:1px solid #e3dccd;background:#fffdf9;')">
             <span style="position:absolute;top:-1px;right:-1px;background:#d99a4e;color:#fff;font-size:10.5px;font-weight:700;border-radius:0 12px 0 8px;padding:4px 10px;">Save 10%</span>
-            <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
-              <span style="font-weight:600;font-size:15px;color:#1c352c;">Yearly</span>
-              <div [style]="'width:18px;height:18px;border-radius:50%;border:2px solid ' + (commitmentType === 'YEARLY' ? '#2f5d4f' : '#cdc4b2') + ';display:flex;align-items:center;justify-content:center;'">
-                <div *ngIf="commitmentType === 'YEARLY'" style="width:9px;height:9px;border-radius:50%;background:#2f5d4f;"></div>
-              </div>
+            <span [style]="'width:20px;height:20px;border-radius:50%;flex-shrink:0;' + (commitmentType === 'YEARLY' ? 'border:6px solid #2f5d4f;background:#fff;' : 'border:1.5px solid #cdc4b2;background:#fff;')"></span>
+            <div style="flex:1;">
+              <div style="font-weight:600;font-size:16px;color:#1c352c;">Yearly</div>
+              <div style="font-size:13px;color:#6b7b73;">Billed once a year</div>
             </div>
-            <div style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">{{ yearlyPrice }}</div>
-            <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">per year</div>
+            <div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">{{ yearlyPrice }}</div>
           </div>
         </div>
-        <button (click)="nextStep()"
-                style="width:100%;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
-                       padding:15px 0;border:none;cursor:pointer;">
-          Continue →
-        </button>
+
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                    color:#9aa79f;margin-bottom:12px;">Pay with</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;">
+          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Card</span>
+          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Bank transfer</span>
+          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">JazzCash</span>
+          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Easypaisa</span>
+        </div>
+
+        <div style="display:flex;gap:12px;">
+          <button (click)="prevStep()" class="step-back-btn"
+                  style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
+                         padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
+            ← Back
+          </button>
+          <button (click)="nextStep()" class="step-continue-btn"
+                  style="flex:1;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
+                         padding:14px 0;border:none;cursor:pointer;">
+            Continue →
+          </button>
+        </div>
       </div>
 
-      <!-- ── Step 2: Sponsor details ── -->
-      <div *ngIf="step === 2">
+      <!-- ── Step 3: Sponsor details ── -->
+      <div *ngIf="step === 3">
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
           Your details
         </h2>
@@ -103,8 +178,11 @@
           <div>
             <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Email address *</label>
             <input type="email" [(ngModel)]="email" placeholder="you@example.com"
-                   style="width:100%;border:1px solid #ddd5c5;border-radius:8px;padding:11px 14px;font-size:15px;
-                          color:#1c352c;background:#fff;outline:none;font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;" />
+                   [style]="'width:100%;border:1px solid ' + (email.trim() && !emailValid ? '#f5c5c5' : '#ddd5c5') + ';border-radius:8px;padding:11px 14px;font-size:15px;color:#1c352c;background:#fff;outline:none;font-family:Hanken Grotesk,sans-serif;box-sizing:border-box;'" />
+            <div *ngIf="email.trim() && !emailValid"
+                 style="font-size:12px;color:#b45454;margin-top:5px;">
+              Please enter a valid email address.
+            </div>
           </div>
           <div>
             <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">
@@ -120,12 +198,12 @@
           {{ error }}
         </div>
         <div style="display:flex;gap:12px;">
-          <button (click)="prevStep()"
+          <button (click)="prevStep()" class="step-back-btn"
                   style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
                          padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
             ← Back
           </button>
-          <button (click)="nextStep()"
+          <button (click)="nextStep()" class="step-continue-btn"
                   style="flex:1;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
                          padding:14px 0;border:none;cursor:pointer;">
             Continue →
@@ -133,8 +211,8 @@
         </div>
       </div>
 
-      <!-- ── Step 3: Payment (bank transfer) ── -->
-      <div *ngIf="step === 3">
+      <!-- ── Step 4: Payment (bank transfer) ── -->
+      <div *ngIf="step === 4">
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
           Payment details
         </h2>
@@ -146,11 +224,9 @@
                       font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
                       text-transform:uppercase;color:#9aa79f;">Bank transfer details</div>
           <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
-              <div>
-                <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">Account title</div>
-                <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#1c352c;">{{ paymentInfo.accountTitle }}</div>
-              </div>
+            <div>
+              <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">Account title</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;color:#1c352c;">{{ paymentInfo.accountTitle }}</div>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
               <div>
@@ -185,12 +261,12 @@
           {{ error }}
         </div>
         <div style="display:flex;gap:12px;">
-          <button (click)="prevStep()"
+          <button (click)="prevStep()" class="step-back-btn"
                   style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
                          padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
             ← Back
           </button>
-          <button (click)="nextStep()" [disabled]="submitting"
+          <button (click)="nextStep()" [disabled]="submitting" class="step-continue-btn"
                   [style]="'flex:1;background:' + (submitting ? '#9aa79f' : '#2f5d4f') + ';color:#fff;font-size:16px;font-weight:600;border-radius:10px;padding:14px 0;border:none;cursor:' + (submitting ? 'not-allowed' : 'pointer') + ';'">
             {{ submitting ? 'Submitting…' : 'Confirm sponsorship' }}
           </button>
@@ -199,34 +275,56 @@
     </div>
 
     <!-- ── Right: order summary ── -->
-    <div style="position:sticky;top:24px;border:1px solid #e3dccd;border-radius:14px;overflow:hidden;">
-      <div style="background:#f3eee4;border-bottom:1px solid #e3dccd;padding:14px 20px;font-weight:600;font-size:14px;color:#1c352c;">
-        Order summary
+    <div class="checkout-sidebar">
+      <div style="position:sticky;top:24px;border:1px solid #e3dccd;border-radius:16px;overflow:hidden;">
+        <div style="padding:22px;border-bottom:1px solid #efe9dd;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+                      color:#9aa79f;margin-bottom:16px;">You're sponsoring</div>
+          <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:2px;">{{ childName }}</div>
+          <div style="font-size:13px;color:#8a958d;margin-bottom:0;">{{ campusName }}<span *ngIf="city"> · {{ city }}</span></div>
+        </div>
+        <div style="padding:22px;">
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:10px;">
+            <span>Intention</span>
+            <span style="color:#1c352c;font-weight:600;">{{ intentionLabel() }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:10px;">
+            <span>{{ commitmentType === 'YEARLY' ? 'Yearly' : 'Monthly' }} sponsorship</span>
+            <span style="color:#1c352c;">{{ displayPrice }}</span>
+          </div>
+          <div style="height:1px;background:#efe9dd;margin:14px 0;"></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;">
+            <span style="font-weight:600;font-size:15px;color:#1c352c;">Due today</span>
+            <span style="font-family:'Newsreader',serif;font-size:28px;color:#1c352c;">{{ displayPrice }}</span>
+          </div>
+          <div style="font-size:12.5px;color:#8a958d;margin-top:4px;">
+            {{ commitmentType === 'YEARLY' ? 'Billed once a year' : 'Billed monthly · cancel anytime' }}
+          </div>
+        </div>
+        <div style="background:#fdf7ec;border-top:1px solid #ecd6b0;padding:16px 22px;
+                    display:flex;gap:11px;align-items:flex-start;">
+          <span style="width:9px;height:9px;border-radius:50%;background:#d99a4e;margin-top:4px;flex-shrink:0;"></span>
+          <div style="font-size:12.5px;line-height:1.5;color:#8a6a38;">
+            A portion supports the <strong>Continuity Fund</strong>, protecting every sponsored child from gaps.
+          </div>
+        </div>
       </div>
-      <div style="padding:20px;">
-        <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:4px;">{{ childName }}</div>
-        <div style="font-size:13px;color:#8a958d;margin-bottom:18px;">{{ campusName }}<span *ngIf="city"> · {{ city }}</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:14px;color:#54625b;">
-          <span>{{ commitmentType === 'YEARLY' ? 'Yearly' : 'Monthly' }} sponsorship</span>
-          <strong style="color:#1c352c;">{{ displayPrice }}</strong>
+
+      <!-- Islamic du'a preview -->
+      <div style="margin-top:16px;background:#1c352c;border-radius:16px;padding:22px;">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;
+                    text-transform:uppercase;color:#9cc3b3;margin-bottom:10px;">After you give</div>
+        <div style="font-family:'Newsreader',serif;font-style:italic;font-size:17px;line-height:1.45;color:#fdfaf3;">
+          "May Allah accept your {{ intentionLabel().toLowerCase() }} and make it a continuing reward."
         </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#54625b;">
-          <span>Duration</span>
-          <span style="color:#1c352c;">{{ commitmentType === 'YEARLY' ? '12 months' : 'Monthly' }}</span>
-        </div>
-        <hr style="border:none;border-top:1px solid #e3dccd;margin:16px 0;" />
-        <div style="background:#fdf7ec;border:1px solid #ecd6b0;border-radius:10px;padding:12px;
-                    font-size:12.5px;line-height:1.5;color:#8a6a38;display:flex;gap:9px;align-items:flex-start;">
-          <span style="width:8px;height:8px;border-radius:50%;background:#d99a4e;margin-top:3px;flex-shrink:0;"></span>
-          Protected by JJT's Continuity Fund — if you ever miss a payment, {{ childName }}'s education is not interrupted.
-        </div>
+        <div style="font-size:12px;color:#9cc3b3;margin-top:10px;">A calm thank-you — never an upsell.</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Step 4: Confirmation ── -->
-<div *ngIf="step === 4"
+<!-- ── Step 5: Confirmation ── -->
+<div *ngIf="step === 5" class="confirm-page"
      style="background:#fffdf9;min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 32px;">
   <div style="max-width:520px;width:100%;text-align:center;">
     <div style="width:60px;height:60px;border-radius:50%;background:#eef5f1;border:1px solid #cfe0d7;display:flex;align-items:center;
@@ -240,9 +338,14 @@
     <p *ngIf="startMonth" style="font-size:15px;color:#6b7b73;margin:0 0 8px;">
       Starting: <strong style="color:#1c352c;font-family:'IBM Plex Mono',monospace;">{{ startMonth }}</strong>
     </p>
-    <p style="font-size:14px;color:#8a958d;margin:0 0 28px;">
-      We'll reach out to <strong style="color:#1c352c;">{{ email }}</strong> with next steps within 1–2 business days.
+    <p style="font-size:14px;color:#8a958d;margin:0 0 8px;">
+      We'll reach out to <strong style="color:#1c352c;">{{ email }}</strong> within 1–2 business days.
     </p>
+    <div style="background:#1c352c;border-radius:14px;padding:20px;margin:20px 0 28px;text-align:center;">
+      <div style="font-family:'Newsreader',serif;font-style:italic;font-size:20px;line-height:1.45;color:#fdfaf3;">
+        "May Allah accept your {{ intentionLabel().toLowerCase() }} and make it a continuing reward."
+      </div>
+    </div>
     <div style="display:flex;flex-direction:column;gap:10px;">
       <a routerLink="/children"
          style="display:block;background:#2f5d4f;color:#fff;font-size:15px;font-weight:600;border-radius:10px;
@@ -261,11 +364,37 @@
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }
   @media (max-width: 820px) {
-    div[style*="grid-template-columns:1fr 320px"] {
+    .checkout-content {
       grid-template-columns: 1fr !important;
     }
-    div[style*="position:sticky;top:24px"] {
-      position: static !important;
+    .checkout-sidebar {
+      display: none !important;
     }
+  }
+  @media (max-width: 768px) {
+    /* Progress bar */
+    .step-bar-desktop { display: none !important; }
+    .step-bar-mobile  { display: block !important; }
+    /* Mobile summary */
+    .mobile-summary   { display: flex !important; }
+    /* Remove sidebar from collapsed grid */
+    .checkout-content {
+      grid-template-columns: 1fr !important;
+      padding: 16px 18px 100px !important;
+      gap: 0 !important;
+    }
+    .step-h1 { font-size: 24px !important; }
+    .intention-grid { grid-template-columns: 1fr !important; gap: 10px !important; }
+    .step-continue-btn {
+      position: fixed !important;
+      left: 0 !important; right: 0 !important; bottom: 0 !important;
+      z-index: 40 !important; border-radius: 0 !important;
+      padding: 18px 24px !important; font-size: 16px !important; margin: 0 !important;
+    }
+    .step-back-btn { display: none !important; }
+    .checkout-outer { padding: 16px 0 0 !important; }
+    .checkout-nav { padding: 0 18px !important; }
+    .confirm-page { padding: 30px 18px !important; align-items: flex-start !important; }
+    .step-bar-desktop { padding: 14px 18px !important; }
   }
 </style>

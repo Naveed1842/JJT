@@ -1133,6 +1133,74 @@
   line-height: 1.5;
 }
 
+/* ── Fund row (dashboard panel) ──────────────────────────────────────── */
+.fund-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.fund-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 12px;
+}
+
+/* ── Settings tabs ────────────────────────────────────────────────────── */
+.settings-tab {
+  width: 100%;
+  display: block;
+  padding: 9px 12px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--text-2);
+  font-size: 13.5px;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+  margin-bottom: 2px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.settings-tab:hover {
+  background: var(--cream-alt);
+  color: var(--text-1);
+}
+
+.settings-tab.active {
+  background: var(--forest-light);
+  color: var(--forest);
+  font-weight: 600;
+}
+
+/* ── Settings row ─────────────────────────────────────────────────────── */
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-row-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-1);
+  margin-bottom: 2px;
+}
+
+.settings-row-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.4;
+}
+
 /* ── Responsive ──────────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }

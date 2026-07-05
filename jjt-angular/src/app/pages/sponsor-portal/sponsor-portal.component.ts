@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 import { SponsorService } from '../../services/sponsor.service';
@@ -17,7 +18,7 @@ interface ChildDetail {
 @Component({
   selector: 'app-sponsor-portal',
   standalone: true,
-  imports: [CommonModule, SiteHeaderComponent, SiteFooterComponent],
+  imports: [CommonModule, FormsModule, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './sponsor-portal.component.html',
 })
 export class SponsorPortalComponent implements OnInit {
@@ -28,12 +29,61 @@ export class SponsorPortalComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
+  // ── Profile ────────────────────────────────────────────────────────
+  activeTab: 'children' | 'profile' = 'children';
+  profile: { id: string; displayName: string; contactEmail: string; phone: string | null } | null = null;
+  loadingProfile = false;
+  profileForm = { displayName: '', phone: '' };
+  savingProfile = false;
+  profileError: string | null = null;
+  profileSuccess = false;
+
   get sponsorEmail(): string {
     return this.authService.getCurrentUser()?.email ?? '';
   }
 
   ngOnInit(): void {
     this.loadChildren();
+  }
+
+  setTab(tab: 'children' | 'profile'): void {
+    this.activeTab = tab;
+    if (tab === 'profile' && !this.profile) this.loadProfile();
+  }
+
+  loadProfile(): void {
+    this.loadingProfile = true;
+    this.profileError = null;
+    this.sponsorService.getSponsorProfile().subscribe({
+      next: (data) => {
+        this.profile = data;
+        this.profileForm = { displayName: data.displayName, phone: data.phone ?? '' };
+        this.loadingProfile = false;
+      },
+      error: () => { this.loadingProfile = false; }
+    });
+  }
+
+  saveProfile(): void {
+    if (this.savingProfile) return;
+    this.savingProfile = true;
+    this.profileError = null;
+    this.profileSuccess = false;
+    this.sponsorService.updateSponsorProfile({
+      displayName: this.profileForm.displayName.trim() || undefined,
+      phone: this.profileForm.phone.trim() || null,
+    }).subscribe({
+      next: (data) => {
+        this.profile = data;
+        this.savingProfile = false;
+        this.profileSuccess = true;
+        setTimeout(() => { this.profileSuccess = false; }, 3000);
+      },
+      error: (err) => {
+        this.savingProfile = false;
+        this.profileError = err?.error?.message ?? 'Failed to save profile.';
+      }
+    });
   }
 
   loadChildren(): void {

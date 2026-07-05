@@ -28,12 +28,16 @@ public class EducationSupportLedgerEntity {
     @OneToMany(mappedBy = "ledger", cascade = CascadeType.ALL, orphanRemoval = false)
     private Set<LedgerEntryEntity> entries = new LinkedHashSet<>();
 
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
     protected EducationSupportLedgerEntity() {
     }
 
-    public EducationSupportLedgerEntity(UUID id, ChildEntity child) {
+    public EducationSupportLedgerEntity(UUID id, ChildEntity child, UUID organisationId) {
         this.id = id;
         this.child = child;
+        this.organisationId = organisationId;
     }
 
     public UUID getId() {
@@ -47,4 +51,6 @@ public class EducationSupportLedgerEntity {
     public Set<LedgerEntryEntity> getEntries() {
         return entries;
     }
+
+    public UUID getOrganisationId() { return organisationId; }
 }

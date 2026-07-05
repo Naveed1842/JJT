@@ -37,6 +37,9 @@ public class ChildEntity {
     @Column(name = "school_name")
     private String schoolName;
 
+    @Column(name = "organisation_id", nullable = false, updatable = false)
+    private UUID organisationId;
+
     @OneToOne(mappedBy = "child", optional = false)
     private EducationSupportLedgerEntity ledger;
 
@@ -44,7 +47,7 @@ public class ChildEntity {
     }
 
     public ChildEntity(UUID id, String fullName, java.math.BigDecimal educationAmount, String educationCurrency,
-                       String rollNumber, String city, String campusName, String schoolName) {
+                       String rollNumber, String city, String campusName, String schoolName, UUID organisationId) {
         this.id = id;
         this.fullName = fullName;
         this.educationAmount = educationAmount;
@@ -53,6 +56,7 @@ public class ChildEntity {
         this.city = city;
         this.campusName = campusName;
         this.schoolName = schoolName;
+        this.organisationId = organisationId;
     }
 
     public UUID getId() {
@@ -86,6 +90,8 @@ public class ChildEntity {
     public String getSchoolName() {
         return schoolName;
     }
+
+    public UUID getOrganisationId() { return organisationId; }
 
     public EducationSupportLedgerEntity getLedger() {
         return ledger;

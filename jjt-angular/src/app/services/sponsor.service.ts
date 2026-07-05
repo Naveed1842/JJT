@@ -67,4 +67,14 @@ export class SponsorService {
       payload
     );
   }
+
+  // ── Sponsor profile (SPONSOR role) ────────────────────────────────────────
+
+  getSponsorProfile(): Observable<{ id: string; displayName: string; contactEmail: string; phone: string | null }> {
+    return this.http.get<any>(`${this.base}/api/sponsor/profile`);
+  }
+
+  updateSponsorProfile(req: { displayName?: string; phone?: string | null }): Observable<{ id: string; displayName: string; contactEmail: string; phone: string | null }> {
+    return this.http.patch<any>(`${this.base}/api/sponsor/profile`, req);
+  }
 }

@@ -9,5 +9,7 @@ public record RecordEarlySupportRequest(
         @NotBlank String month,
         @NotBlank String educationAmount,
         @NotBlank String educationCurrency,
-        UUID ledgerEntryId) {
+        UUID ledgerEntryId,
+        boolean force,
+        String forceReason) {
 }

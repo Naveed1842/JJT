@@ -55,9 +55,9 @@ public class PublicSponsorshipService {
         if (sponsorEmail == null || sponsorEmail.isBlank()) {
             throw new DomainException("sponsor email must not be blank");
         }
-        if (childRepo.findById(childId).isEmpty()) {
-            throw new DomainException("Child not found");
-        }
+        var childEntity = childRepo.findById(childId)
+                .orElseThrow(() -> new DomainException("Child not found"));
+        UUID orgId = childEntity.getOrganisationId();
 
         if (sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE)) {
             throw new SponsorshipInvariantViolationException("Child already has an active sponsorship.");
@@ -68,14 +68,15 @@ public class PublicSponsorshipService {
 
         Sponsor sponsor = createSponsorUseCase.create(
                 new CreateSponsorUseCase.Command(null, sponsorName.trim(), sponsorEmail.trim(), sponsorPhone));
-        SponsorEntity sponsorEntity = SponsorMapper.toEntity(sponsor);
+        SponsorEntity sponsorEntity = SponsorMapper.toEntity(sponsor, orgId);
         sponsorRepo.save(sponsorEntity);
 
         YearMonthValue startMonth = YearMonthValue.of(YearMonth.now().plusMonths(1));
+        // Public commits have no authenticated author; createdBy is null (nullable for Phase 1 / public path).
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
                 new CommitFutureSponsorshipUseCase.Command(null, sponsor.getId(), childId, startMonth,
-                        false, SponsorshipStatus.PENDING, Instant.now(), null, commitmentType));
-        SponsorshipEntity sponsorshipEntity = SponsorshipMapper.toEntity(sponsorship, sponsorEntity);
+                        false, Instant.now(), null, commitmentType, null));
+        SponsorshipEntity sponsorshipEntity = SponsorshipMapper.toEntity(sponsorship, sponsorEntity, orgId);
         sponsorshipRepo.save(sponsorshipEntity);
 
         return sponsorship;

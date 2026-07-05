@@ -4,6 +4,7 @@ import com.jjt.platform.api.admin.dto.*;
 import com.jjt.platform.api.admin.service.AdminCommandService;
 import com.jjt.platform.api.common.dto.LedgerEntryDto;
 import com.jjt.platform.api.common.mapper.DtoMapper;
+import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
@@ -12,11 +13,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -41,14 +44,23 @@ public class AdminController {
     }
 
     @GetMapping("/sponsors")
-    public List<CreateSponsorResponse> listSponsors() {
-        return sponsorRepo.findAll().stream()
-                .map(s -> new CreateSponsorResponse(s.getId(), s.getDisplayName(), s.getContactEmail()))
+    public List<CreateSponsorResponse> listSponsors(@AuthenticationPrincipal JwtUserDetails principal) {
+        UUID orgId = principal.getOrgId();
+        List<?> sponsors = orgId != null
+                ? sponsorRepo.findByOrganisationId(orgId)
+                : sponsorRepo.findAll();
+        return sponsors.stream()
+                .map(s -> {
+                    var sp = (com.jjt.platform.infrastructure.persistence.entity.SponsorEntity) s;
+                    return new CreateSponsorResponse(sp.getId(), sp.getDisplayName(), sp.getContactEmail());
+                })
                 .toList();
     }
 
     @PostMapping("/children")
-    public ResponseEntity<CreateChildResponse> createChild(@Valid @RequestBody CreateChildRequest request) {
+    public ResponseEntity<CreateChildResponse> createChild(
+            @Valid @RequestBody CreateChildRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var result = adminService.createChild(
                 request.rollNumber(),
                 request.fullName(),
@@ -57,31 +69,41 @@ public class AdminController {
                 request.schoolName(),
                 Money.of(new BigDecimal(request.educationAmount()), Currency.getInstance(request.educationCurrency())),
                 request.childId(),
-                request.ledgerId()
+                request.ledgerId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateChildResponse(result.child().getId(), result.ledger().getId()));
     }
 
     @PostMapping("/sponsors")
-    public ResponseEntity<CreateSponsorResponse> createSponsor(@Valid @RequestBody CreateSponsorRequest request) {
+    public ResponseEntity<CreateSponsorResponse> createSponsor(
+            @Valid @RequestBody CreateSponsorRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var sponsor = adminService.createSponsor(
                 request.displayName(),
                 request.contactEmail(),
                 request.phone(),
-                request.sponsorId()
+                request.sponsorId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateSponsorResponse(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail()));
     }
 
     @PostMapping("/early-support")
-    public ResponseEntity<RecordEarlySupportResponse> recordEarlySupport(@Valid @RequestBody RecordEarlySupportRequest request) {
+    public ResponseEntity<RecordEarlySupportResponse> recordEarlySupport(
+            @Valid @RequestBody RecordEarlySupportRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var entry = adminService.recordEarlySupport(
                 request.childId(),
                 YearMonthValue.of(YearMonth.parse(request.month())),
                 Money.of(new BigDecimal(request.educationAmount()), Currency.getInstance(request.educationCurrency())),
-                request.ledgerEntryId()
+                request.ledgerEntryId(),
+                principal.getId(),
+                request.force(),
+                request.forceReason(),
+                principal.getOrgId()
         );
         LedgerEntryDto dto = DtoMapper.toLedgerEntryDto(entry);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -89,26 +111,34 @@ public class AdminController {
     }
 
     @PostMapping("/children/{childId}/progress")
-    public ResponseEntity<AddProgressResponse> addProgress(@PathVariable("childId") UUID childId,
-                                                           @Valid @RequestBody AddProgressRequest request) {
+    public ResponseEntity<AddProgressResponse> addProgress(
+            @PathVariable("childId") UUID childId,
+            @Valid @RequestBody AddProgressRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var progress = adminService.addProgress(
                 childId,
                 YearMonthValue.of(YearMonth.parse(request.month())),
                 request.summary(),
-                request.progressUpdateId()
+                request.progressUpdateId(),
+                principal.getId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AddProgressResponse(progress.getId(), progress.getChildId(), progress.getMonth().getValue().toString()));
     }
 
     @PostMapping("/sponsorships")
-    public ResponseEntity<CommitSponsorshipResponse> commitSponsorship(@Valid @RequestBody CommitSponsorshipRequest request) {
+    public ResponseEntity<CommitSponsorshipResponse> commitSponsorship(
+            @Valid @RequestBody CommitSponsorshipRequest request,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var sponsorship = adminService.commitSponsorship(
                 request.sponsorId(),
                 request.childId(),
                 YearMonthValue.of(YearMonth.parse(request.startMonth())),
                 request.sponsorshipId(),
-                request.commitmentType()
+                request.commitmentType(),
+                principal.getId(),
+                principal.getOrgId()
         );
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CommitSponsorshipResponse(
@@ -121,9 +151,10 @@ public class AdminController {
 
     @GetMapping("/sponsorships")
     public List<SponsorshipSummaryResponse> listSponsorships(
-            @org.springframework.web.bind.annotation.RequestParam(name = "status", required = false) String status) {
+            @RequestParam(name = "status", required = false) String status,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         SponsorshipStatus target = status != null ? SponsorshipStatus.valueOf(status) : SponsorshipStatus.PENDING;
-        return adminService.findEntitiesByStatus(target).stream()
+        return adminService.findEntitiesByStatus(target, principal.getOrgId()).stream()
                 .map(s -> new SponsorshipSummaryResponse(
                         s.getId(),
                         s.getChildId(),

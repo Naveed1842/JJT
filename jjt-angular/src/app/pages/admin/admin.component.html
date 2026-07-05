@@ -47,7 +47,48 @@
         <span *ngIf="pendingSponsorships.length > 0" class="nav-badge amber">{{ pendingSponsorships.length }}</span>
       </button>
 
+      <div class="nav-group-label" style="margin-top:12px;">Finance</div>
+      <button class="nav-item" [class.active]="activeSection === 'funds'" (click)="setSection('funds')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9h18M3 15h18M10 3v18M7 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2"/>
+        </svg>
+        Fund Accounts
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'reconciliation'" (click)="setSection('reconciliation')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Reconciliation
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'donors'" (click)="setSection('donors')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Donors
+        <span *ngIf="donors.length > 0" class="nav-badge">{{ donors.length }}</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'donations'" (click)="setSection('donations')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Donations
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'campaigns'" (click)="setSection('campaigns')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+        Campaigns
+        <span *ngIf="campaigns.length > 0" class="nav-badge">{{ campaigns.length }}</span>
+      </button>
+
       <div class="nav-group-label" style="margin-top:12px;">Operations</div>
+      <button class="nav-item" [class.active]="activeSection === 'import'" (click)="setSection('import')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Bulk Import
+      </button>
       <button class="nav-item" [class.active]="activeSection === 'earlySupport'" (click)="setSection('earlySupport')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>
@@ -59,6 +100,13 @@
           <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
         </svg>
         Add Progress
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'alerts'" (click)="setSection('alerts')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/>
+        </svg>
+        Alerts
+        <span *ngIf="alertList.length > 0" class="nav-badge amber">{{ alertList.length }}</span>
       </button>
 
       <div class="nav-group-label" style="margin-top:12px;">System</div>
@@ -74,6 +122,19 @@
           <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
         </svg>
         Reports
+      </button>
+      <button *ngIf="isJjtAdmin" class="nav-item" [class.active]="activeSection === 'audit'" (click)="setSection('audit')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+        Audit Log
+      </button>
+      <button class="nav-item" [class.active]="activeSection === 'settings'" (click)="setSection('settings')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
       </button>
       <button class="nav-item" [class.active]="activeSection === 'docs'" (click)="setSection('docs')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -107,10 +168,19 @@
           <ng-container *ngIf="activeSection === 'children'">Management</ng-container>
           <ng-container *ngIf="activeSection === 'sponsors'">Management</ng-container>
           <ng-container *ngIf="activeSection === 'commitments'">Management</ng-container>
+          <ng-container *ngIf="activeSection === 'users'">Management</ng-container>
+          <ng-container *ngIf="activeSection === 'funds'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'reconciliation'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'donors'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'donations'">Finance</ng-container>
+          <ng-container *ngIf="activeSection === 'campaigns'">Finance</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Operations</ng-container>
-          <ng-container *ngIf="activeSection === 'users'">System</ng-container>
+          <ng-container *ngIf="activeSection === 'alerts'">Operations</ng-container>
+          <ng-container *ngIf="activeSection === 'import'">Operations</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">System</ng-container>
+          <ng-container *ngIf="activeSection === 'audit'">System</ng-container>
+          <ng-container *ngIf="activeSection === 'settings'">System</ng-container>
           <ng-container *ngIf="activeSection === 'docs'">System</ng-container>
         </div>
         <div class="crumb-title">
@@ -118,10 +188,19 @@
           <ng-container *ngIf="activeSection === 'children'">Child Management</ng-container>
           <ng-container *ngIf="activeSection === 'sponsors'">Sponsors</ng-container>
           <ng-container *ngIf="activeSection === 'commitments'">Commitments</ng-container>
+          <ng-container *ngIf="activeSection === 'users'">User Management</ng-container>
+          <ng-container *ngIf="activeSection === 'funds'">Fund Accounts</ng-container>
+          <ng-container *ngIf="activeSection === 'reconciliation'">Reconciliation</ng-container>
+          <ng-container *ngIf="activeSection === 'donors'">Donors</ng-container>
+          <ng-container *ngIf="activeSection === 'donations'">Donations</ng-container>
+          <ng-container *ngIf="activeSection === 'campaigns'">Campaigns</ng-container>
           <ng-container *ngIf="activeSection === 'earlySupport'">Early Support</ng-container>
           <ng-container *ngIf="activeSection === 'progress'">Add Progress</ng-container>
-          <ng-container *ngIf="activeSection === 'users'">User Management</ng-container>
+          <ng-container *ngIf="activeSection === 'alerts'">Alerts</ng-container>
+          <ng-container *ngIf="activeSection === 'import'">Bulk Import</ng-container>
           <ng-container *ngIf="activeSection === 'reports'">Reports & Analytics</ng-container>
+          <ng-container *ngIf="activeSection === 'audit'">Audit Log</ng-container>
+          <ng-container *ngIf="activeSection === 'settings'">Settings</ng-container>
           <ng-container *ngIf="activeSection === 'docs'">How It Works</ng-container>
         </div>
       </div>
@@ -166,86 +245,109 @@
           </div>
         </div>
 
-        <div class="dash-two-col">
-          <!-- Status breakdown -->
+        <!-- Fund accounts + at-risk two-column -->
+        <div class="dash-two-col" style="margin-bottom:16px;">
+          <!-- Fund accounts panel -->
           <div class="card">
             <div class="card-header">
-              <div class="card-title">Children by Status</div>
-              <div class="card-sub">Current sponsorship coverage</div>
+              <div>
+                <div class="card-title">Fund Accounts</div>
+                <div class="card-sub">Total balance across all funds</div>
+              </div>
+              <button class="btn-sm-primary" (click)="setSection('funds')">View all →</button>
             </div>
-            <div class="status-bars">
-              <div class="status-bar-row">
-                <span class="status-bar-label">Sponsored</span>
-                <div class="status-bar-track">
-                  <div class="status-bar-fill green" [style.width.%]="children.length > 0 ? (sponsoredCount / children.length * 100) : 0"></div>
+            <div *ngIf="loadingFunds" style="font-size:13px;color:var(--text-3);padding:8px 0;">Loading funds…</div>
+            <div *ngIf="!loadingFunds && fundAccounts.length === 0" style="font-size:13px;color:var(--text-3);font-style:italic;">No fund accounts found.</div>
+            <div *ngIf="!loadingFunds && fundAccounts.length > 0">
+              <div *ngFor="let f of fundAccounts" class="fund-row">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13.5px;font-weight:600;color:var(--text-1);">{{ f.name }}</div>
+                  <div style="font-size:11px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;margin-top:2px;">{{ f.currency }}</div>
                 </div>
-                <span class="status-bar-count">{{ sponsoredCount }}</span>
+                <div style="text-align:right;">
+                  <div style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;color:var(--text-1);">
+                    {{ formatAmount(f.balance, f.currency) }}
+                  </div>
+                  <div *ngIf="f.isBelowMinReserve" style="font-size:11px;color:var(--red);margin-top:2px;">Below reserve</div>
+                </div>
               </div>
-              <div class="status-bar-row">
-                <span class="status-bar-label">Reserved</span>
-                <div class="status-bar-track">
-                  <div class="status-bar-fill amber"
-                    [style.width.%]="children.length > 0 ? ((children.length - sponsoredCount - seekingCount) / children.length * 100) : 0"></div>
-                </div>
-                <span class="status-bar-count">{{ children.length - sponsoredCount - seekingCount }}</span>
-              </div>
-              <div class="status-bar-row">
-                <span class="status-bar-label">Seeking</span>
-                <div class="status-bar-track">
-                  <div class="status-bar-fill grey" [style.width.%]="children.length > 0 ? (seekingCount / children.length * 100) : 0"></div>
-                </div>
-                <span class="status-bar-count">{{ seekingCount }}</span>
+              <div class="fund-total-row">
+                <span style="font-size:12.5px;color:var(--text-3);">Combined balance</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;color:var(--green);">PKR {{ totalFundBalance }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Quick actions -->
-          <div class="card">
-            <div class="card-header">
-              <div class="card-title">Quick Actions</div>
-              <div class="card-sub">Common admin tasks</div>
+          <!-- At-risk + quick actions -->
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <!-- At-risk from recon -->
+            <div class="card" *ngIf="reconData && reconData.atRisk.length > 0">
+              <div class="card-header">
+                <div class="card-title">At-Risk Sponsorships</div>
+                <span class="badge badge-red">{{ reconData.atRisk.length }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div *ngFor="let ar of reconData.atRisk | slice:0:3"
+                     style="border:1px solid #f5c5c5;background:#fef6f5;border-radius:10px;padding:11px 12px;">
+                  <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
+                    <div class="avatar-circle" style="background:#b91c1c;width:28px;height:28px;font-size:10px;">{{ initials(ar.sponsorName) }}</div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-size:13px;font-weight:600;color:var(--text-1);">{{ ar.childName }}</div>
+                      <div style="font-size:11.5px;color:#b91c1c;">{{ ar.consecutiveOverdueMonths }} months overdue</div>
+                    </div>
+                    <span *ngIf="ar.requiresEscalation" class="badge badge-red" style="font-size:10px;">Escalate</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--text-3);">Sponsor: {{ ar.sponsorName }}</div>
+                </div>
+              </div>
+              <button class="show-all-link" (click)="setSection('reconciliation')">View reconciliation →</button>
             </div>
-            <div class="quick-actions">
-              <button class="qa-btn" (click)="setSection('children'); openModal('addChild')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Add Child
-              </button>
-              <button class="qa-btn" (click)="setSection('sponsors'); openModal('addSponsor')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-                Add Sponsor
-              </button>
-              <button class="qa-btn" (click)="setSection('earlySupport')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/></svg>
-                Early Support
-              </button>
-              <button class="qa-btn" (click)="setSection('commitments'); openModal('addCommitment')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 12a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/></svg>
-                New Commitment
-              </button>
-              <button class="qa-btn" (click)="setSection('progress')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3v18h18"/></svg>
-                Add Progress
-              </button>
-              <button *ngIf="isJjtAdmin" class="qa-btn" (click)="setSection('users')">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/></svg>
-                Manage Users
-              </button>
+
+            <!-- Quick actions -->
+            <div class="card">
+              <div class="card-title" style="margin-bottom:12px;">Quick Actions</div>
+              <div class="quick-actions">
+                <button class="qa-btn" (click)="setSection('children'); openModal('addChild')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Add Child
+                </button>
+                <button class="qa-btn" (click)="setSection('sponsors'); openModal('addSponsor')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                  Add Sponsor
+                </button>
+                <button class="qa-btn" (click)="setSection('commitments'); openModal('addCommitment')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 12a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/></svg>
+                  New Commitment
+                </button>
+                <button class="qa-btn" (click)="setSection('reconciliation')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 11l3 3L22 4"/></svg>
+                  Reconcile
+                </button>
+                <button class="qa-btn" (click)="setSection('earlySupport')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 3v12M7 10l5 5 5-5"/></svg>
+                  Early Support
+                </button>
+                <button class="qa-btn" (click)="setSection('progress')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3v18h18"/></svg>
+                  Add Progress
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Pending alerts -->
-        <div *ngIf="pendingSponsorships.length > 0" class="card" style="margin-top:16px;">
+        <!-- Pending sponsorships -->
+        <div *ngIf="pendingSponsorships.length > 0" class="card" style="margin-bottom:16px;">
           <div class="card-header">
-            <div class="card-title">Needs Attention</div>
+            <div class="card-title">Pending Commitments</div>
             <span class="badge-pill red">{{ pendingSponsorships.length }} pending</span>
           </div>
           <div class="alert-list">
             <div *ngFor="let s of pendingSponsorships | slice:0:5" class="alert-row">
               <span class="alert-dot amber"></span>
               <div class="alert-body">
-                <div class="alert-title">Pending sponsorship — {{ childName(s.childId) }}</div>
-                <div class="alert-sub">{{ s.sponsorName }} · starts {{ s.startMonth }} · {{ s.commitmentType }}</div>
+                <div class="alert-title">{{ s.sponsorName }} → {{ childName(s.childId) }}</div>
+                <div class="alert-sub">Starts {{ s.startMonth }} · {{ s.commitmentType }}</div>
               </div>
               <button (click)="activate(s.sponsorshipId)" class="btn-sm-primary">Activate</button>
               <button (click)="expire(s.sponsorshipId)" class="btn-sm-ghost">Expire</button>
@@ -255,6 +357,62 @@
             View all {{ pendingSponsorships.length }} pending →
           </button>
         </div>
+
+        <!-- Reconciliation snapshot -->
+        <div *ngIf="reconData && reconData.payments.length > 0" class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title">{{ reconMonthLabel }} — Payment Snapshot</div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span style="font-size:12px;color:var(--text-3);">
+                {{ reconData.summary.received }}/{{ reconData.summary.total }} received
+              </span>
+              <button class="btn-sm-primary" (click)="setSection('reconciliation')">Full view →</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="data-table" style="min-width:600px;">
+              <thead>
+                <tr>
+                  <th>Sponsor</th>
+                  <th>Child</th>
+                  <th>Expected</th>
+                  <th>Status</th>
+                  <th style="text-align:right;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of reconPendingPayments | slice:0:6">
+                  <td style="font-weight:600;">{{ p.sponsorId | slice:0:8 }}…</td>
+                  <td>{{ childName(p.childId) }}</td>
+                  <td><span class="amount-text">{{ formatAmount(p.expectedAmount, p.expectedCurrency) }}</span></td>
+                  <td><span class="badge" [ngClass]="paymentStatusClass(p.status)">{{ p.status }}</span></td>
+                  <td style="text-align:right;">
+                    <button (click)="openRecordPayment(p)" class="btn-sm-primary" style="font-size:11px;">Record</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity / alerts feed -->
+        <div *ngIf="alertList.length > 0" class="card">
+          <div class="card-header">
+            <div class="card-title">System Alerts</div>
+            <button class="btn-sm-primary" (click)="setSection('alerts')">View all →</button>
+          </div>
+          <div class="alert-list">
+            <div *ngFor="let a of alertList | slice:0:5" class="alert-row">
+              <span class="alert-dot" [ngClass]="a.severity === 'CRITICAL' || a.severity === 'HIGH' ? 'red' : a.severity === 'MEDIUM' ? 'amber' : 'green'"></span>
+              <div class="alert-body">
+                <div class="alert-title">{{ a.title }}</div>
+                <div class="alert-sub">{{ a.message }}</div>
+              </div>
+              <span style="font-size:11px;color:var(--text-3);white-space:nowrap;">{{ timeAgo(a.createdAt) }}</span>
+              <button (click)="dismissAlert(a.id)" class="btn-sm-ghost" style="font-size:11px;">Dismiss</button>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- ========== CHILDREN ========== -->
@@ -262,10 +420,14 @@
         <div class="table-toolbar">
           <div class="search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9aa79f" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
-            <input [(ngModel)]="childSearch" placeholder="Search children…" class="search-input" />
+            <input [(ngModel)]="adminChildSearch" placeholder="Search children…" class="search-input" />
           </div>
-          <span class="results-text">{{ filteredChildren.length }} children</span>
-          <div style="margin-left:auto;">
+          <span class="results-text">{{ filteredAdminChildren.length }} children</span>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <button class="btn-secondary" (click)="exportChildren()" title="Export to Excel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
             <button class="btn-primary" (click)="openModal('addChild')">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
               Add Child
@@ -273,21 +435,74 @@
           </div>
         </div>
 
+        <!-- Child detail panel -->
+        <div *ngIf="selectedChildDetail" style="margin-bottom:16px;border:1px solid #e3dccd;border-radius:12px;background:#fff;overflow:hidden;">
+          <div style="background:#f3eee4;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e3dccd;">
+            <div style="font-weight:600;color:#1c352c;font-size:15px;">{{ selectedChildDetail.fullName }}
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#8a958d;margin-left:8px;">{{ selectedChildDetail.rollNumber }}</span>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-secondary" style="font-size:12px;padding:6px 12px;" (click)="downloadChildPdf(selectedChildDetail.id)">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                PDF Report
+              </button>
+              <button class="btn-secondary" style="font-size:12px;padding:6px 12px;" (click)="closeChildDetail()">Close</button>
+            </div>
+          </div>
+          <div style="padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+            <div>
+              <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Child Info</p>
+              <div style="font-size:13px;color:#54625b;line-height:1.9;">
+                <div><strong>City:</strong> {{ selectedChildDetail.city }}</div>
+                <div><strong>Campus:</strong> {{ selectedChildDetail.campusName }}</div>
+                <div *ngIf="selectedChildDetail.schoolName"><strong>School:</strong> {{ selectedChildDetail.schoolName }}</div>
+                <div><strong>Education Support:</strong> {{ selectedChildDetail.educationCurrency }} {{ selectedChildDetail.educationAmount }}/mo</div>
+                <div><strong>Status:</strong> <span class="badge" [ngClass]="availabilityClass(selectedChildDetail.availabilityStatus)">{{ availabilityLabel(selectedChildDetail.availabilityStatus) }}</span></div>
+              </div>
+            </div>
+            <div>
+              <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Sponsorship History ({{ selectedChildDetail.sponsorshipHistory?.length ?? 0 }})</p>
+              <div *ngFor="let s of selectedChildDetail.sponsorshipHistory" style="font-size:12px;color:#54625b;border:1px solid #e3dccd;border-radius:8px;padding:8px 12px;margin-bottom:6px;">
+                <div style="font-weight:600;color:#1c352c;">{{ s.sponsorName }}</div>
+                <div style="color:#8a958d;">{{ s.startMonth }} · <span class="badge" [ngClass]="availabilityClass(s.status === 'ACTIVE' ? 'ALLOCATED' : s.status === 'PENDING' ? 'RESERVED' : 'AVAILABLE')">{{ s.status }}</span></div>
+              </div>
+              <div *ngIf="!selectedChildDetail.sponsorshipHistory?.length" style="font-size:12px;color:#8a958d;font-style:italic;">No sponsorships yet.</div>
+            </div>
+          </div>
+          <div style="padding:0 20px 20px;">
+            <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">
+              Ledger ({{ selectedChildDetail.ledgerEntries?.length ?? 0 }} entries) &nbsp;·&nbsp; Progress ({{ selectedChildDetail.progressUpdates?.length ?? 0 }} updates)
+            </p>
+            <div *ngIf="selectedChildDetail.progressUpdates?.length > 0" style="max-height:120px;overflow-y:auto;">
+              <div *ngFor="let p of selectedChildDetail.progressUpdates" style="font-size:12px;color:#54625b;border-left:3px solid #2f5d4f;padding:4px 10px;margin-bottom:4px;">
+                <strong>{{ p.month }}</strong> — {{ p.summary }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading indicator for detail -->
+        <div *ngIf="loadingChildDetail" style="text-align:center;padding:20px 0;font-size:13px;color:#8a958d;">Loading detail…</div>
+
         <div class="table-card">
-          <div class="table-scroll">
+          <div *ngIf="loadingAdminChildren" style="padding:40px;text-align:center;">
+            <div style="display:inline-block;width:28px;height:28px;border:3px solid #e3dccd;border-top-color:#2f5d4f;border-radius:50%;animation:spin .8s linear infinite;"></div>
+          </div>
+          <div class="table-scroll" *ngIf="!loadingAdminChildren">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Child</th>
                   <th>Roll Number</th>
-                  <th>Campus</th>
-                  <th>City</th>
+                  <th>Campus / City</th>
                   <th>Monthly</th>
                   <th>Status</th>
+                  <th>Current Sponsor</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let c of filteredChildren">
+                <tr *ngFor="let c of filteredAdminChildren" style="cursor:pointer;" (click)="openChildDetail(c.id)">
                   <td>
                     <div class="cell-avatar">
                       <div class="avatar-circle green">{{ initials(c.fullName) }}</div>
@@ -295,21 +510,112 @@
                     </div>
                   </td>
                   <td><span class="mono-text">{{ c.rollNumber }}</span></td>
-                  <td>{{ c.campusName }}</td>
-                  <td>{{ c.city }}</td>
-                  <td><span class="amount-text">PKR {{ c.educationAmount }}</span></td>
+                  <td>{{ c.campusName }}<br><span style="font-size:11px;color:#8a958d;">{{ c.city }}</span></td>
+                  <td><span class="amount-text">{{ c.educationCurrency }} {{ c.educationAmount }}</span></td>
                   <td>
                     <span class="badge" [ngClass]="availabilityClass(c.availabilityStatus)">
                       {{ availabilityLabel(c.availabilityStatus) }}
                     </span>
                   </td>
+                  <td style="font-size:13px;color:#54625b;">{{ c.currentSponsorName ?? '—' }}</td>
+                  <td>
+                    <button class="btn-icon" (click)="$event.stopPropagation(); downloadChildPdf(c.id)" title="PDF Report">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div *ngIf="filteredChildren.length === 0" class="table-empty">
+          <div *ngIf="!loadingAdminChildren && filteredAdminChildren.length === 0" class="table-empty">
             <div class="empty-title">No children found</div>
             <div class="empty-sub">Try adjusting your search, or add a new child.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== BULK IMPORT ========== -->
+      <section *ngIf="activeSection === 'import'" class="section-anim">
+        <div class="table-toolbar">
+          <span class="results-text">Upload a .xlsx file to import children in bulk</span>
+          <div style="margin-left:auto;">
+            <button class="btn-ghost" (click)="downloadImportTemplate()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-right:6px;vertical-align:-2px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Template
+            </button>
+          </div>
+        </div>
+
+        <div class="table-card" style="padding:32px;">
+          <!-- Upload area -->
+          <label for="importFileInput" style="display:block;border:2px dashed var(--border);border-radius:12px;padding:40px;text-align:center;background:var(--cream);margin-bottom:24px;cursor:pointer;transition:border-color 0.2s;" [style.border-color]="importFile ? 'var(--forest)' : 'var(--border)'">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-3)" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 12px;display:block;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p style="font-size:15px;color:var(--text-1);margin:0 0 6px;font-weight:600;">
+              {{ importFile ? importFile.name : 'Click to select Excel file (.xlsx)' }}
+            </p>
+            <p style="font-size:13px;color:var(--text-3);margin:0;">Columns: Roll Number, Full Name*, City*, Campus Name*, School, Education Amount, Currency</p>
+            <input id="importFileInput" type="file" accept=".xlsx" (change)="onImportFileSelected($event)" style="display:none;" />
+          </label>
+
+          <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;">
+            <button class="btn-primary" (click)="submitImport()" [disabled]="!importFile || importLoading">
+              {{ importLoading ? 'Importing…' : 'Import Children' }}
+            </button>
+            <button class="btn-ghost" *ngIf="importFile && !importLoading" (click)="importFile = null">Clear</button>
+            <div *ngIf="importError" style="font-size:13px;color:#b45454;">{{ importError }}</div>
+          </div>
+
+          <!-- Results -->
+          <div *ngIf="importResult" style="border:1px solid #e3dccd;border-radius:12px;overflow:hidden;">
+            <div style="background:#f3eee4;padding:14px 20px;border-bottom:1px solid #e3dccd;">
+              <span style="font-weight:600;color:#1c352c;">Import Results</span>
+            </div>
+            <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border-bottom:1px solid #e3dccd;">
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#2f5d4f;">{{ importResult.importedRows }}</div>
+                <div style="font-size:12px;color:#8a958d;">Imported</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#8a5f1f;">{{ importResult.skippedMissingName + importResult.skippedMissingCampus + importResult.skippedDuplicateRollNumber }}</div>
+                <div style="font-size:12px;color:#8a958d;">Skipped</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#b45454;">{{ importResult.failedRows }}</div>
+                <div style="font-size:12px;color:#8a958d;">Failed</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:24px;font-weight:700;color:#54625b;">{{ importResult.totalRows }}</div>
+                <div style="font-size:12px;color:#8a958d;">Total Rows</div>
+              </div>
+            </div>
+            <div class="table-scroll" style="max-height:320px;overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width:60px;">Row</th>
+                    <th style="width:90px;">Status</th>
+                    <th>Roll Number</th>
+                    <th>Full Name</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let r of importResult.rows">
+                    <td><span class="mono-text">{{ r.rowNumber }}</span></td>
+                    <td>
+                      <span class="badge" [ngClass]="r.status === 'IMPORTED' ? 'badge-green' : r.status === 'FAILED' ? 'badge-red' : 'badge-amber'">
+                        {{ r.status }}
+                      </span>
+                    </td>
+                    <td><span class="mono-text">{{ r.rollNumber }}</span></td>
+                    <td>{{ r.fullName }}</td>
+                    <td style="font-size:12px;color:#8a958d;">{{ r.reason ?? '' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </section>
@@ -612,20 +918,648 @@
         </div>
       </section>
 
+      <!-- ========== FUND ACCOUNTS ========== -->
+      <section *ngIf="activeSection === 'funds'" class="section-anim">
+        <div *ngIf="loadingFunds" class="table-empty">
+          <div class="empty-sub">Loading fund accounts…</div>
+        </div>
+
+        <div *ngIf="!loadingFunds && fundAccounts.length === 0" class="table-empty">
+          <div class="empty-title">No fund accounts</div>
+          <div class="empty-sub">No fund accounts have been created yet.</div>
+        </div>
+
+        <div *ngIf="!loadingFunds && fundAccounts.length > 0">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div *ngFor="let f of fundAccounts" class="card">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                <div>
+                  <span style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;color:var(--text-2);background:var(--cream-alt);border:1px solid var(--border);border-radius:6px;padding:3px 9px;">{{ f.currency }}</span>
+                </div>
+                <span *ngIf="f.isBelowMinReserve" class="badge badge-red">Below reserve</span>
+                <span *ngIf="!f.isBelowMinReserve" class="badge badge-green">Healthy</span>
+              </div>
+              <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:6px;">{{ f.name }}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:600;color:var(--text-1);line-height:1.1;">
+                {{ formatAmount(f.balance, f.currency) }}
+              </div>
+              <div style="font-size:12.5px;color:var(--text-3);margin-top:5px;">
+                Min. reserve: <span style="font-family:'IBM Plex Mono',monospace;color:var(--amber);">{{ formatAmount(f.minReserve, f.currency) }}</span>
+              </div>
+
+              <!-- Balance bar -->
+              <div style="height:6px;border-radius:100px;overflow:hidden;background:var(--border);margin:14px 0 10px;">
+                <div style="height:100%;background:var(--forest);" [style.width.%]="100 - fundReservedPct(f)"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-3);">
+                <span>Available above reserve</span>
+                <span style="font-family:'IBM Plex Mono',monospace;">{{ 100 - fundReservedPct(f) }}%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary footer -->
+          <div class="card" style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text-1);">Combined balance across all funds</div>
+              <div style="font-size:12px;color:var(--text-3);margin-top:2px;">{{ fundAccounts.length }} fund account(s) · PKR base currency</div>
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--green);">PKR {{ totalFundBalance }}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== RECONCILIATION ========== -->
+      <section *ngIf="activeSection === 'reconciliation'" class="section-anim">
+        <!-- Month navigator -->
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:10px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:8px 14px;">
+            <button (click)="prevReconMonth()" class="btn-sm-ghost" style="padding:4px 9px;">‹</button>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--text-1);min-width:140px;text-align:center;">
+              {{ reconMonthLabel }}
+            </span>
+            <button (click)="nextReconMonth()" class="btn-sm-ghost" style="padding:4px 9px;">›</button>
+          </div>
+          <div *ngIf="loadingRecon" style="font-size:13px;color:var(--text-3);">Loading…</div>
+          <div style="margin-left:auto;display:flex;gap:8px;">
+            <button class="btn-secondary" (click)="exportReconciliation()" title="Export to Excel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+            <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generatePayments()" [disabled]="isLoading"
+              title="Generate expected payment records for all active sponsorships this month">
+              {{ isLoading ? 'Generating…' : '⚡ Generate Payments' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary KPIs -->
+        <div *ngIf="reconData" class="kpi-grid" style="margin-bottom:16px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Expected</div>
+            <div class="kpi-value" style="font-size:22px;">{{ reconData.summary.total }}</div>
+            <div class="kpi-sub">Sponsorship payments</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Received</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--green);">{{ reconData.summary.received }}</div>
+            <div class="kpi-sub">Fully cleared</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Overdue</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--red);">{{ reconData.summary.overdue }}</div>
+            <div class="kpi-sub">Need follow-up</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Waived</div>
+            <div class="kpi-value" style="font-size:22px;color:var(--text-3);">{{ reconData.summary.waived }}</div>
+            <div class="kpi-sub">Written off</div>
+          </div>
+        </div>
+
+        <!-- At-risk -->
+        <div *ngIf="reconData && reconData.atRisk.length > 0" class="card" style="margin-bottom:16px;">
+          <div class="card-header">
+            <div class="card-title">At-Risk Sponsorships</div>
+            <span class="badge badge-red">{{ reconData.atRisk.length }}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div *ngFor="let ar of reconData.atRisk"
+                 style="border:1px solid #f5c5c5;background:#fef6f5;border-radius:11px;padding:12px 14px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="avatar-circle" style="background:#b91c1c;width:30px;height:30px;font-size:10.5px;flex-shrink:0;">{{ initials(ar.sponsorName) }}</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:13px;font-weight:600;color:var(--text-1);">{{ ar.childName }}</div>
+                  <div style="font-size:12px;color:var(--text-3);">Sponsor: {{ ar.sponsorName }}</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:12px;color:#b91c1c;font-weight:600;">{{ ar.consecutiveOverdueMonths }} months overdue</div>
+                  <span *ngIf="ar.requiresEscalation" class="badge badge-red" style="font-size:10.5px;margin-top:3px;">Needs escalation</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment table -->
+        <div *ngIf="reconData && reconData.payments.length > 0" class="table-card">
+          <div class="table-scroll">
+            <table class="data-table" style="min-width:800px;">
+              <thead>
+                <tr>
+                  <th>Sponsor</th>
+                  <th>Child</th>
+                  <th>Month</th>
+                  <th>Expected</th>
+                  <th>Status</th>
+                  <th>Received</th>
+                  <th>Bank Ref</th>
+                  <th style="text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of reconData.payments">
+                  <td>
+                    <div class="cell-avatar">
+                      <div class="avatar-circle green" style="width:28px;height:28px;font-size:10px;">{{ initials(p.sponsorId | slice:0:4) }}</div>
+                      <span class="mono-text small">{{ p.sponsorId | slice:0:8 }}…</span>
+                    </div>
+                  </td>
+                  <td>{{ childName(p.childId) }}</td>
+                  <td><span class="mono-text">{{ p.paymentMonth }}</span></td>
+                  <td><span class="amount-text">{{ formatAmount(p.expectedAmount, p.expectedCurrency) }}</span></td>
+                  <td><span class="badge" [ngClass]="paymentStatusClass(p.status)">{{ p.status }}</span></td>
+                  <td>
+                    <span *ngIf="p.receivedAmount" class="amount-text">{{ formatAmount(p.receivedAmount, p.receivedCurrency ?? 'PKR') }}</span>
+                    <span *ngIf="!p.receivedAmount" style="color:var(--text-3);">—</span>
+                  </td>
+                  <td>
+                    <span *ngIf="p.bankReference" class="mono-text small">{{ p.bankReference }}</span>
+                    <span *ngIf="!p.bankReference" style="color:var(--text-3);">—</span>
+                  </td>
+                  <td>
+                    <div class="action-btns">
+                      <button *ngIf="p.status !== 'RECEIVED' && p.status !== 'WAIVED'"
+                              (click)="openRecordPayment(p)" class="btn-sm-primary">Record</button>
+                      <button *ngIf="p.status !== 'RECEIVED' && p.status !== 'WAIVED'"
+                              (click)="submitWaivePayment(p.id)" class="btn-sm-ghost">Waive</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingRecon && (!reconData || reconData.payments.length === 0)" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No payments for {{ reconMonthLabel }}</div>
+            <div class="empty-sub">Generate payments from active sponsorships to start reconciliation.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== DONORS ========== -->
+      <section *ngIf="activeSection === 'donors'" class="section-anim">
+        <div class="table-toolbar">
+          <input class="search-input" [(ngModel)]="donorSearch" placeholder="Search donors…">
+          <div style="margin-left:auto;">
+            <button class="btn-primary" (click)="openModal('addDonor')">+ Add Donor</button>
+          </div>
+        </div>
+
+        <div *ngIf="loadingDonors" class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading donors…</div></div>
+        </div>
+        <div *ngIf="!loadingDonors && filteredDonors.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No donors yet</div>
+            <div class="empty-sub">Donors are individuals or organisations who contribute funds outside of regular sponsorships.</div>
+          </div>
+        </div>
+        <div *ngIf="!loadingDonors && filteredDonors.length > 0" class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr><th>Name</th><th>Type</th><th>Email</th><th>Phone</th><th>Notes</th><th>Added</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of filteredDonors">
+                <td style="font-weight:600;color:var(--text-1);">{{ d.displayName }}</td>
+                <td><span class="badge badge-grey" style="text-transform:capitalize;">{{ d.donorType.toLowerCase().replace('_', ' ') }}</span></td>
+                <td style="color:var(--text-2);">{{ d.email || '—' }}</td>
+                <td style="color:var(--text-2);">{{ d.phone || '—' }}</td>
+                <td style="color:var(--text-3);font-size:13px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ d.notes || '—' }}</td>
+                <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-3);">{{ timeAgo(d.createdAt) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== DONATIONS ========== -->
+      <section *ngIf="activeSection === 'donations'" class="section-anim">
+        <!-- Tabs -->
+        <div style="display:flex;gap:4px;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;margin-bottom:18px;">
+          <button class="settings-tab" [class.active]="donationsTab === 'one-time'" (click)="donationsTab = 'one-time'; loadDonations()">One-time</button>
+          <button class="settings-tab" [class.active]="donationsTab === 'recurring'" (click)="donationsTab = 'recurring'; loadRecurring()">Recurring</button>
+        </div>
+
+        <!-- One-time donations -->
+        <ng-container *ngIf="donationsTab === 'one-time'">
+          <div class="table-toolbar">
+            <span class="results-text">{{ donations.length }} donation{{ donations.length !== 1 ? 's' : '' }}</span>
+            <div style="margin-left:auto;display:flex;gap:8px;">
+              <button class="btn-secondary" (click)="exportDonations()" title="Export to Excel">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export
+              </button>
+              <button *ngIf="isJjtAdmin" class="btn-sm-ghost" (click)="generateRecurringDonations()" [disabled]="isLoading">
+                {{ isLoading ? 'Generating…' : '⚡ Generate Recurring' }}
+              </button>
+              <button class="btn-primary" (click)="openModal('addDonation')">+ Record Donation</button>
+            </div>
+          </div>
+
+          <div *ngIf="loadingDonations" class="table-card">
+            <div class="table-empty"><div class="empty-sub">Loading donations…</div></div>
+          </div>
+          <div *ngIf="!loadingDonations && donations.length === 0" class="table-card">
+            <div class="table-empty">
+              <div class="empty-title">No donations recorded</div>
+              <div class="empty-sub">Record a one-time donation from a donor or an anonymous gift.</div>
+            </div>
+          </div>
+          <div *ngIf="!loadingDonations && donations.length > 0" class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Donor</th><th>Type</th><th>Amount</th><th>Date</th><th>Receipt</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let d of donations">
+                  <td style="font-weight:600;color:var(--text-1);">{{ d.donorName || 'Anonymous' }}</td>
+                  <td style="font-size:12px;color:var(--text-3);">{{ d.donationType }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ formatAmount(d.amount != null ? d.amount.toString() : null, d.currency) }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-3);">{{ d.donationDate }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-2);">{{ d.receiptNumber || '—' }}</td>
+                  <td><span class="badge" [ngClass]="donationStatusClass(d.status)">{{ d.status }}</span></td>
+                  <td>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                      <button *ngIf="d.status === 'EXPECTED'" class="btn-sm-ghost" (click)="receiveDonation(d.id)">Receive</button>
+                      <button *ngIf="d.receiptNumber" class="btn-sm-ghost" (click)="viewReceipt(d.id)">Receipt</button>
+                      <button *ngIf="d.status === 'RECEIPTED'" class="btn-sm-ghost" style="color:var(--red);" (click)="reverseDonation(d.id)">Reverse</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- Pagination -->
+            <div *ngIf="donationsTotalPages > 1" style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3);">
+              <button class="btn-sm-ghost" (click)="loadDonations(donationsPage - 1)" [disabled]="donationsPage === 0">‹ Prev</button>
+              <span>Page {{ donationsPage + 1 }} of {{ donationsTotalPages }}</span>
+              <button class="btn-sm-ghost" (click)="loadDonations(donationsPage + 1)" [disabled]="donationsPage >= donationsTotalPages - 1">Next ›</button>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Recurring schedules -->
+        <ng-container *ngIf="donationsTab === 'recurring'">
+          <div class="table-toolbar">
+            <span class="results-text">{{ recurringDonations.length }} schedule{{ recurringDonations.length !== 1 ? 's' : '' }}</span>
+            <div style="margin-left:auto;">
+              <button class="btn-primary" (click)="openModal('addRecurring')">+ New Schedule</button>
+            </div>
+          </div>
+
+          <div *ngIf="loadingRecurring" class="table-card">
+            <div class="table-empty"><div class="empty-sub">Loading schedules…</div></div>
+          </div>
+          <div *ngIf="!loadingRecurring && recurringDonations.length === 0" class="table-card">
+            <div class="table-empty">
+              <div class="empty-title">No recurring schedules</div>
+              <div class="empty-sub">Set up a recurring schedule to automatically track expected donations from committed donors.</div>
+            </div>
+          </div>
+          <div *ngIf="!loadingRecurring && recurringDonations.length > 0" class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr><th>Donor</th><th>Type</th><th>Amount</th><th>Frequency</th><th>Next Due</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let r of recurringDonations">
+                  <td style="font-weight:600;color:var(--text-1);">{{ r.donorName || r.donorId }}</td>
+                  <td style="font-size:12px;color:var(--text-3);">{{ r.donationType }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ formatAmount(r.amount != null ? r.amount.toString() : null, r.currency) }}</td>
+                  <td style="font-size:13px;color:var(--text-2);">{{ r.frequency }}</td>
+                  <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-3);">{{ r.nextDueDate || '—' }}</td>
+                  <td><span class="badge" [ngClass]="recurringStatusClass(r.status)">{{ r.status }}</span></td>
+                  <td>
+                    <div style="display:flex;gap:6px;">
+                      <button *ngIf="r.status === 'ACTIVE'" class="btn-sm-ghost" (click)="pauseRecurring(r.id)">Pause</button>
+                      <button *ngIf="r.status === 'PAUSED'" class="btn-sm-ghost" (click)="pauseRecurring(r.id)">Resume</button>
+                      <button *ngIf="r.status !== 'CANCELLED'" class="btn-sm-ghost" style="color:var(--red);" (click)="cancelRecurring(r.id)">Cancel</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+      </section>
+
+      <!-- ========== ALERTS ========== -->
+      <section *ngIf="activeSection === 'alerts'" class="section-anim">
+        <div class="table-toolbar">
+          <span class="results-text">{{ alertList.length }} active alert{{ alertList.length !== 1 ? 's' : '' }}</span>
+          <div style="margin-left:auto;">
+            <button class="btn-ghost" (click)="loadAlerts()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M23 4v6h-6"/><path d="M20.5 15a9 9 0 1 1-3-7.3L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="loadingAlerts" class="table-empty">
+          <div class="empty-sub">Loading alerts…</div>
+        </div>
+
+        <div *ngIf="!loadingAlerts && alertList.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No active alerts</div>
+            <div class="empty-sub">All alerts have been dismissed or none have been generated yet.</div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingAlerts && alertList.length > 0" class="table-card">
+          <div style="display:flex;flex-direction:column;">
+            <div *ngFor="let a of alertList"
+                 style="display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--border);">
+              <!-- Severity indicator -->
+              <div style="flex-shrink:0;margin-top:3px;">
+                <span class="alert-dot" [ngClass]="a.severity === 'CRITICAL' || a.severity === 'HIGH' ? 'red' : a.severity === 'MEDIUM' ? 'amber' : 'green'"></span>
+              </div>
+              <!-- Content -->
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                  <span style="font-size:13.5px;font-weight:600;color:var(--text-1);">{{ a.title }}</span>
+                  <span class="badge" [ngClass]="alertSeverityClass(a.severity)">{{ a.severity }}</span>
+                  <span class="badge badge-grey" style="font-size:10.5px;">{{ a.alertType | slice:0:20 }}</span>
+                </div>
+                <div style="font-size:13px;color:var(--text-2);line-height:1.5;">{{ a.message }}</div>
+                <div style="font-size:11.5px;color:var(--text-3);margin-top:5px;font-family:'IBM Plex Mono',monospace;">
+                  {{ timeAgo(a.createdAt) }}
+                  <span *ngIf="a.relatedEntityType"> · {{ a.relatedEntityType }}</span>
+                </div>
+              </div>
+              <!-- Actions -->
+              <button (click)="dismissAlert(a.id)" class="btn-sm-ghost" style="flex-shrink:0;">Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ========== REPORTS ========== -->
       <section *ngIf="activeSection === 'reports'" class="section-anim">
-        <div class="coming-soon-card">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#2f5d4f" stroke-width="1.5" stroke-linecap="round">
-            <path d="M3 3v18h18"/><path d="M7 16v-4M12 16V9M17 16v-7"/>
-          </svg>
-          <div class="coming-soon-title">Reports & Analytics</div>
-          <div class="coming-soon-sub">Full financial reporting — fund balances, payment reconciliation, sponsor impact, and cash flow forecasts — is coming in Phase 2.</div>
-          <div class="coming-soon-chips">
-            <span class="phase-chip">Monthly Reconciliation</span>
-            <span class="phase-chip">Fund Balance</span>
-            <span class="phase-chip">Donor Summary</span>
-            <span class="phase-chip">Cash Flow</span>
-            <span class="phase-chip">Annual Statement</span>
+        <!-- KPI row -->
+        <div class="kpi-grid" style="margin-bottom:16px;">
+          <div class="kpi-card">
+            <div class="kpi-label">Children Enrolled</div>
+            <div class="kpi-value">{{ children.length }}</div>
+            <div class="kpi-sub">{{ sponsoredCount }} sponsored · {{ seekingCount }} seeking</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Active Sponsorships</div>
+            <div class="kpi-value">{{ activeSponsorships.length }}</div>
+            <div class="kpi-sub">{{ pendingSponsorships.length }} pending activation</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Coverage Rate</div>
+            <div class="kpi-value">{{ children.length > 0 ? ((sponsoredCount / children.length) * 100 | number:'1.0-0') : 0 }}%</div>
+            <div class="kpi-sub">Children with active sponsor</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Sponsors</div>
+            <div class="kpi-value">{{ sponsors.length }}</div>
+            <div class="kpi-sub">Registered sponsor accounts</div>
+          </div>
+        </div>
+
+        <div class="docs-grid">
+          <!-- Children by city -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Children by City</div>
+            <div *ngIf="citySummary.length === 0" style="font-size:13px;color:var(--text-3);">No data yet.</div>
+            <div *ngFor="let row of citySummary" style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+              <span style="font-size:12.5px;color:var(--text-2);min-width:80px;flex-shrink:0;">{{ row.city }}</span>
+              <div style="flex:1;height:20px;background:var(--border);border-radius:6px;overflow:hidden;">
+                <div style="height:100%;background:var(--forest);border-radius:6px;"
+                     [style.width.%]="children.length > 0 ? (row.count / children.length * 100) : 0"></div>
+              </div>
+              <span style="font-size:12.5px;font-weight:600;color:var(--text-1);min-width:24px;text-align:right;">{{ row.count }}</span>
+            </div>
+          </div>
+
+          <!-- Status breakdown -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Children by Status</div>
+            <div class="status-bars">
+              <div class="status-bar-row">
+                <span class="status-bar-label">Sponsored</span>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill green" [style.width.%]="children.length > 0 ? (sponsoredCount / children.length * 100) : 0"></div>
+                </div>
+                <span class="status-bar-count">{{ sponsoredCount }}</span>
+              </div>
+              <div class="status-bar-row">
+                <span class="status-bar-label">Reserved</span>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill amber"
+                    [style.width.%]="children.length > 0 ? ((children.length - sponsoredCount - seekingCount) / children.length * 100) : 0"></div>
+                </div>
+                <span class="status-bar-count">{{ children.length - sponsoredCount - seekingCount }}</span>
+              </div>
+              <div class="status-bar-row">
+                <span class="status-bar-label">Seeking</span>
+                <div class="status-bar-track">
+                  <div class="status-bar-fill grey" [style.width.%]="children.length > 0 ? (seekingCount / children.length * 100) : 0"></div>
+                </div>
+                <span class="status-bar-count">{{ seekingCount }}</span>
+              </div>
+            </div>
+
+            <div style="margin-top:24px;border-top:1px solid var(--border);padding-top:16px;">
+              <div class="card-title" style="margin-bottom:12px;">Reconciliation Summary</div>
+              <div *ngIf="reconData">
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--text-2);">Expected this month</span>
+                  <span style="font-weight:600;color:var(--text-1);">{{ reconData.summary.total }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--text-2);">Received</span>
+                  <span style="font-weight:600;color:var(--green);">{{ reconData.summary.received }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">
+                  <span style="color:var(--text-2);">Overdue</span>
+                  <span style="font-weight:600;color:var(--red);">{{ reconData.summary.overdue }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;">
+                  <span style="color:var(--text-2);">Waived</span>
+                  <span style="font-weight:600;color:var(--text-3);">{{ reconData.summary.waived }}</span>
+                </div>
+              </div>
+              <div *ngIf="!reconData" style="font-size:13px;color:var(--text-3);">No reconciliation data.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cash flow + Portfolio from API -->
+        <div *ngIf="loadingReports" style="font-size:13px;color:var(--text-3);padding:24px 0;">Loading financial data…</div>
+
+        <div *ngIf="!loadingReports && cashFlowData" class="docs-grid" style="margin-top:16px;">
+          <!-- Cash flow table -->
+          <div class="card">
+            <div class="card-title" style="margin-bottom:16px;">Cash Flow (Last {{ cashFlowData.months?.length ?? 0 }} Months)</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">
+              <div style="text-align:center;">
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">3-MONTH IN</div>
+                <div style="font-size:16px;font-weight:700;color:var(--green);">{{ cashFlowData.totalCredits3Month | number:'1.0-0' }}</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">3-MONTH OUT</div>
+                <div style="font-size:16px;font-weight:700;color:var(--red);">{{ cashFlowData.totalDebits3Month | number:'1.0-0' }}</div>
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">CURRENT BAL</div>
+                <div style="font-size:16px;font-weight:700;color:var(--text-1);">{{ cashFlowData.currentBalance | number:'1.0-0' }}</div>
+              </div>
+            </div>
+            <div *ngIf="cashFlowData.months?.length > 0">
+              <div *ngFor="let m of cashFlowData.months" style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--border);">
+                <span style="color:var(--text-2);font-family:'IBM Plex Mono',monospace;">{{ m.yearMonth }}</span>
+                <span style="color:var(--green);">+{{ m.credits | number:'1.0-0' }}</span>
+                <span style="color:var(--red);">−{{ m.debits | number:'1.0-0' }}</span>
+                <span style="font-weight:600;color:var(--text-1);">{{ m.closingBalance | number:'1.0-0' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Portfolio report -->
+          <div *ngIf="portfolioData" class="card">
+            <div class="card-title" style="margin-bottom:16px;">Sponsorship Portfolio</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div style="text-align:center;padding:12px;background:var(--cream);border-radius:8px;">
+                <div style="font-size:20px;font-weight:700;color:var(--forest);">{{ portfolioData.activeCount }}</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Active</div>
+              </div>
+              <div style="text-align:center;padding:12px;background:var(--cream);border-radius:8px;">
+                <div style="font-size:20px;font-weight:700;color:var(--forest);">{{ portfolioData.pendingCount }}</div>
+                <div style="font-size:11px;color:var(--text-3);margin-top:2px;">Pending</div>
+              </div>
+            </div>
+            <div style="padding:12px;background:var(--cream);border-radius:8px;margin-bottom:12px;">
+              <div style="font-size:11px;color:var(--text-3);margin-bottom:4px;">MONTHLY PORTFOLIO VALUE</div>
+              <div style="font-size:18px;font-weight:700;color:var(--forest);">{{ portfolioData.currency }} {{ portfolioData.totalMonthlyValue | number:'1.0-0' }}</div>
+            </div>
+            <div *ngIf="portfolioData.commitmentBreakdown">
+              <div style="font-size:12.5px;font-weight:600;color:var(--text-2);margin-bottom:8px;">By Commitment Type</div>
+              <div *ngFor="let entry of portfolioData.commitmentBreakdown | keyvalue" style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;">
+                <span style="color:var(--text-2);">{{ entry.key }}</span>
+                <span style="font-weight:600;color:var(--text-1);">{{ entry.value }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== CAMPAIGNS ========== -->
+      <section *ngIf="activeSection === 'campaigns'" class="section-anim">
+        <div class="table-toolbar">
+          <span class="results-text">{{ campaigns.length }} campaign{{ campaigns.length !== 1 ? 's' : '' }}</span>
+          <div style="margin-left:auto;">
+            <button class="btn-primary" (click)="openModal('addCampaign')">+ New Campaign</button>
+          </div>
+        </div>
+
+        <div *ngIf="loadingCampaigns" class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading campaigns…</div></div>
+        </div>
+
+        <div *ngIf="!loadingCampaigns && campaigns.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No campaigns yet</div>
+            <div class="empty-sub">Create a campaign to group fundraising goals and track progress.</div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingCampaigns && campaigns.length > 0" class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Target</th>
+                <th>Period</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of campaigns">
+                <td>
+                  <div style="font-weight:600;color:var(--text-1);">{{ c.name }}</div>
+                  <div *ngIf="c.description" style="font-size:12px;color:var(--text-3);margin-top:2px;">{{ c.description }}</div>
+                </td>
+                <td><span class="badge" [ngClass]="campaignStatusClass(c.status)">{{ c.status }}</span></td>
+                <td>
+                  <span *ngIf="c.targetAmount">{{ c.targetCurrency }} {{ c.targetAmount | number }}</span>
+                  <span *ngIf="!c.targetAmount" style="color:var(--text-3);">—</span>
+                </td>
+                <td style="font-size:12px;color:var(--text-2);">
+                  <span *ngIf="c.startDate">{{ c.startDate }}</span>
+                  <span *ngIf="c.startDate && c.endDate"> → </span>
+                  <span *ngIf="c.endDate">{{ c.endDate }}</span>
+                  <span *ngIf="!c.startDate && !c.endDate" style="color:var(--text-3);">Open-ended</span>
+                </td>
+                <td>
+                  <div style="display:flex;gap:6px;">
+                    <button *ngIf="c.status === 'DRAFT'" class="btn-sm-primary" (click)="openCampaign(c.id)">Open</button>
+                    <button *ngIf="c.status === 'ACTIVE'" class="btn-sm-ghost" (click)="closeCampaign(c.id)">Close</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== AUDIT LOG ========== -->
+      <section *ngIf="activeSection === 'audit'" class="section-anim">
+        <div class="section-actions">
+          <span class="results-text">Audit trail — all system events</span>
+        </div>
+
+        <div *ngIf="loadingAudit" class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading audit log…</div></div>
+        </div>
+
+        <div *ngIf="!loadingAudit && auditEvents.length === 0" class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No audit events</div>
+            <div class="empty-sub">Events will appear here as admin actions are performed.</div>
+          </div>
+        </div>
+
+        <div *ngIf="!loadingAudit && auditEvents.length > 0" class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Entity</th>
+                <th>Actor</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of auditEvents">
+                <td style="font-size:12px;color:var(--text-3);white-space:nowrap;">{{ timeAgo(e.createdAt) }}</td>
+                <td>
+                  <span class="badge badge-grey" style="font-family:'IBM Plex Mono',monospace;font-size:11px;">{{ e.eventType }}</span>
+                </td>
+                <td style="font-size:12.5px;">
+                  <div style="font-weight:600;color:var(--text-1);">{{ e.entityType }}</div>
+                  <div style="font-size:11px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;">{{ e.entityId?.toString().substring(0, 8) }}…</div>
+                </td>
+                <td style="font-size:12.5px;color:var(--text-2);">{{ e.actorEmail ?? '—' }}</td>
+                <td style="font-size:12px;color:var(--text-3);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                  {{ e.description ?? '—' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div *ngIf="auditTotalPages > 1" style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3);">
+            <button class="btn-sm-ghost" (click)="loadAuditLog(auditPage - 1)" [disabled]="auditPage === 0">‹ Prev</button>
+            <span>Page {{ auditPage + 1 }} of {{ auditTotalPages }}</span>
+            <button class="btn-sm-ghost" (click)="loadAuditLog(auditPage + 1)" [disabled]="auditPage >= auditTotalPages - 1">Next ›</button>
           </div>
         </div>
       </section>
@@ -721,6 +1655,128 @@
                   Sponsorship start month must be in the future (next month or later).
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== SETTINGS ========== -->
+      <section *ngIf="activeSection === 'settings'" class="section-anim">
+        <div style="display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:start;">
+          <!-- Settings tabs -->
+          <div class="card" style="padding:10px;">
+            <button class="settings-tab" [class.active]="settingsTab === 'profile'" (click)="settingsTab = 'profile'">
+              Profile
+            </button>
+            <button class="settings-tab" [class.active]="settingsTab === 'org'" (click)="settingsTab = 'org'">
+              Organisation
+            </button>
+            <button class="settings-tab" [class.active]="settingsTab === 'security'" (click)="settingsTab = 'security'">
+              Security
+            </button>
+          </div>
+
+          <!-- Profile tab -->
+          <div *ngIf="settingsTab === 'profile'" class="card">
+            <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:4px;">Profile</div>
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Your account information</div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Email address</div>
+                <div class="settings-row-sub">Your login email</div>
+              </div>
+              <div class="field-input" style="background:var(--cream-alt);width:240px;cursor:default;">{{ currentUserEmail }}</div>
+            </div>
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Role</div>
+                <div class="settings-row-sub">Access level</div>
+              </div>
+              <span class="badge" [ngClass]="isJjtAdmin ? 'badge-green' : 'badge-grey'">
+                {{ isJjtAdmin ? 'JJT Admin' : 'Org Admin' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Organisation tab -->
+          <div *ngIf="settingsTab === 'org'" class="card">
+            <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:4px;">Organisation</div>
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:24px;">
+              {{ isJjtAdmin ? 'Manage organisation settings.' : 'Organisation configuration (read-only for Org Admin).' }}
+            </div>
+
+            <div *ngIf="loadingOrgConfig" style="font-size:13px;color:var(--text-3);">Loading…</div>
+            <div *ngIf="errorMessage" class="inline-error">{{ errorMessage }}</div>
+
+            <div *ngIf="!loadingOrgConfig">
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Organisation name</div>
+                  <div class="settings-row-sub">Display name for this org</div>
+                </div>
+                <input *ngIf="isJjtAdmin" class="field-input" style="width:240px;" [(ngModel)]="orgConfigForm.name" [disabled]="!isJjtAdmin" />
+                <div *ngIf="!isJjtAdmin" class="field-input" style="background:var(--cream-alt);width:240px;cursor:default;">{{ orgConfig?.name ?? '—' }}</div>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Base currency</div>
+                  <div class="settings-row-sub">Reporting currency</div>
+                </div>
+                <select *ngIf="isJjtAdmin" class="field-input" style="width:140px;" [(ngModel)]="orgConfigForm.baseCurrency">
+                  <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
+                </select>
+                <div *ngIf="!isJjtAdmin" class="field-input" style="background:var(--cream-alt);width:140px;cursor:default;">{{ orgConfig?.baseCurrency ?? '—' }}</div>
+              </div>
+              <div class="settings-row">
+                <div>
+                  <div class="settings-row-label">Payment due day</div>
+                  <div class="settings-row-sub">Day of month payments are due</div>
+                </div>
+                <input *ngIf="isJjtAdmin" class="field-input" style="width:80px;" type="number" [(ngModel)]="orgConfigForm.paymentDueDay" min="1" max="28" />
+                <div *ngIf="!isJjtAdmin" class="field-input" style="background:var(--cream-alt);width:80px;cursor:default;">{{ orgConfig?.paymentDueDay ?? '—' }}</div>
+              </div>
+              <div class="settings-row" style="border-bottom:none;">
+                <div>
+                  <div class="settings-row-label">Organisation slug</div>
+                  <div class="settings-row-sub">URL-safe identifier</div>
+                </div>
+                <div class="field-input" style="background:var(--cream-alt);width:200px;cursor:default;font-family:'IBM Plex Mono',monospace;font-size:12.5px;">{{ orgConfig?.slug ?? '—' }}</div>
+              </div>
+              <div *ngIf="isJjtAdmin" style="margin-top:20px;display:flex;gap:10px;">
+                <button class="btn-primary" (click)="saveOrgConfig()" [disabled]="isLoading">
+                  {{ isLoading ? 'Saving…' : 'Save changes' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security tab -->
+          <div *ngIf="settingsTab === 'security'" class="card">
+            <div style="font-size:17px;font-weight:600;color:var(--text-1);margin-bottom:4px;">Change Password</div>
+            <div style="font-size:13px;color:var(--text-3);margin-bottom:24px;">Update your account password</div>
+
+            <div *ngIf="passwordError" class="inline-error">{{ passwordError }}</div>
+            <div *ngIf="passwordSuccess" style="background:#e6f4ef;border:1px solid #cfe0d7;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--forest);margin-bottom:14px;">
+              Password changed successfully.
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:14px;max-width:380px;">
+              <div class="form-field">
+                <label class="field-label">Current Password *</label>
+                <input class="field-input" type="password" [(ngModel)]="passwordForm.currentPassword" placeholder="Current password" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">New Password *</label>
+                <input class="field-input" type="password" [(ngModel)]="passwordForm.newPassword" placeholder="At least 8 characters" />
+              </div>
+              <div class="form-field">
+                <label class="field-label">Confirm New Password *</label>
+                <input class="field-input" type="password" [(ngModel)]="passwordForm.confirmPassword" placeholder="Repeat new password" />
+              </div>
+              <button class="btn-primary" (click)="changePassword()" [disabled]="isLoading">
+                {{ isLoading ? 'Updating…' : 'Change Password' }}
+              </button>
             </div>
           </div>
         </div>
@@ -955,6 +2011,289 @@
       <button class="btn-ghost" (click)="closeModal()">Cancel</button>
       <button class="btn-primary" (click)="createOrgUser()" [disabled]="isLoading">
         {{ isLoading ? 'Creating…' : 'Create Org Admin' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: RECORD PAYMENT ===== -->
+<div *ngIf="modalType === 'recordPayment'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Record Payment Received</div>
+        <div class="modal-sub">Enter the bank transfer details to mark this payment as received.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="submitRecordPayment()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label">Received Amount *</label>
+          <input class="field-input" type="text" [(ngModel)]="recordPaymentForm.receivedAmount" name="receivedAmount" required />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Currency *</label>
+          <select class="field-input" [(ngModel)]="recordPaymentForm.currency" name="currency">
+            <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Bank Reference *</label>
+          <input class="field-input" type="text" [(ngModel)]="recordPaymentForm.bankReference" name="bankReference" required placeholder="e.g. BNK-20260701-001" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Received Date *</label>
+          <input class="field-input" type="date" [(ngModel)]="recordPaymentForm.receivedDate" name="receivedDate" required />
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="submitRecordPayment()"
+              [disabled]="isLoading || !recordPaymentForm.bankReference || !recordPaymentForm.receivedDate">
+        {{ isLoading ? 'Recording…' : 'Record Payment' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD DONOR MODAL ===== -->
+<div *ngIf="modalType === 'addDonor'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Add Donor</div>
+        <div class="modal-sub">Create a donor profile to track contributions.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="createDonor()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field">
+          <label class="field-label">Display Name *</label>
+          <input class="field-input" [(ngModel)]="donorForm.displayName" name="displayName" required placeholder="Full name or organisation name" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donor Type *</label>
+          <select class="field-input" [(ngModel)]="donorForm.donorType" name="donorType">
+            <option *ngFor="let t of donorTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Email</label>
+          <input class="field-input" type="email" [(ngModel)]="donorForm.email" name="email" placeholder="contact@example.com" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Phone</label>
+          <input class="field-input" [(ngModel)]="donorForm.phone" name="phone" placeholder="+92 300 0000000" />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Notes</label>
+          <textarea class="field-input" [(ngModel)]="donorForm.notes" name="notes" rows="2" placeholder="Any notes about this donor…"></textarea>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="createDonor()" [disabled]="isLoading || !donorForm.displayName.trim()">
+        {{ isLoading ? 'Saving…' : 'Add Donor' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD DONATION MODAL ===== -->
+<div *ngIf="modalType === 'addDonation'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Record Donation</div>
+        <div class="modal-sub">Log a new donation against a donor or as anonymous.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="recordDonation()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label class="field-label">Donor (optional)</label>
+          <select class="field-input" [(ngModel)]="donationForm.donorId" name="donorId">
+            <option value="">— Anonymous —</option>
+            <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donation Type *</label>
+          <select class="field-input" [(ngModel)]="donationForm.donationType" name="donationType">
+            <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donation Date *</label>
+          <input class="field-input" type="date" [(ngModel)]="donationForm.donationDate" name="donationDate" required />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Amount *</label>
+          <input class="field-input" [(ngModel)]="donationForm.amount" name="amount" placeholder="0.00" required />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Currency</label>
+          <input class="field-input" [(ngModel)]="donationForm.currency" name="currency" placeholder="PKR" />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Fund Account</label>
+          <select class="field-input" [(ngModel)]="donationForm.fundAccountId" name="fundAccountId">
+            <option value="">— No specific fund —</option>
+            <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+          </select>
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Notes</label>
+          <textarea class="field-input" [(ngModel)]="donationForm.notes" name="notes" rows="2" placeholder="Reference, occasion, or context…"></textarea>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="recordDonation()"
+              [disabled]="isLoading || !donationForm.amount.trim() || !donationForm.donationDate">
+        {{ isLoading ? 'Saving…' : 'Record Donation' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD RECURRING DONATION MODAL ===== -->
+<div *ngIf="modalType === 'addRecurring'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">New Recurring Schedule</div>
+        <div class="modal-sub">Set up automatic recurring donations for a donor.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form (ngSubmit)="createRecurring()" class="modal-body">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label class="field-label">Donor *</label>
+          <select class="field-input" [(ngModel)]="recurringForm.donorId" name="donorId" required>
+            <option value="">Select a donor…</option>
+            <option *ngFor="let d of donors" [value]="d.id">{{ d.displayName }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Donation Type *</label>
+          <select class="field-input" [(ngModel)]="recurringForm.donationType" name="donationType">
+            <option *ngFor="let t of donationTypes" [value]="t">{{ t }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Frequency *</label>
+          <select class="field-input" [(ngModel)]="recurringForm.frequency" name="frequency">
+            <option *ngFor="let f of frequencies" [value]="f">{{ f }}</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Amount *</label>
+          <input class="field-input" [(ngModel)]="recurringForm.amount" name="amount" placeholder="0.00" required />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Currency</label>
+          <input class="field-input" [(ngModel)]="recurringForm.currency" name="currency" placeholder="PKR" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Start Date *</label>
+          <input class="field-input" type="date" [(ngModel)]="recurringForm.startDate" name="startDate" required />
+        </div>
+        <div class="form-field">
+          <label class="field-label">End Date (optional)</label>
+          <input class="field-input" type="date" [(ngModel)]="recurringForm.endDate" name="endDate" />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Fund Account</label>
+          <select class="field-input" [(ngModel)]="recurringForm.fundAccountId" name="fundAccountId">
+            <option value="">— No specific fund —</option>
+            <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+          </select>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="createRecurring()"
+              [disabled]="isLoading || !recurringForm.donorId || !recurringForm.amount.trim()">
+        {{ isLoading ? 'Saving…' : 'Create Schedule' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD CAMPAIGN MODAL ===== -->
+<div *ngIf="modalType === 'addCampaign'" class="modal-backdrop" (click)="closeModal()">
+  <div class="modal" (click)="stopProp($event)">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">New Campaign</div>
+        <div class="modal-sub">Create a fundraising campaign to track donations toward a goal.</div>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div *ngIf="errorMessage" class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+    <form class="modal-body" (ngSubmit)="createCampaign()">
+      <div class="form-grid">
+        <div class="form-field full-width">
+          <label class="field-label">Campaign Name *</label>
+          <input class="field-input" [(ngModel)]="campaignForm.name" name="name" placeholder="e.g. Ramadan 2025 Fund Drive" required />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Description</label>
+          <textarea class="field-input" [(ngModel)]="campaignForm.description" name="description" rows="2" placeholder="Optional campaign description"></textarea>
+        </div>
+        <div class="form-field">
+          <label class="field-label">Target Amount</label>
+          <input class="field-input" [(ngModel)]="campaignForm.targetAmount" name="targetAmount" placeholder="0.00" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Currency</label>
+          <input class="field-input" [(ngModel)]="campaignForm.targetCurrency" name="targetCurrency" placeholder="PKR" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">Start Date</label>
+          <input class="field-input" type="date" [(ngModel)]="campaignForm.startDate" name="startDate" />
+        </div>
+        <div class="form-field">
+          <label class="field-label">End Date</label>
+          <input class="field-input" type="date" [(ngModel)]="campaignForm.endDate" name="endDate" />
+        </div>
+        <div class="form-field full-width">
+          <label class="field-label">Fund Account</label>
+          <select class="field-input" [(ngModel)]="campaignForm.fundAccountId" name="fundAccountId">
+            <option value="">— No specific fund —</option>
+            <option *ngFor="let f of fundAccounts" [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
+          </select>
+        </div>
+      </div>
+    </form>
+    <div class="modal-footer">
+      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn-primary" (click)="createCampaign()"
+              [disabled]="isLoading || !campaignForm.name.trim()">
+        {{ isLoading ? 'Saving…' : 'Create Campaign' }}
       </button>
     </div>
   </div>

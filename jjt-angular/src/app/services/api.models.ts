@@ -206,3 +206,232 @@ export interface ApiError {
   code: string;
   message: string;
 }
+
+// ---- Fund accounts ----------------------------------------------------------
+
+export interface FundAccountResponse {
+  id: string;
+  name: string;
+  currency: string;
+  balance: string;
+  minReserve: string;
+  isBelowMinReserve: boolean;
+}
+
+export interface FundTransactionResponse {
+  id: string;
+  fundAccountId: string;
+  transactionType: 'CREDIT' | 'DEBIT';
+  amount: string;
+  currency: string;
+  reason: string;
+  description: string | null;
+  externalReference: string | null;
+  ledgerEntryId: string | null;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface CreditFundRequest {
+  amount: string;
+  currency: string;
+  description: string;
+  externalReference?: string | null;
+}
+
+// ---- Payments & Reconciliation -----------------------------------------------
+
+export interface SponsorPaymentResponse {
+  id: string;
+  sponsorshipId: string;
+  sponsorId: string;
+  childId: string;
+  paymentMonth: string;
+  status: 'PENDING' | 'RECEIVED' | 'OVERDUE' | 'WAIVED' | 'PARTIAL';
+  expectedAmount: string;
+  expectedCurrency: string;
+  receivedAmount: string | null;
+  receivedCurrency: string | null;
+  bankReference: string | null;
+  receivedDate: string | null;
+  waiverReason: string | null;
+  fundTransactionId: string | null;
+  ledgerEntryId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReconciliationSummary {
+  expected: number;
+  received: number;
+  partial: number;
+  overdue: number;
+  waived: number;
+  total: number;
+}
+
+export interface AtRiskSponsorship {
+  sponsorshipId: string;
+  sponsorId: string;
+  sponsorName: string;
+  childId: string;
+  childName: string;
+  consecutiveOverdueMonths: number;
+  requiresEscalation: boolean;
+}
+
+export interface MonthlyReconciliationResponse {
+  year: number;
+  month: number;
+  summary: ReconciliationSummary;
+  atRisk: AtRiskSponsorship[];
+  payments: SponsorPaymentResponse[];
+}
+
+export interface RecordPaymentRequest {
+  receivedAmount: string;
+  currency: string;
+  bankReference: string;
+  receivedDate: string;
+}
+
+export interface WaivePaymentRequest {
+  reason: string;
+}
+
+// ---- Alerts -----------------------------------------------------------------
+
+export interface AlertResponse {
+  id: string;
+  alertType: string;
+  severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  title: string;
+  message: string;
+  relatedEntityId: string | null;
+  relatedEntityType: string | null;
+  dismissed: boolean;
+  dismissedAt: string | null;
+  createdAt: string;
+}
+
+// ---- Org config -------------------------------------------------------------
+
+export interface OrgConfigResponse {
+  id: string;
+  name: string;
+  slug: string;
+  baseCurrency: string;
+  paymentDueDay: number;
+  minReserve: string;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface UpdateOrgConfigRequest {
+  name?: string | null;
+  baseCurrency?: string | null;
+  paymentDueDay?: number | null;
+  minFundReserve?: string | null;
+}
+
+// ---- Spring Page wrapper ----------------------------------------------------
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+  size: number;
+}
+
+// ---- Donors & Donations -----------------------------------------------------
+
+export type DonorType = 'INDIVIDUAL' | 'CORPORATE' | 'TRUST' | 'ANONYMOUS';
+export type DonationType = 'GENERAL' | 'ZAKAT' | 'SADAQAH' | 'SPONSORSHIP_TOP_UP' | 'CORPORATE' | 'IN_KIND';
+export type DonationFrequency = 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+export type DonationStatus = 'EXPECTED' | 'RECEIPTED' | 'REVERSED';
+export type RecurringDonationStatus = 'ACTIVE' | 'PAUSED' | 'CANCELLED' | 'COMPLETED';
+
+export interface DonorResponse {
+  id: string;
+  displayName: string;
+  email: string | null;
+  phone: string | null;
+  donorType: DonorType;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface CreateDonorRequest {
+  displayName: string;
+  email?: string | null;
+  phone?: string | null;
+  donorType: DonorType;
+  notes?: string | null;
+}
+
+export interface DonationResponse {
+  id: string;
+  donorId: string | null;
+  donorName: string | null;
+  donationType: DonationType;
+  amount: number;
+  currency: string;
+  donationDate: string;
+  receiptNumber: string | null;
+  status: DonationStatus;
+  fundAccountId: string | null;
+  fundTransactionId: string | null;
+  recurringScheduleId: string | null;
+  createdAt: string;
+}
+
+export interface RecordDonationRequest {
+  donorId?: string | null;
+  donationType: DonationType;
+  amount: string;
+  currency: string;
+  donationDate: string;
+  notes?: string | null;
+  fundAccountId?: string | null;
+}
+
+export interface DonationReceiptResponse {
+  receiptNumber: string;
+  donorName: string;
+  donorEmail: string | null;
+  donorPhone: string | null;
+  amount: number;
+  currency: string;
+  donationDate: string;
+  donationType: string;
+  organisationName: string;
+  issuedDate: string;
+}
+
+export interface RecurringDonationResponse {
+  id: string;
+  donorId: string;
+  donorName: string | null;
+  donationType: DonationType;
+  amount: number;
+  currency: string;
+  frequency: DonationFrequency;
+  startDate: string;
+  endDate: string | null;
+  nextDueDate: string | null;
+  status: RecurringDonationStatus;
+  createdAt: string;
+}
+
+export interface CreateRecurringDonationRequest {
+  donorId: string;
+  donationType: DonationType;
+  amount: string;
+  currency: string;
+  frequency: DonationFrequency;
+  startDate: string;
+  endDate?: string | null;
+  fundAccountId?: string | null;
+  notes?: string | null;
+}

@@ -2,34 +2,45 @@ package com.jjt.platform.infrastructure.persistence.seed;
 
 import com.jjt.platform.config.security.Role;
 import com.jjt.platform.infrastructure.persistence.entity.UserEntity;
+import com.jjt.platform.infrastructure.persistence.repository.OrganisationJpaRepository;
 import com.jjt.platform.infrastructure.persistence.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Component
+@Order(2)
 public class AdminUserInitializer implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(AdminUserInitializer.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrganisationJpaRepository orgRepo;
     private final String adminEmail;
     private final String adminPassword;
+    private final String orgSlug;
 
     public AdminUserInitializer(UserRepository userRepository,
                                 PasswordEncoder passwordEncoder,
+                                OrganisationJpaRepository orgRepo,
                                 @Value("${admin.default-email}") String adminEmail,
-                                @Value("${admin.default-password}") String adminPassword) {
+                                @Value("${admin.default-password}") String adminPassword,
+                                @Value("${jjt.org.slug:jjt}") String orgSlug) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.orgRepo = orgRepo;
         this.adminEmail = adminEmail;
         this.adminPassword = adminPassword;
+        this.orgSlug = orgSlug;
     }
 
     @Override
@@ -38,7 +49,8 @@ public class AdminUserInitializer implements ApplicationRunner {
         if (userRepository.existsByEmail(adminEmail)) {
             return;
         }
-        var admin = new UserEntity(adminEmail, passwordEncoder.encode(adminPassword), Role.JJT_ADMIN, null, null);
+        UUID orgId = orgRepo.findBySlug(orgSlug).map(org -> org.getId()).orElse(null);
+        var admin = new UserEntity(adminEmail, passwordEncoder.encode(adminPassword), Role.JJT_ADMIN, null, orgId);
         userRepository.save(admin);
         log.warn("Created default admin user: {}. Change the password immediately via PUT /api/auth/change-password", adminEmail);
     }
