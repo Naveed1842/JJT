@@ -9,22 +9,27 @@
 </nav>
 
 <!-- Loading -->
-<div *ngIf="pageLoading" style="padding:80px;text-align:center;background:#fffdf9;min-height:70vh;">
+@if (pageLoading) {
+<div style="padding:80px;text-align:center;background:#fffdf9;min-height:70vh;">
   <div style="display:inline-block;width:38px;height:38px;border:3px solid #e3dccd;
               border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
   <p style="color:#8a958d;margin-top:16px;font-size:14px;">Loading child details…</p>
 </div>
+}
 
 <!-- Error banner (steps 1-4) -->
-<div *ngIf="!pageLoading && error && step < 5"
+@if (!pageLoading && error && step < 5) {
+<div
      style="max-width:960px;margin:32px auto;padding:0 32px;">
   <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:14px;color:#b45454;font-size:14px;">
     {{ error }}
   </div>
 </div>
+}
 
 <!-- Stepper + forms (steps 1-4) -->
-<div *ngIf="!pageLoading && step < 5" class="checkout-outer"
+@if (!pageLoading && step < 5) {
+<div class="checkout-outer"
      style="background:#fffdf9;min-height:calc(100vh - 60px);padding:40px 32px;">
   <div class="checkout-content" style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start;">
 
@@ -32,22 +37,28 @@
     <div>
       <!-- Stepper -->
       <div class="step-bar-desktop" style="display:flex;align-items:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid #efe9dd;">
-        <ng-container *ngFor="let s of stepDefs; let i = index; let last = last">
+        @for (s of stepDefs; track s; let i = $index; let last = $last) {
+
           <div style="display:flex;align-items:center;gap:10px;">
             <span [style]="'width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;' + (step > s.n ? 'background:#2f5d4f;color:#fff;' : step === s.n ? 'background:#1c352c;color:#fff;' : 'background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;')">
               {{ step > s.n ? '✓' : s.n }}
             </span>
             <span [style]="'font-size:14px;font-weight:' + (step === s.n ? '600' : '500') + ';color:' + (step === s.n ? '#1c352c' : '#8a958d') + ';'">{{ s.label }}</span>
           </div>
-          <div *ngIf="!last" style="flex:1;height:1px;background:#e3dccd;margin:0 14px;min-width:16px;"></div>
-        </ng-container>
+          @if (!last) {
+<div style="flex:1;height:1px;background:#e3dccd;margin:0 14px;min-width:16px;"></div>
+}
+        
+}
       </div>
 
       <!-- Mobile progress -->
       <div class="step-bar-mobile" style="display:none;padding:14px 18px 0;">
         <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#8a958d;margin-bottom:6px;">
-          <span style="color:#1c352c;font-weight:600;">Step {{ step }} of 4 · {{ stepDefs[step-1]?.label }}</span>
-          <span *ngIf="step < 4">{{ stepDefs[step]?.label }} → {{ stepDefs[step < 3 ? step+1 : 3]?.label }}</span>
+          <span style="color:#1c352c;font-weight:600;">Step {{ step }} of 4 · {{ stepDefs[step-1].label }}</span>
+          @if (step < 4) {
+<span>{{ stepDefs[step].label }} → {{ stepDefs[step < 3 ? step+1 : 3].label }}</span>
+}
         </div>
         <div style="height:5px;background:#efe9dd;border-radius:100px;overflow:hidden;">
           <div [style]="'width:' + (step * 25) + '%;height:100%;background:#2f5d4f;border-radius:100px;transition:width .3s;'"></div>
@@ -67,7 +78,8 @@
       </div>
 
       <!-- ── Step 1: Intention ── -->
-      <div *ngIf="step === 1">
+      @if (step === 1) {
+<div>
         <h1 class="step-h1" style="font-family:'Newsreader',serif;font-weight:500;font-size:32px;color:#1c352c;margin:0 0 6px;letter-spacing:-.01em;">
           First, set your intention
         </h1>
@@ -104,9 +116,11 @@
           <span style="font-size:14px;color:#8a958d;">Step 1 of 4</span>
         </div>
       </div>
+}
 
       <!-- ── Step 2: Plan selection ── -->
-      <div *ngIf="step === 2">
+      @if (step === 2) {
+<div>
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
           Choose a plan
         </h2>
@@ -161,9 +175,11 @@
           </button>
         </div>
       </div>
+}
 
       <!-- ── Step 3: Sponsor details ── -->
-      <div *ngIf="step === 3">
+      @if (step === 3) {
+<div>
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
           Your details
         </h2>
@@ -179,10 +195,12 @@
             <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Email address *</label>
             <input type="email" [(ngModel)]="email" placeholder="you@example.com"
                    [style]="'width:100%;border:1px solid ' + (email.trim() && !emailValid ? '#f5c5c5' : '#ddd5c5') + ';border-radius:8px;padding:11px 14px;font-size:15px;color:#1c352c;background:#fff;outline:none;font-family:Hanken Grotesk,sans-serif;box-sizing:border-box;'" />
-            <div *ngIf="email.trim() && !emailValid"
+            @if (email.trim() && !emailValid) {
+<div
                  style="font-size:12px;color:#b45454;margin-top:5px;">
               Please enter a valid email address.
             </div>
+}
           </div>
           <div>
             <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">
@@ -193,10 +211,12 @@
                           color:#1c352c;background:#fff;outline:none;font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;" />
           </div>
         </div>
-        <div *ngIf="error"
+        @if (error) {
+<div
              style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
           {{ error }}
         </div>
+}
         <div style="display:flex;gap:12px;">
           <button (click)="prevStep()" class="step-back-btn"
                   style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
@@ -210,9 +230,11 @@
           </button>
         </div>
       </div>
+}
 
       <!-- ── Step 4: Payment (bank transfer) ── -->
-      <div *ngIf="step === 4">
+      @if (step === 4) {
+<div>
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
           Payment details
         </h2>
@@ -256,10 +278,12 @@
             </div>
           </div>
         </div>
-        <div *ngIf="error"
+        @if (error) {
+<div
              style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
           {{ error }}
         </div>
+}
         <div style="display:flex;gap:12px;">
           <button (click)="prevStep()" class="step-back-btn"
                   style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
@@ -272,6 +296,7 @@
           </button>
         </div>
       </div>
+}
     </div>
 
     <!-- ── Right: order summary ── -->
@@ -281,7 +306,9 @@
           <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
                       color:#9aa79f;margin-bottom:16px;">You're sponsoring</div>
           <div style="font-weight:600;font-size:16px;color:#1c352c;margin-bottom:2px;">{{ childName }}</div>
-          <div style="font-size:13px;color:#8a958d;margin-bottom:0;">{{ campusName }}<span *ngIf="city"> · {{ city }}</span></div>
+          <div style="font-size:13px;color:#8a958d;margin-bottom:0;">{{ campusName }}@if (city) {
+<span> · {{ city }}</span>
+}</div>
         </div>
         <div style="padding:22px;">
           <div style="display:flex;justify-content:space-between;font-size:14px;color:#54625b;margin-bottom:10px;">
@@ -322,9 +349,11 @@
     </div>
   </div>
 </div>
+}
 
 <!-- ── Step 5: Confirmation ── -->
-<div *ngIf="step === 5" class="confirm-page"
+@if (step === 5) {
+<div class="confirm-page"
      style="background:#fffdf9;min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 32px;">
   <div style="max-width:520px;width:100%;text-align:center;">
     <div style="width:60px;height:60px;border-radius:50%;background:#eef5f1;border:1px solid #cfe0d7;display:flex;align-items:center;
@@ -335,9 +364,11 @@
     <p style="font-size:16px;line-height:1.65;color:#54625b;margin:0 0 8px;">
       Thank you for sponsoring <strong style="color:#1c352c;">{{ childName }}</strong>. We've received your commitment.
     </p>
-    <p *ngIf="startMonth" style="font-size:15px;color:#6b7b73;margin:0 0 8px;">
+    @if (startMonth) {
+<p style="font-size:15px;color:#6b7b73;margin:0 0 8px;">
       Starting: <strong style="color:#1c352c;font-family:'IBM Plex Mono',monospace;">{{ startMonth }}</strong>
     </p>
+}
     <p style="font-size:14px;color:#8a958d;margin:0 0 8px;">
       We'll reach out to <strong style="color:#1c352c;">{{ email }}</strong> within 1–2 business days.
     </p>
@@ -360,6 +391,7 @@
     </div>
   </div>
 </div>
+}
 
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }

@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { OneChildViewModel } from '../../pages/one-child-at-a-time/one-child-at-a-time.models';
 
 @Component({
   selector: 'app-single-child-focus-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <section
       class="relative rounded-[28px] border border-[#F2D9A4]/60 bg-gradient-to-br from-[#FDF7EA] via-[#F8E8C8] to-[#F6E2BE] px-7 py-7 text-[#2B2A24] shadow-[0_24px_70px_rgba(13,21,18,0.55)]"
@@ -16,7 +16,8 @@ import { OneChildViewModel } from '../../pages/one-child-at-a-time/one-child-at-
         class="pointer-events-none absolute inset-0 opacity-35"
         style="background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 45%), radial-gradient(circle at 80% 80%, rgba(233,210,159,0.6), transparent 55%);"
       ></div>
-      <ng-container *ngIf="child; else empty">
+      @if (child) {
+
         <div class="relative flex flex-col gap-7 md:flex-row md:items-center">
           <div class="relative flex h-28 w-28 items-center justify-center rounded-3xl bg-gradient-to-br from-[#FFF6E0] to-[#EAD6AE] shadow-[inset_0_0_18px_rgba(200,160,86,0.4)]">
             <div class="absolute -right-3 -top-3 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white shadow-lg">
@@ -40,27 +41,34 @@ import { OneChildViewModel } from '../../pages/one-child-at-a-time/one-child-at-
               <span class="rounded-full border border-[#D8BE7B] bg-[#FFF1CC] px-3 py-1 text-[11px] font-semibold text-[#7A5A22]">
                 Verified child
               </span>
-              <span
+              @if (child.status === 'ALLOCATED') {
+<span
                 class="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700"
-                *ngIf="child.status === 'ALLOCATED'"
+               
               >
                 Sponsored
               </span>
-              <span
+}
+              @if (child.status === 'RESERVED') {
+<span
                 class="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-semibold text-amber-700"
-                *ngIf="child.status === 'RESERVED'"
+               
               >
                 Pending
               </span>
-              <span
+}
+              @if (child.status === 'AVAILABLE') {
+<span
                 class="rounded-full bg-orange-50 px-3 py-1 text-[11px] font-semibold text-orange-700"
-                *ngIf="child.status === 'AVAILABLE'"
+               
               >
                 Needs sponsor
               </span>
+}
             </div>
 
-            <p class="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#5D4B26]" *ngIf="child.storyLine">
+            @if (child.storyLine) {
+<p class="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#5D4B26]">
               <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#F1D7A2] text-[#7A5A22]">
                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M12 3l2.2 4.7 5.1.7-3.7 3.6.9 5.1L12 14.8 7.5 17l.9-5.1L4.7 8.4l5.1-.7L12 3z" fill="currentColor"/>
@@ -68,6 +76,7 @@ import { OneChildViewModel } from '../../pages/one-child-at-a-time/one-child-at-
               </span>
               {{ child.storyLine }}
             </p>
+}
 
             <div class="mt-2 flex flex-wrap items-center gap-4 text-sm text-[#4B3C1C]">
               <span class="inline-flex items-center gap-2">
@@ -87,12 +96,14 @@ import { OneChildViewModel } from '../../pages/one-child-at-a-time/one-child-at-
             </div>
 
             <div class="mt-4 flex flex-wrap gap-2">
-              <span
-                *ngFor="let tag of child.tags"
+              @for (tag of child.tags; track tag) {
+<span
+               
                 class="rounded-full border border-[#E6D4AE] bg-white/80 px-3 py-1 text-xs font-semibold text-[#6A4F1F] shadow-sm"
               >
                 {{ tag }}
               </span>
+}
             </div>
           </div>
 
@@ -119,27 +130,36 @@ import { OneChildViewModel } from '../../pages/one-child-at-a-time/one-child-at-
                 </div>
               </div>
               <div class="flex-1">
-                <p class="text-xs font-semibold text-[#7A5A22]" *ngIf="child.dailyCost">
+                @if (child.dailyCost) {
+<p class="text-xs font-semibold text-[#7A5A22]">
                   {{ child.dailyCost }}
                 </p>
+}
                 <p class="mt-1 text-lg font-semibold text-[#1F2A1E]">{{ child.monthlyCost }}</p>
-                <p class="mt-2 text-[11px] text-[#6C5630]" *ngIf="child.trustNote">
+                @if (child.trustNote) {
+<p class="mt-2 text-[11px] text-[#6C5630]">
                   {{ child.trustNote }}
                 </p>
+}
               </div>
             </div>
-            <p class="mt-3 text-[11px] text-[#6C5630]" *ngIf="child.ramadanDonors !== undefined">
+            @if (child.ramadanDonors !== undefined) {
+<p class="mt-3 text-[11px] text-[#6C5630]">
               {{ child.ramadanDonors }} donors already helped this Ramadan
             </p>
+}
           </div>
         </div>
-      </ng-container>
+      
+} @else {
 
-      <ng-template #empty>
         <div class="text-center text-sm text-[#6C5630]">
           No eligible child available right now.
         </div>
-      </ng-template>
+      
+}
+
+      
     </section>
   `
 })

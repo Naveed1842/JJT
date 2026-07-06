@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { SponsorService, AvailabilityStatus } from '../../services/sponsor.service';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
@@ -11,7 +11,7 @@ interface ProgressItem { month: string; summary: string; }
 @Component({
   selector: 'app-child-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './child-detail.component.html',
 })
 export class ChildDetailComponent implements OnInit {

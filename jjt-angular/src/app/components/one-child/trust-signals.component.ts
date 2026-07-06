@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-trust-signals',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <footer class="relative rounded-[26px] border border-[#E6D4AE]/70 bg-gradient-to-br from-[#FDF7EA] via-[#F7E6C4] to-[#F4DEB2] px-6 py-6 text-center text-xs text-[#4B3C1C] shadow-[0_16px_40px_rgba(12,20,17,0.5)]">
       <div class="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-emerald-700 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-50 shadow-lg">

@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-hero-banner',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <section
       class="relative overflow-hidden rounded-[28px] border border-[#F2D9A4]/60 bg-gradient-to-br from-[#FDF7EA] via-[#F7E8C6] to-[#F9F0DA] px-7 py-8 text-center text-[#2B2A24] shadow-[0_30px_80px_rgba(12,20,17,0.55)]"

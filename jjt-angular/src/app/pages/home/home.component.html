@@ -62,7 +62,8 @@
            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:14px;"
            onerror="this.style.display='none'" />
       <!-- Overlay card: first available child from API -->
-      <div *ngIf="!loadingFeatured && featuredChildren.length > 0"
+      @if (!loadingFeatured && featuredChildren.length > 0) {
+<div
            style="position:relative;background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;
                   padding:14px 18px;display:flex;align-items:center;gap:12px;width:100%;
                   box-shadow:0 10px 24px -16px rgba(20,40,30,.4);">
@@ -80,6 +81,7 @@
           {{ statusLabel(featuredChildren[0].availabilityStatus) }}
         </span>
       </div>
+}
     </div>
   </div>
 </section>
@@ -118,8 +120,10 @@
     <div class="feat-scroll" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
 
       <!-- Loading skeletons -->
-      <ng-container *ngIf="loadingFeatured">
-        <div *ngFor="let _ of [1,2,3]" class="feat-card"
+      @if (loadingFeatured) {
+
+        @for (_ of [1,2,3]; track _) {
+<div class="feat-card"
              style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
           <div style="height:170px;background:linear-gradient(90deg,#ece4d6 25%,#f3eee4 50%,#ece4d6 75%);
                       background-size:200%;animation:shimmer 1.4s infinite;"></div>
@@ -128,10 +132,13 @@
             <div style="height:12px;border-radius:4px;background:#ece4d6;width:50%;"></div>
           </div>
         </div>
-      </ng-container>
+}
+      
+}
 
       <!-- Live child cards from API -->
-      <div *ngFor="let child of featuredChildren" class="feat-card"
+      @for (child of featuredChildren; track child) {
+<div class="feat-card"
            style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
         <div style="height:170px;overflow:hidden;background:#ece4d6;position:relative;">
           <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;
@@ -160,9 +167,11 @@
           </div>
         </div>
       </div>
+}
 
       <!-- No children available state -->
-      <div *ngIf="!loadingFeatured && featuredChildren.length === 0" class="feat-card"
+      @if (!loadingFeatured && featuredChildren.length === 0) {
+<div class="feat-card"
            style="border:1px solid #e3dccd;border-radius:14px;padding:32px 20px;text-align:center;
                   background:#fffdf9;grid-column:span 3;">
         <div style="font-size:28px;margin-bottom:12px;">🌱</div>
@@ -173,6 +182,7 @@
           Check back soon — new children join our programme regularly.
         </div>
       </div>
+}
 
       <!-- Give to fund card (always shown) -->
       <div class="feat-card" style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:22px;

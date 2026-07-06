@@ -1,0 +1,62 @@
+<section class="section-anim">
+        <div class="section-actions">
+          <span class="results-text">Audit trail — all system events</span>
+        </div>
+
+        @if (loadingAudit) {
+<div class="table-card">
+          <div class="table-empty"><div class="empty-sub">Loading audit log…</div></div>
+        </div>
+}
+
+        @if (!loadingAudit && auditEvents.length === 0) {
+<div class="table-card">
+          <div class="table-empty">
+            <div class="empty-title">No audit events</div>
+            <div class="empty-sub">Events will appear here as admin actions are performed.</div>
+          </div>
+        </div>
+}
+
+        @if (!loadingAudit && auditEvents.length > 0) {
+<div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Entity</th>
+                <th>Actor</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (e of auditEvents; track e) {
+<tr>
+                <td style="font-size:12px;color:var(--text-3);white-space:nowrap;">{{ timeAgo(e.createdAt) }}</td>
+                <td>
+                  <span class="badge badge-grey" style="font-family:'IBM Plex Mono',monospace;font-size:11px;">{{ e.eventType }}</span>
+                </td>
+                <td style="font-size:12.5px;">
+                  <div style="font-weight:600;color:var(--text-1);">{{ e.entityType }}</div>
+                  <div style="font-size:11px;color:var(--text-3);font-family:'IBM Plex Mono',monospace;">{{ e.entityId?.substring(0, 8) }}…</div>
+                </td>
+                <td style="font-size:12.5px;color:var(--text-2);">{{ e.actorEmail ?? '—' }}</td>
+                <td style="font-size:12px;color:var(--text-3);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                  {{ e.description ?? '—' }}
+                </td>
+              </tr>
+}
+            </tbody>
+          </table>
+
+          @if (auditTotalPages > 1) {
+<div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--border);font-size:13px;color:var(--text-3);">
+            <button class="btn-sm-ghost" (click)="loadAuditLog(auditPage - 1)" [disabled]="auditPage === 0">‹ Prev</button>
+            <span>Page {{ auditPage + 1 }} of {{ auditTotalPages }}</span>
+            <button class="btn-sm-ghost" (click)="loadAuditLog(auditPage + 1)" [disabled]="auditPage >= auditTotalPages - 1">Next ›</button>
+          </div>
+}
+        </div>
+}
+      </section>

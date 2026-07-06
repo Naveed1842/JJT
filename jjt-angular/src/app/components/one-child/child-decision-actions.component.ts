@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-child-decision-actions',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center">
       <div class="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-r from-[#2E4A3B]/60 via-[#1B2B22]/40 to-[#2E4A3B]/60 blur-[30px]"></div>

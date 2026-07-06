@@ -1,38 +1,30 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+
 import { RouterLink } from '@angular/router';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
-import { SponsorService } from '../../services/sponsor.service';
+import { ChildrenStore } from '../../services/children.store';
 import { ChildDto } from '../../services/api.models';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  imports: [RouterLink, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './home.component.html',
+  // Safe under OnPush: all template state is store signals (tracked reactively)
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent implements OnInit {
-  private readonly sponsorService = inject(SponsorService);
-
-  featuredChildren: ChildDto[] = [];
-  totalChildren = 0;
-  availableCount = 0;
-  loadingFeatured = true;
+  private readonly store = inject(ChildrenStore);
 
   ngOnInit(): void {
-    this.sponsorService.getChildren().subscribe({
-      next: (children) => {
-        this.totalChildren = children.length;
-        this.availableCount = children.filter(c => c.availabilityStatus === 'AVAILABLE').length;
-        this.featuredChildren = children
-          .filter(c => c.availabilityStatus === 'AVAILABLE')
-          .slice(0, 3);
-        this.loadingFeatured = false;
-      },
-      error: () => { this.loadingFeatured = false; }
-    });
+    this.store.load(); // served from cache when fresh — no refetch per navigation
   }
+
+  get featuredChildren(): ChildDto[] { return this.store.featured(); }
+  get totalChildren(): number        { return this.store.totalCount(); }
+  get availableCount(): number       { return this.store.availableCount(); }
+  get loadingFeatured(): boolean     { return this.store.loading(); }
 
   badgeStyle(status: ChildDto['availabilityStatus']): string {
     const base = 'flex-shrink:0;font-size:11px;font-weight:600;border-radius:100px;padding:4px 9px;';

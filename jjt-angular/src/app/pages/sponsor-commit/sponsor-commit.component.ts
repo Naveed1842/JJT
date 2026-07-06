@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SponsorService, CommitmentType, AvailabilityStatus } from '../../services/sponsor.service';
+import { ChildrenStore } from '../../services/children.store';
 
 @Component({
   selector: 'app-sponsor-commit',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './sponsor-commit.component.html',
 })
 export class SponsorCommitComponent implements OnInit {
@@ -54,6 +55,7 @@ export class SponsorCommitComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private sponsorService: SponsorService,
+    private childrenStore: ChildrenStore,
     private router: Router
   ) {}
 
@@ -144,6 +146,7 @@ export class SponsorCommitComponent implements OnInit {
         this.submitting = false;
         this.startMonth = res.startMonth;
         this.step = 5;
+        this.childrenStore.invalidate(); // the child is no longer AVAILABLE
       },
       error: (err) => {
         this.submitting = false;

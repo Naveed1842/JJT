@@ -49,11 +49,13 @@
           />
         </div>
 
-        <div *ngIf="error"
+        @if (error) {
+<div
              style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;
                     color:#b45454;font-size:13.5px;">
           {{ error }}
         </div>
+}
 
         <button
           type="submit"

@@ -1,0 +1,94 @@
+<section class="section-anim">
+        <div class="docs-grid">
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:20px;">Platform Flow — 6 Steps</div>
+            <div class="flow-steps">
+              <div class="flow-step">
+                <div class="step-num">1</div>
+                <div>
+                  <div class="step-title">Register Child</div>
+                  <div class="step-body">Add a child with roll number, campus, and monthly education cost. A ledger is created automatically.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-num">2</div>
+                <div>
+                  <div class="step-title">Record Early Support</div>
+                  <div class="step-body">While seeking a sponsor, record months JJT funded directly. This creates ledger entries and allows progress updates.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-num">3</div>
+                <div>
+                  <div class="step-title">Register Sponsor</div>
+                  <div class="step-body">Add a sponsor record. Copy the Sponsor ID — it is needed to create their login account.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-num">4</div>
+                <div>
+                  <div class="step-title">Commit Sponsorship</div>
+                  <div class="step-body">Link the sponsor to a child from a future start month. Status is PENDING until payment is verified.</div>
+                </div>
+              </div>
+              <div class="flow-step">
+                <div class="step-num">5</div>
+                <div>
+                  <div class="step-title">Activate Sponsorship</div>
+                  <div class="step-body">Once payment is received, activate the sponsorship from the Commitments view. Status becomes ACTIVE.</div>
+                </div>
+              </div>
+              <div class="flow-step" style="border-bottom:none;">
+                <div class="step-num">6</div>
+                <div>
+                  <div class="step-title">Add Monthly Progress</div>
+                  <div class="step-body">Each month, add a progress update for any child with a ledger entry. Sponsors see this in their portal.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div class="card">
+              <div class="card-title" style="margin-bottom:16px;">Child Status Reference</div>
+              <div class="status-ref-list">
+                <div class="status-ref-row">
+                  <span class="badge badge-grey">Seeking</span>
+                  <span class="status-ref-desc">No sponsor. Eligible for early support from JJT fund.</span>
+                </div>
+                <div class="status-ref-row">
+                  <span class="badge badge-amber">Reserved</span>
+                  <span class="status-ref-desc">Sponsor committed, payment pending. Cannot accept another commitment.</span>
+                </div>
+                <div class="status-ref-row">
+                  <span class="badge badge-green">Sponsored</span>
+                  <span class="status-ref-desc">Active sponsorship. Sponsor pays monthly. Progress visible in portal.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title" style="margin-bottom:14px;">Key Rules</div>
+              <div class="rules-list">
+                <div class="rule-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f5d4f" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  One active or pending sponsorship per child at any time.
+                </div>
+                <div class="rule-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f5d4f" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  One ledger entry per month per child. Duplicates are blocked.
+                </div>
+                <div class="rule-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f5d4f" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  Progress can only be added for months that have a ledger entry.
+                </div>
+                <div class="rule-item">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f5d4f" stroke-width="2" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                  Sponsorship start month must be in the future (next month or later).
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>

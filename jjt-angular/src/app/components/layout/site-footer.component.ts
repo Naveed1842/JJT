@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-site-footer',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <footer style="background:#1c352c;color:#9cc3b3;padding:40px 32px;margin-top:auto;">
       <div style="max-width:1200px;margin:0 auto;">

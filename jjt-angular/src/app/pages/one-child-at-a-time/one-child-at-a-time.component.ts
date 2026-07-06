@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { SponsorService, ChildDto } from '../../services/sponsor.service';
+import { ChildDto } from '../../services/api.models';
+import { ChildrenStore } from '../../services/children.store';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
 
@@ -11,13 +12,13 @@ type StatusFilter = 'AVAILABLE' | 'RESERVED' | 'ALL';
 @Component({
   selector: 'app-one-child-at-a-time',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
+  imports: [FormsModule, RouterLink, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './one-child-at-a-time.component.html',
+  // Safe under OnPush: state is store signals + fields mutated only by template events
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OneChildAtATimeComponent implements OnInit {
-  allChildren: ChildDto[] = [];
-  loading = true;
-  error: string | null = null;
+  private readonly store = inject(ChildrenStore);
 
   searchQuery = '';
   statusFilter: StatusFilter = 'ALL';
@@ -25,23 +26,17 @@ export class OneChildAtATimeComponent implements OnInit {
   pageSize = 12;
   page = 0;
 
-  constructor(private sponsorService: SponsorService, private router: Router) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.sponsorService.getChildren().subscribe({
-      next: (data) => {
-        this.allChildren = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'Unable to load children right now. Please try again.';
-        this.loading = false;
-      }
-    });
+    this.store.load(); // served from cache when fresh — no refetch per navigation
   }
 
+  get loading(): boolean       { return this.store.loading(); }
+  get error(): string | null   { return this.store.error(); }
+
   get filtered(): ChildDto[] {
-    let list = this.allChildren;
+    let list = this.store.children();
     if (this.statusFilter !== 'ALL') {
       list = list.filter(c => c.availabilityStatus === this.statusFilter);
     }

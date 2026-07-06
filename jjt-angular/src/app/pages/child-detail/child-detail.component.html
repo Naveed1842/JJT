@@ -1,16 +1,20 @@
 <app-site-header />
 
 <!-- Loading -->
-<div *ngIf="loading" style="padding:80px;text-align:center;background:#fffdf9;min-height:60vh;">
+@if (loading) {
+<div style="padding:80px;text-align:center;background:#fffdf9;min-height:60vh;">
   <div style="display:inline-block;width:40px;height:40px;border:3px solid #e3dccd;
               border-top-color:#2f5d4f;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
   <p style="color:#8a958d;margin-top:16px;font-size:14px;">Preparing this child's story…</p>
 </div>
+}
 
-<div *ngIf="!loading" style="background:#fffdf9;min-height:100vh;">
+@if (!loading) {
+<div style="background:#fffdf9;min-height:100vh;">
 
   <!-- Error -->
-  <div *ngIf="error" style="max-width:800px;margin:80px auto;padding:0 32px;text-align:center;">
+  @if (error) {
+<div style="max-width:800px;margin:80px auto;padding:0 32px;text-align:center;">
     <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:24px 20px;color:#b45454;margin-bottom:20px;">
       {{ error }}
     </div>
@@ -19,8 +23,10 @@
       ← Back to all children
     </a>
   </div>
+}
 
-  <div *ngIf="!error">
+  @if (!error) {
+<div>
     <!-- Breadcrumb -->
     <div class="detail-breadcrumb" style="max-width:1200px;margin:0 auto;padding:24px 32px 0;font-size:13px;color:#8a958d;">
       <a routerLink="/children" style="color:#8a958d;text-decoration:none;">Children</a>
@@ -58,7 +64,9 @@
         <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0 0 14px;">
           {{ childName }} studies at <strong style="color:#1c352c;">{{ campusName }}</strong> in {{ city }}.
           Roll number: <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ rollNumber }}</span>.
-          <span *ngIf="schoolName"> School: {{ schoolName }}.</span>
+          @if (schoolName) {
+<span> School: {{ schoolName }}.</span>
+}
         </p>
         <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0;">
           Your sponsorship covers education fees, books, and supplies — and the Continuity Fund ensures
@@ -103,30 +111,39 @@
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:26px;color:#1c352c;margin:38px 0 20px;">
           Progress timeline
         </h2>
-        <div *ngIf="progressUpdates.length === 0"
+        @if (progressUpdates.length === 0) {
+<div
              style="font-size:14px;color:#8a958d;font-style:italic;">
           No progress updates yet.
         </div>
-        <div *ngIf="progressUpdates.length > 0"
+}
+        @if (progressUpdates.length > 0) {
+<div
              style="border-left:2px solid #e3dccd;padding-left:24px;display:flex;flex-direction:column;gap:24px;">
-          <div *ngFor="let update of progressUpdates" style="position:relative;">
+          @for (update of progressUpdates; track update) {
+<div style="position:relative;">
             <span style="position:absolute;left:-31px;top:3px;width:12px;height:12px;border-radius:50%;
                          background:#2f5d4f;border:2px solid #fffdf9;"></span>
             <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;
                         text-transform:uppercase;letter-spacing:.06em;">{{ update.month }}</div>
             <div style="font-size:14px;line-height:1.6;color:#54625b;">{{ update.summary }}</div>
           </div>
+}
         </div>
+}
 
         <!-- Education Ledger -->
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:24px;color:#1c352c;margin:36px 0 16px;">
           Education ledger
         </h2>
-        <div *ngIf="ledgerEntries.length === 0"
+        @if (ledgerEntries.length === 0) {
+<div
              style="font-size:14px;color:#8a958d;font-style:italic;">
           No ledger entries recorded yet.
         </div>
-        <div *ngIf="ledgerEntries.length > 0"
+}
+        @if (ledgerEntries.length > 0) {
+<div
              style="border:1px solid #e3dccd;border-radius:12px;overflow:hidden;">
           <table style="width:100%;border-collapse:collapse;font-size:13.5px;">
             <thead>
@@ -137,18 +154,25 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let entry of ledgerEntries; let last = last"
+              @for (entry of ledgerEntries; track entry; let last = $last) {
+<tr
                   [style]="'border-bottom:' + (last ? 'none' : '1px solid #efe9dd') + ';'">
                 <td style="padding:12px 16px;font-family:'IBM Plex Mono',monospace;color:#54625b;">{{ entry.month }}</td>
                 <td style="padding:12px 16px;color:#54625b;">{{ entry.status }}</td>
                 <td style="padding:12px 16px;">
-                  <span style="background:#eef5f1;color:#214a3e;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;" *ngIf="entry.source === 'Sponsor'">Sponsor</span>
-                  <span style="background:#fdf7ec;color:#8a5f1f;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;" *ngIf="entry.source !== 'Sponsor'">{{ entry.source }}</span>
+                  @if (entry.source === 'Sponsor') {
+<span style="background:#eef5f1;color:#214a3e;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;">Sponsor</span>
+}
+                  @if (entry.source !== 'Sponsor') {
+<span style="background:#fdf7ec;color:#8a5f1f;font-size:11px;font-weight:600;border-radius:100px;padding:3px 9px;">{{ entry.source }}</span>
+}
                 </td>
               </tr>
+}
             </tbody>
           </table>
         </div>
+}
       </div>
 
       <!-- ── Right column: sticky sponsor card ── -->
@@ -161,29 +185,37 @@
               {{ childName }}
             </div>
             <div style="font-size:13.5px;color:#8a958d;margin-top:2px;">
-              {{ campusName }}<span *ngIf="city"> · {{ city }}</span>
+              {{ campusName }}@if (city) {
+<span> · {{ city }}</span>
+}
             </div>
 
             <!-- Status badge -->
             <div style="margin-top:12px;margin-bottom:20px;">
-              <span *ngIf="supportStatus === 'AVAILABLE'"
+              @if (supportStatus === 'AVAILABLE') {
+<span
                     style="display:inline-flex;align-items:center;gap:7px;background:#f1ece2;color:#8a7a5f;
                            font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#9aa79f;"></span>
                 Seeking sponsor
               </span>
-              <span *ngIf="supportStatus === 'RESERVED'"
+}
+              @if (supportStatus === 'RESERVED') {
+<span
                     style="display:inline-flex;align-items:center;gap:7px;background:#fdf7ec;color:#8a5f1f;
                            font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#d99a4e;"></span>
                 Bridged
               </span>
-              <span *ngIf="supportStatus === 'ALLOCATED'"
+}
+              @if (supportStatus === 'ALLOCATED') {
+<span
                     style="display:inline-flex;align-items:center;gap:7px;background:#eef5f1;color:#214a3e;
                            font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;"></span>
                 Sponsored
               </span>
+}
             </div>
 
             <!-- Monthly cost -->
@@ -193,18 +225,22 @@
             <div style="font-size:13px;color:#8a958d;margin-bottom:18px;">per month · education support</div>
 
             <!-- CTA -->
-            <a *ngIf="supportStatus === 'AVAILABLE'"
+            @if (supportStatus === 'AVAILABLE') {
+<a
                [routerLink]="['/children', childId, 'sponsor']"
                style="display:block;background:#2f5d4f;color:#fff;text-align:center;font-size:16px;
                       font-weight:600;border-radius:10px;padding:15px 0;margin-bottom:10px;text-decoration:none;
                       transition:background .15s;">
               Sponsor {{ childName }}
             </a>
-            <div *ngIf="supportStatus !== 'AVAILABLE'"
+}
+            @if (supportStatus !== 'AVAILABLE') {
+<div
                  style="display:block;background:#9aa79f;color:#fff;text-align:center;font-size:15px;
                         font-weight:600;border-radius:10px;padding:15px 0;margin-bottom:10px;opacity:.7;">
               {{ supportStatus === 'ALLOCATED' ? 'Already sponsored' : 'Pending activation' }}
             </div>
+}
             <a routerLink="/children"
                style="display:block;border:1px solid #cdc4b2;color:#1c352c;text-align:center;
                       font-size:14px;font-weight:500;border-radius:10px;padding:12px 0;text-decoration:none;">
@@ -212,7 +248,8 @@
             </a>
 
             <!-- What happens next -->
-            <div *ngIf="supportStatus === 'AVAILABLE'"
+            @if (supportStatus === 'AVAILABLE') {
+<div
                  style="margin-top:20px;padding-top:18px;border-top:1px solid #efe9dd;">
               <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;
                           text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">What happens after you sponsor</div>
@@ -231,6 +268,7 @@
                 </div>
               </div>
             </div>
+}
           </div>
 
           <!-- Continuity fund notice -->
@@ -247,29 +285,37 @@
 
     </div>
   </div>
+}
 </div>
+}
 
 <!-- Mobile sticky sponsor bar -->
 <div class="mobile-sponsor-bar" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;
      background:#fffdf9;border-top:1px solid #e3dccd;padding:14px 18px 20px;
      align-items:center;gap:14px;box-shadow:0 -8px 20px -10px rgba(20,40,30,.25);">
-  <div *ngIf="!loading && !error" style="flex-shrink:0;">
+  @if (!loading && !error) {
+<div style="flex-shrink:0;">
     <div style="font-family:'Newsreader',serif;font-size:22px;color:#1c352c;line-height:1;">
       {{ monthlyCost }}<span style="font-size:12px;color:#8a958d;">/mo</span>
     </div>
     <div style="font-size:11px;color:#8a958d;margin-top:2px;">education support</div>
   </div>
-  <a *ngIf="!loading && !error && supportStatus === 'AVAILABLE'"
+}
+  @if (!loading && !error && supportStatus === 'AVAILABLE') {
+<a
      [routerLink]="['/children', childId, 'sponsor']"
      style="flex:1;display:block;background:#2f5d4f;color:#fff;text-align:center;font-size:15px;
             font-weight:600;border-radius:12px;padding:16px 0;text-decoration:none;">
     Sponsor {{ childName }}
   </a>
-  <div *ngIf="!loading && !error && supportStatus !== 'AVAILABLE'"
+}
+  @if (!loading && !error && supportStatus !== 'AVAILABLE') {
+<div
        style="flex:1;display:block;background:#9aa79f;color:#fff;text-align:center;font-size:15px;
               font-weight:600;border-radius:12px;padding:16px 0;opacity:.75;">
     {{ supportStatus === 'ALLOCATED' ? 'Already sponsored' : 'Pending activation' }}
   </div>
+}
 </div>
 
 <app-site-footer />

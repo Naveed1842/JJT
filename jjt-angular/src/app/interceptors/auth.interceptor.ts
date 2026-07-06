@@ -31,9 +31,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           next(req.clone({ setHeaders: { Authorization: `Bearer ${newToken}` } }))
         ),
         catchError(refreshErr => {
-          // Refresh failed (revoked, expired, network error) — clear local state and go to login.
+          // Refresh failed (revoked, expired, network error) — clear local state and go to
+          // login, preserving where the user was so they land back there after signing in.
           authService.clearSession();
-          router.navigate(['/login']);
+          const currentUrl = router.routerState.snapshot.url;
+          router.navigate(['/login'],
+            currentUrl && !currentUrl.startsWith('/login')
+              ? { queryParams: { returnUrl: currentUrl } }
+              : undefined);
           return throwError(() => refreshErr);
         })
       );

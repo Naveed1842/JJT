@@ -1,10 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
+import { ChildrenStore } from '../../services/children.store';
+import { AlertsStore } from '../../services/alerts.store';
+import { AdminAlertsSectionComponent } from './sections/admin-alerts-section.component';
+import { AdminAuditSectionComponent } from './sections/admin-audit-section.component';
+import { AdminDocsSectionComponent } from './sections/admin-docs-section.component';
 import {
+  AdminChildDetailResponse,
+  AdminChildSummaryResponse,
   AlertResponse,
+  CampaignResponse,
+  CashFlowReport,
   ChildDto,
   CreateSponsorResponse,
   DonationResponse,
@@ -13,8 +24,10 @@ import {
   DonationType,
   DonationFrequency,
   FundAccountResponse,
+  ImportChildrenResponse,
   MonthlyReconciliationResponse,
   OrgConfigResponse,
+  PortfolioReport,
   RecurringDonationResponse,
   SponsorPaymentResponse,
   SponsorshipSummaryResponse,
@@ -22,11 +35,14 @@ import {
   UserResponse,
 } from '../../services/api.models';
 
-type SectionId =
-  | 'dashboard' | 'children' | 'sponsors' | 'commitments'
-  | 'earlySupport' | 'progress' | 'users'
-  | 'funds' | 'reconciliation' | 'alerts' | 'reports' | 'settings' | 'docs'
-  | 'donors' | 'donations' | 'campaigns' | 'audit' | 'import';
+const SECTION_IDS = [
+  'dashboard', 'children', 'sponsors', 'commitments',
+  'earlySupport', 'progress', 'users',
+  'funds', 'reconciliation', 'alerts', 'reports', 'settings', 'docs',
+  'donors', 'donations', 'campaigns', 'audit', 'import'
+] as const;
+
+type SectionId = typeof SECTION_IDS[number];
 
 type ModalType =
   | 'addChild' | 'addSponsor' | 'addCommitment'
@@ -37,13 +53,28 @@ type ModalType =
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, FormsModule,
+    AdminAlertsSectionComponent, AdminAuditSectionComponent, AdminDocsSectionComponent,
+  ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
 })
 export class AdminComponent implements OnInit {
-  private readonly adminService = inject(AdminService);
-  private readonly authService  = inject(AuthService);
+  private readonly adminService  = inject(AdminService);
+  private readonly authService   = inject(AuthService);
+  private readonly childrenStore = inject(ChildrenStore);
+  private readonly alertsStore   = inject(AlertsStore);
+  private readonly route         = inject(ActivatedRoute);
+  private readonly router        = inject(Router);
+
+  constructor() {
+    // Sections are URL-addressable (/admin/:section): refresh keeps the section,
+    // back/forward navigates between sections, and sections can be deep-linked.
+    this.route.paramMap
+      .pipe(takeUntilDestroyed())
+      .subscribe(params => this.applySection(params.get('section')));
+  }
 
   // ── Navigation ────────────────────────────────────────────────────
   activeSection: SectionId = 'dashboard';
@@ -122,9 +153,8 @@ export class AdminComponent implements OnInit {
   recordPaymentId: string | null = null;
   recordPaymentForm = { receivedAmount: '', currency: 'PKR', bankReference: '', receivedDate: '' };
 
-  // ── Alerts ────────────────────────────────────────────────────────
-  alertList: AlertResponse[] = [];
-  loadingAlerts = false;
+  // ── Alerts (shared via AlertsStore — sidebar badge + dashboard card) ─
+  get alertList(): AlertResponse[] { return this.alertsStore.alerts(); }
 
   // ── Donors ────────────────────────────────────────────────────────
   donors: DonorResponse[] = [];
@@ -156,34 +186,28 @@ export class AdminComponent implements OnInit {
   readonly frequencies: DonationFrequency[] = ['MONTHLY', 'QUARTERLY', 'ANNUAL'];
 
   // ── Campaigns ─────────────────────────────────────────────────────
-  campaigns: any[] = [];
+  campaigns: CampaignResponse[] = [];
   loadingCampaigns = false;
   campaignForm = {
     name: '', description: '', targetAmount: '', targetCurrency: 'PKR',
     startDate: '', endDate: '', fundAccountId: ''
   };
 
-  // ── Audit log ─────────────────────────────────────────────────────
-  auditEvents: any[] = [];
-  auditTotalPages = 1;
-  auditPage = 0;
-  loadingAudit = false;
-
   // ── Reports ───────────────────────────────────────────────────────
-  cashFlowData: any = null;
-  portfolioData: any = null;
+  cashFlowData: CashFlowReport | null = null;
+  portfolioData: PortfolioReport | null = null;
   loadingReports = false;
 
   // ── Admin Children list (rich detail view) ────────────────────────
-  adminChildren: any[] = [];
+  adminChildren: AdminChildSummaryResponse[] = [];
   loadingAdminChildren = false;
-  selectedChildDetail: any = null;
+  selectedChildDetail: AdminChildDetailResponse | null = null;
   loadingChildDetail = false;
   adminChildSearch = '';
 
   // ── Bulk import ───────────────────────────────────────────────────
   importFile: File | null = null;
-  importResult: any = null;
+  importResult: ImportChildrenResponse | null = null;
   importLoading = false;
   importError: string | null = null;
 
@@ -214,17 +238,27 @@ export class AdminComponent implements OnInit {
   // ── Navigation ────────────────────────────────────────────────────
 
   setSection(s: SectionId): void {
+    this.router.navigate(['/admin', s]);
+  }
+
+  /** Reacts to the :section route param — validates, activates, and loads section data. */
+  private applySection(param: string | null): void {
+    if (!param || !(SECTION_IDS as readonly string[]).includes(param)) {
+      this.router.navigate(['/admin', 'dashboard'], { replaceUrl: true });
+      return;
+    }
+    const s = param as SectionId;
+    if (s === this.activeSection) return; // paramMap can re-emit; skip duplicate loads
     this.activeSection = s;
     this.errorMessage = null;
+    // alerts / audit / docs are self-loading section components
     if (s === 'users')          this.loadUsers();
     if (s === 'funds')          this.loadFundAccounts();
     if (s === 'reconciliation') this.loadRecon();
-    if (s === 'alerts')         this.loadAlerts();
     if (s === 'settings')       this.loadOrgConfig();
     if (s === 'donors')         this.loadDonors();
     if (s === 'donations')      { this.loadDonations(); this.loadRecurring(); }
     if (s === 'campaigns')      this.loadCampaigns();
-    if (s === 'audit')          this.loadAuditLog();
     if (s === 'reports')        this.loadReportData();
     if (s === 'children')       this.loadAdminChildren();
   }
@@ -314,10 +348,6 @@ export class AdminComponent implements OnInit {
       .slice(0, 6);
   }
 
-  get criticalAlerts(): AlertResponse[] {
-    return this.alertList.filter(a => a.severity === 'HIGH' || a.severity === 'CRITICAL');
-  }
-
   // ── Helpers ───────────────────────────────────────────────────────
 
   private toInitials(s: string): string {
@@ -351,12 +381,6 @@ export class AdminComponent implements OnInit {
     if (status === 'OVERDUE')  return 'badge-red';
     if (status === 'PARTIAL')  return 'badge-amber';
     if (status === 'WAIVED')   return 'badge-grey';
-    return 'badge-grey';
-  }
-
-  alertSeverityClass(sev: string): string {
-    if (sev === 'CRITICAL' || sev === 'HIGH') return 'badge-red';
-    if (sev === 'MEDIUM')  return 'badge-amber';
     return 'badge-grey';
   }
 
@@ -536,6 +560,7 @@ export class AdminComponent implements OnInit {
         this.showToast('Sponsorship committed — activate it from the Commitments view.');
         this.sponsorshipForm = { sponsorId: '', childId: '', startMonth: '', commitmentType: 'MONTHLY' };
         this.loadList('PENDING');
+        this.childrenStore.invalidate(); // availability derives from sponsorships
       },
       error: (err) => this.handleError(err, 'Failed to commit sponsorship.')
     });
@@ -560,6 +585,7 @@ export class AdminComponent implements OnInit {
         this.loadList('PENDING');
         this.loadList('ACTIVE');
         this.loadDropdowns();
+        this.childrenStore.invalidate(); // availability derives from sponsorships
       },
       error: (err) => this.handleError(err, 'Failed to activate.')
     });
@@ -572,6 +598,7 @@ export class AdminComponent implements OnInit {
         this.loadList('PENDING');
         this.loadList('ACTIVE');
         this.loadDropdowns();
+        this.childrenStore.invalidate(); // availability derives from sponsorships
       },
       error: (err) => this.handleError(err, 'Failed to expire.')
     });
@@ -703,24 +730,15 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  // ── Alerts ────────────────────────────────────────────────────────
+  // ── Alerts (delegated to shared AlertsStore) ──────────────────────
 
   loadAlerts(): void {
-    this.loadingAlerts = true;
-    this.adminService.listAlerts().subscribe({
-      next: (data) => { this.alertList = data; this.loadingAlerts = false; },
-      error: () => { this.loadingAlerts = false; }
-    });
+    this.alertsStore.load();
   }
 
   dismissAlert(id: string): void {
-    this.adminService.dismissAlert(id).subscribe({
-      next: () => {
-        this.alertList = this.alertList.filter(a => a.id !== id);
-        this.showToast('Alert dismissed.');
-      },
-      error: (err) => this.handleError(err, 'Failed to dismiss alert.')
-    });
+    this.alertsStore.dismiss(id);
+    this.showToast('Alert dismissed.');
   }
 
   // ── Settings ──────────────────────────────────────────────────────
@@ -1089,21 +1107,6 @@ export class AdminComponent implements OnInit {
     return 'badge-grey';
   }
 
-  // ── Audit log ─────────────────────────────────────────────────────
-
-  loadAuditLog(page = 0): void {
-    this.loadingAudit = true;
-    this.auditPage = page;
-    this.adminService.getAuditLog(page, 50).subscribe({
-      next: (data) => {
-        this.auditEvents = data.content ?? data;
-        this.auditTotalPages = data.totalPages ?? 1;
-        this.loadingAudit = false;
-      },
-      error: () => { this.loadingAudit = false; }
-    });
-  }
-
   // ── Reports ───────────────────────────────────────────────────────
 
   loadReportData(): void {
@@ -1129,10 +1132,10 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  get filteredAdminChildren(): any[] {
+  get filteredAdminChildren(): AdminChildSummaryResponse[] {
     const q = this.adminChildSearch.toLowerCase().trim();
     if (!q) return this.adminChildren;
-    return this.adminChildren.filter((c: any) =>
+    return this.adminChildren.filter(c =>
       c.fullName.toLowerCase().includes(q) || c.rollNumber.toLowerCase().includes(q)
     );
   }
