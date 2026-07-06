@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { AlertsStore } from '../../services/alerts.store';
 import { AdminAlertsSectionComponent } from './sections/admin-alerts-section.component';
 import { AdminAuditSectionComponent } from './sections/admin-audit-section.component';
 import { AdminDocsSectionComponent } from './sections/admin-docs-section.component';
+import { AdminZakatSectionComponent } from './sections/admin-zakat-section.component';
 import {
   AdminChildDetailResponse,
   AdminChildSummaryResponse,
@@ -39,7 +40,7 @@ const SECTION_IDS = [
   'dashboard', 'children', 'sponsors', 'commitments',
   'earlySupport', 'progress', 'users',
   'funds', 'reconciliation', 'alerts', 'reports', 'settings', 'docs',
-  'donors', 'donations', 'campaigns', 'audit', 'import'
+  'donors', 'donations', 'zakat', 'campaigns', 'audit', 'import'
 ] as const;
 
 type SectionId = typeof SECTION_IDS[number];
@@ -56,6 +57,7 @@ type ModalType =
   imports: [
     CommonModule, FormsModule,
     AdminAlertsSectionComponent, AdminAuditSectionComponent, AdminDocsSectionComponent,
+    AdminZakatSectionComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -75,6 +77,8 @@ export class AdminComponent implements OnInit {
       .pipe(takeUntilDestroyed())
       .subscribe(params => this.applySection(params.get('section')));
   }
+
+  @ViewChild(AdminZakatSectionComponent) zakatSection?: AdminZakatSectionComponent;
 
   // ── Navigation ────────────────────────────────────────────────────
   activeSection: SectionId = 'dashboard';
@@ -266,6 +270,22 @@ export class AdminComponent implements OnInit {
   openModal(type: ModalType): void {
     this.modalType = type;
     this.errorMessage = null;
+    // The donation modals need the donor dropdown, but donors are otherwise only
+    // fetched when the Donors section is visited. Load them on demand so opening
+    // the modal directly (e.g. after landing on /admin/donations) always works.
+    if ((type === 'addDonation' || type === 'addRecurring') && this.donors.length === 0 && !this.loadingDonors) {
+      this.loadDonors();
+    }
+  }
+
+  /** Opens the shared donation modal with the type preset to ZAKAT (Zakat section CTA). */
+  openZakatDonationModal(): void {
+    this.donationForm.donationType = 'ZAKAT';
+    this.openModal('addDonation');
+  }
+
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 
   closeModal(): void {
@@ -902,6 +922,7 @@ export class AdminComponent implements OnInit {
         this.showToast('Donation recorded.');
         this.donationForm = { donorId: '', donationType: 'GENERAL', amount: '', currency: 'PKR', donationDate: new Date().toISOString().split('T')[0], notes: '', fundAccountId: '' };
         this.loadDonations();
+        this.zakatSection?.refresh(); // keep the Zakat section live when recording from it
       },
       error: (err) => this.handleError(err, 'Failed to record donation.')
     });

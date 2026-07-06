@@ -37,7 +37,7 @@
     <div>
       <!-- Stepper -->
       <div class="step-bar-desktop" style="display:flex;align-items:center;margin-bottom:36px;padding-bottom:28px;border-bottom:1px solid #efe9dd;">
-        @for (s of stepDefs; track s; let i = $index; let last = $last) {
+        @for (s of stepDefs; track s.n; let i = $index; let last = $last) {
 
           <div style="display:flex;align-items:center;gap:10px;">
             <span [style]="'width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;' + (step > s.n ? 'background:#2f5d4f;color:#fff;' : step === s.n ? 'background:#1c352c;color:#fff;' : 'background:#f3eee4;border:1px solid #ddd5c5;color:#8a958d;')">

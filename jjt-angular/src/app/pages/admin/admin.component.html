@@ -78,6 +78,12 @@
         </svg>
         Donations
       </button>
+      <button class="nav-item" [class.active]="activeSection === 'zakat'" (click)="setSection('zakat')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 21s-8-4.5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 6.5-8 11-8 11z"/>
+        </svg>
+        Zakat
+      </button>
       <button class="nav-item" [class.active]="activeSection === 'campaigns'" (click)="setSection('campaigns')">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
@@ -203,6 +209,9 @@ Finance
           @if (activeSection === 'donations') {
 Finance
 }
+          @if (activeSection === 'zakat') {
+Finance
+}
           @if (activeSection === 'campaigns') {
 Finance
 }
@@ -259,6 +268,9 @@ Donors
           @if (activeSection === 'donations') {
 Donations
 }
+          @if (activeSection === 'zakat') {
+Zakat
+}
           @if (activeSection === 'campaigns') {
 Campaigns
 }
@@ -296,6 +308,12 @@ How It Works
             <div class="user-role">{{ isJjtAdmin ? 'JJT Admin' : 'Org Admin' }}</div>
           </div>
         </div>
+        <button class="btn-ghost" (click)="logout()" title="Sign out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign out
+        </button>
       </div>
     </header>
 
@@ -349,7 +367,7 @@ How It Works
 }
             @if (!loadingFunds && fundAccounts.length > 0) {
 <div>
-              @for (f of fundAccounts; track f) {
+              @for (f of fundAccounts; track f.id) {
 <div class="fund-row">
                 <div style="flex:1;min-width:0;">
                   <div style="font-size:13.5px;font-weight:600;color:var(--text-1);">{{ f.name }}</div>
@@ -383,7 +401,7 @@ How It Works
                 <span class="badge badge-red">{{ reconData.atRisk.length }}</span>
               </div>
               <div style="display:flex;flex-direction:column;gap:9px;">
-                @for (ar of reconData.atRisk | slice:0:3; track ar) {
+                @for (ar of reconData.atRisk | slice:0:3; track ar.sponsorshipId) {
 <div
                      style="border:1px solid #f5c5c5;background:#fef6f5;border-radius:10px;padding:11px 12px;">
                   <div style="display:flex;align-items:center;gap:9px;margin-bottom:7px;">
@@ -445,7 +463,7 @@ How It Works
             <span class="badge-pill red">{{ pendingSponsorships.length }} pending</span>
           </div>
           <div class="alert-list">
-            @for (s of pendingSponsorships | slice:0:5; track s) {
+            @for (s of pendingSponsorships | slice:0:5; track s.sponsorshipId) {
 <div class="alert-row">
               <span class="alert-dot amber"></span>
               <div class="alert-body">
@@ -489,7 +507,7 @@ How It Works
                 </tr>
               </thead>
               <tbody>
-                @for (p of reconPendingPayments | slice:0:6; track p) {
+                @for (p of reconPendingPayments | slice:0:6; track p.id) {
 <tr>
                   <td style="font-weight:600;">{{ p.sponsorId | slice:0:8 }}…</td>
                   <td>{{ childName(p.childId) }}</td>
@@ -514,7 +532,7 @@ How It Works
             <button class="btn-sm-primary" (click)="setSection('alerts')">View all →</button>
           </div>
           <div class="alert-list">
-            @for (a of alertList | slice:0:5; track a) {
+            @for (a of alertList | slice:0:5; track a.id) {
 <div class="alert-row">
               <span class="alert-dot" [ngClass]="a.severity === 'CRITICAL' || a.severity === 'HIGH' ? 'red' : a.severity === 'MEDIUM' ? 'amber' : 'green'"></span>
               <div class="alert-body">
@@ -582,7 +600,7 @@ How It Works
             </div>
             <div>
               <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Sponsorship History ({{ selectedChildDetail.sponsorshipHistory?.length ?? 0 }})</p>
-              @for (s of selectedChildDetail.sponsorshipHistory; track s) {
+              @for (s of selectedChildDetail.sponsorshipHistory; track s.id) {
 <div style="font-size:12px;color:#54625b;border:1px solid #e3dccd;border-radius:8px;padding:8px 12px;margin-bottom:6px;">
                 <div style="font-weight:600;color:#1c352c;">{{ s.sponsorName }}</div>
                 <div style="color:#8a958d;">{{ s.startMonth }} · <span class="badge" [ngClass]="availabilityClass(s.status === 'ACTIVE' ? 'ALLOCATED' : s.status === 'PENDING' ? 'RESERVED' : 'AVAILABLE')">{{ s.status }}</span></div>
@@ -599,7 +617,7 @@ How It Works
             </p>
             @if (selectedChildDetail.progressUpdates.length > 0) {
 <div style="max-height:120px;overflow-y:auto;">
-              @for (p of selectedChildDetail.progressUpdates; track p) {
+              @for (p of selectedChildDetail.progressUpdates; track p.id) {
 <div style="font-size:12px;color:#54625b;border-left:3px solid #2f5d4f;padding:4px 10px;margin-bottom:4px;">
                 <strong>{{ p.month }}</strong> — {{ p.summary }}
               </div>
@@ -636,7 +654,7 @@ How It Works
                 </tr>
               </thead>
               <tbody>
-                @for (c of filteredAdminChildren; track c) {
+                @for (c of filteredAdminChildren; track c.id) {
 <tr style="cursor:pointer;" (click)="openChildDetail(c.id)">
                   <td>
                     <div class="cell-avatar">
@@ -748,7 +766,7 @@ How It Works
                   </tr>
                 </thead>
                 <tbody>
-                  @for (r of importResult.rows; track r) {
+                  @for (r of importResult.rows; track r.rowNumber) {
 <tr>
                     <td><span class="mono-text">{{ r.rowNumber }}</span></td>
                     <td>
@@ -798,7 +816,7 @@ How It Works
                 </tr>
               </thead>
               <tbody>
-                @for (s of filteredSponsors; track s) {
+                @for (s of filteredSponsors; track s.sponsorId) {
 <tr>
                   <td>
                     <div class="cell-avatar">
@@ -878,7 +896,7 @@ How It Works
                 </tr>
               </thead>
               <tbody>
-                @for (s of allCommitments; track s) {
+                @for (s of allCommitments; track s.sponsorshipId) {
 <tr>
                   <td>
                     <div class="cell-avatar">
@@ -953,7 +971,7 @@ No commitments recorded yet.
               <label class="field-label">Child *</label>
               <select class="field-input" [(ngModel)]="earlySupportForm.childId" name="childId" required>
                 <option value="">— Select a child —</option>
-                @for (c of children; track c) {
+                @for (c of children; track c.id) {
 <option [value]="c.id">
                   {{ c.fullName }} — {{ c.rollNumber }} ({{ availabilityLabel(c.availabilityStatus) }})
                 </option>
@@ -1014,7 +1032,7 @@ No commitments recorded yet.
               <label class="field-label">Child *</label>
               <select class="field-input" [(ngModel)]="progressForm.childId" name="childId" required (ngModelChange)="onProgressChildChange()">
                 <option value="">— Select a child —</option>
-                @for (c of children; track c) {
+                @for (c of children; track c.id) {
 <option [value]="c.id">
                   {{ c.fullName }} — {{ c.rollNumber }}
                 </option>
@@ -1098,7 +1116,7 @@ No commitments recorded yet.
                 </tr>
               </thead>
               <tbody>
-                @for (u of filteredUsers; track u) {
+                @for (u of filteredUsers; track u.id) {
 <tr>
                   <td>
                     <div class="cell-avatar">
@@ -1157,7 +1175,7 @@ No commitments recorded yet.
         @if (!loadingFunds && fundAccounts.length > 0) {
 <div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-            @for (f of fundAccounts; track f) {
+            @for (f of fundAccounts; track f.id) {
 <div class="card">
               <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
                 <div>
@@ -1266,7 +1284,7 @@ No commitments recorded yet.
             <span class="badge badge-red">{{ reconData.atRisk.length }}</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            @for (ar of reconData.atRisk; track ar) {
+            @for (ar of reconData.atRisk; track ar.sponsorshipId) {
 <div
                  style="border:1px solid #f5c5c5;background:#fef6f5;border-radius:11px;padding:12px 14px;">
               <div style="display:flex;align-items:center;gap:10px;">
@@ -1306,7 +1324,7 @@ No commitments recorded yet.
                 </tr>
               </thead>
               <tbody>
-                @for (p of reconData.payments; track p) {
+                @for (p of reconData.payments; track p.id) {
 <tr>
                   <td>
                     <div class="cell-avatar">
@@ -1395,7 +1413,7 @@ No commitments recorded yet.
               <tr><th>Name</th><th>Type</th><th>Email</th><th>Phone</th><th>Notes</th><th>Added</th></tr>
             </thead>
             <tbody>
-              @for (d of filteredDonors; track d) {
+              @for (d of filteredDonors; track d.id) {
 <tr>
                 <td style="font-weight:600;color:var(--text-1);">{{ d.displayName }}</td>
                 <td><span class="badge badge-grey" style="text-transform:capitalize;">{{ d.donorType.toLowerCase().replace('_', ' ') }}</span></td>
@@ -1460,7 +1478,7 @@ No commitments recorded yet.
                 <tr><th>Donor</th><th>Type</th><th>Amount</th><th>Date</th><th>Receipt</th><th>Status</th><th>Actions</th></tr>
               </thead>
               <tbody>
-                @for (d of donations; track d) {
+                @for (d of donations; track d.id) {
 <tr>
                   <td style="font-weight:600;color:var(--text-1);">{{ d.donorName || 'Anonymous' }}</td>
                   <td style="font-size:12px;color:var(--text-3);">{{ d.donationType }}</td>
@@ -1528,7 +1546,7 @@ No commitments recorded yet.
                 <tr><th>Donor</th><th>Type</th><th>Amount</th><th>Frequency</th><th>Next Due</th><th>Status</th><th>Actions</th></tr>
               </thead>
               <tbody>
-                @for (r of recurringDonations; track r) {
+                @for (r of recurringDonations; track r.id) {
 <tr>
                   <td style="font-weight:600;color:var(--text-1);">{{ r.donorName || r.donorId }}</td>
                   <td style="font-size:12px;color:var(--text-3);">{{ r.donationType }}</td>
@@ -1558,6 +1576,11 @@ No commitments recorded yet.
         
 }
       </section>
+}
+
+      <!-- ========== ZAKAT ========== -->
+      @if (activeSection === 'zakat') {
+<app-admin-zakat-section (recordZakat)="openZakatDonationModal()" (viewReceipt)="viewReceipt($event)" />
 }
 
       <!-- ========== ALERTS ========== -->
@@ -1599,7 +1622,7 @@ No commitments recorded yet.
             @if (citySummary.length === 0) {
 <div style="font-size:13px;color:var(--text-3);">No data yet.</div>
 }
-            @for (row of citySummary; track row) {
+            @for (row of citySummary; track row.city) {
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
               <span style="font-size:12.5px;color:var(--text-2);min-width:80px;flex-shrink:0;">{{ row.city }}</span>
               <div style="flex:1;height:20px;background:var(--border);border-radius:6px;overflow:hidden;">
@@ -1694,7 +1717,7 @@ No commitments recorded yet.
             </div>
             @if (cashFlowData.months.length > 0) {
 <div>
-              @for (m of cashFlowData.months; track m) {
+              @for (m of cashFlowData.months; track m.yearMonth) {
 <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--border);">
                 <span style="color:var(--text-2);font-family:'IBM Plex Mono',monospace;">{{ m.yearMonth }}</span>
                 <span style="color:var(--green);">+{{ m.credits | number:'1.0-0' }}</span>
@@ -1727,7 +1750,7 @@ No commitments recorded yet.
             @if (portfolioData.commitmentBreakdown) {
 <div>
               <div style="font-size:12.5px;font-weight:600;color:var(--text-2);margin-bottom:8px;">By Commitment Type</div>
-              @for (entry of portfolioData.commitmentBreakdown | keyvalue; track entry) {
+              @for (entry of portfolioData.commitmentBreakdown | keyvalue; track entry.key) {
 <div style="display:flex;justify-content:space-between;font-size:13px;padding:4px 0;">
                 <span style="color:var(--text-2);">{{ entry.key }}</span>
                 <span style="font-weight:600;color:var(--text-1);">{{ entry.value }}</span>
@@ -1780,7 +1803,7 @@ No commitments recorded yet.
               </tr>
             </thead>
             <tbody>
-              @for (c of campaigns; track c) {
+              @for (c of campaigns; track c.id) {
 <tr>
                 <td>
                   <div style="font-weight:600;color:var(--text-1);">{{ c.name }}</div>
@@ -2122,7 +2145,7 @@ No commitments recorded yet.
           <label class="field-label">Sponsor *</label>
           <select class="field-input" [(ngModel)]="sponsorshipForm.sponsorId" name="sponsorId" required>
             <option value="">— Select a sponsor —</option>
-            @for (s of sponsors; track s) {
+            @for (s of sponsors; track s.sponsorId) {
 <option [value]="s.sponsorId">{{ s.displayName }} — {{ s.contactEmail }}</option>
 }
           </select>
@@ -2131,7 +2154,7 @@ No commitments recorded yet.
           <label class="field-label">Child *</label>
           <select class="field-input" [(ngModel)]="sponsorshipForm.childId" name="childId" required>
             <option value="">— Select a child —</option>
-            @for (c of children; track c) {
+            @for (c of children; track c.id) {
 <option [value]="c.id">
               {{ c.fullName }} — {{ c.rollNumber }} ({{ availabilityLabel(c.availabilityStatus) }})
             </option>
@@ -2189,7 +2212,7 @@ No commitments recorded yet.
           <label class="field-label">Sponsor *</label>
           <select class="field-input" [(ngModel)]="sponsorUserForm.sponsorId" name="sponsorId" required>
             <option value="">— Select a sponsor —</option>
-            @for (s of sponsors; track s) {
+            @for (s of sponsors; track s.sponsorId) {
 <option [value]="s.sponsorId">{{ s.displayName }} — {{ s.contactEmail }}</option>
 }
           </select>
@@ -2381,7 +2404,7 @@ No commitments recorded yet.
           <label class="field-label">Donor (optional)</label>
           <select class="field-input" [(ngModel)]="donationForm.donorId" name="donorId">
             <option value="">— Anonymous —</option>
-            @for (d of donors; track d) {
+            @for (d of donors; track d.id) {
 <option [value]="d.id">{{ d.displayName }}</option>
 }
           </select>
@@ -2410,7 +2433,7 @@ No commitments recorded yet.
           <label class="field-label">Fund Account</label>
           <select class="field-input" [(ngModel)]="donationForm.fundAccountId" name="fundAccountId">
             <option value="">— No specific fund —</option>
-            @for (f of fundAccounts; track f) {
+            @for (f of fundAccounts; track f.id) {
 <option [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
 }
           </select>
@@ -2454,7 +2477,7 @@ No commitments recorded yet.
           <label class="field-label">Donor *</label>
           <select class="field-input" [(ngModel)]="recurringForm.donorId" name="donorId" required>
             <option value="">Select a donor…</option>
-            @for (d of donors; track d) {
+            @for (d of donors; track d.id) {
 <option [value]="d.id">{{ d.displayName }}</option>
 }
           </select>
@@ -2495,7 +2518,7 @@ No commitments recorded yet.
           <label class="field-label">Fund Account</label>
           <select class="field-input" [(ngModel)]="recurringForm.fundAccountId" name="fundAccountId">
             <option value="">— No specific fund —</option>
-            @for (f of fundAccounts; track f) {
+            @for (f of fundAccounts; track f.id) {
 <option [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
 }
           </select>
@@ -2559,7 +2582,7 @@ No commitments recorded yet.
           <label class="field-label">Fund Account</label>
           <select class="field-input" [(ngModel)]="campaignForm.fundAccountId" name="fundAccountId">
             <option value="">— No specific fund —</option>
-            @for (f of fundAccounts; track f) {
+            @for (f of fundAccounts; track f.id) {
 <option [value]="f.id">{{ f.name }} ({{ f.currency }})</option>
 }
           </select>

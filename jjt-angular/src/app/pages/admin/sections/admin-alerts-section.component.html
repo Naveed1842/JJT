@@ -27,7 +27,7 @@
         @if (!loadingAlerts && alertList.length > 0) {
 <div class="table-card">
           <div style="display:flex;flex-direction:column;">
-            @for (a of alertList; track a) {
+            @for (a of alertList; track a.id) {
 <div
                  style="display:flex;gap:14px;align-items:flex-start;padding:14px 18px;border-bottom:1px solid var(--border);">
               <!-- Severity indicator -->

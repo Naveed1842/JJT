@@ -167,6 +167,41 @@ public class AdminDonationService {
                 .map(DonationMapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Donation> listDonationsByType(UUID orgId, DonationType type, Pageable pageable) {
+        return donationRepo.findByOrganisationIdAndDonationType(orgId, type, pageable)
+                .map(DonationMapper::toDomain);
+    }
+
+    /**
+     * Zakat headline figures. Zakat is tracked independently (a public promise on
+     * the Trust page): totals cover RECEIPTED donations only; pending counts
+     * EXPECTED ones awaiting confirmation.
+     */
+    @Transactional(readOnly = true)
+    public ZakatStats getZakatStats(UUID orgId) {
+        LocalDate now = LocalDate.now();
+        String currency = orgRepo.findById(orgId)
+                .map(OrganisationEntity::getBaseCurrency).orElse("PKR");
+        return new ZakatStats(
+                donationRepo.sumReceiptedByType(orgId, DonationType.ZAKAT),
+                donationRepo.sumReceiptedByTypeSince(orgId, DonationType.ZAKAT, now.withDayOfYear(1)),
+                donationRepo.sumReceiptedByTypeSince(orgId, DonationType.ZAKAT, now.withDayOfMonth(1)),
+                donationRepo.countByOrganisationIdAndDonationTypeAndStatus(orgId, DonationType.ZAKAT, DonationStatus.RECEIPTED),
+                donationRepo.countByOrganisationIdAndDonationTypeAndStatus(orgId, DonationType.ZAKAT, DonationStatus.EXPECTED),
+                currency
+        );
+    }
+
+    public record ZakatStats(
+            BigDecimal totalReceived,
+            BigDecimal receivedThisYear,
+            BigDecimal receivedThisMonth,
+            long receiptedCount,
+            long pendingCount,
+            String currency
+    ) {}
+
     /**
      * Confirms receipt of an EXPECTED donation (from a recurring schedule),
      * credits the fund, and generates a receipt number.

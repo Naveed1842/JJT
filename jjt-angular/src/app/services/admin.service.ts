@@ -29,6 +29,7 @@ import {
   CreditFundRequest,
   DonationReceiptResponse,
   DonationResponse,
+  DonationType,
   DonorResponse,
   FundAccountResponse,
   FundTransactionResponse,
@@ -48,6 +49,7 @@ import {
   UpdateOrgConfigRequest,
   UserResponse,
   WaivePaymentRequest,
+  ZakatStats,
 } from './api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -304,10 +306,15 @@ export class AdminService {
     return this.http.post<DonationResponse>(`${this.base}/api/admin/donations`, req);
   }
 
-  listDonations(page = 0): Observable<PageResponse<DonationResponse>> {
+  listDonations(page = 0, type?: DonationType): Observable<PageResponse<DonationResponse>> {
     return this.http.get<PageResponse<DonationResponse>>(
-      `${this.base}/api/admin/donations`, { params: { page, size: 20 } }
+      `${this.base}/api/admin/donations`,
+      { params: type ? { page, size: 20, type } : { page, size: 20 } }
     );
+  }
+
+  getZakatStats(): Observable<ZakatStats> {
+    return this.http.get<ZakatStats>(`${this.base}/api/admin/donations/zakat-stats`);
   }
 
   getDonation(id: string): Observable<DonationResponse> {

@@ -111,7 +111,7 @@
     @if (!loading && !error && children.length > 0) {
 <div
          style="display:flex;flex-direction:column;gap:14px;">
-      @for (d of children; track d) {
+      @for (d of children; track d.child.id) {
 <div
            style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fff;
                   transition:box-shadow .15s;" class="sponsor-card">
@@ -175,7 +175,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @for (entry of d.ledger.entries; track entry; let last = $last) {
+                  @for (entry of d.ledger.entries; track entry.id; let last = $last) {
 <tr
                       [style]="'border-bottom:' + (last ? 'none' : '1px solid #efe9dd') + ';'">
                     <td style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;color:#54625b;">{{ entry.month }}</td>
@@ -199,7 +199,7 @@
 <div
                  style="font-size:13px;color:#8a958d;font-style:italic;">No progress updates yet.</div>
 }
-            @for (p of d.progress; track p) {
+            @for (p of d.progress; track p.id) {
 <div
                  style="border:1px solid #e3dccd;border-radius:10px;padding:14px 16px;margin-bottom:10px;background:#faf8f2;">
               <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#9aa79f;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">

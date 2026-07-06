@@ -23,7 +23,7 @@ export interface LedgerRow {
           </tr>
         </thead>
         <tbody>
-          @for (entry of entries; track entry) {
+          @for (entry of entries; track entry.id) {
 <tr class="border-t">
             <td class="py-2 text-slate-900">{{ entry.month }}</td>
             <td class="py-2 text-slate-700">{{ entry.status }}</td>

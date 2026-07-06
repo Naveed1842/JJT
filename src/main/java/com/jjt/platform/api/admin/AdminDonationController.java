@@ -10,6 +10,7 @@ import com.jjt.platform.api.admin.dto.RecurringDonationResponse;
 import com.jjt.platform.api.admin.service.AdminDonationService;
 import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.Donation;
+import com.jjt.platform.core.domain.entity.DonationType;
 import com.jjt.platform.core.domain.entity.Donor;
 import com.jjt.platform.core.domain.entity.RecurringDonationSchedule;
 import com.jjt.platform.core.domain.entity.RecurringDonationStatus;
@@ -104,11 +105,20 @@ public class AdminDonationController {
 
     @GetMapping("/donations")
     public ResponseEntity<Page<DonationResponse>> listDonations(
+            @RequestParam(name = "type", required = false) DonationType type,
             @AuthenticationPrincipal JwtUserDetails principal,
             @PageableDefault(size = 20, sort = "donationDate") Pageable pageable) {
-        Page<DonationResponse> page = donationService.listDonations(principal.getOrgId(), pageable)
-                .map(d -> toDonationResponse(d, principal.getOrgId()));
-        return ResponseEntity.ok(page);
+        Page<Donation> donations = type != null
+                ? donationService.listDonationsByType(principal.getOrgId(), type, pageable)
+                : donationService.listDonations(principal.getOrgId(), pageable);
+        return ResponseEntity.ok(donations.map(d -> toDonationResponse(d, principal.getOrgId())));
+    }
+
+    /** Headline Zakat figures — Zakat is tracked independently of other donations. */
+    @GetMapping("/donations/zakat-stats")
+    public ResponseEntity<AdminDonationService.ZakatStats> getZakatStats(
+            @AuthenticationPrincipal JwtUserDetails principal) {
+        return ResponseEntity.ok(donationService.getZakatStats(principal.getOrgId()));
     }
 
     @GetMapping("/donations/{id}")

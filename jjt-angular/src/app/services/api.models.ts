@@ -612,3 +612,14 @@ export interface ImportChildrenResponse {
   failedRows: number;
   rows: ImportRowResult[];
 }
+
+/* ── Zakat ────────────────────────────────────────────────────── */
+
+export interface ZakatStats {
+  totalReceived: string;
+  receivedThisYear: string;
+  receivedThisMonth: string;
+  receiptedCount: number;
+  pendingCount: number;
+  currency: string;
+}

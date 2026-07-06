@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject,
+} from '@angular/core';
 import { AdminService } from '../../../services/admin.service';
 import { AuditEventResponse } from '../../../services/api.models';
 
@@ -11,6 +13,7 @@ import { AuditEventResponse } from '../../../services/api.models';
 })
 export class AdminAuditSectionComponent implements OnInit {
   private readonly adminService = inject(AdminService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   auditEvents: AuditEventResponse[] = [];
   auditPage = 0;
@@ -29,8 +32,9 @@ export class AdminAuditSectionComponent implements OnInit {
         this.auditEvents = data.content;
         this.auditTotalPages = data.totalPages || 1;
         this.loadingAudit = false;
+        this.cdr.markForCheck(); // OnPush: async field updates must mark the view dirty
       },
-      error: () => { this.loadingAudit = false; }
+      error: () => { this.loadingAudit = false; this.cdr.markForCheck(); }
     });
   }
 

@@ -135,7 +135,7 @@
     <!-- Child grid -->
     @if (filtered.length > 0) {
 <div class="children-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;">
-      @for (child of visible; track child) {
+      @for (child of visible; track child.id) {
 <div
            (click)="openChild(child.id)"
            style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;
