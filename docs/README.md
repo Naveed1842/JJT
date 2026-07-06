@@ -41,6 +41,7 @@ This folder is the single source of truth for Phase-1.
 ## Roadmaps
 - `phase2/PHASE2_ROADMAP.md` — Phase 2 feature roadmap
 - `phase3/PHASE3_ROADMAP.md` — Phase 3 feature roadmap
+- `roadmap2.5/MEDIA_PLATFORM_ARCHITECTURE.md` — **Roadmap 2.5: Media Management Platform** (storage provider analysis, abstraction layer, DB schema, upload workflow, bulk import, security model, performance strategy, AI seams, migration plan)
 - `roadmap5/ARCHITECTURE_FREEZE.md` — **Roadmap 5: Financial Operations & Transparency Platform** (architecture freeze, ADRs, domain model, ERD, sequence diagrams, API spec, migration plan, UI navigation, milestones, risk register, implementation checklist)
 
 ## Wiki (summaries)
