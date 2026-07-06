@@ -14,6 +14,7 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
 
         <!-- Logo -->
         <a routerLink="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+          <img src="assets/logos/jjt-mark-primary.svg" alt="" style="height:28px;width:auto;display:block;" />
           <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
         </a>
 
