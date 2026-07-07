@@ -40,6 +40,9 @@ public class ChildEntity {
     @Column(name = "organisation_id", nullable = false, updatable = false)
     private UUID organisationId;
 
+    @Column(name = "profile_photo_media_id")
+    private UUID profilePhotoMediaId;
+
     @OneToOne(mappedBy = "child", optional = false)
     private EducationSupportLedgerEntity ledger;
 
@@ -92,6 +95,12 @@ public class ChildEntity {
     }
 
     public UUID getOrganisationId() { return organisationId; }
+
+    public UUID getProfilePhotoMediaId() { return profilePhotoMediaId; }
+
+    public void setProfilePhotoMediaId(UUID profilePhotoMediaId) {
+        this.profilePhotoMediaId = profilePhotoMediaId;
+    }
 
     public EducationSupportLedgerEntity getLedger() {
         return ledger;

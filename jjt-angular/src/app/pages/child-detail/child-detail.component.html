@@ -41,12 +41,20 @@
       <!-- ── Left column: content ── -->
       <div>
         <!-- Hero image -->
-        <div class="detail-hero-img" style="border-radius:18px;height:420px;background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);
+        <div class="detail-hero-img" style="border-radius:18px;height:420px;
                     border:1px solid #e3dccd;position:relative;margin-bottom:18px;
-                    display:flex;align-items:center;justify-content:center;">
-          <span style="font-size:80px;opacity:.3;">👦</span>
+                    overflow:hidden;background:#ece4d6;">
+          @if (photoUrl) {
+            <img [src]="photoUrl" [alt]="childName"
+                 style="width:100%;height:100%;object-fit:cover;display:block;" />
+          } @else {
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+                        background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 12px,#e5dccb 12px,#e5dccb 24px);">
+              <span style="font-size:80px;opacity:.3;">👦</span>
+            </div>
+          }
           <span style="position:absolute;top:16px;left:16px;font-family:'IBM Plex Mono',monospace;
-                       font-size:11px;color:#a99e88;background:#fffdf9;border:1px solid #e3dccd;
+                       font-size:11px;color:#a99e88;background:#fffdf9cc;border:1px solid #e3dccd;
                        border-radius:5px;padding:4px 9px;">PORTRAIT · {{ childName }}</span>
         </div>
 

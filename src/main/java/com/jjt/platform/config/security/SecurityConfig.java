@@ -58,6 +58,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/org/children/**").permitAll()
                 // Import template is a blank file — no sensitive data, allow direct browser download
                 .requestMatchers(HttpMethod.GET, "/api/admin/children/import/template").permitAll()
+                // Media: local file serving (dev) and simulated presigned PUT endpoint
+                .requestMatchers(HttpMethod.GET, "/api/media/files/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/api/media/upload/**").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex

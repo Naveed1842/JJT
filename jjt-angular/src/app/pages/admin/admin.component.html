@@ -627,6 +627,16 @@ How It Works
             </div>
 }
           </div>
+          <div style="padding:0 20px 20px;">
+            <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Profile Photo</p>
+            <app-media-upload
+              ownerType="CHILD"
+              [ownerId]="selectedChildDetail.id"
+              role="PROFILE_PHOTO"
+              label="Upload or replace profile photo"
+              (uploaded)="showToast('Profile photo updated.')">
+            </app-media-upload>
+          </div>
         </div>
 }
 
@@ -765,6 +775,7 @@ How It Works
                     <th>Roll Number</th>
                     <th>Full Name</th>
                     <th>Reason</th>
+                    <th style="width:120px;">Photo</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -779,6 +790,22 @@ How It Works
                     <td><span class="mono-text">{{ r.rollNumber }}</span></td>
                     <td>{{ r.fullName }}</td>
                     <td style="font-size:12px;color:#8a958d;">{{ r.reason ?? '' }}</td>
+                    <td>
+                      @if (r.status === 'IMPORTED' && r.childId) {
+                        @if (importPhotoUploadedFor.has(r.childId!)) {
+                          <span style="font-size:11px;color:#4a7a4a;font-weight:600;">✓ Done</span>
+                        } @else {
+                          <app-media-upload
+                            ownerType="CHILD"
+                            [ownerId]="r.childId"
+                            role="PROFILE_PHOTO"
+                            label="Upload photo"
+                            [compact]="true"
+                            (uploaded)="importPhotoUploadedFor.add(r.childId!)">
+                          </app-media-upload>
+                        }
+                      }
+                    </td>
                   </tr>
 }
                 </tbody>
@@ -2029,56 +2056,77 @@ No commitments recorded yet.
   <div class="modal" (click)="stopProp($event)">
     <div class="modal-header">
       <div>
-        <div class="modal-title">Add Child</div>
-        <div class="modal-sub">New child record with education ledger created automatically.</div>
+        <div class="modal-title">{{ newlyCreatedChildId ? 'Profile Photo' : 'Add Child' }}</div>
+        <div class="modal-sub">
+          {{ newlyCreatedChildId
+            ? 'Upload a profile photo for ' + newlyCreatedChildName + ' (optional).'
+            : 'New child record with education ledger created automatically.' }}
+        </div>
       </div>
       <button class="modal-close" (click)="closeModal()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    @if (errorMessage) {
-<div class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
-}
-    <form (ngSubmit)="createChild()" class="modal-body">
-      <div class="form-grid">
-        <div class="form-field">
-          <label class="field-label">Roll Number *</label>
-          <input class="field-input" type="text" [(ngModel)]="childForm.rollNumber" name="rollNumber" required placeholder="e.g. JJT-ISB-2026-0210" />
+
+    @if (!newlyCreatedChildId) {
+      @if (errorMessage) {
+        <div class="inline-error" style="margin:0 26px 4px;">{{ errorMessage }}</div>
+      }
+      <form (ngSubmit)="createChild()" class="modal-body">
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="field-label">Roll Number *</label>
+            <input class="field-input" type="text" [(ngModel)]="childForm.rollNumber" name="rollNumber" required placeholder="e.g. JJT-ISB-2026-0210" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Full Name *</label>
+            <input class="field-input" type="text" [(ngModel)]="childForm.fullName" name="fullName" required />
+          </div>
+          <div class="form-field">
+            <label class="field-label">City *</label>
+            <input class="field-input" type="text" [(ngModel)]="childForm.city" name="city" required />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Campus Name *</label>
+            <input class="field-input" type="text" [(ngModel)]="childForm.campusName" name="campusName" required />
+          </div>
+          <div class="form-field">
+            <label class="field-label">School Name</label>
+            <input class="field-input" type="text" [(ngModel)]="childForm.schoolName" name="schoolName" />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Monthly Amount *</label>
+            <input class="field-input" type="text" [(ngModel)]="childForm.educationAmount" name="educationAmount" required />
+          </div>
+          <div class="form-field">
+            <label class="field-label">Currency *</label>
+            <select class="field-input" [(ngModel)]="childForm.educationCurrency" name="educationCurrency">
+              <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
+            </select>
+          </div>
         </div>
-        <div class="form-field">
-          <label class="field-label">Full Name *</label>
-          <input class="field-input" type="text" [(ngModel)]="childForm.fullName" name="fullName" required />
-        </div>
-        <div class="form-field">
-          <label class="field-label">City *</label>
-          <input class="field-input" type="text" [(ngModel)]="childForm.city" name="city" required />
-        </div>
-        <div class="form-field">
-          <label class="field-label">Campus Name *</label>
-          <input class="field-input" type="text" [(ngModel)]="childForm.campusName" name="campusName" required />
-        </div>
-        <div class="form-field">
-          <label class="field-label">School Name</label>
-          <input class="field-input" type="text" [(ngModel)]="childForm.schoolName" name="schoolName" />
-        </div>
-        <div class="form-field">
-          <label class="field-label">Monthly Amount *</label>
-          <input class="field-input" type="text" [(ngModel)]="childForm.educationAmount" name="educationAmount" required />
-        </div>
-        <div class="form-field">
-          <label class="field-label">Currency *</label>
-          <select class="field-input" [(ngModel)]="childForm.educationCurrency" name="educationCurrency">
-            <option>PKR</option><option>USD</option><option>GBP</option><option>AED</option>
-          </select>
-        </div>
+      </form>
+      <div class="modal-footer">
+        <button class="btn-ghost" (click)="closeModal()">Cancel</button>
+        <button class="btn-primary" (click)="createChild()" [disabled]="isLoading">
+          {{ isLoading ? 'Creating…' : 'Create Child' }}
+        </button>
       </div>
-    </form>
-    <div class="modal-footer">
-      <button class="btn-ghost" (click)="closeModal()">Cancel</button>
-      <button class="btn-primary" (click)="createChild()" [disabled]="isLoading">
-        {{ isLoading ? 'Creating…' : 'Create Child' }}
-      </button>
-    </div>
+    } @else {
+      <div class="modal-body">
+        <app-media-upload
+          ownerType="CHILD"
+          [ownerId]="newlyCreatedChildId"
+          role="PROFILE_PHOTO"
+          label="Click or drag to upload profile photo"
+          (uploaded)="showToast('Photo uploaded for ' + newlyCreatedChildName + '.')">
+        </app-media-upload>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" (click)="closeModal()">Skip</button>
+        <button class="btn-primary" (click)="closeModal()">Done</button>
+      </div>
+    }
   </div>
 </div>
 }

@@ -72,3 +72,17 @@ jjt:
 
   payment:
     due-day: ${JJT_PAYMENT_DUE_DAY:15}
+
+media:
+  storage:
+    provider: ${MEDIA_STORAGE_PROVIDER:local}
+    upload-dir: ${MEDIA_UPLOAD_DIR:${java.io.tmpdir}/jjt-media}
+    local-base-url: ${MEDIA_LOCAL_BASE_URL:http://localhost:8080}
+    max-upload-size-bytes: ${MEDIA_MAX_UPLOAD_BYTES:52428800}
+    # S3 (production only — ignored when provider=local)
+    bucket: ${MEDIA_S3_BUCKET:jjt-media-prod}
+    cdn-base-url: ${MEDIA_CDN_BASE_URL:https://cdn.sponsorone.app}
+    region: ${MEDIA_S3_REGION:eu-west-2}
+  processing:
+    thumbnail-sizes: [100, 300, 600]
+    webp-quality: 82

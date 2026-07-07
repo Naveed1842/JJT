@@ -18,6 +18,10 @@ public final class DtoMapper {
     private DtoMapper() {}
 
     public static ChildDto toChildDto(Child child, AvailabilityStatus availabilityStatus) {
+        return toChildDto(child, availabilityStatus, null);
+    }
+
+    public static ChildDto toChildDto(Child child, AvailabilityStatus availabilityStatus, String photoUrl) {
         return new ChildDto(
                 child.getId(),
                 child.getRollNumber(),
@@ -27,7 +31,8 @@ public final class DtoMapper {
                 child.getSchoolName(),
                 child.getEducationCost().getAmount().toPlainString(),
                 child.getEducationCost().getCurrency().getCurrencyCode(),
-                availabilityStatus
+                availabilityStatus,
+                photoUrl
         );
     }
 

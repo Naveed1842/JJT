@@ -21,6 +21,7 @@ export interface ChildDto {
   educationAmount: string;
   educationCurrency: string;
   availabilityStatus: AvailabilityStatus;
+  photoUrl: string | null;
 }
 
 // ---- Ledger -----------------------------------------------------------------
@@ -600,6 +601,7 @@ export interface ImportRowResult {
   rollNumber: string | null;
   fullName: string | null;
   reason: string | null;
+  childId: string | null;
 }
 
 export interface ImportChildrenResponse {
@@ -623,3 +625,61 @@ export interface ZakatStats {
   pendingCount: number;
   currency: string;
 }
+
+/* ── Media ────────────────────────────────────────────────────── */
+
+export type MediaStatus = 'UPLOADING' | 'PROCESSING' | 'READY' | 'FAILED' | 'DELETED';
+export type AttachmentRole = 'PROFILE_PHOTO' | 'GALLERY' | 'DOCUMENT' | 'PROGRESS_PHOTO';
+
+export interface MediaVariantResponse {
+  id: string;
+  variantType: string;
+  storageRef: string;
+  url: string;
+  widthPx: number | null;
+  heightPx: number | null;
+  sizeBytes: number;
+  mimeType: string;
+}
+
+export interface MediaFileResponse {
+  id: string;
+  orgId: string;
+  originalFilename: string;
+  mimeType: string;
+  sizeBytes: number | null;
+  status: MediaStatus;
+  altText: string | null;
+  publicUrl: string;
+  variants: MediaVariantResponse[];
+  createdAt: string;
+}
+
+export interface MediaAttachmentResponse {
+  id: string;
+  mediaId: string;
+  ownerType: string;
+  ownerId: string;
+  attachmentRole: AttachmentRole;
+  sortOrder: number;
+  media: MediaFileResponse;
+}
+
+export interface MediaUploadIntentRequest {
+  ownerType: string;
+  ownerId: string;
+  attachmentRole: AttachmentRole;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+  visibility?: 'PUBLIC' | 'PRIVATE' | 'SIGNED' | null;
+  sortOrder?: number;
+}
+
+export interface MediaUploadIntentResponse {
+  mediaId: string;
+  uploadUrl: string;
+  storageRef: string;
+  expiresAt: string;
+}
+

@@ -5,6 +5,7 @@ import com.jjt.platform.api.common.dto.LedgerDto;
 import com.jjt.platform.api.common.dto.ProgressUpdateDto;
 import com.jjt.platform.api.common.dto.AvailabilityStatus;
 import com.jjt.platform.api.common.mapper.DtoMapper;
+import com.jjt.platform.api.media.service.MediaService;
 import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,17 +43,20 @@ public class OrgChildrenController {
     private final LedgerEntryRepository ledgerEntryRepo;
     private final ProgressUpdateRepository progressRepo;
     private final SponsorshipJpaRepository sponsorshipRepo;
+    private final MediaService mediaService;
 
     public OrgChildrenController(ChildJpaRepository childRepo,
                                  EducationSupportLedgerJpaRepository ledgerRepo,
                                  LedgerEntryRepository ledgerEntryRepo,
                                  ProgressUpdateRepository progressRepo,
-                                 SponsorshipJpaRepository sponsorshipRepo) {
+                                 SponsorshipJpaRepository sponsorshipRepo,
+                                 MediaService mediaService) {
         this.childRepo = childRepo;
         this.ledgerRepo = ledgerRepo;
         this.ledgerEntryRepo = ledgerEntryRepo;
         this.progressRepo = progressRepo;
         this.sponsorshipRepo = sponsorshipRepo;
+        this.mediaService = mediaService;
     }
 
     @GetMapping("/children")
@@ -59,18 +64,23 @@ public class OrgChildrenController {
     public List<ChildDto> listChildren() {
         Set<UUID> activeChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE);
         Set<UUID> pendingChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING);
-        return childRepo.findAll().stream()
-                .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId(), activeChildIds, pendingChildIds)))
+        var children = childRepo.findAll().stream().map(ChildMapper::toDomain).toList();
+        Map<UUID, String> photoUrls = mediaService.resolveProfilePhotoUrls(
+                children.stream().map(c -> c.getId()).toList());
+        return children.stream()
+                .map(child -> DtoMapper.toChildDto(child,
+                        deriveAvailability(child.getId(), activeChildIds, pendingChildIds),
+                        photoUrls.get(child.getId())))
                 .toList();
     }
 
     @GetMapping("/children/{childId}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
+        Map<UUID, String> photoUrls = mediaService.resolveProfilePhotoUrls(List.of(childId));
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
+                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId()), photoUrls.get(childId)))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
