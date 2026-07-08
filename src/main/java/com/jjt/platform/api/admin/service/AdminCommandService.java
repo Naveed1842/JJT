@@ -202,10 +202,11 @@ public class AdminCommandService {
         if (childRepo.findById(childId).isEmpty()) {
             throw new DomainException("Child not found");
         }
-        boolean hasActive = sponsorshipRepo.existsByChildIdAndStatus(childId, SponsorshipStatus.ACTIVE);
+        boolean hasNonTerminal = sponsorshipRepo.existsByChildIdAndStatusIn(
+                childId, java.util.List.of(SponsorshipStatus.ACTIVE, SponsorshipStatus.PENDING));
         Sponsorship sponsorship = commitFutureSponsorshipUseCase.commit(
                 new CommitFutureSponsorshipUseCase.Command(
-                        sponsorshipId, sponsorId, childId, startMonth, hasActive,
+                        sponsorshipId, sponsorId, childId, startMonth, hasNonTerminal,
                         Instant.now(), null,
                         commitmentType != null ? commitmentType : CommitmentType.MONTHLY,
                         actingUserId

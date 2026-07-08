@@ -9,4 +9,6 @@ import java.util.UUID;
 public interface SponsorJpaRepository extends JpaRepository<SponsorEntity, UUID> {
 
     List<SponsorEntity> findByOrganisationId(UUID organisationId);
+
+    java.util.Optional<SponsorEntity> findByContactEmail(String contactEmail);
 }

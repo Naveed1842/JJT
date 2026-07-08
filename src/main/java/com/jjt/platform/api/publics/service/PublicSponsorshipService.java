@@ -76,10 +76,13 @@ public class PublicSponsorshipService {
             throw new SponsorshipInvariantViolationException("Child already has a pending sponsorship.");
         }
 
-        Sponsor sponsor = createSponsorUseCase.create(
-                new CreateSponsorUseCase.Command(null, sponsorName.trim(), sponsorEmail.trim(), sponsorPhone));
-        SponsorEntity sponsorEntity = SponsorMapper.toEntity(sponsor, orgId);
-        sponsorRepo.save(sponsorEntity);
+        SponsorEntity sponsorEntity = sponsorRepo.findByContactEmail(sponsorEmail.trim())
+                .orElseGet(() -> {
+                    Sponsor newSponsor = createSponsorUseCase.create(
+                            new CreateSponsorUseCase.Command(null, sponsorName.trim(), sponsorEmail.trim(), sponsorPhone));
+                    return sponsorRepo.save(SponsorMapper.toEntity(newSponsor, orgId));
+                });
+        Sponsor sponsor = SponsorMapper.toDomain(sponsorEntity);
 
         YearMonthValue startMonth = YearMonthValue.of(YearMonth.now().plusMonths(1));
         // Public commits have no authenticated author; createdBy is null (nullable for Phase 1 / public path).

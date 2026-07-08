@@ -10,13 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "sponsorships", uniqueConstraints = @UniqueConstraint(name = "uk_sponsor_child_start", columnNames = {"sponsor_id", "child_id", "start_month"}))
+@Table(name = "sponsorships")
 public class SponsorshipEntity {
 
     @Id
