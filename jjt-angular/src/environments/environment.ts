@@ -1,3 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'http://localhost:8080'
+  apiBaseUrl: 'https://jjt-platform-23fdba49b06d.herokuapp.com'
+
 };
