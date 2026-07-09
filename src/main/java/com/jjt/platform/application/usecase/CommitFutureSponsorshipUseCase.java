@@ -18,7 +18,8 @@ public class CommitFutureSponsorshipUseCase {
     public Sponsorship commit(Command command) {
         Objects.requireNonNull(command, "command must not be null");
         if (command.hasActiveSponsorship) {
-            throw new SponsorshipInvariantViolationException("Child already has an active sponsorship.");
+            throw new SponsorshipInvariantViolationException(
+                    "Child already has an active or pending sponsorship. Expire it before creating a new one.");
         }
         UUID sponsorshipId = command.sponsorshipId != null ? command.sponsorshipId : UUID.randomUUID();
         return Sponsorship.createPending(

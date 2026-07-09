@@ -8,6 +8,7 @@ import com.jjt.platform.api.admin.service.AdminPaymentService;
 import com.jjt.platform.api.admin.service.AdminPaymentService.MonthlyReconciliation;
 import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.SponsorPayment;
+import com.jjt.platform.infrastructure.audit.AuditService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,9 +31,11 @@ import java.util.UUID;
 public class AdminPaymentController {
 
     private final AdminPaymentService paymentService;
+    private final AuditService auditService;
 
-    public AdminPaymentController(AdminPaymentService paymentService) {
+    public AdminPaymentController(AdminPaymentService paymentService, AuditService auditService) {
         this.paymentService = paymentService;
+        this.auditService = auditService;
     }
 
     @PostMapping("/payments/{paymentId}/receive")
@@ -48,6 +51,11 @@ public class AdminPaymentController {
                 request.receivedDate(),
                 principal.getId()
         );
+        auditService.log(principal.getOrgId(), "PAYMENT_RECEIVED", principal.getId(), principal.getUsername(),
+                "SponsorPayment", paymentId,
+                "Recorded payment of " + request.currency() + " " + request.receivedAmount()
+                        + " for " + payment.getPaymentMonth().getValue()
+                        + (request.bankReference() != null ? " (ref " + request.bankReference() + ")" : ""));
         return ResponseEntity.ok(toResponse(payment));
     }
 
@@ -57,6 +65,9 @@ public class AdminPaymentController {
             @Valid @RequestBody WaivePaymentRequest request,
             @AuthenticationPrincipal JwtUserDetails principal) {
         SponsorPayment payment = paymentService.waivePayment(paymentId, request.reason(), principal.getId());
+        auditService.log(principal.getOrgId(), "PAYMENT_WAIVED", principal.getId(), principal.getUsername(),
+                "SponsorPayment", paymentId,
+                "Waived payment for " + payment.getPaymentMonth().getValue() + ": " + request.reason());
         return ResponseEntity.ok(toResponse(payment));
     }
 
@@ -105,6 +116,9 @@ public class AdminPaymentController {
             @AuthenticationPrincipal JwtUserDetails principal) {
         YearMonth target = month != null ? YearMonth.parse(month) : YearMonth.now();
         int created = paymentService.generateExpectedPayments(target, principal.getOrgId());
+        auditService.log(principal.getOrgId(), "PAYMENTS_GENERATED", principal.getId(), principal.getUsername(),
+                "SponsorPayment", null,
+                "Generated " + created + " expected payment(s) for " + target);
         return ResponseEntity.ok(java.util.Map.of("month", target.toString(), "created", created));
     }
 

@@ -55,20 +55,31 @@ public class PaymentScheduler {
     }
 
     /**
-     * Runs daily at 02:00. Marks any EXPECTED payment from a month where
-     * today is past the payment due day as OVERDUE.
+     * Runs daily at 02:00. Marks any EXPECTED payment past its due window as OVERDUE.
+     *
+     * Payments from months before the current month are always overdue, regardless of
+     * today's day-of-month. Payments for the current month become overdue once today is
+     * past the due day — the cutoff then advances to next month so the current month
+     * is included in the overdue range.
      */
     @Scheduled(cron = "0 0 2 * * *")
     public void markOverduePayments() {
-        LocalDate today = LocalDate.now();
-        if (today.getDayOfMonth() <= paymentDueDay) {
-            return;
-        }
-        // Any EXPECTED payment from the current month or earlier is overdue.
-        String cutoffMonth = YearMonth.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        String cutoffMonth = overdueCutoffMonth();
         int marked = paymentService.markOverduePayments(cutoffMonth);
         if (marked > 0) {
             log.info("Scheduler: marked {} payments as OVERDUE (cutoff={})", marked, cutoffMonth);
         }
+    }
+
+    /**
+     * Cutoff month (inclusive — findExpectedBefore uses paymentMonth <= cutoff)
+     * for overdue marking, based on today's date and the due day.
+     */
+    public String overdueCutoffMonth() {
+        LocalDate today = LocalDate.now();
+        YearMonth cutoff = today.getDayOfMonth() > paymentDueDay
+                ? YearMonth.now()                  // past due day: current-month payments are overdue too
+                : YearMonth.now().minusMonths(1);  // before due day: only previous months are overdue
+        return cutoff.format(DateTimeFormatter.ofPattern("yyyy-MM"));
     }
 }

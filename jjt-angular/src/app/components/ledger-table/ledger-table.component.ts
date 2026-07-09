@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 export interface LedgerRow {
   month: string;
@@ -10,7 +10,7 @@ export interface LedgerRow {
 @Component({
   selector: 'app-ledger-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <h3 class="text-base font-semibold text-slate-900">Education continuity</h3>
@@ -23,11 +23,13 @@ export interface LedgerRow {
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let entry of entries" class="border-t">
+          @for (entry of entries; track entry.id) {
+<tr class="border-t">
             <td class="py-2 text-slate-900">{{ entry.month }}</td>
             <td class="py-2 text-slate-700">{{ entry.status }}</td>
             <td class="py-2 text-slate-700">{{ entry.source }}</td>
           </tr>
+}
         </tbody>
       </table>
     </div>

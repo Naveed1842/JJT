@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { SiteHeaderComponent } from '../../components/layout/site-header.component';
 import { SiteFooterComponent } from '../../components/layout/site-footer.component';
@@ -18,7 +18,7 @@ interface ChildDetail {
 @Component({
   selector: 'app-sponsor-portal',
   standalone: true,
-  imports: [CommonModule, FormsModule, SiteHeaderComponent, SiteFooterComponent],
+  imports: [FormsModule, SiteHeaderComponent, SiteFooterComponent],
   templateUrl: './sponsor-portal.component.html',
 })
 export class SponsorPortalComponent implements OnInit {

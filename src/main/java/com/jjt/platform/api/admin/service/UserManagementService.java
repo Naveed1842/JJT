@@ -32,9 +32,8 @@ public class UserManagementService {
 
     @Transactional
     public UserResponse createSponsorUser(CreateSponsorUserRequest request) {
-        if (!sponsorRepository.existsById(request.sponsorId())) {
-            throw new DomainException("Sponsor not found: " + request.sponsorId());
-        }
+        var sponsor = sponsorRepository.findById(request.sponsorId())
+                .orElseThrow(() -> new DomainException("Sponsor not found: " + request.sponsorId()));
         if (userRepository.existsByEmail(request.email())) {
             throw new DomainException("A user with email '" + request.email() + "' already exists");
         }
@@ -43,7 +42,7 @@ public class UserManagementService {
                 passwordEncoder.encode(request.password()),
                 Role.SPONSOR,
                 request.sponsorId(),
-                null
+                sponsor.getOrganisationId()
         );
         return UserResponse.from(userRepository.save(user));
     }

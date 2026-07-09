@@ -435,3 +435,191 @@ export interface CreateRecurringDonationRequest {
   fundAccountId?: string | null;
   notes?: string | null;
 }
+
+/* ── Admin dashboard ──────────────────────────────────────────── */
+
+export interface DashboardFundSummary {
+  id: string;
+  name: string;
+  balance: string;
+  currency: string;
+  belowMinReserve: boolean;
+}
+
+export interface DashboardChildrenStats {
+  total: number;
+  availableCount: number;
+  enrolledCount: number;
+}
+
+export interface DashboardPaymentStats {
+  year: number;
+  month: string;
+  expected: number;
+  received: number;
+  overdue: number;
+  waived: number;
+  total: number;
+}
+
+export interface DashboardResponse {
+  fundAccounts: DashboardFundSummary[];
+  childrenStats: DashboardChildrenStats;
+  paymentStats: DashboardPaymentStats;
+  activeAlertCount: number;
+}
+
+/* ── Campaigns ────────────────────────────────────────────────── */
+
+export type CampaignStatus = 'DRAFT' | 'ACTIVE' | 'FUNDED' | 'CLOSED' | 'ARCHIVED';
+
+export interface CampaignResponse {
+  id: string;
+  name: string;
+  description: string | null;
+  targetAmount: string | null;
+  targetCurrency: string;
+  status: CampaignStatus;
+  startDate: string | null;
+  endDate: string | null;
+  fundAccountId: string | null;
+  createdAt: string;
+}
+
+export interface CreateCampaignRequest {
+  name: string;
+  description?: string | null;
+  targetAmount?: string | null;
+  targetCurrency: string;
+  startDate?: string | null;
+  endDate?: string | null;
+  fundAccountId?: string | null;
+}
+
+/* ── Audit log ────────────────────────────────────────────────── */
+
+export interface AuditEventResponse {
+  id: string;
+  organisationId: string;
+  eventType: string;
+  actorId: string | null;
+  actorEmail: string | null;
+  entityType: string | null;
+  entityId: string | null;
+  description: string;
+  createdAt: string;
+}
+
+/* ── Reports ──────────────────────────────────────────────────── */
+
+export interface MonthlyBalance {
+  yearMonth: string;
+  openingBalance: string;
+  credits: string;
+  debits: string;
+  closingBalance: string;
+  isForecast: boolean;
+}
+
+export interface CashFlowReport {
+  months: MonthlyBalance[];
+  currentBalance: string;
+  totalCredits3Month: string;
+  totalDebits3Month: string;
+}
+
+export interface PortfolioReport {
+  activeCount: number;
+  pendingCount: number;
+  expiredCount: number;
+  totalMonthlyValue: string;
+  currency: string;
+  commitmentBreakdown: Record<string, number>;
+}
+
+/* ── Admin children (rich detail view) ────────────────────────── */
+
+export interface AdminChildSummaryResponse {
+  id: string;
+  rollNumber: string;
+  fullName: string;
+  city: string;
+  campusName: string;
+  schoolName: string | null;
+  educationAmount: string;
+  educationCurrency: string;
+  availabilityStatus: AvailabilityStatus;
+  currentSponsorName: string | null;
+  currentSponsorEmail: string | null;
+}
+
+export interface AdminChildSponsorshipItem {
+  id: string;
+  sponsorName: string;
+  sponsorEmail: string;
+  startMonth: string;
+  status: SponsorshipStatus;
+  commitmentType: CommitmentType;
+  createdAt: string;
+}
+
+export interface AdminChildLedgerItem {
+  id: string;
+  month: string;
+  amount: string;
+  currency: string;
+  coverageType: CoverageType;
+}
+
+export interface AdminChildProgressItem {
+  id: string;
+  month: string;
+  summary: string;
+}
+
+export interface AdminChildDetailResponse {
+  id: string;
+  rollNumber: string;
+  fullName: string;
+  city: string;
+  campusName: string;
+  schoolName: string | null;
+  educationAmount: string;
+  educationCurrency: string;
+  availabilityStatus: AvailabilityStatus;
+  sponsorshipHistory: AdminChildSponsorshipItem[];
+  ledgerEntries: AdminChildLedgerItem[];
+  progressUpdates: AdminChildProgressItem[];
+}
+
+/* ── Bulk import ──────────────────────────────────────────────── */
+
+export interface ImportRowResult {
+  rowNumber: number;
+  status: string;
+  rollNumber: string | null;
+  fullName: string | null;
+  reason: string | null;
+}
+
+export interface ImportChildrenResponse {
+  totalRows: number;
+  importedRows: number;
+  skippedMissingName: number;
+  skippedMissingCampus: number;
+  skippedDuplicateRollNumber: number;
+  generatedRollNumbers: number;
+  failedRows: number;
+  rows: ImportRowResult[];
+}
+
+/* ── Zakat ────────────────────────────────────────────────────── */
+
+export interface ZakatStats {
+  totalReceived: string;
+  receivedThisYear: string;
+  receivedThisMonth: string;
+  receiptedCount: number;
+  pendingCount: number;
+  currency: string;
+}

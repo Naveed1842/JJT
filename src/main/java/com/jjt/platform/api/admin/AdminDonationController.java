@@ -10,6 +10,7 @@ import com.jjt.platform.api.admin.dto.RecurringDonationResponse;
 import com.jjt.platform.api.admin.service.AdminDonationService;
 import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.Donation;
+import com.jjt.platform.core.domain.entity.DonationType;
 import com.jjt.platform.core.domain.entity.Donor;
 import com.jjt.platform.core.domain.entity.RecurringDonationSchedule;
 import com.jjt.platform.core.domain.entity.RecurringDonationStatus;
@@ -41,11 +42,14 @@ public class AdminDonationController {
 
     private final AdminDonationService donationService;
     private final DonorJpaRepository donorRepo;
+    private final com.jjt.platform.infrastructure.audit.AuditService auditService;
 
     public AdminDonationController(AdminDonationService donationService,
-                                   DonorJpaRepository donorRepo) {
+                                   DonorJpaRepository donorRepo,
+                                   com.jjt.platform.infrastructure.audit.AuditService auditService) {
         this.donationService = donationService;
         this.donorRepo = donorRepo;
+        this.auditService = auditService;
     }
 
     // ── Donors ───────────────────────────────────────────────────────────────
@@ -93,16 +97,28 @@ public class AdminDonationController {
                 request.fundAccountId(),
                 principal.getOrgId(),
                 principal.getId());
+        auditService.log(principal.getOrgId(), "DONATION_RECORDED", principal.getId(), principal.getUsername(),
+                "Donation", donation.getId(),
+                "Recorded " + request.donationType() + " donation of " + request.currency() + " " + request.amount());
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
     }
 
     @GetMapping("/donations")
     public ResponseEntity<Page<DonationResponse>> listDonations(
+            @RequestParam(name = "type", required = false) DonationType type,
             @AuthenticationPrincipal JwtUserDetails principal,
             @PageableDefault(size = 20, sort = "donationDate") Pageable pageable) {
-        Page<DonationResponse> page = donationService.listDonations(principal.getOrgId(), pageable)
-                .map(d -> toDonationResponse(d, principal.getOrgId()));
-        return ResponseEntity.ok(page);
+        Page<Donation> donations = type != null
+                ? donationService.listDonationsByType(principal.getOrgId(), type, pageable)
+                : donationService.listDonations(principal.getOrgId(), pageable);
+        return ResponseEntity.ok(donations.map(d -> toDonationResponse(d, principal.getOrgId())));
+    }
+
+    /** Headline Zakat figures — Zakat is tracked independently of other donations. */
+    @GetMapping("/donations/zakat-stats")
+    public ResponseEntity<AdminDonationService.ZakatStats> getZakatStats(
+            @AuthenticationPrincipal JwtUserDetails principal) {
+        return ResponseEntity.ok(donationService.getZakatStats(principal.getOrgId()));
     }
 
     @GetMapping("/donations/{id}")
@@ -139,6 +155,10 @@ public class AdminDonationController {
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.receiveExpectedDonation(
                 id, actualAmount, principal.getOrgId(), principal.getId());
+        auditService.log(principal.getOrgId(), "DONATION_RECEIVED", principal.getId(), principal.getUsername(),
+                "Donation", id,
+                "Marked expected donation as received"
+                        + (actualAmount != null ? " (actual amount " + actualAmount + ")" : ""));
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
     }
 
@@ -147,6 +167,17 @@ public class AdminDonationController {
             @PathVariable("id") UUID id,
             @AuthenticationPrincipal JwtUserDetails principal) {
         Donation donation = donationService.reverseDonation(id, principal.getOrgId(), principal.getId());
+        auditService.log(principal.getOrgId(), "DONATION_REVERSED", principal.getId(), principal.getUsername(),
+                "Donation", id,
+                "Reversed " + donation.getDonationType() + " donation of "
+                        + donation.getAmount().getCurrency().getCurrencyCode() + " "
+                        + donation.getAmount().getAmount()
+                        + (donation.getReceiptNumber() != null
+                                ? " (receipt " + donation.getReceiptNumber() + " voided)"
+                                : "")
+                        + (donation.getFundTransactionId() != null
+                                ? " — compensating fund debit issued"
+                                : ""));
         return ResponseEntity.ok(toDonationResponse(donation, principal.getOrgId()));
     }
 

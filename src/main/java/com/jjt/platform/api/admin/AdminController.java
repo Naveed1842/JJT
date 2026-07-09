@@ -8,6 +8,7 @@ import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.SponsorshipStatus;
 import com.jjt.platform.core.domain.value.Money;
 import com.jjt.platform.core.domain.value.YearMonthValue;
+import com.jjt.platform.infrastructure.audit.AuditService;
 import com.jjt.platform.infrastructure.persistence.repository.SponsorJpaRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -37,10 +38,13 @@ public class AdminController {
 
     private final AdminCommandService adminService;
     private final SponsorJpaRepository sponsorRepo;
+    private final AuditService auditService;
 
-    public AdminController(AdminCommandService adminService, SponsorJpaRepository sponsorRepo) {
+    public AdminController(AdminCommandService adminService, SponsorJpaRepository sponsorRepo,
+                           AuditService auditService) {
         this.adminService = adminService;
         this.sponsorRepo = sponsorRepo;
+        this.auditService = auditService;
     }
 
     @GetMapping("/sponsors")
@@ -72,6 +76,9 @@ public class AdminController {
                 request.ledgerId(),
                 principal.getOrgId()
         );
+        auditService.log(principal.getOrgId(), "CHILD_CREATED", principal.getId(), principal.getUsername(),
+                "Child", result.child().getId(),
+                "Created child '" + request.fullName() + "' (roll " + request.rollNumber() + ", " + request.campusName() + ")");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateChildResponse(result.child().getId(), result.ledger().getId()));
     }
@@ -87,6 +94,9 @@ public class AdminController {
                 request.sponsorId(),
                 principal.getOrgId()
         );
+        auditService.log(principal.getOrgId(), "SPONSOR_CREATED", principal.getId(), principal.getUsername(),
+                "Sponsor", sponsor.getId(),
+                "Created sponsor '" + sponsor.getDisplayName() + "' (" + sponsor.getContactEmail() + ")");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CreateSponsorResponse(sponsor.getId(), sponsor.getDisplayName(), sponsor.getContactEmail()));
     }
@@ -106,6 +116,11 @@ public class AdminController {
                 principal.getOrgId()
         );
         LedgerEntryDto dto = DtoMapper.toLedgerEntryDto(entry);
+        auditService.log(principal.getOrgId(), "EARLY_SUPPORT_RECORDED", principal.getId(), principal.getUsername(),
+                "LedgerEntry", dto.id(),
+                "Recorded early support for child " + entry.getChildId() + " for " + dto.month()
+                        + " (" + request.educationCurrency() + " " + request.educationAmount() + ")"
+                        + (request.force() ? " [FORCED: " + request.forceReason() + "]" : ""));
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new RecordEarlySupportResponse(dto.id(), entry.getChildId(), dto.month()));
     }
@@ -123,6 +138,9 @@ public class AdminController {
                 principal.getId(),
                 principal.getOrgId()
         );
+        auditService.log(principal.getOrgId(), "PROGRESS_ADDED", principal.getId(), principal.getUsername(),
+                "ProgressUpdate", progress.getId(),
+                "Added progress update for child " + childId + " for " + progress.getMonth().getValue());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new AddProgressResponse(progress.getId(), progress.getChildId(), progress.getMonth().getValue().toString()));
     }
@@ -140,6 +158,10 @@ public class AdminController {
                 principal.getId(),
                 principal.getOrgId()
         );
+        auditService.log(principal.getOrgId(), "SPONSORSHIP_COMMITTED", principal.getId(), principal.getUsername(),
+                "Sponsorship", sponsorship.getId(),
+                "Committed sponsorship for child " + request.childId() + " by sponsor " + request.sponsorId()
+                        + " starting " + request.startMonth());
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new CommitSponsorshipResponse(
                         sponsorship.getId(),
@@ -170,8 +192,13 @@ public class AdminController {
     }
 
     @PostMapping("/sponsorships/{sponsorshipId}/activate")
-    public ResponseEntity<CommitSponsorshipResponse> activate(@PathVariable("sponsorshipId") UUID sponsorshipId) {
+    public ResponseEntity<CommitSponsorshipResponse> activate(
+            @PathVariable("sponsorshipId") UUID sponsorshipId,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var sponsorship = adminService.activateSponsorship(sponsorshipId);
+        auditService.log(principal.getOrgId(), "SPONSORSHIP_ACTIVATED", principal.getId(), principal.getUsername(),
+                "Sponsorship", sponsorshipId,
+                "Activated sponsorship for child " + sponsorship.getChildId());
         return ResponseEntity.ok(new CommitSponsorshipResponse(
                 sponsorship.getId(),
                 sponsorship.getSponsorId(),
@@ -181,8 +208,13 @@ public class AdminController {
     }
 
     @PostMapping("/sponsorships/{sponsorshipId}/expire")
-    public ResponseEntity<CommitSponsorshipResponse> expire(@PathVariable("sponsorshipId") UUID sponsorshipId) {
+    public ResponseEntity<CommitSponsorshipResponse> expire(
+            @PathVariable("sponsorshipId") UUID sponsorshipId,
+            @AuthenticationPrincipal JwtUserDetails principal) {
         var sponsorship = adminService.expireSponsorship(sponsorshipId);
+        auditService.log(principal.getOrgId(), "SPONSORSHIP_EXPIRED", principal.getId(), principal.getUsername(),
+                "Sponsorship", sponsorshipId,
+                "Expired sponsorship for child " + sponsorship.getChildId());
         return ResponseEntity.ok(new CommitSponsorshipResponse(
                 sponsorship.getId(),
                 sponsorship.getSponsorId(),

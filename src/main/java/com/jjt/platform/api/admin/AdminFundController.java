@@ -8,6 +8,7 @@ import com.jjt.platform.api.admin.service.AdminFundService;
 import com.jjt.platform.api.admin.service.AdminFundService.FundAccountWithBalance;
 import com.jjt.platform.config.security.JwtUserDetails;
 import com.jjt.platform.core.domain.entity.FundTransaction;
+import com.jjt.platform.infrastructure.audit.AuditService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.web.PageableDefault;
@@ -32,9 +33,11 @@ import java.util.UUID;
 public class AdminFundController {
 
     private final AdminFundService fundService;
+    private final AuditService auditService;
 
-    public AdminFundController(AdminFundService fundService) {
+    public AdminFundController(AdminFundService fundService, AuditService auditService) {
         this.fundService = fundService;
+        this.auditService = auditService;
     }
 
     @GetMapping
@@ -78,6 +81,10 @@ public class AdminFundController {
                 request.externalReference(),
                 principal.getId()
         );
+        auditService.log(principal.getOrgId(), "FUND_CREDITED", principal.getId(), principal.getUsername(),
+                "FundTransaction", txn.getId(),
+                "Credited fund " + fundId + " with " + request.currency() + " " + request.amount()
+                        + (request.description() != null ? ": " + request.description() : ""));
         return ResponseEntity.status(HttpStatus.CREATED).body(toTransactionResponse(txn));
     }
 

@@ -31,6 +31,21 @@ export class AuthService {
   private readonly userSubject = new BehaviorSubject<CurrentUser | null>(null);
   readonly currentUser$ = this.userSubject.asObservable();
 
+  /**
+   * Single-flight refresh: when several requests 401 at once, they must all await
+   * the SAME refresh call. The backend rotates refresh tokens (the old token is
+   * revoked on first use), so concurrent refreshes with the same token would fail
+   * and force a logout.
+   */
+  private refreshInFlight: Promise<string> | null = null;
+
+  /**
+   * Resolves once the initial session restore has settled (successfully or not).
+   * Guards await this instead of the app blocking bootstrap on a network call.
+   */
+  private _ready: Promise<void> = Promise.resolve();
+  get ready(): Promise<void> { return this._ready; }
+
   getAccessToken(): string | null {
     return this.accessToken;
   }
@@ -64,7 +79,15 @@ export class AuthService {
     await this.router.navigate(['/login']);
   }
 
-  async refreshAccessToken(): Promise<string> {
+  refreshAccessToken(): Promise<string> {
+    if (this.refreshInFlight) return this.refreshInFlight;
+    this.refreshInFlight = this.doRefresh().finally(() => {
+      this.refreshInFlight = null;
+    });
+    return this.refreshInFlight;
+  }
+
+  private async doRefresh(): Promise<string> {
     const rt = localStorage.getItem(RT_KEY);
     if (!rt) throw new Error('No refresh token available');
     const resp = await firstValueFrom(
@@ -74,16 +97,23 @@ export class AuthService {
     return this.accessToken!;
   }
 
-  /** Called by APP_INITIALIZER to restore session on page load/refresh. */
-  async restoreSession(): Promise<void> {
+  /**
+   * Kicked off (not awaited) at bootstrap to restore the session from the stored
+   * refresh token. Public pages render immediately; route guards await `ready`
+   * so protected routes still see the restored session before deciding.
+   */
+  restoreSession(): Promise<void> {
     const rt = localStorage.getItem(RT_KEY);
-    if (!rt) return;
-    try {
-      await this.refreshAccessToken();
-      await this.fetchCurrentUser();
-    } catch {
-      this.clearSession();
-    }
+    if (!rt) return this._ready;
+    this._ready = (async () => {
+      try {
+        await this.refreshAccessToken();
+        await this.fetchCurrentUser();
+      } catch {
+        this.clearSession();
+      }
+    })();
+    return this._ready;
   }
 
   clearSession(): void {

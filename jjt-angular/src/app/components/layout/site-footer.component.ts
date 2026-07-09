@@ -1,17 +1,20 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-site-footer',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
     <footer style="background:#1c352c;color:#9cc3b3;padding:40px 32px;margin-top:auto;">
       <div style="max-width:1200px;margin:0 auto;">
         <div class="footer-top" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:32px;">
           <div>
-            <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+            <span style="display:inline-flex;align-items:center;gap:10px;">
+              <img src="assets/logos/jjt-mark-reversed.svg" alt="" style="height:26px;width:auto;display:block;" />
+              <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#fdfaf3;">JJT</span>
+            </span>
             <p style="margin:10px 0 0;font-size:13px;max-width:300px;line-height:1.6;color:#9cc3b3;">
               Junior Jinnah Trust — educating orphan, needy, and underprivileged children across Pakistan since 2014.
             </p>

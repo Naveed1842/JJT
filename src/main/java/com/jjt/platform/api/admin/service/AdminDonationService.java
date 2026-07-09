@@ -167,6 +167,41 @@ public class AdminDonationService {
                 .map(DonationMapper::toDomain);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Donation> listDonationsByType(UUID orgId, DonationType type, Pageable pageable) {
+        return donationRepo.findByOrganisationIdAndDonationType(orgId, type, pageable)
+                .map(DonationMapper::toDomain);
+    }
+
+    /**
+     * Zakat headline figures. Zakat is tracked independently (a public promise on
+     * the Trust page): totals cover RECEIPTED donations only; pending counts
+     * EXPECTED ones awaiting confirmation.
+     */
+    @Transactional(readOnly = true)
+    public ZakatStats getZakatStats(UUID orgId) {
+        LocalDate now = LocalDate.now();
+        String currency = orgRepo.findById(orgId)
+                .map(OrganisationEntity::getBaseCurrency).orElse("PKR");
+        return new ZakatStats(
+                donationRepo.sumReceiptedByType(orgId, DonationType.ZAKAT),
+                donationRepo.sumReceiptedByTypeSince(orgId, DonationType.ZAKAT, now.withDayOfYear(1)),
+                donationRepo.sumReceiptedByTypeSince(orgId, DonationType.ZAKAT, now.withDayOfMonth(1)),
+                donationRepo.countByOrganisationIdAndDonationTypeAndStatus(orgId, DonationType.ZAKAT, DonationStatus.RECEIPTED),
+                donationRepo.countByOrganisationIdAndDonationTypeAndStatus(orgId, DonationType.ZAKAT, DonationStatus.EXPECTED),
+                currency
+        );
+    }
+
+    public record ZakatStats(
+            BigDecimal totalReceived,
+            BigDecimal receivedThisYear,
+            BigDecimal receivedThisMonth,
+            long receiptedCount,
+            long pendingCount,
+            String currency
+    ) {}
+
     /**
      * Confirms receipt of an EXPECTED donation (from a recurring schedule),
      * credits the fund, and generates a receipt number.
@@ -206,7 +241,12 @@ public class AdminDonationService {
     }
 
     /**
-     * Reverses a RECEIPTED donation. Does not issue a fund debit — admin handles that separately.
+     * Reverses a donation. For RECEIPTED donations that credited a fund, a compensating
+     * DEBIT (reason DONATION_REVERSAL) is appended in the same transaction so the derived
+     * fund balance self-corrects — the original CREDIT row is never modified.
+     *
+     * EXPECTED donations (never credited) and IN_KIND donations (no fund involvement)
+     * are status-only reversals: there is nothing financial to undo.
      */
     @Transactional
     public Donation reverseDonation(UUID donationId, UUID orgId, UUID updatedBy) {
@@ -218,11 +258,25 @@ public class AdminDonationService {
         if (entity.getStatus() == DonationStatus.REVERSED) {
             throw new DomainException("Donation is already reversed");
         }
-        entity.setStatus(DonationStatus.REVERSED);
-        entity.setUpdatedBy(updatedBy);
-        entity.setUpdatedAt(java.time.Instant.now());
-        donationRepo.save(entity);
-        return DonationMapper.toDomain(entity);
+
+        boolean fundWasCredited = entity.getStatus() == DonationStatus.RECEIPTED
+                && entity.getFundTransactionId() != null
+                && entity.getFundAccountId() != null;
+
+        Donation reversed = DonationMapper.toDomain(entity).reverse(updatedBy);
+        donationRepo.save(DonationMapper.toEntity(reversed));
+
+        if (fundWasCredited) {
+            fundService.debitForDonationReversal(
+                    entity.getFundAccountId(),
+                    donationId,
+                    entity.getReceiptNumber(),
+                    entity.getAmount(),
+                    entity.getCurrency(),
+                    updatedBy);
+        }
+
+        return reversed;
     }
 
     // ── Receipt data ────────────────────────────────────────────────────────
@@ -233,6 +287,9 @@ public class AdminDonationService {
                 .orElseThrow(() -> new DomainException("Donation not found"));
         if (!donation.getOrganisationId().equals(orgId)) {
             throw new DomainException("Donation not found");
+        }
+        if (donation.getStatus() == DonationStatus.REVERSED) {
+            throw new DomainException("This donation has been reversed — its receipt is void");
         }
         if (donation.getReceiptNumber() == null) {
             throw new DomainException("No receipt available for this donation — it may still be EXPECTED");

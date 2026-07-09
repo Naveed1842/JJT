@@ -1,18 +1,20 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject } from '@angular/core';
+
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService, CurrentUser } from '../../services/auth.service';
 
 @Component({
   selector: 'app-site-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   template: `
     <header style="background:#fffdf9;border-bottom:1px solid #efe9dd;position:sticky;top:0;z-index:30;">
       <div class="header-inner" style="max-width:1200px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:16px 32px;">
 
         <!-- Logo -->
         <a routerLink="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+          <img src="assets/logos/jjt-mark-primary.svg" alt="" style="height:28px;width:auto;display:block;" />
           <span style="font-family:'Newsreader',serif;font-weight:600;font-size:22px;color:#1c352c;">JJT</span>
         </a>
 
@@ -27,28 +29,37 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
           <a routerLink="/trust" routerLinkActive="nav-active"
              style="font-size:14px;color:#54625b;text-decoration:none;"
              class="nav-link">Trust</a>
-          <a *ngIf="user && (user.role === 'JJT_ADMIN' || user.role === 'ORG_ADMIN')"
+          @if (user && (user.role === 'JJT_ADMIN' || user.role === 'ORG_ADMIN')) {
+<a
              routerLink="/admin" routerLinkActive="nav-active"
              style="font-size:14px;color:#54625b;text-decoration:none;"
              class="nav-link">Admin</a>
-          <a *ngIf="user && user.role === 'SPONSOR'"
+}
+          @if (user && user.role === 'SPONSOR') {
+<a
              routerLink="/sponsor/portal" routerLinkActive="nav-active"
              style="font-size:14px;color:#54625b;text-decoration:none;"
              class="nav-link">My Children</a>
+}
         </nav>
 
         <!-- Auth area -->
         <div style="margin-left:auto;display:flex;align-items:center;gap:12px;">
           <!-- Logged out -->
-          <a *ngIf="!user" routerLink="/why-give"
+          @if (!user) {
+<a routerLink="/why-give"
              style="font-size:14px;color:#2f5d4f;font-weight:600;text-decoration:none;" class="hide-sm">Give any amount</a>
-          <a *ngIf="!user" routerLink="/children"
+}
+          @if (!user) {
+<a routerLink="/children"
              style="background:#2f5d4f;color:#fff;font-size:14px;font-weight:600;border-radius:8px;
                     padding:10px 18px;text-decoration:none;transition:background .15s;"
              class="cta-btn">Sponsor a child</a>
+}
 
           <!-- Logged in -->
-          <ng-container *ngIf="user">
+          @if (user) {
+
             <div style="display:flex;flex-direction:column;align-items:flex-end;line-height:1.3;" class="hide-sm">
               <span style="font-size:13px;font-weight:600;color:#1c352c;">{{ user.email }}</span>
               <span style="font-size:11px;color:#8a958d;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em;">
@@ -61,21 +72,27 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
                            transition:border-color .15s;">
               Sign out
             </button>
-          </ng-container>
+          
+}
 
           <!-- Mobile hamburger -->
           <button class="hamburger" (click)="mobileOpen = !mobileOpen" aria-label="Menu"
                   style="display:none;background:none;border:none;cursor:pointer;padding:4px;">
             <svg width="22" height="22" fill="none" stroke="#1c352c" stroke-width="2" viewBox="0 0 24 24">
-              <path *ngIf="!mobileOpen" stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
-              <path *ngIf="mobileOpen"  stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>
+              @if (!mobileOpen) {
+<path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/>
+}
+              @if (mobileOpen) {
+<path  stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>
+}
             </svg>
           </button>
         </div>
       </div>
 
       <!-- Mobile drawer -->
-      <div *ngIf="mobileOpen" class="mobile-drawer"
+      @if (mobileOpen) {
+<div class="mobile-drawer"
            style="border-top:1px solid #efe9dd;background:#fffdf9;padding:16px 32px;
                   display:flex;flex-direction:column;gap:14px;">
         <a routerLink="/" (click)="mobileOpen=false"
@@ -86,19 +103,28 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Why give</a>
         <a routerLink="/trust" (click)="mobileOpen=false"
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Trust</a>
-        <a *ngIf="user && (user.role === 'JJT_ADMIN' || user.role === 'ORG_ADMIN')"
+        @if (user && (user.role === 'JJT_ADMIN' || user.role === 'ORG_ADMIN')) {
+<a
            routerLink="/admin" (click)="mobileOpen=false"
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Admin</a>
-        <a *ngIf="user && user.role === 'SPONSOR'"
+}
+        @if (user && user.role === 'SPONSOR') {
+<a
            routerLink="/sponsor/portal" (click)="mobileOpen=false"
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">My Children</a>
-        <a *ngIf="!user" routerLink="/login" (click)="mobileOpen=false"
+}
+        @if (!user) {
+<a routerLink="/login" (click)="mobileOpen=false"
            style="font-size:14px;font-weight:500;color:#54625b;text-decoration:none;">Sign in</a>
-        <button *ngIf="user" (click)="logout()"
+}
+        @if (user) {
+<button (click)="logout()"
                 style="text-align:left;font-size:14px;font-weight:600;color:#8a5f1f;background:none;border:none;cursor:pointer;padding:0;">
           Sign out
         </button>
+}
       </div>
+}
     </header>
 
     <style>
@@ -115,15 +141,18 @@ import { AuthService, CurrentUser } from '../../services/auth.service';
     </style>
   `
 })
-export class SiteHeaderComponent implements OnInit {
-  private readonly auth   = inject(AuthService);
-  private readonly router = inject(Router);
+export class SiteHeaderComponent {
+  private readonly auth = inject(AuthService);
 
   user: CurrentUser | null = null;
   mobileOpen = false;
 
-  ngOnInit(): void {
-    this.auth.currentUser$.subscribe(u => { this.user = u; });
+  constructor() {
+    // currentUser$ is an app-lifetime BehaviorSubject; without teardown every
+    // page navigation leaks one subscription (a new header instance per page).
+    this.auth.currentUser$
+      .pipe(takeUntilDestroyed())
+      .subscribe(u => { this.user = u; });
   }
 
   roleLabel(role: string): string {

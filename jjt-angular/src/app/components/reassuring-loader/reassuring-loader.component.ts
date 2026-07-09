@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-reassuring-loader',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './reassuring-loader.component.html'
 })
 export class ReassuringLoaderComponent {

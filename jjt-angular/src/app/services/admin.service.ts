@@ -5,8 +5,17 @@ import { environment } from '../../environments/environment';
 import {
   AddProgressRequest,
   AddProgressResponse,
+  AdminChildDetailResponse,
+  AdminChildSummaryResponse,
   AlertResponse,
+  AuditEventResponse,
+  CampaignResponse,
+  CashFlowReport,
   ChildDto,
+  CreateCampaignRequest,
+  DashboardResponse,
+  ImportChildrenResponse,
+  PortfolioReport,
   CommitSponsorshipRequest,
   CommitSponsorshipResponse,
   CreateChildRequest,
@@ -20,6 +29,7 @@ import {
   CreditFundRequest,
   DonationReceiptResponse,
   DonationResponse,
+  DonationType,
   DonorResponse,
   FundAccountResponse,
   FundTransactionResponse,
@@ -39,6 +49,7 @@ import {
   UpdateOrgConfigRequest,
   UserResponse,
   WaivePaymentRequest,
+  ZakatStats,
 } from './api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -52,20 +63,20 @@ export class AdminService {
     return this.http.post<CreateChildResponse>(`${this.base}/api/admin/children`, req);
   }
 
-  listAdminChildren(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.base}/api/admin/children/list`);
+  listAdminChildren(): Observable<AdminChildSummaryResponse[]> {
+    return this.http.get<AdminChildSummaryResponse[]>(`${this.base}/api/admin/children/list`);
   }
 
-  getAdminChildDetail(id: string): Observable<any> {
-    return this.http.get<any>(`${this.base}/api/admin/children/${id}/detail`);
+  getAdminChildDetail(id: string): Observable<AdminChildDetailResponse> {
+    return this.http.get<AdminChildDetailResponse>(`${this.base}/api/admin/children/${id}/detail`);
   }
 
   // ── Import ────────────────────────────────────────────────────────────────
 
-  importChildren(file: File): Observable<any> {
+  importChildren(file: File): Observable<ImportChildrenResponse> {
     const form = new FormData();
     form.append('file', file);
-    return this.http.post<any>(`${this.base}/api/admin/children/import`, form);
+    return this.http.post<ImportChildrenResponse>(`${this.base}/api/admin/children/import`, form);
   }
 
   downloadImportTemplate(): string {
@@ -119,7 +130,7 @@ export class AdminService {
 
   listSponsorships(status: SponsorshipStatus = 'PENDING'): Observable<SponsorshipSummaryResponse[]> {
     return this.http.get<SponsorshipSummaryResponse[]>(
-      `${this.base}/api/admin/sponsorships?status=${status}`
+      `${this.base}/api/admin/sponsorships`, { params: { status } }
     );
   }
 
@@ -205,7 +216,7 @@ export class AdminService {
 
   getFundTransactions(fundId: string, page = 0): Observable<PageResponse<FundTransactionResponse>> {
     return this.http.get<PageResponse<FundTransactionResponse>>(
-      `${this.base}/api/admin/funds/${fundId}/transactions?page=${page}&size=20`
+      `${this.base}/api/admin/funds/${fundId}/transactions`, { params: { page, size: 20 } }
     );
   }
 
@@ -217,7 +228,7 @@ export class AdminService {
 
   getMonthlyReconciliation(year: number, month: number): Observable<MonthlyReconciliationResponse> {
     return this.http.get<MonthlyReconciliationResponse>(
-      `${this.base}/api/admin/reconciliation/monthly?year=${year}&month=${month}`
+      `${this.base}/api/admin/reconciliation/monthly`, { params: { year, month } }
     );
   }
 
@@ -242,10 +253,10 @@ export class AdminService {
   }
 
   generatePayments(month?: string): Observable<{ month: string; created: number }> {
-    const q = month ? `?month=${month}` : '';
     return this.http.post<{ month: string; created: number }>(
-      `${this.base}/api/admin/payments/generate${q}`,
-      {}
+      `${this.base}/api/admin/payments/generate`,
+      {},
+      { params: month ? { month } : {} }
     );
   }
 
@@ -295,10 +306,15 @@ export class AdminService {
     return this.http.post<DonationResponse>(`${this.base}/api/admin/donations`, req);
   }
 
-  listDonations(page = 0): Observable<PageResponse<DonationResponse>> {
+  listDonations(page = 0, type?: DonationType): Observable<PageResponse<DonationResponse>> {
     return this.http.get<PageResponse<DonationResponse>>(
-      `${this.base}/api/admin/donations?page=${page}&size=20`
+      `${this.base}/api/admin/donations`,
+      { params: type ? { page, size: 20, type } : { page, size: 20 } }
     );
+  }
+
+  getZakatStats(): Observable<ZakatStats> {
+    return this.http.get<ZakatStats>(`${this.base}/api/admin/donations/zakat-stats`);
   }
 
   getDonation(id: string): Observable<DonationResponse> {
@@ -310,8 +326,11 @@ export class AdminService {
   }
 
   receiveDonation(id: string, actualAmount?: string): Observable<DonationResponse> {
-    const q = actualAmount ? `?actualAmount=${actualAmount}` : '';
-    return this.http.post<DonationResponse>(`${this.base}/api/admin/donations/${id}/receive${q}`, {});
+    return this.http.post<DonationResponse>(
+      `${this.base}/api/admin/donations/${id}/receive`,
+      {},
+      { params: actualAmount ? { actualAmount } : {} }
+    );
   }
 
   reverseDonation(id: string): Observable<DonationResponse> {
@@ -346,45 +365,45 @@ export class AdminService {
 
   // ── Dashboard ──────────────────────────────────────────────────────────────
 
-  getDashboard(): Observable<any> {
-    return this.http.get<any>(`${this.base}/api/admin/dashboard`);
+  getDashboard(): Observable<DashboardResponse> {
+    return this.http.get<DashboardResponse>(`${this.base}/api/admin/dashboard`);
   }
 
   // ── Reports ────────────────────────────────────────────────────────────────
 
-  getCashFlow(months = 6): Observable<any> {
-    return this.http.get<any>(`${this.base}/api/admin/reports/cash-flow?months=${months}`);
+  getCashFlow(months = 6): Observable<CashFlowReport> {
+    return this.http.get<CashFlowReport>(
+      `${this.base}/api/admin/reports/cash-flow`, { params: { months } }
+    );
   }
 
-  getPortfolioReport(): Observable<any> {
-    return this.http.get<any>(`${this.base}/api/admin/reports/portfolio`);
+  getPortfolioReport(): Observable<PortfolioReport> {
+    return this.http.get<PortfolioReport>(`${this.base}/api/admin/reports/portfolio`);
   }
 
   // ── Campaigns ──────────────────────────────────────────────────────────────
 
-  listCampaigns(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.base}/api/admin/campaigns`);
+  listCampaigns(): Observable<CampaignResponse[]> {
+    return this.http.get<CampaignResponse[]>(`${this.base}/api/admin/campaigns`);
   }
 
-  createCampaign(req: {
-    name: string; description?: string | null; targetAmount?: string | null;
-    targetCurrency: string; startDate?: string | null; endDate?: string | null;
-    fundAccountId?: string | null;
-  }): Observable<any> {
-    return this.http.post<any>(`${this.base}/api/admin/campaigns`, req);
+  createCampaign(req: CreateCampaignRequest): Observable<CampaignResponse> {
+    return this.http.post<CampaignResponse>(`${this.base}/api/admin/campaigns`, req);
   }
 
-  openCampaign(id: string): Observable<any> {
-    return this.http.post<any>(`${this.base}/api/admin/campaigns/${id}/open`, {});
+  openCampaign(id: string): Observable<CampaignResponse> {
+    return this.http.post<CampaignResponse>(`${this.base}/api/admin/campaigns/${id}/open`, {});
   }
 
-  closeCampaign(id: string): Observable<any> {
-    return this.http.post<any>(`${this.base}/api/admin/campaigns/${id}/close`, {});
+  closeCampaign(id: string): Observable<CampaignResponse> {
+    return this.http.post<CampaignResponse>(`${this.base}/api/admin/campaigns/${id}/close`, {});
   }
 
   // ── Audit log ──────────────────────────────────────────────────────────────
 
-  getAuditLog(page = 0, size = 50): Observable<any> {
-    return this.http.get<any>(`${this.base}/api/admin/audit-log?page=${page}&size=${size}`);
+  getAuditLog(page = 0, size = 50): Observable<PageResponse<AuditEventResponse>> {
+    return this.http.get<PageResponse<AuditEventResponse>>(
+      `${this.base}/api/admin/audit-log`, { params: { page, size } }
+    );
   }
 }
