@@ -22,6 +22,7 @@ export class ChildDetailComponent implements OnInit {
   campusName = '';
   schoolName: string | null = null;
   monthlyCost = '—';
+  enrolledAt: string | null = null;
   supportStatus: AvailabilityStatus = 'AVAILABLE';
   ledgerEntries: LedgerRow[] = [];
   progressUpdates: ProgressItem[] = [];
@@ -49,6 +50,7 @@ export class ChildDetailComponent implements OnInit {
         this.campusName   = data.campusName;
         this.schoolName   = data.schoolName;
         this.monthlyCost  = `${data.educationCurrency} ${data.educationAmount}`;
+        this.enrolledAt   = data.enrolledAt ?? null;
         this.supportStatus = data.availabilityStatus;
         this.loadLedger();
         this.loadProgress();
@@ -70,6 +72,14 @@ export class ChildDetailComponent implements OnInit {
         }));
       }
     });
+  }
+
+  get waitingMonths(): number | null {
+    if (!this.enrolledAt || this.supportStatus !== 'AVAILABLE') return null;
+    const enrolled = new Date(this.enrolledAt);
+    const now = new Date();
+    const months = (now.getFullYear() - enrolled.getFullYear()) * 12 + (now.getMonth() - enrolled.getMonth());
+    return months > 0 ? months : null;
   }
 
   private loadProgress(): void {

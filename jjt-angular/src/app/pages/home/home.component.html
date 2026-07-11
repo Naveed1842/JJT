@@ -33,24 +33,13 @@
                   padding:15px 24px;text-decoration:none;">Give any amount →</a>
       </div>
 
-      <!-- Stats -->
-      <div class="hero-stats" style="display:flex;gap:38px;margin-top:42px;flex-wrap:wrap;">
-        <div>
-          <div class="stat-num" style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">
-            {{ loadingFeatured ? '—' : totalChildren }}
-          </div>
-          <div style="font-size:13px;color:#8a958d;margin-top:2px;">children in our programme</div>
-        </div>
-        <div>
-          <div class="stat-num" style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">87%</div>
-          <div style="font-size:13px;color:#8a958d;margin-top:2px;">of every rupee reaches a child</div>
-        </div>
-        <div>
-          <div class="stat-num" style="font-family:'Newsreader',serif;font-size:30px;color:#1c352c;">
-            {{ loadingFeatured ? '—' : availableCount }}
-          </div>
-          <div style="font-size:13px;color:#8a958d;margin-top:2px;">currently seeking a sponsor</div>
-        </div>
+      <!-- Micro trust line -->
+      <div class="hero-trust-line" style="display:flex;gap:16px;flex-wrap:wrap;margin-top:20px;font-size:12.5px;color:#8a958d;">
+        <span>Rs 2,500/mo · every rupee traceable</span>
+        <span>·</span>
+        <span>Cancel anytime</span>
+        <span>·</span>
+        <span>Registered &amp; independently audited</span>
       </div>
     </div>
 
@@ -61,7 +50,6 @@
       <img src="assets/images/P1.png" alt="Child in classroom"
            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:14px;"
            onerror="this.style.display='none'" />
-      <!-- Overlay card: first available child from API -->
       @if (!loadingFeatured && featuredChildren.length > 0) {
 <div
            style="position:relative;background:#fffdf9;border:1px solid #e3dccd;border-radius:12px;
@@ -86,21 +74,34 @@
   </div>
 </section>
 
-<!-- ── SADAQAH JARIYAH BAND ───────────────────────────────── -->
-<section class="sadaqah-section" style="background:#1c352c;padding:54px 32px;text-align:center;">
-  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
-              color:#9cc3b3;margin-bottom:16px;">A charity that does not end</div>
-  <div class="sadaqah-quote" style="font-family:'Newsreader',serif;font-weight:400;font-style:italic;font-size:30px;
-              line-height:1.4;color:#fdfaf3;max-width:780px;margin:0 auto 14px;">
-    "When a person dies, their deeds end — except three: ongoing charity, beneficial knowledge,
-    and a righteous child who prays for them."
-  </div>
-  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#9cc3b3;margin-bottom:18px;">
-    Sahih Muslim
-  </div>
-  <div style="font-size:15px;line-height:1.6;color:#cfe0d7;max-width:620px;margin:0 auto;">
-    Educating a child is both ongoing charity and beneficial knowledge — a single act of giving
-    that keeps rewarding, long after it is made.
+<!-- ── IMPACT STRIP ────────────────────────────────────────── -->
+<section class="impact-strip" style="background:#1c352c;padding:28px 32px;border-bottom:1px solid #2b4a3d;">
+  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+    <div style="display:flex;gap:52px;flex-wrap:wrap;">
+      <div>
+        <div class="impact-num" style="font-family:'Newsreader',serif;font-size:34px;color:#fdfaf3;line-height:1;">
+          {{ loadingFeatured ? '—' : totalChildren }}
+        </div>
+        <div style="font-size:11.5px;color:#9cc3b3;margin-top:3px;">children in our programme</div>
+      </div>
+      <div>
+        <div class="impact-num" style="font-family:'Newsreader',serif;font-size:34px;color:#fdfaf3;line-height:1;">87%</div>
+        <div style="font-size:11.5px;color:#9cc3b3;margin-top:3px;">of every rupee reaches a child</div>
+      </div>
+      <div>
+        <div class="impact-num" style="font-family:'Newsreader',serif;font-size:34px;color:#c9942a;line-height:1;">
+          {{ loadingFeatured ? '—' : availableCount }}
+        </div>
+        <div style="font-size:11.5px;color:#9cc3b3;margin-top:3px;">still waiting for a sponsor</div>
+      </div>
+      <div>
+        <div class="impact-num" style="font-family:'Newsreader',serif;font-size:34px;color:#fdfaf3;line-height:1;">2014</div>
+        <div style="font-size:11.5px;color:#9cc3b3;margin-top:3px;">established</div>
+      </div>
+    </div>
+    <a routerLink="/trust" style="font-size:13px;color:#9cc3b3;text-decoration:none;font-weight:500;white-space:nowrap;">
+      Full transparency report →
+    </a>
   </div>
 </section>
 
@@ -109,19 +110,17 @@
   <div style="max-width:1200px;margin:0 auto;">
     <div class="featured-header" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px;">
       <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0;">
-        Children ready to learn — waiting for you
+        They are ready to learn — waiting for you
       </h2>
       <a routerLink="/children"
          style="font-size:14px;color:#2f5d4f;font-weight:600;text-decoration:none;">View all →</a>
     </div>
     <p class="featured-sub" style="font-size:15px;color:#6b7b73;margin:0 0 26px;">
-      Every profile is real and verified by our local team.
+      Every profile is real — our team has sat with their family and verified every detail in person.
     </p>
     <div class="feat-scroll" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px;">
 
-      <!-- Loading skeletons -->
       @if (loadingFeatured) {
-
         @for (_ of [1,2,3]; track _) {
 <div class="feat-card"
              style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
@@ -133,10 +132,8 @@
           </div>
         </div>
 }
-      
-}
+      }
 
-      <!-- Live child cards from API -->
       @for (child of featuredChildren; track child.id) {
 <div class="feat-card"
            style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;background:#fffdf9;">
@@ -144,6 +141,12 @@
           <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;
                       background:repeating-linear-gradient(135deg,#ece4d6,#ece4d6 10px,#e5dccb 10px,#e5dccb 20px);
                       font-size:36px;">🌱</div>
+          @if (waitingMonths(child); as wm) {
+<span style="position:absolute;top:10px;right:10px;background:rgba(201,148,42,.92);color:#fff;
+                        font-size:10px;font-weight:700;border-radius:100px;padding:3px 9px;">
+              Waiting {{ wm }}mo
+            </span>
+}
         </div>
         <div style="padding:18px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:6px;">
@@ -169,22 +172,17 @@
       </div>
 }
 
-      <!-- No children available state -->
       @if (!loadingFeatured && featuredChildren.length === 0) {
 <div class="feat-card"
            style="border:1px solid #e3dccd;border-radius:14px;padding:32px 20px;text-align:center;
                   background:#fffdf9;grid-column:span 3;">
         <div style="font-size:28px;margin-bottom:12px;">🌱</div>
-        <div style="font-size:15px;color:#54625b;margin-bottom:6px;">
-          All children are currently sponsored
-        </div>
-        <div style="font-size:13px;color:#8a958d;">
-          Check back soon — new children join our programme regularly.
-        </div>
+        <div style="font-size:15px;color:#54625b;margin-bottom:6px;">All children are currently sponsored</div>
+        <div style="font-size:13px;color:#8a958d;">Check back soon — new children join our programme regularly.</div>
       </div>
 }
 
-      <!-- Give to fund card (always shown) -->
+      <!-- Give to fund card -->
       <div class="feat-card" style="border:1px dashed #b8c6bd;border-radius:14px;background:#f3eee4;padding:22px;
                   display:flex;flex-direction:column;justify-content:center;">
         <span style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;display:flex;align-items:center;
@@ -205,28 +203,85 @@
   </div>
 </section>
 
-<!-- ── HOW IT WORKS ───────────────────────────────────────── -->
-<section id="how-it-works" class="how-works-section" style="background:#f3eee4;border-top:1px solid #e3dccd;padding:56px 32px;">
+<!-- ── TRACEABILITY STRIP ──────────────────────────────────── -->
+<section class="trace-strip" style="background:#1c352c;padding:56px 32px;">
   <div style="max-width:1200px;margin:0 auto;">
-    <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:30px;color:#1c352c;margin:0 0 30px;">
-      How sponsorship works
-    </h2>
-    <div class="how-works-items" style="display:grid;grid-template-columns:repeat(3,1fr);gap:30px;">
-      <div class="how-works-item">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">01</div>
-        <div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Choose a child or the fund</div>
-        <div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Find a child whose story moves you, or give any amount to the central fund.</div>
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+                color:#9cc3b3;margin-bottom:16px;">Nothing disappears</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:48px;">
+      <h2 style="font-family:'Newsreader',serif;font-weight:400;font-size:32px;line-height:1.2;
+                 color:#fdfaf3;margin:0;max-width:560px;">
+        Every rupee you give is tracked from your card to a school ledger.
+      </h2>
+      <a routerLink="/trust"
+         style="font-size:13.5px;color:#9cc3b3;font-weight:500;text-decoration:none;white-space:nowrap;">
+        Follow the money →
+      </a>
+    </div>
+    <div class="trace-steps" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;">
+      <div style="position:absolute;top:16px;left:calc(10% + 8px);right:calc(10% + 8px);height:1px;background:#2b4a3d;z-index:0;"></div>
+      <div style="text-align:left;position:relative;z-index:1;padding-right:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;color:#fdfaf3;font-family:'IBM Plex Mono',monospace;
+                    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">01</div>
+        <div style="font-weight:600;font-size:14px;color:#fdfaf3;margin-bottom:5px;">Your gift</div>
+        <div style="font-size:12.5px;color:#9cc3b3;line-height:1.45;">Receipt issued the moment you give.</div>
       </div>
-      <div class="how-works-item">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">02</div>
-        <div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Give with your intention</div>
-        <div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Mark your gift as Zakat or Sadaqah. Set up monthly, yearly, or one-time. Cancel anytime.</div>
+      <div style="text-align:left;position:relative;z-index:1;padding-right:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;color:#fdfaf3;font-family:'IBM Plex Mono',monospace;
+                    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">02</div>
+        <div style="font-weight:600;font-size:14px;color:#fdfaf3;margin-bottom:5px;">Allocation</div>
+        <div style="font-size:12.5px;color:#9cc3b3;line-height:1.45;">Assigned to your child's school account.</div>
       </div>
-      <div class="how-works-item">
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#b07d3a;margin-bottom:12px;">03</div>
-        <div style="font-weight:600;font-size:18px;color:#1c352c;margin-bottom:6px;">Follow their progress</div>
-        <div style="font-size:14.5px;line-height:1.55;color:#6b7b73;">Receive updates, grades, and photos as your child grows through the years.</div>
+      <div style="text-align:left;position:relative;z-index:1;padding-right:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;color:#fdfaf3;font-family:'IBM Plex Mono',monospace;
+                    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">03</div>
+        <div style="font-weight:600;font-size:14px;color:#fdfaf3;margin-bottom:5px;">School payment</div>
+        <div style="font-size:12.5px;color:#9cc3b3;line-height:1.45;">Fees paid directly — never as cash.</div>
       </div>
+      <div style="text-align:left;position:relative;z-index:1;padding-right:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#c9942a;color:#fff;font-family:'IBM Plex Mono',monospace;
+                    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">04</div>
+        <div style="font-weight:600;font-size:14px;color:#fdfaf3;margin-bottom:5px;">Progress</div>
+        <div style="font-size:12.5px;color:#9cc3b3;line-height:1.45;">Attendance and reports flow back to you.</div>
+      </div>
+      <div style="text-align:left;position:relative;z-index:1;">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2f5d4f;color:#fdfaf3;font-family:'IBM Plex Mono',monospace;
+                    font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px;">05</div>
+        <div style="font-weight:600;font-size:14px;color:#fdfaf3;margin-bottom:5px;">Audit trail</div>
+        <div style="font-size:12.5px;color:#9cc3b3;line-height:1.45;">Independent auditors check every step, yearly.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GIVING DOOR STRIP ───────────────────────────────── -->
+<section style="background:#f3eee4;border-top:1px solid #e3dccd;border-bottom:1px solid #e3dccd;padding:0 32px;" class="door-section">
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:0;" class="door-strip-grid">
+    <div style="padding:36px 40px 36px 0;border-right:1px solid #e3dccd;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#b07d3a;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">Giving as an act of worship</div>
+      <div style="font-weight:500;font-size:18px;color:#1c352c;margin-bottom:8px;line-height:1.3;">
+        Zakat handled under scholarly guidance. Sadaqah Jariyah that outlives you.
+      </div>
+      <div style="font-size:13.5px;color:#6b7b73;line-height:1.55;margin-bottom:14px;">
+        Every gift is recorded with your intention. Zakat is kept separate and spent only on eligible children.
+      </div>
+      <a routerLink="/trust"
+         style="font-size:13.5px;color:#2f5d4f;font-weight:600;text-decoration:none;">
+        Zakat &amp; Sadaqah →
+      </a>
+    </div>
+    <div style="padding:36px 0 36px 40px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#b07d3a;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;">Give once, give regularly</div>
+      <div style="font-weight:500;font-size:18px;color:#1c352c;margin-bottom:8px;line-height:1.3;">
+        Not ready to commit? Give any amount to the Continuity Fund.
+      </div>
+      <div style="font-size:13.5px;color:#6b7b73;line-height:1.55;margin-bottom:14px;">
+        A one-time donation keeps a child in school today. No account needed.
+      </div>
+      <a routerLink="/why-give"
+         style="font-size:13.5px;color:#2f5d4f;font-weight:600;text-decoration:none;">
+        Give once →
+      </a>
     </div>
   </div>
 </section>
@@ -274,6 +329,11 @@
   }
   @media (max-width: 960px) {
     .hero-grid { grid-template-columns: 1fr !important; }
+    .trace-steps { grid-template-columns: 1fr 1fr !important; row-gap: 28px !important; }
+    .trace-steps > div:first-child ~ div:nth-child(5) { grid-column: span 2; }
+    .door-strip-grid { grid-template-columns: 1fr !important; }
+    .door-strip-grid > div:first-child { border-right: none !important; border-bottom: 1px solid #e3dccd !important; padding: 28px 0 !important; }
+    .door-strip-grid > div:last-child { padding: 28px 0 !important; }
   }
   @media (max-width: 768px) {
     /* Hero */
@@ -284,10 +344,10 @@
     .hero-body { max-width: 100% !important; font-size: 16px !important; }
     .hero-ctas { flex-direction: column !important; gap: 10px !important; }
     .hero-ctas a { text-align: center !important; border-radius: 12px !important; }
-    .stat-num { font-size: 22px !important; }
-    /* Sadaqah band */
-    .sadaqah-section { padding: 34px 22px !important; }
-    .sadaqah-quote { font-size: 19px !important; }
+    .hero-trust-line { display: none !important; }
+    /* Impact strip */
+    .impact-strip { padding: 20px 18px !important; }
+    .impact-num { font-size: 26px !important; }
     /* Featured */
     .featured-section { padding: 30px 0 8px !important; }
     .featured-header { padding: 0 18px !important; }
@@ -304,10 +364,12 @@
     }
     .feat-scroll::-webkit-scrollbar { display: none; }
     .feat-card { flex: 0 0 210px !important; scroll-snap-align: start; min-width: 0; }
-    /* How it works */
-    .how-works-section { padding: 30px 18px !important; }
-    .how-works-items { display: flex !important; flex-direction: column !important; gap: 16px !important; }
-    .how-works-item { display: flex !important; gap: 14px !important; align-items: flex-start !important; }
+    /* Trace strip */
+    .trace-strip { padding: 36px 18px !important; }
+    .trace-steps { grid-template-columns: 1fr !important; row-gap: 24px !important; }
+    .trace-steps > div { padding-right: 0 !important; }
+    /* Door strip */
+    .door-section { padding: 0 18px !important; }
     /* Trust strip */
     .trust-strip { padding: 28px 18px !important; }
     .trust-inner { flex-direction: column !important; gap: 16px !important; align-items: flex-start !important; }

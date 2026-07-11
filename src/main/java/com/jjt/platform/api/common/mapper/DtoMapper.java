@@ -10,6 +10,7 @@ import com.jjt.platform.core.domain.entity.EducationSupportLedger;
 import com.jjt.platform.core.domain.entity.LedgerEntry;
 import com.jjt.platform.core.domain.entity.ProgressUpdate;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ public final class DtoMapper {
 
     private DtoMapper() {}
 
-    public static ChildDto toChildDto(Child child, AvailabilityStatus availabilityStatus) {
+    public static ChildDto toChildDto(Child child, AvailabilityStatus availabilityStatus, LocalDate enrolledAt) {
         return new ChildDto(
                 child.getId(),
                 child.getRollNumber(),
@@ -27,7 +28,8 @@ public final class DtoMapper {
                 child.getSchoolName(),
                 child.getEducationCost().getAmount().toPlainString(),
                 child.getEducationCost().getCurrency().getCurrencyCode(),
-                availabilityStatus
+                availabilityStatus,
+                enrolledAt
         );
     }
 

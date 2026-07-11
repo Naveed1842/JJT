@@ -19,25 +19,32 @@ import { RouterLink } from '@angular/router';
               Junior Jinnah Trust — educating orphan, needy, and underprivileged children across Pakistan since 2014.
             </p>
           </div>
-          <div class="footer-links" style="display:flex;gap:40px;flex-wrap:wrap;">
+          <div class="footer-links" style="display:flex;gap:36px;flex-wrap:wrap;">
             <div>
-              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">Pages</p>
-              <a routerLink="/children" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Children</a>
-              <a routerLink="/why-give" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Why give</a>
-              <a routerLink="/trust" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Trust</a>
-              <a routerLink="/login" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;">Sign in</a>
+              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">Give</p>
+              <a routerLink="/children" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Sponsor a child</a>
+              <a routerLink="/why-give" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Give to the fund</a>
+              <a routerLink="/children" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;">Browse children</a>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">Proof</p>
+              <a routerLink="/trust" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">How we're accountable</a>
+              <a routerLink="/trust" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Annual report</a>
+              <a routerLink="/trust" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;">Zakat policy</a>
+            </div>
+            <div>
+              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">JJT</p>
+              <a routerLink="/trust" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">About</a>
+              <a routerLink="/login" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;margin-bottom:6px;">Sign in</a>
+              <a routerLink="/admin" style="display:block;font-size:13.5px;color:#9cc3b3;text-decoration:none;">Admin</a>
             </div>
             <div>
               <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">Contact</p>
               <p style="font-size:13px;margin:0 0 5px;">info&#64;jjtrust.org</p>
               <p style="font-size:13px;margin:0 0 5px;">+92-332-311-1345</p>
-              <p style="font-size:13px;margin:0;">Islamabad, Pakistan</p>
-            </div>
-            <div>
-              <p style="font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:#6b9c8b;margin:0 0 12px;">Bank</p>
-              <p style="font-size:13px;margin:0 0 4px;">SAMBA BANK LIMITED</p>
-              <p style="font-size:13px;margin:0 0 4px;font-family:'IBM Plex Mono',monospace;">A/C: 2000848908</p>
-              <p style="font-size:12px;margin:0;font-family:'IBM Plex Mono',monospace;">PK27SAMB0000002000848908</p>
+              <p style="font-size:13px;margin:0 0 8px;">Islamabad, Pakistan</p>
+              <p style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;margin:0 0 2px;color:#6b9c8b;">SAMBA BANK</p>
+              <p style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;margin:0;color:#6b9c8b;">A/C 2000848908</p>
             </div>
           </div>
         </div>

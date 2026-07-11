@@ -21,6 +21,7 @@ export interface ChildDto {
   educationAmount: string;
   educationCurrency: string;
   availabilityStatus: AvailabilityStatus;
+  enrolledAt?: string | null;
 }
 
 // ---- Ledger -----------------------------------------------------------------

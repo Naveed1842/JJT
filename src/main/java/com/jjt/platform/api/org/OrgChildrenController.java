@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -60,8 +62,13 @@ public class OrgChildrenController {
         Set<UUID> activeChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.ACTIVE);
         Set<UUID> pendingChildIds = sponsorshipRepo.findChildIdsByStatus(com.jjt.platform.core.domain.entity.SponsorshipStatus.PENDING);
         return childRepo.findAll().stream()
-                .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId(), activeChildIds, pendingChildIds)))
+                .map(entity -> {
+                    var child = ChildMapper.toDomain(entity);
+                    LocalDate enrolledAt = entity.getCreatedAt() != null
+                            ? entity.getCreatedAt().atZone(ZoneOffset.UTC).toLocalDate()
+                            : null;
+                    return DtoMapper.toChildDto(child, deriveAvailability(child.getId(), activeChildIds, pendingChildIds), enrolledAt);
+                })
                 .toList();
     }
 
@@ -69,8 +76,13 @@ public class OrgChildrenController {
     @PreAuthorize("permitAll()")
     public ResponseEntity<ChildDto> getChild(@PathVariable("childId") UUID childId) {
         return childRepo.findById(childId)
-                .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
+                .map(entity -> {
+                    var child = ChildMapper.toDomain(entity);
+                    LocalDate enrolledAt = entity.getCreatedAt() != null
+                            ? entity.getCreatedAt().atZone(ZoneOffset.UTC).toLocalDate()
+                            : null;
+                    return DtoMapper.toChildDto(child, deriveAvailability(child.getId()), enrolledAt);
+                })
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -20,15 +20,15 @@ export class SponsorCommitComponent implements OnInit {
   city = '';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
 
-  // Step (1=Intention, 2=Plan, 3=Details, 4=Payment, 5=Confirmed)
-  step: 1 | 2 | 3 | 4 | 5 = 1;
+  // Step (1=Your gift, 2=Complete, 3=Confirmed)
+  step: 1 | 2 | 3 = 1;
 
   readonly stepDefs = [
-    { n: 1, label: 'Intention' },
-    { n: 2, label: 'Plan' },
-    { n: 3, label: 'Account' },
-    { n: 4, label: 'Payment' },
+    { n: 1, label: 'Your gift' },
+    { n: 2, label: 'Complete' },
   ];
+
+  intentionOpen = false;
 
   // Form
   intention: 'SADAQAH' | 'ZAKAT' | 'GENERAL' = 'SADAQAH';
@@ -103,14 +103,13 @@ export class SponsorCommitComponent implements OnInit {
 
   get stepValid(): boolean {
     if (this.step === 1) return true;
-    if (this.step === 2) return true;
-    if (this.step === 3) return !!this.sponsorName.trim() && this.emailValid;
+    if (this.step === 2) return !!this.sponsorName.trim() && this.emailValid;
     return true;
   }
 
   nextStep(): void {
     if (!this.stepValid) {
-      if (this.step === 3 && !!this.sponsorName.trim() && !this.emailValid) {
+      if (this.step === 2 && !!this.sponsorName.trim() && !this.emailValid) {
         this.error = 'Please enter a valid email address.';
       } else {
         this.error = 'Please fill in all required fields.';
@@ -118,12 +117,12 @@ export class SponsorCommitComponent implements OnInit {
       return;
     }
     this.error = null;
-    if (this.step === 4) { this.submit(); return; }
-    this.step = (this.step + 1) as 1 | 2 | 3 | 4 | 5;
+    if (this.step === 2) { this.submit(); return; }
+    this.step = (this.step + 1) as 1 | 2 | 3;
   }
 
   prevStep(): void {
-    if (this.step > 1) this.step = (this.step - 1) as 1 | 2 | 3 | 4 | 5;
+    if (this.step > 1) this.step = (this.step - 1) as 1 | 2 | 3;
   }
 
   submit(): void {
@@ -145,7 +144,7 @@ export class SponsorCommitComponent implements OnInit {
       next: (res) => {
         this.submitting = false;
         this.startMonth = res.startMonth;
-        this.step = 5;
+        this.step = 3;
         this.childrenStore.invalidate(); // the child is no longer AVAILABLE
       },
       error: (err) => {

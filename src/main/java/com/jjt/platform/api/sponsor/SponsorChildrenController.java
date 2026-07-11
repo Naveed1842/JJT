@@ -63,7 +63,7 @@ public class SponsorChildrenController {
         List<UUID> childIds = sponsoredChildIds(sponsorId);
         List<ChildDto> result = childRepo.findAllById(childIds).stream()
                 .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
+                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId()), null))
                 .toList();
         return ResponseEntity.ok(result);
     }
@@ -77,7 +77,7 @@ public class SponsorChildrenController {
         }
         return childRepo.findById(childId)
                 .map(ChildMapper::toDomain)
-                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId())))
+                .map(child -> DtoMapper.toChildDto(child, deriveAvailability(child.getId()), null))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
