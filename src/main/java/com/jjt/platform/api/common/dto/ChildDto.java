@@ -1,5 +1,6 @@
 package com.jjt.platform.api.common.dto;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 public record ChildDto(UUID id,
@@ -10,5 +11,6 @@ public record ChildDto(UUID id,
                        String schoolName,
                        String educationAmount,
                        String educationCurrency,
-                       AvailabilityStatus availabilityStatus) {
+                       AvailabilityStatus availabilityStatus,
+                       LocalDate enrolledAt) {
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -39,6 +40,9 @@ public class ChildEntity {
 
     @Column(name = "organisation_id", nullable = false, updatable = false)
     private UUID organisationId;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
     @OneToOne(mappedBy = "child", optional = false)
     private EducationSupportLedgerEntity ledger;
@@ -92,6 +96,10 @@ public class ChildEntity {
     }
 
     public UUID getOrganisationId() { return organisationId; }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     public EducationSupportLedgerEntity getLedger() {
         return ledger;

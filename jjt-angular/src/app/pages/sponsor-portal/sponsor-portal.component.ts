@@ -144,8 +144,8 @@ export class SponsorPortalComponent implements OnInit {
 
   statusLabel(status: string): string {
     switch (status) {
-      case 'AVAILABLE': return 'Seeking';
-      case 'RESERVED':  return 'Bridged';
+      case 'AVAILABLE': return 'Seeking a sponsor';
+      case 'RESERVED':  return 'Covered by the fund';
       case 'ALLOCATED': return 'Sponsored';
       default:          return status;
     }

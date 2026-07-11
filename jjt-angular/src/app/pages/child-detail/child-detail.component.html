@@ -62,15 +62,17 @@
           {{ childName }}'s story
         </h2>
         <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0 0 14px;">
-          {{ childName }} studies at <strong style="color:#1c352c;">{{ campusName }}</strong> in {{ city }}.
-          Roll number: <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;">{{ rollNumber }}</span>.
+          {{ childName }} is enrolled at <strong style="color:#1c352c;">{{ campusName }}</strong>
           @if (schoolName) {
-<span> School: {{ schoolName }}.</span>
-}
+<span> ({{ schoolName }})</span>
+} in <strong style="color:#1c352c;">{{ city }}</strong>.
+          Before JJT, a child in their position faces a single obstacle that ends everything:
+          fees their family cannot cover. Your sponsorship removes that obstacle — permanently,
+          for as long as you give.
         </p>
         <p style="font-size:16px;line-height:1.7;color:#54625b;margin:0;">
-          Your sponsorship covers education fees, books, and supplies — and the Continuity Fund ensures
-          none of it lapses between payments.
+          JJT's field team verified {{ childName }}'s situation in person before this profile went live.
+          Every rupee you send is tracked, ledger entry by entry, and you can see it on this page.
         </p>
 
         <!-- Selection basis -->
@@ -193,19 +195,25 @@
             <!-- Status badge -->
             <div style="margin-top:12px;margin-bottom:20px;">
               @if (supportStatus === 'AVAILABLE') {
-<span
-                    style="display:inline-flex;align-items:center;gap:7px;background:#f1ece2;color:#8a7a5f;
-                           font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">
-                <span style="width:7px;height:7px;border-radius:50%;background:#9aa79f;"></span>
-                Seeking sponsor
-              </span>
+<div>
+                <span style="display:inline-flex;align-items:center;gap:7px;background:#f1ece2;color:#8a7a5f;
+                             font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">
+                  <span style="width:7px;height:7px;border-radius:50%;background:#9aa79f;"></span>
+                  Waiting for a sponsor
+                </span>
+                @if (waitingMonths !== null) {
+<div style="font-size:12px;color:#b07d3a;margin-top:6px;font-weight:500;">
+                  Waiting {{ waitingMonths }} {{ waitingMonths === 1 ? 'month' : 'months' }}
+                </div>
+}
+              </div>
 }
               @if (supportStatus === 'RESERVED') {
 <span
                     style="display:inline-flex;align-items:center;gap:7px;background:#fdf7ec;color:#8a5f1f;
                            font-size:12px;font-weight:600;border-radius:100px;padding:5px 11px;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#d99a4e;"></span>
-                Bridged
+                Covered by the fund
               </span>
 }
               @if (supportStatus === 'ALLOCATED') {
@@ -252,19 +260,42 @@
 <div
                  style="margin-top:20px;padding-top:18px;border-top:1px solid #efe9dd;">
               <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;
-                          text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">What happens after you sponsor</div>
-              <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;line-height:1.45;color:#54625b;">
-                <div style="display:flex;gap:9px;">
-                  <span style="color:#2f5d4f;font-weight:700;">1.</span>
-                  Instant confirmation &amp; a welcome from the team.
+                          text-transform:uppercase;color:#9aa79f;margin-bottom:12px;">Their journey with you</div>
+              <div style="display:flex;flex-direction:column;gap:0;">
+                <div style="display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;border-left:2px solid #e3dccd;padding-left:14px;margin-left:5px;position:relative;">
+                  <span style="position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:#2f5d4f;border:1.5px solid #fffdf9;"></span>
+                  <div>
+                    <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#9aa79f;text-transform:uppercase;letter-spacing:.06em;">Day 1</div>
+                    <div style="font-size:12.5px;color:#54625b;line-height:1.4;">Fees confirmed. Child stays in class without interruption.</div>
+                  </div>
                 </div>
-                <div style="display:flex;gap:9px;">
-                  <span style="color:#2f5d4f;font-weight:700;">2.</span>
-                  Your first photo update within 60 days.
+                <div style="display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;border-left:2px solid #e3dccd;padding-left:14px;margin-left:5px;position:relative;">
+                  <span style="position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:#2f5d4f;border:1.5px solid #fffdf9;"></span>
+                  <div>
+                    <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#9aa79f;text-transform:uppercase;letter-spacing:.06em;">Within 60 days</div>
+                    <div style="font-size:12.5px;color:#54625b;line-height:1.4;">First photo update from our field team — a real face, a real school.</div>
+                  </div>
                 </div>
-                <div style="display:flex;gap:9px;">
-                  <span style="color:#2f5d4f;font-weight:700;">3.</span>
-                  Term reports &amp; progress, twice a year.
+                <div style="display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;border-left:2px solid #e3dccd;padding-left:14px;margin-left:5px;position:relative;">
+                  <span style="position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:#2f5d4f;border:1.5px solid #fffdf9;"></span>
+                  <div>
+                    <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#9aa79f;text-transform:uppercase;letter-spacing:.06em;">Each term</div>
+                    <div style="font-size:12.5px;color:#54625b;line-height:1.4;">Attendance, grades, and a teacher's narrative — posted to your sponsor portal.</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;padding-bottom:10px;border-left:2px solid #e3dccd;padding-left:14px;margin-left:5px;position:relative;">
+                  <span style="position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:#c9942a;border:1.5px solid #fffdf9;"></span>
+                  <div>
+                    <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#9aa79f;text-transform:uppercase;letter-spacing:.06em;">Each year</div>
+                    <div style="font-size:12.5px;color:#54625b;line-height:1.4;">Full annual summary with ledger transparency — every rupee accounted for.</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:10px;align-items:flex-start;border-left:2px solid transparent;padding-left:14px;margin-left:5px;position:relative;">
+                  <span style="position:absolute;left:-5px;top:3px;width:8px;height:8px;border-radius:50%;background:#1c352c;border:1.5px solid #fffdf9;"></span>
+                  <div>
+                    <div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#9aa79f;text-transform:uppercase;letter-spacing:.06em;">One day</div>
+                    <div style="font-size:12.5px;color:#54625b;line-height:1.4;">{{ childName }} graduates. The Sadaqah Jariyah continues in everything they build.</div>
+                  </div>
                 </div>
               </div>
             </div>

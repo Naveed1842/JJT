@@ -34,8 +34,16 @@ export class HomeComponent implements OnInit {
   }
 
   statusLabel(status: ChildDto['availabilityStatus']): string {
-    if (status === 'RESERVED')  return 'Bridged';
+    if (status === 'RESERVED')  return 'Covered by the fund';
     if (status === 'ALLOCATED') return 'Sponsored';
-    return 'Seeking';
+    return 'Seeking a sponsor';
+  }
+
+  waitingMonths(child: ChildDto): number | null {
+    if (!child.enrolledAt || child.availabilityStatus !== 'AVAILABLE') return null;
+    const enrolled = new Date(child.enrolledAt);
+    const now = new Date();
+    const months = (now.getFullYear() - enrolled.getFullYear()) * 12 + (now.getMonth() - enrolled.getMonth());
+    return months > 0 ? months : null;
   }
 }

@@ -76,11 +76,19 @@ export class OneChildAtATimeComponent implements OnInit {
 
   statusLabel(status: ChildDto['availabilityStatus']): string {
     switch (status) {
-      case 'AVAILABLE': return 'Seeking';
-      case 'RESERVED':  return 'Bridged';
+      case 'AVAILABLE': return 'Seeking a sponsor';
+      case 'RESERVED':  return 'Covered by the fund';
       case 'ALLOCATED': return 'Sponsored';
       default:          return status;
     }
+  }
+
+  waitingMonths(child: ChildDto): number | null {
+    if (!child.enrolledAt || child.availabilityStatus !== 'AVAILABLE') return null;
+    const enrolled = new Date(child.enrolledAt);
+    const now = new Date();
+    const months = (now.getFullYear() - enrolled.getFullYear()) * 12 + (now.getMonth() - enrolled.getMonth());
+    return months > 0 ? months : null;
   }
 
   badgeStyle(status: ChildDto['availabilityStatus']): string {

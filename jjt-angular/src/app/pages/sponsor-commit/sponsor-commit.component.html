@@ -19,7 +19,7 @@
 }
 
 <!-- Error banner (steps 1-4) -->
-@if (!pageLoading && error && step < 5) {
+@if (!pageLoading && error && step < 3) {
 <div
      style="max-width:960px;margin:32px auto;padding:0 32px;">
   <div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:10px;padding:14px;color:#b45454;font-size:14px;">
@@ -29,7 +29,7 @@
 }
 
 <!-- Stepper + forms (steps 1-4) -->
-@if (!pageLoading && step < 5) {
+@if (!pageLoading && step < 3) {
 <div class="checkout-outer"
      style="background:#fffdf9;min-height:calc(100vh - 60px);padding:40px 32px;">
   <div class="checkout-content" style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 360px;gap:36px;align-items:start;">
@@ -56,13 +56,13 @@
       <!-- Mobile progress -->
       <div class="step-bar-mobile" style="display:none;padding:14px 18px 0;">
         <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#8a958d;margin-bottom:6px;">
-          <span style="color:#1c352c;font-weight:600;">Step {{ step }} of 4 · {{ stepDefs[step-1].label }}</span>
-          @if (step < 4) {
-<span>{{ stepDefs[step].label }} → {{ stepDefs[step < 3 ? step+1 : 3].label }}</span>
+          <span style="color:#1c352c;font-weight:600;">Step {{ step }} of 2 · {{ stepDefs[step-1].label }}</span>
+          @if (step < 2) {
+<span>Next: {{ stepDefs[step].label }}</span>
 }
         </div>
         <div style="height:5px;background:#efe9dd;border-radius:100px;overflow:hidden;">
-          <div [style]="'width:' + (step * 25) + '%;height:100%;background:#2f5d4f;border-radius:100px;transition:width .3s;'"></div>
+          <div [style]="'width:' + (step * 50) + '%;height:100%;background:#2f5d4f;border-radius:100px;transition:width .3s;'"></div>
         </div>
       </div>
 
@@ -74,64 +74,23 @@
                     border:1px solid #e3dccd;"></div>
         <div style="flex:1;min-width:0;">
           <div style="font-weight:600;font-size:13.5px;color:#1c352c;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Sponsoring {{ childName }}</div>
-          <div style="font-size:11.5px;color:#8a958d;">{{ displayPrice }} · {{ intentionLabel() }}</div>
+          <div style="font-size:11.5px;color:#8a958d;">{{ displayPrice }} · {{ commitmentType === 'YEARLY' ? 'Yearly' : 'Monthly' }}</div>
         </div>
       </div>
 
-      <!-- ── Step 1: Intention ── -->
+      <!-- ── Step 1: Your gift (plan + intention accordion) ── -->
       @if (step === 1) {
 <div>
         <h1 class="step-h1" style="font-family:'Newsreader',serif;font-weight:500;font-size:32px;color:#1c352c;margin:0 0 6px;letter-spacing:-.01em;">
-          First, set your intention
+          Choose your plan
         </h1>
         <p style="font-size:15.5px;color:#6b7b73;margin:0 0 26px;">
-          Deeds are by intention. Tell us how you'd like this gift recorded so we handle it correctly.
+          Sponsoring <strong style="color:#1c352c;">{{ childName }}</strong>'s education. Cancel anytime.
         </p>
 
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-                    color:#9aa79f;margin-bottom:12px;">This gift is</div>
-        <div class="intention-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px;">
-          <div (click)="intention = 'SADAQAH'"
-               [style]="'border-radius:12px;padding:16px;cursor:pointer;border:' + (intention === 'SADAQAH' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
-            <div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">Sadaqah</div>
-            <div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Voluntary charity, any amount.</div>
-          </div>
-          <div (click)="intention = 'ZAKAT'"
-               [style]="'border-radius:12px;padding:16px;cursor:pointer;border:' + (intention === 'ZAKAT' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
-            <div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">Zakat</div>
-            <div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Spent only on eligible children.</div>
-          </div>
-          <div (click)="intention = 'GENERAL'"
-               [style]="'border-radius:12px;padding:16px;cursor:pointer;border:' + (intention === 'GENERAL' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
-            <div style="font-weight:600;font-size:15px;color:#1c352c;margin-bottom:3px;">General</div>
-            <div style="font-size:12.5px;color:#6b7b73;line-height:1.4;">Use where needed most.</div>
-          </div>
-        </div>
-
-        <div style="display:flex;gap:14px;align-items:center;">
-          <button (click)="nextStep()" class="step-continue-btn"
-                  style="background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
-                         padding:15px 32px;border:none;cursor:pointer;">
-            Continue →
-          </button>
-          <span style="font-size:14px;color:#8a958d;">Step 1 of 4</span>
-        </div>
-      </div>
-}
-
-      <!-- ── Step 2: Plan selection ── -->
-      @if (step === 2) {
-<div>
-        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
-          Choose a plan
-        </h2>
-        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">
-          Sponsoring <strong style="color:#1c352c;">{{ childName }}</strong>'s education.
-        </p>
         <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
                     color:#9aa79f;margin-bottom:12px;">How often</div>
-        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:26px;">
-          <!-- Monthly -->
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
           <div (click)="commitmentType = 'MONTHLY'"
                [style]="'border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;' + (commitmentType === 'MONTHLY' ? 'border:2px solid #2f5d4f;background:#f6faf7;' : 'border:1px solid #e3dccd;background:#fffdf9;')">
             <span [style]="'width:20px;height:20px;border-radius:50%;flex-shrink:0;' + (commitmentType === 'MONTHLY' ? 'border:6px solid #2f5d4f;background:#fff;' : 'border:1.5px solid #cdc4b2;background:#fff;')"></span>
@@ -141,7 +100,6 @@
             </div>
             <div style="font-family:'Newsreader',serif;font-size:24px;color:#1c352c;">{{ monthlyCost }}<span style="font-size:13px;color:#8a958d;">/mo</span></div>
           </div>
-          <!-- Yearly -->
           <div (click)="commitmentType = 'YEARLY'"
                [style]="'border-radius:14px;padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;position:relative;' + (commitmentType === 'YEARLY' ? 'border:2px solid #2f5d4f;background:#f6faf7;' : 'border:1px solid #e3dccd;background:#fffdf9;')">
             <span style="position:absolute;top:-1px;right:-1px;background:#d99a4e;color:#fff;font-size:10.5px;font-weight:700;border-radius:0 12px 0 8px;padding:4px 10px;">Save 10%</span>
@@ -154,37 +112,55 @@
           </div>
         </div>
 
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
-                    color:#9aa79f;margin-bottom:12px;">Pay with</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;">
-          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Card</span>
-          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Bank transfer</span>
-          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">JazzCash</span>
-          <span style="border:1px solid #cdc4b2;border-radius:9px;padding:10px 18px;font-size:13.5px;color:#54625b;">Easypaisa</span>
+        <!-- Intention accordion -->
+        <div style="border:1px solid #e3dccd;border-radius:12px;overflow:hidden;margin-bottom:28px;">
+          <button (click)="intentionOpen = !intentionOpen"
+                  style="width:100%;background:#f3eee4;border:none;padding:14px 18px;display:flex;align-items:center;
+                         justify-content:space-between;cursor:pointer;text-align:left;">
+            <span style="font-size:13.5px;color:#1c352c;">
+              Giving as Zakat or Sadaqah?
+              <span style="color:#8a958d;font-weight:400;"> · {{ intentionLabel() }}</span>
+            </span>
+            <span [style]="'font-size:16px;color:#8a958d;transition:transform .2s;display:inline-block;transform:rotate(' + (intentionOpen ? '90' : '0') + 'deg);'">›</span>
+          </button>
+          @if (intentionOpen) {
+<div style="padding:16px 18px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;" class="intention-grid">
+            <div (click)="intention = 'SADAQAH'"
+                 [style]="'border-radius:10px;padding:14px;cursor:pointer;border:' + (intention === 'SADAQAH' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
+              <div style="font-weight:600;font-size:14px;color:#1c352c;margin-bottom:3px;">Sadaqah</div>
+              <div style="font-size:12px;color:#6b7b73;line-height:1.4;">Voluntary charity.</div>
+            </div>
+            <div (click)="intention = 'ZAKAT'"
+                 [style]="'border-radius:10px;padding:14px;cursor:pointer;border:' + (intention === 'ZAKAT' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
+              <div style="font-weight:600;font-size:14px;color:#1c352c;margin-bottom:3px;">Zakat</div>
+              <div style="font-size:12px;color:#6b7b73;line-height:1.4;">Eligible children only.</div>
+            </div>
+            <div (click)="intention = 'GENERAL'"
+                 [style]="'border-radius:10px;padding:14px;cursor:pointer;border:' + (intention === 'GENERAL' ? '2px solid #2f5d4f;background:#f6faf7;' : '1px solid #e3dccd;background:#fffdf9;')">
+              <div style="font-weight:600;font-size:14px;color:#1c352c;margin-bottom:3px;">General</div>
+              <div style="font-size:12px;color:#6b7b73;line-height:1.4;">Use where needed.</div>
+            </div>
+          </div>
+}
         </div>
 
-        <div style="display:flex;gap:12px;">
-          <button (click)="prevStep()" class="step-back-btn"
-                  style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
-                         padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
-            ← Back
-          </button>
-          <button (click)="nextStep()" class="step-continue-btn"
-                  style="flex:1;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
-                         padding:14px 0;border:none;cursor:pointer;">
-            Continue →
-          </button>
-        </div>
+        <button (click)="nextStep()" class="step-continue-btn"
+                style="width:100%;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
+                       padding:15px 0;border:none;cursor:pointer;">
+          Continue →
+        </button>
       </div>
 }
 
-      <!-- ── Step 3: Sponsor details ── -->
-      @if (step === 3) {
+      <!-- ── Step 2: Details + payment ── -->
+      @if (step === 2) {
 <div>
         <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
-          Your details
+          Complete your sponsorship
         </h2>
-        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">We'll use these to confirm and keep you updated.</p>
+        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">Your details, then transfer to confirm.</p>
+
+        <!-- Details -->
         <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px;">
           <div>
             <label style="display:block;font-size:13px;font-weight:600;color:#1c352c;margin-bottom:6px;">Full name *</label>
@@ -197,10 +173,7 @@
             <input type="email" [(ngModel)]="email" placeholder="you@example.com"
                    [style]="'width:100%;border:1px solid ' + (email.trim() && !emailValid ? '#f5c5c5' : '#ddd5c5') + ';border-radius:8px;padding:11px 14px;font-size:15px;color:#1c352c;background:#fff;outline:none;font-family:Hanken Grotesk,sans-serif;box-sizing:border-box;'" />
             @if (email.trim() && !emailValid) {
-<div
-                 style="font-size:12px;color:#b45454;margin-top:5px;">
-              Please enter a valid email address.
-            </div>
+<div style="font-size:12px;color:#b45454;margin-top:5px;">Please enter a valid email address.</div>
 }
           </div>
           <div>
@@ -212,40 +185,12 @@
                           color:#1c352c;background:#fff;outline:none;font-family:'Hanken Grotesk',sans-serif;box-sizing:border-box;" />
           </div>
         </div>
-        @if (error) {
-<div
-             style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
-          {{ error }}
-        </div>
-}
-        <div style="display:flex;gap:12px;">
-          <button (click)="prevStep()" class="step-back-btn"
-                  style="border:1px solid #cdc4b2;color:#1c352c;font-size:15px;font-weight:500;border-radius:10px;
-                         padding:14px 20px;background:#fffdf9;cursor:pointer;flex:0 0 auto;">
-            ← Back
-          </button>
-          <button (click)="nextStep()" class="step-continue-btn"
-                  style="flex:1;background:#2f5d4f;color:#fff;font-size:16px;font-weight:600;border-radius:10px;
-                         padding:14px 0;border:none;cursor:pointer;">
-            Continue →
-          </button>
-        </div>
-      </div>
-}
 
-      <!-- ── Step 4: Payment (bank transfer) ── -->
-      @if (step === 4) {
-<div>
-        <h2 style="font-family:'Newsreader',serif;font-weight:500;font-size:28px;color:#1c352c;margin:0 0 8px;">
-          Payment details
-        </h2>
-        <p style="font-size:15px;color:#6b7b73;margin:0 0 24px;">
-          Transfer to JJT's account below. We'll confirm receipt within 1–2 business days.
-        </p>
-        <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;margin-bottom:24px;">
+        <!-- Bank transfer -->
+        <div style="border:1px solid #e3dccd;border-radius:14px;overflow:hidden;margin-bottom:20px;">
           <div style="background:#f3eee4;border-bottom:1px solid #e3dccd;padding:14px 20px;
                       font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;
-                      text-transform:uppercase;color:#9aa79f;">Bank transfer details</div>
+                      text-transform:uppercase;color:#9aa79f;">Transfer to this account</div>
           <div style="padding:20px;display:flex;flex-direction:column;gap:14px;">
             <div>
               <div style="font-size:11.5px;color:#9aa79f;margin-bottom:3px;">Account title</div>
@@ -279,9 +224,9 @@
             </div>
           </div>
         </div>
+
         @if (error) {
-<div
-             style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
+<div style="background:#fdf2f2;border:1px solid #f5c5c5;border-radius:8px;padding:12px;color:#b45454;font-size:13.5px;margin-bottom:16px;">
           {{ error }}
         </div>
 }
@@ -338,22 +283,46 @@
         </div>
       </div>
 
-      <!-- Islamic du'a preview -->
-      <div style="margin-top:16px;background:#1c352c;border-radius:16px;padding:22px;">
+      <!-- Trust signals (A7) -->
+      <div style="margin-top:14px;border:1px solid #e3dccd;border-radius:14px;padding:18px;background:#fffdf9;">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#3c4a43;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+            <span><strong style="color:#1c352c;">87%</strong> of every rupee reaches a child directly</span>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#3c4a43;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+            <span>Cancel anytime — no fees, no questions</span>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#3c4a43;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+            <span>Independently audited annually</span>
+          </div>
+          <div style="display:flex;gap:9px;align-items:center;font-size:13px;color:#3c4a43;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#2f5d4f;flex-shrink:0;"></span>
+            <span>Zakat handled under scholarly guidance</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Post-gift account prompt (A8) -->
+      <div style="margin-top:14px;background:#1c352c;border-radius:14px;padding:18px;">
         <div style="font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;
-                    text-transform:uppercase;color:#9cc3b3;margin-bottom:10px;">After you give</div>
-        <div style="font-family:'Newsreader',serif;font-style:italic;font-size:17px;line-height:1.45;color:#fdfaf3;">
+                    text-transform:uppercase;color:#9cc3b3;margin-bottom:8px;">After you give</div>
+        <div style="font-size:13.5px;color:#fdfaf3;line-height:1.5;margin-bottom:10px;">
+          Create a free account to see your child's progress, ledger, and updates — anytime.
+        </div>
+        <div style="font-size:12px;color:#9cc3b3;font-style:italic;">
           "May Allah accept your {{ intentionLabel().toLowerCase() }} and make it a continuing reward."
         </div>
-        <div style="font-size:12px;color:#9cc3b3;margin-top:10px;">A calm thank-you — never an upsell.</div>
       </div>
     </div>
   </div>
 </div>
 }
 
-<!-- ── Step 5: Confirmation ── -->
-@if (step === 5) {
+<!-- ── Step 3: Confirmation ── -->
+@if (step === 3) {
 <div class="confirm-page"
      style="background:#fffdf9;min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:40px 32px;">
   <div style="max-width:520px;width:100%;text-align:center;">
