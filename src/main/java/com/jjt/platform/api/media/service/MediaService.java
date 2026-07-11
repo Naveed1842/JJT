@@ -1,5 +1,7 @@
 package com.jjt.platform.api.media.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jjt.platform.api.media.dto.MediaAttachmentResponse;
 import com.jjt.platform.api.media.dto.MediaConfirmRequest;
 import com.jjt.platform.api.media.dto.MediaFileResponse;
@@ -8,7 +10,6 @@ import com.jjt.platform.api.media.dto.MediaUploadIntentResponse;
 import com.jjt.platform.api.media.dto.MediaVariantResponse;
 import com.jjt.platform.infrastructure.media.PresignedPutUrl;
 import com.jjt.platform.infrastructure.media.StorageProvider;
-import com.jjt.platform.infrastructure.persistence.entity.ChildEntity;
 import com.jjt.platform.infrastructure.persistence.entity.MediaAttachmentEntity;
 import com.jjt.platform.infrastructure.persistence.entity.MediaFileEntity;
 import com.jjt.platform.infrastructure.persistence.entity.MediaVariantEntity;
@@ -16,6 +17,8 @@ import com.jjt.platform.infrastructure.persistence.repository.ChildJpaRepository
 import com.jjt.platform.infrastructure.persistence.repository.MediaAttachmentRepository;
 import com.jjt.platform.infrastructure.persistence.repository.MediaFileRepository;
 import com.jjt.platform.infrastructure.persistence.repository.MediaVariantRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 @Service
 public class MediaService {
 
+    private static final Logger log = LoggerFactory.getLogger(MediaService.class);
     private static final Duration PRESIGNED_PUT_EXPIRY = Duration.ofMinutes(15);
     private static final Duration PRESIGNED_GET_EXPIRY = Duration.ofHours(1);
 
@@ -41,6 +45,7 @@ public class MediaService {
     private final MediaAttachmentRepository attachmentRepo;
     private final ChildJpaRepository childRepo;
     private final MediaProcessingService processingService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${media.storage.max-upload-size-bytes:52428800}")
     private long maxUploadSizeBytes;
@@ -79,13 +84,16 @@ public class MediaService {
         MediaFileEntity entity = new MediaFileEntity(
                 mediaId, orgId, storageRef, storage.providerName(),
                 req.originalName(), req.mimeType(), mediaType, visibility, "UPLOADING", userId);
-        mediaFileRepo.save(entity);
 
-        // Persist pending attachment info in the entity's metadata via status tracking
-        // We'll create the attachment at confirm time using data in a separate pending record.
-        // For simplicity, store pending attachment via a transient token map in service.
-        pendingAttachments.put(mediaId, new PendingAttachment(
-                req.ownerType(), req.ownerId(), req.attachmentRole(), req.sortOrder(), userId));
+        // Persist pending attachment info in metadata JSONB — survives server restarts
+        PendingAttachment pending = new PendingAttachment(
+                req.ownerType(), req.ownerId().toString(), req.attachmentRole(), req.sortOrder(), userId.toString());
+        try {
+            entity.setMetadata(objectMapper.writeValueAsString(Map.of("pendingAttachment", pending)));
+        } catch (JsonProcessingException e) {
+            log.warn("Could not serialize pending attachment for mediaId={}", mediaId);
+        }
+        mediaFileRepo.save(entity);
 
         PresignedPutUrl presigned = storage.generatePresignedPutUrl(
                 storageRef, req.mimeType(), maxUploadSizeBytes, PRESIGNED_PUT_EXPIRY);
@@ -109,18 +117,37 @@ public class MediaService {
             media.setContentHash(req.contentHash());
         }
         media.setStatus("PROCESSING");
+
+        // Read pending attachment from persisted metadata
+        PendingAttachment pending = readPendingAttachment(media.getMetadata());
+        if (pending != null) {
+            // Clear it before saving so it doesn't linger
+            media.setMetadata("{}");
+        }
         mediaFileRepo.save(media);
 
-        // Create attachment
-        PendingAttachment pending = pendingAttachments.remove(mediaId);
         if (pending != null) {
             createAttachment(media, pending);
         }
 
-        // Trigger async processing (thumbnail generation)
         processingService.process(mediaId);
 
         return toFileResponse(media, List.of());
+    }
+
+    private PendingAttachment readPendingAttachment(String metadataJson) {
+        if (metadataJson == null || metadataJson.isBlank() || "{}".equals(metadataJson.trim())) {
+            return null;
+        }
+        try {
+            var root = objectMapper.readTree(metadataJson);
+            var node = root.get("pendingAttachment");
+            if (node == null) return null;
+            return objectMapper.treeToValue(node, PendingAttachment.class);
+        } catch (Exception e) {
+            log.warn("Could not deserialize pending attachment from metadata: {}", e.getMessage());
+            return null;
+        }
     }
 
     // ── Attachment management ────────────────────────────────────────────────
@@ -189,8 +216,26 @@ public class MediaService {
                 .orElseThrow(() -> new IllegalArgumentException("Media not found: " + mediaId));
         media.setDeletedAt(Instant.now());
         mediaFileRepo.save(media);
-        // S3 deletion scheduled via storage provider (async in prod)
         storage.delete(media.getStorageRef());
+    }
+
+    /** Remove a media_attachments row without deleting the underlying file. */
+    @Transactional
+    public void detachAttachment(UUID attachmentId) {
+        MediaAttachmentEntity att = attachmentRepo.findById(attachmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Attachment not found: " + attachmentId));
+        attachmentRepo.delete(att);
+    }
+
+    /** Bulk-update sort_order on attachment rows. */
+    @Transactional
+    public void reorderAttachments(List<com.jjt.platform.api.media.dto.AttachmentReorderRequest> items) {
+        for (var item : items) {
+            attachmentRepo.findById(item.id()).ifPresent(att -> {
+                att.setSortOrder(item.sortOrder());
+                attachmentRepo.save(att);
+            });
+        }
     }
 
     // ── Called by processing service after variant generation ────────────────
@@ -216,11 +261,37 @@ public class MediaService {
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
+    /** Called by BulkImportService to attach an already-uploaded file to an owner. */
+    @Transactional
+    public void attachMedia(MediaFileEntity media, String ownerType, UUID ownerId,
+                            String role, int sortOrder, UUID userId) {
+        if ("PROFILE_PHOTO".equalsIgnoreCase(role)) {
+            attachmentRepo.findFirstByOwnerTypeAndOwnerIdAndAttachmentRole(ownerType, ownerId, "PROFILE_PHOTO")
+                    .ifPresent(existing -> {
+                        existing.setAttachmentRole("GALLERY");
+                        existing.setSortOrder(999);
+                        attachmentRepo.save(existing);
+                    });
+        }
+        MediaAttachmentEntity att = new MediaAttachmentEntity(
+                UUID.randomUUID(), media.getId(), ownerType, ownerId, role, sortOrder, userId);
+        attachmentRepo.save(att);
+        if ("CHILD".equalsIgnoreCase(ownerType) && "PROFILE_PHOTO".equalsIgnoreCase(role)) {
+            childRepo.findById(ownerId).ifPresent(child -> {
+                child.setProfilePhotoMediaId(media.getId());
+                childRepo.save(child);
+            });
+        }
+    }
+
     private void createAttachment(MediaFileEntity media, PendingAttachment pending) {
+        UUID ownerId = UUID.fromString(pending.ownerId());
+        UUID uploadedBy = UUID.fromString(pending.uploadedBy());
+
         // If PROFILE_PHOTO: demote existing to GALLERY
         if ("PROFILE_PHOTO".equalsIgnoreCase(pending.attachmentRole())) {
             attachmentRepo.findFirstByOwnerTypeAndOwnerIdAndAttachmentRole(
-                    pending.ownerType(), pending.ownerId(), "PROFILE_PHOTO")
+                    pending.ownerType(), ownerId, "PROFILE_PHOTO")
                     .ifPresent(existing -> {
                         existing.setAttachmentRole("GALLERY");
                         existing.setSortOrder(999);
@@ -230,14 +301,14 @@ public class MediaService {
 
         MediaAttachmentEntity att = new MediaAttachmentEntity(
                 UUID.randomUUID(), media.getId(),
-                pending.ownerType(), pending.ownerId(),
-                pending.attachmentRole(), pending.sortOrder(), pending.uploadedBy());
+                pending.ownerType(), ownerId,
+                pending.attachmentRole(), pending.sortOrder(), uploadedBy);
         attachmentRepo.save(att);
 
         // Update children.profile_photo_media_id denorm column
         if ("CHILD".equalsIgnoreCase(pending.ownerType())
                 && "PROFILE_PHOTO".equalsIgnoreCase(pending.attachmentRole())) {
-            childRepo.findById(pending.ownerId()).ifPresent(child -> {
+            childRepo.findById(ownerId).ifPresent(child -> {
                 child.setProfilePhotoMediaId(media.getId());
                 childRepo.save(child);
             });
@@ -261,11 +332,21 @@ public class MediaService {
                         storage.getPublicUrl(v.getStorageRef()),
                         v.getMimeType(), v.getSizeBytes(), v.getWidthPx(), v.getHeightPx()))
                 .toList();
+
+        // Best serving URL: prefer THUMBNAIL_MD variant, fall back to original
+        String publicUrl = variantDtos.stream()
+                .filter(v -> "THUMBNAIL_MD".equals(v.variantType()))
+                .findFirst()
+                .map(MediaVariantResponse::url)
+                .orElseGet(() -> !variantDtos.isEmpty()
+                        ? variantDtos.get(0).url()
+                        : storage.getPublicUrl(media.getStorageRef()));
+
         return new MediaFileResponse(
                 media.getId(), media.getMediaType(), media.getMimeType(), media.getOriginalName(),
                 media.getSizeBytes(), media.getWidthPx(), media.getHeightPx(),
                 media.getVisibility(), media.getStatus(), media.getAltText(),
-                media.getUploadedAt(), variantDtos);
+                media.getUploadedAt(), publicUrl, variantDtos);
     }
 
     private MediaAttachmentResponse toAttachmentResponse(MediaAttachmentEntity att,
@@ -282,7 +363,8 @@ public class MediaService {
                 .orElse(url);
 
         return new MediaAttachmentResponse(
-                att.getId(), mf.getId(), att.getAttachmentRole(), att.getSortOrder(),
+                att.getId(), mf.getId(), att.getOwnerType(), att.getOwnerId(),
+                att.getAttachmentRole(), att.getSortOrder(),
                 url, thumbnailUrl, mf.getMimeType(), mf.getMediaType(),
                 mf.getWidthPx(), mf.getHeightPx(), mf.getStatus());
     }
@@ -325,9 +407,7 @@ public class MediaService {
         }
     }
 
-    /** Transient store for pending attachment info keyed by mediaId. */
-    private final Map<UUID, PendingAttachment> pendingAttachments = new java.util.concurrent.ConcurrentHashMap<>();
-
+    /** Serialized into media_files.metadata so attachment intent survives server restarts. */
     private record PendingAttachment(
-            String ownerType, UUID ownerId, String attachmentRole, int sortOrder, UUID uploadedBy) {}
+            String ownerType, String ownerId, String attachmentRole, int sortOrder, String uploadedBy) {}
 }

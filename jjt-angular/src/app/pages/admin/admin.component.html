@@ -634,8 +634,16 @@ How It Works
               [ownerId]="selectedChildDetail.id"
               role="PROFILE_PHOTO"
               label="Upload or replace profile photo"
-              (uploaded)="showToast('Profile photo updated.')">
+              (uploaded)="onChildPhotoUploaded()">
             </app-media-upload>
+          </div>
+          <div style="padding:0 20px 20px;">
+            <p style="font-size:11px;font-weight:600;color:#8a958d;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px;">Gallery</p>
+            <app-media-gallery
+              #childGallery
+              ownerType="CHILD"
+              [ownerId]="selectedChildDetail.id">
+            </app-media-gallery>
           </div>
         </div>
 }
@@ -813,6 +821,10 @@ How It Works
             </div>
           </div>
 }
+        </div>
+
+        <div style="margin-top:20px;">
+          <app-bulk-import></app-bulk-import>
         </div>
       </section>
 }

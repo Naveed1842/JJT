@@ -10,6 +10,8 @@ import com.jjt.platform.core.domain.exceptions.SponsorshipInvariantViolationExce
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -101,6 +103,28 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadRequest(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse("VALIDATION_ERROR", ex.getMessage()));
+    }
+
+    /** Media status conflict — e.g. confirming a file that is not in UPLOADING state. */
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleConflict(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse("CONFLICT", ex.getMessage()));
+    }
+
+    /** Upload exceeds server-side multipart size limit. */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ErrorResponse> handleTooLarge(MaxUploadSizeExceededException ex) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(new ErrorResponse("FILE_TOO_LARGE", "Uploaded file exceeds the maximum allowed size."));
+    }
+
+    /** Storage I/O failure during bulk import or direct upload. */
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<ErrorResponse> handleStorageError(IOException ex) {
+        log.error("Storage I/O error", ex);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ErrorResponse("STORAGE_ERROR", "Storage operation failed. Please try again."));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

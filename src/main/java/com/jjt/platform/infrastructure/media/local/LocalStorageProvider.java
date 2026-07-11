@@ -65,6 +65,15 @@ public class LocalStorageProvider implements StorageProvider {
     }
 
     @Override
+    public byte[] download(String storageRef) {
+        try {
+            return Files.readAllBytes(uploadDir.resolve(storageRef));
+        } catch (IOException e) {
+            throw new RuntimeException("Local download failed for " + storageRef, e);
+        }
+    }
+
+    @Override
     public String getPublicUrl(String storageRef) {
         return baseUrl + "/api/media/files/" + storageRef;
     }

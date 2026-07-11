@@ -1,5 +1,6 @@
 package com.jjt.platform.api.media;
 
+import com.jjt.platform.api.media.dto.AttachmentReorderRequest;
 import com.jjt.platform.api.media.dto.MediaAttachmentResponse;
 import com.jjt.platform.api.media.dto.MediaConfirmRequest;
 import com.jjt.platform.api.media.dto.MediaFileResponse;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,6 +75,20 @@ public class MediaController {
             @PathVariable UUID mediaId,
             @AuthenticationPrincipal JwtUserDetails principal) {
         mediaService.softDelete(mediaId, principal.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Detach an attachment row without deleting the underlying file. */
+    @DeleteMapping("/attachments/{attachmentId}")
+    public ResponseEntity<Void> deleteAttachment(@PathVariable UUID attachmentId) {
+        mediaService.detachAttachment(attachmentId);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** Bulk-update sort_order for gallery reordering. */
+    @PatchMapping("/attachments/reorder")
+    public ResponseEntity<Void> reorderAttachments(@RequestBody List<AttachmentReorderRequest> items) {
+        mediaService.reorderAttachments(items);
         return ResponseEntity.noContent().build();
     }
 }

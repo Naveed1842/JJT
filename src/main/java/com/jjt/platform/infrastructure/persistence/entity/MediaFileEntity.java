@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -58,6 +60,10 @@ public class MediaFileEntity {
     @Column(name = "alt_text", length = 500)
     private String altText;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "metadata", columnDefinition = "jsonb")
+    private String metadata = "{}";
+
     @Column(name = "uploaded_by", nullable = false)
     private UUID uploadedBy;
 
@@ -101,6 +107,7 @@ public class MediaFileEntity {
     public String getStatus() { return status; }
     public String getContentHash() { return contentHash; }
     public String getAltText() { return altText; }
+    public String getMetadata() { return metadata; }
     public UUID getUploadedBy() { return uploadedBy; }
     public Instant getUploadedAt() { return uploadedAt; }
     public Instant getDeletedAt() { return deletedAt; }
@@ -111,5 +118,6 @@ public class MediaFileEntity {
     public void setWidthPx(Integer widthPx) { this.widthPx = widthPx; }
     public void setHeightPx(Integer heightPx) { this.heightPx = heightPx; }
     public void setAltText(String altText) { this.altText = altText; }
+    public void setMetadata(String metadata) { this.metadata = metadata; }
     public void setDeletedAt(Instant deletedAt) { this.deletedAt = deletedAt; }
 }

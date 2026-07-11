@@ -16,7 +16,8 @@ import { MediaFileResponse } from '../../services/api.models';
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="media-image-wrapper" [style.width]="size" [style.height]="size">
+    <div class="media-image-wrapper" [style.width]="size" [style.height]="size"
+         [style.border-radius]="shape === 'circle' ? '50%' : '8px'">
       @if (loading) {
         <div class="media-skeleton"></div>
       } @else if (src) {
@@ -42,7 +43,6 @@ import { MediaFileResponse } from '../../services/api.models';
     .media-image-wrapper {
       position: relative;
       overflow: hidden;
-      border-radius: 50%;
       background: #f0ebe3;
       flex-shrink: 0;
     }
@@ -83,6 +83,8 @@ export class MediaImageComponent implements OnChanges {
   @Input() alt = '';
   @Input() size = '48px';
   @Input() preferVariant = 'THUMBNAIL_MD';
+  /** 'circle' applies border-radius:50%; 'rect' renders square/rectangular */
+  @Input() shape: 'circle' | 'rect' = 'circle';
 
   src: string | null = null;
   loading = false;
@@ -111,8 +113,9 @@ export class MediaImageComponent implements OnChanges {
     this.imageVisible = false;
     this.mediaService.getMedia(this.mediaId).subscribe({
       next: (media: MediaFileResponse) => {
-        const variant = media.variants.find(v => v.variantType === this.preferVariant);
-        this.src = variant ? variant.url : media.publicUrl;
+        const preferred = media.variants.find(v => v.variantType === this.preferVariant);
+        const fallback = media.variants[0];
+        this.src = preferred?.url ?? fallback?.url ?? media.publicUrl ?? null;
         this.loading = false;
         this.cdr.markForCheck();
       },

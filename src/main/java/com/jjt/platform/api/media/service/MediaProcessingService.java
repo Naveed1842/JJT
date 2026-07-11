@@ -60,7 +60,7 @@ public class MediaProcessingService {
         });
     }
 
-    private void processImage(MediaFileEntity media) throws Exception {
+    private void processImage(MediaFileEntity media) throws java.io.IOException {
         if (!storage.exists(media.getStorageRef())) {
             log.warn("Original not found in storage for mediaId={}, marking ready without variants", media.getId());
             mediaService.markReady(media.getId(), media.getSizeBytes(), null, null);
@@ -116,17 +116,8 @@ public class MediaProcessingService {
         variantRepo.save(variant);
     }
 
-    private byte[] readFromStorage(String storageRef) throws Exception {
-        // For local provider: read from filesystem via StorageProvider abstraction
-        // We use a temporary approach: get the public URL and read if HTTP, or read file directly
-        // Since LocalStorageProvider exposes the file path, we use a different strategy:
-        // Upload to a temp stream and re-read. For M1 local dev we read directly.
-        if (storage instanceof com.jjt.platform.infrastructure.media.local.LocalStorageProvider local) {
-            java.nio.file.Path path = local.getUploadDir().resolve(storageRef);
-            return java.nio.file.Files.readAllBytes(path);
-        }
-        // For S3: use getObject (not yet wired — variant generation from S3 is an M2 enhancement)
-        throw new UnsupportedOperationException("Server-side image processing from S3 requires M2 implementation");
+    private byte[] readFromStorage(String storageRef) {
+        return storage.download(storageRef);
     }
 
     private static String variantRefFor(String originalRef, String variantType, String ext) {

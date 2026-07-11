@@ -632,27 +632,28 @@ export type MediaStatus = 'UPLOADING' | 'PROCESSING' | 'READY' | 'FAILED' | 'DEL
 export type AttachmentRole = 'PROFILE_PHOTO' | 'GALLERY' | 'DOCUMENT' | 'PROGRESS_PHOTO';
 
 export interface MediaVariantResponse {
-  id: string;
   variantType: string;
-  storageRef: string;
   url: string;
+  mimeType: string;
+  sizeBytes: number;
   widthPx: number | null;
   heightPx: number | null;
-  sizeBytes: number;
-  mimeType: string;
 }
 
 export interface MediaFileResponse {
   id: string;
-  orgId: string;
-  originalFilename: string;
+  mediaType: string;
   mimeType: string;
-  sizeBytes: number | null;
+  originalName: string;
+  sizeBytes: number;
+  widthPx: number | null;
+  heightPx: number | null;
+  visibility: string;
   status: MediaStatus;
   altText: string | null;
+  uploadedAt: string;
   publicUrl: string;
   variants: MediaVariantResponse[];
-  createdAt: string;
 }
 
 export interface MediaAttachmentResponse {
@@ -662,7 +663,13 @@ export interface MediaAttachmentResponse {
   ownerId: string;
   attachmentRole: AttachmentRole;
   sortOrder: number;
-  media: MediaFileResponse;
+  url: string;
+  thumbnailUrl: string;
+  mimeType: string;
+  mediaType: string;
+  widthPx: number | null;
+  heightPx: number | null;
+  status: MediaStatus;
 }
 
 export interface MediaUploadIntentRequest {
@@ -681,5 +688,24 @@ export interface MediaUploadIntentResponse {
   uploadUrl: string;
   storageRef: string;
   expiresAt: string;
+}
+
+export interface BulkImportErrorEntry {
+  filename: string;
+  reason: string;
+}
+
+export interface BulkImportJobResponse {
+  id: string;
+  jobType: string;
+  status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'COMPLETED_WITH_ERRORS' | 'FAILED';
+  totalFiles: number;
+  matched: number;
+  uploaded: number;
+  skipped: number;
+  failed: number;
+  errors: BulkImportErrorEntry[];
+  createdAt: string;
+  completedAt: string | null;
 }
 

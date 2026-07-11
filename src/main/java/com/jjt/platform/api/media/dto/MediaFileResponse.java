@@ -16,5 +16,6 @@ public record MediaFileResponse(
         String status,
         String altText,
         Instant uploadedAt,
+        String publicUrl,
         List<MediaVariantResponse> variants
 ) {}

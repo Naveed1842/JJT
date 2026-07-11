@@ -9,6 +9,7 @@ import {
   MediaFileResponse,
   MediaAttachmentResponse,
   AttachmentRole,
+  BulkImportJobResponse,
 } from './api.models';
 
 export interface UploadProgress {
@@ -113,5 +114,15 @@ export class MediaService {
 
   deleteAttachment(attachmentId: string): Observable<void> {
     return this.http.delete<void>(`${this.base}/api/media/attachments/${attachmentId}`);
+  }
+
+  startBulkImport(file: File): Observable<BulkImportJobResponse> {
+    const form = new FormData();
+    form.append('file', file);
+    return this.http.post<BulkImportJobResponse>(`${this.base}/api/media/import`, form);
+  }
+
+  getBulkImportJob(jobId: string): Observable<BulkImportJobResponse> {
+    return this.http.get<BulkImportJobResponse>(`${this.base}/api/media/import/${jobId}`);
   }
 }

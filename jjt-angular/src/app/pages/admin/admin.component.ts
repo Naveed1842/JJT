@@ -12,6 +12,8 @@ import { AdminAuditSectionComponent } from './sections/admin-audit-section.compo
 import { AdminDocsSectionComponent } from './sections/admin-docs-section.component';
 import { AdminZakatSectionComponent } from './sections/admin-zakat-section.component';
 import { MediaUploadComponent } from '../../components/media-upload/media-upload.component';
+import { MediaGalleryComponent } from '../../components/media-gallery/media-gallery.component';
+import { BulkImportComponent } from '../../components/bulk-import/bulk-import.component';
 import {
   AdminChildDetailResponse,
   AdminChildSummaryResponse,
@@ -58,7 +60,7 @@ type ModalType =
   imports: [
     CommonModule, FormsModule,
     AdminAlertsSectionComponent, AdminAuditSectionComponent, AdminDocsSectionComponent,
-    AdminZakatSectionComponent, MediaUploadComponent,
+    AdminZakatSectionComponent, MediaUploadComponent, MediaGalleryComponent, BulkImportComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -80,6 +82,7 @@ export class AdminComponent implements OnInit {
   }
 
   @ViewChild(AdminZakatSectionComponent) zakatSection?: AdminZakatSectionComponent;
+  @ViewChild('childGallery') childGallery?: MediaGalleryComponent;
 
   // ── Navigation ────────────────────────────────────────────────────
   activeSection: SectionId = 'dashboard';
@@ -307,6 +310,11 @@ export class AdminComponent implements OnInit {
     this.toastMessage = msg;
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => { this.toastMessage = null; }, 3500);
+  }
+
+  onChildPhotoUploaded(): void {
+    this.showToast('Profile photo updated.');
+    this.childGallery?.load();
   }
 
   // ── Derived / computed ────────────────────────────────────────────

@@ -5,6 +5,8 @@ import java.util.UUID;
 public record MediaAttachmentResponse(
         UUID id,
         UUID mediaId,
+        String ownerType,
+        UUID ownerId,
         String attachmentRole,
         int sortOrder,
         String url,

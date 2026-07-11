@@ -17,6 +17,11 @@ public interface StorageProvider {
     String upload(InputStream content, String storageRef, String mimeType, long contentLength);
 
     /**
+     * Download an object as a byte array (used by server-side image processing).
+     */
+    byte[] download(String storageRef);
+
+    /**
      * Return a permanent public URL (for PUBLIC visibility assets served via CDN or local endpoint).
      */
     String getPublicUrl(String storageRef);

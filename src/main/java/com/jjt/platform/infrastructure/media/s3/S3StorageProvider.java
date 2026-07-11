@@ -4,9 +4,12 @@ import com.jjt.platform.infrastructure.media.PresignedPutUrl;
 import com.jjt.platform.infrastructure.media.StorageProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
 import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -77,6 +80,13 @@ public class S3StorageProvider implements StorageProvider {
                 .getObjectRequest(g -> g.bucket(bucket).key(storageRef).build())
                 .build()
         ).url().toString();
+    }
+
+    @Override
+    public byte[] download(String storageRef) {
+        ResponseBytes<GetObjectResponse> response = s3.getObjectAsBytes(
+                GetObjectRequest.builder().bucket(bucket).key(storageRef).build());
+        return response.asByteArray();
     }
 
     @Override
