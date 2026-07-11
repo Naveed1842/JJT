@@ -480,6 +480,8 @@ export class AdminComponent implements OnInit {
         this.showToast('Child created successfully.');
         this.childForm = { rollNumber: '', fullName: '', city: '', campusName: '', schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR' };
         this.loadDropdowns();
+        this.loadAdminChildren();
+        this.childrenStore.invalidate();
       },
       error: (err) => this.handleError(err, 'Failed to create child.')
     });
@@ -1198,7 +1200,11 @@ export class AdminComponent implements OnInit {
         this.importResult = result;
         this.importLoading = false;
         this.importFile = null;
-        if (result.importedRows > 0) this.loadDropdowns();
+        if (result.importedRows > 0) {
+          this.loadDropdowns();
+          this.loadAdminChildren();
+          this.childrenStore.invalidate();
+        }
         this.showToast(`Import complete: ${result.importedRows} imported, ${result.failedRows + result.skippedMissingName + result.skippedMissingCampus + result.skippedDuplicateRollNumber} skipped.`);
       },
       error: (err) => {
