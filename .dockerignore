@@ -1,0 +1,12 @@
+target/
+.git/
+.idea/
+.vscode/
+jjt-angular/
+postman/
+docs/
+*.md
+*.sql
+*.xlsx
+*.png
+*.svg

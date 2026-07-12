@@ -5,3 +5,8 @@ target/
 .DS_Store
 jjt-angular/.firebase
 jjt-angular/node_modules
+jjt-angular/dist/
+jjt-angular/playwright-report/
+jjt-angular/test-results/
+jjt-angular/e2e/.auth/*.json
+dependency-check-report.*

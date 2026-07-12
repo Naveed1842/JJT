@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- Local dev: readable console output -->
+  <springProfile name="default | local">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+    <logger name="com.jjt" level="DEBUG"/>
+  </springProfile>
+
+  <!-- All other profiles (postgres, gcp, heroku): structured JSON for log aggregators -->
+  <springProfile name="postgres | gcp | prod">
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <includeContext>false</includeContext>
+        <customFields>{"app":"jjt-platform"}</customFields>
+        <fieldNames>
+          <timestamp>timestamp</timestamp>
+          <thread>thread</thread>
+          <logger>logger</logger>
+          <level>level</level>
+          <levelValue>[ignore]</levelValue>
+        </fieldNames>
+      </encoder>
+    </appender>
+    <root level="INFO">
+      <appender-ref ref="JSON"/>
+    </root>
+    <!-- Suppress noisy Hibernate SQL in non-local profiles -->
+    <logger name="org.hibernate.SQL" level="WARN"/>
+    <logger name="org.hibernate.orm.jdbc.bind" level="WARN"/>
+  </springProfile>
+
+</configuration>

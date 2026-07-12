@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     container_name: jjt-postgres
     restart: unless-stopped
     environment:

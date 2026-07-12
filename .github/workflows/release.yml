@@ -1,0 +1,53 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release-please:
+    name: Create Release PR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          release-type: java
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── When a release is actually merged (tag created), deploy to production
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Set up Java 17
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build JAR
+        if: ${{ steps.release.outputs.release_created }}
+        run: ./mvnw package -DskipTests -B
+
+      - name: Deploy backend → Heroku production
+        if: ${{ steps.release.outputs.release_created }}
+        uses: akhileshns/heroku-deploy@v3.13.15
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ vars.HEROKU_APP_PRODUCTION }}
+          heroku_email: ${{ vars.HEROKU_EMAIL }}
+          buildpack: https://github.com/heroku/heroku-buildpack-java
+
+      - name: Create Sentry release
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sentry-cli releases new ${{ steps.release.outputs.tag_name }} --org ${{ vars.SENTRY_ORG }} --project ${{ vars.SENTRY_PROJECT }}
+          sentry-cli releases finalize ${{ steps.release.outputs.tag_name }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
