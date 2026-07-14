@@ -10,5 +10,6 @@ public record ChildDto(UUID id,
                        String schoolName,
                        String educationAmount,
                        String educationCurrency,
-                       AvailabilityStatus availabilityStatus) {
+                       AvailabilityStatus availabilityStatus,
+                       String photoUrl) {
 }

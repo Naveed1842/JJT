@@ -23,6 +23,7 @@ export class ChildDetailComponent implements OnInit {
   schoolName: string | null = null;
   monthlyCost = '—';
   supportStatus: AvailabilityStatus = 'AVAILABLE';
+  photoUrl: string | null = null;
   ledgerEntries: LedgerRow[] = [];
   progressUpdates: ProgressItem[] = [];
   loading = true;
@@ -50,6 +51,7 @@ export class ChildDetailComponent implements OnInit {
         this.schoolName   = data.schoolName;
         this.monthlyCost  = `${data.educationCurrency} ${data.educationAmount}`;
         this.supportStatus = data.availabilityStatus;
+        this.photoUrl = data.photoUrl;
         this.loadLedger();
         this.loadProgress();
       },

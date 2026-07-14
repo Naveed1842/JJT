@@ -11,6 +11,9 @@ import { AdminAlertsSectionComponent } from './sections/admin-alerts-section.com
 import { AdminAuditSectionComponent } from './sections/admin-audit-section.component';
 import { AdminDocsSectionComponent } from './sections/admin-docs-section.component';
 import { AdminZakatSectionComponent } from './sections/admin-zakat-section.component';
+import { MediaUploadComponent } from '../../components/media-upload/media-upload.component';
+import { MediaGalleryComponent } from '../../components/media-gallery/media-gallery.component';
+import { BulkImportComponent } from '../../components/bulk-import/bulk-import.component';
 import {
   AdminChildDetailResponse,
   AdminChildSummaryResponse,
@@ -57,7 +60,7 @@ type ModalType =
   imports: [
     CommonModule, FormsModule,
     AdminAlertsSectionComponent, AdminAuditSectionComponent, AdminDocsSectionComponent,
-    AdminZakatSectionComponent,
+    AdminZakatSectionComponent, MediaUploadComponent, MediaGalleryComponent, BulkImportComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
@@ -79,6 +82,7 @@ export class AdminComponent implements OnInit {
   }
 
   @ViewChild(AdminZakatSectionComponent) zakatSection?: AdminZakatSectionComponent;
+  @ViewChild('childGallery') childGallery?: MediaGalleryComponent;
 
   // ── Navigation ────────────────────────────────────────────────────
   activeSection: SectionId = 'dashboard';
@@ -110,6 +114,10 @@ export class AdminComponent implements OnInit {
     rollNumber: '', fullName: '', city: '', campusName: '',
     schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR'
   };
+  newlyCreatedChildId: string | null = null;
+  newlyCreatedChildName = '';
+  // childId → true once photo uploaded in import results row
+  importPhotoUploadedFor = new Set<string>();
 
   // ── Create Sponsor ────────────────────────────────────────────────
   sponsorForm = { displayName: '', contactEmail: '', phone: '' };
@@ -292,6 +300,8 @@ export class AdminComponent implements OnInit {
     this.modalType = null;
     this.errorMessage = null;
     this.recordPaymentId = null;
+    this.newlyCreatedChildId = null;
+    this.newlyCreatedChildName = '';
   }
 
   stopProp(e: Event): void { e.stopPropagation(); }
@@ -300,6 +310,11 @@ export class AdminComponent implements OnInit {
     this.toastMessage = msg;
     if (this.toastTimer) clearTimeout(this.toastTimer);
     this.toastTimer = setTimeout(() => { this.toastMessage = null; }, 3500);
+  }
+
+  onChildPhotoUploaded(): void {
+    this.showToast('Profile photo updated.');
+    this.childGallery?.load();
   }
 
   // ── Derived / computed ────────────────────────────────────────────
@@ -468,16 +483,17 @@ export class AdminComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = null;
 
+    const name = this.childForm.fullName;
     this.adminService.createChild({
       ...this.childForm,
       childId:  this.newUuid(),
       ledgerId: this.newUuid(),
       schoolName: this.childForm.schoolName || null,
     }).subscribe({
-      next: () => {
+      next: (res) => {
         this.isLoading = false;
-        this.closeModal();
-        this.showToast('Child created successfully.');
+        this.newlyCreatedChildId = res.childId;
+        this.newlyCreatedChildName = name;
         this.childForm = { rollNumber: '', fullName: '', city: '', campusName: '', schoolName: '', educationAmount: '2000.00', educationCurrency: 'PKR' };
         this.loadDropdowns();
         this.loadAdminChildren();

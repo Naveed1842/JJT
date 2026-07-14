@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { from, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 // Paths that never need an Authorization header and must never trigger a refresh loop.
 const SKIP_AUTH_PATTERNS = ['/api/auth/login', '/api/auth/refresh', '/api/public/'];
@@ -11,6 +12,12 @@ const SKIP_AUTH_PATTERNS = ['/api/auth/login', '/api/auth/refresh', '/api/public
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
+
+  // Skip non-backend URLs entirely (e.g. presigned PUT to S3 or local storage endpoint).
+  const isBackend = req.url.startsWith(environment.apiBaseUrl) || req.url.startsWith('/api/');
+  if (!isBackend) {
+    return next(req);
+  }
 
   if (SKIP_AUTH_PATTERNS.some(p => req.url.includes(p))) {
     return next(req);

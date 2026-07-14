@@ -21,6 +21,7 @@ export interface ChildDto {
   educationAmount: string;
   educationCurrency: string;
   availabilityStatus: AvailabilityStatus;
+  photoUrl: string | null;
 }
 
 // ---- Ledger -----------------------------------------------------------------
@@ -600,6 +601,7 @@ export interface ImportRowResult {
   rollNumber: string | null;
   fullName: string | null;
   reason: string | null;
+  childId: string | null;
 }
 
 export interface ImportChildrenResponse {
@@ -623,3 +625,87 @@ export interface ZakatStats {
   pendingCount: number;
   currency: string;
 }
+
+/* ── Media ────────────────────────────────────────────────────── */
+
+export type MediaStatus = 'UPLOADING' | 'PROCESSING' | 'READY' | 'FAILED' | 'DELETED';
+export type AttachmentRole = 'PROFILE_PHOTO' | 'GALLERY' | 'DOCUMENT' | 'PROGRESS_PHOTO';
+
+export interface MediaVariantResponse {
+  variantType: string;
+  url: string;
+  mimeType: string;
+  sizeBytes: number;
+  widthPx: number | null;
+  heightPx: number | null;
+}
+
+export interface MediaFileResponse {
+  id: string;
+  mediaType: string;
+  mimeType: string;
+  originalName: string;
+  sizeBytes: number;
+  widthPx: number | null;
+  heightPx: number | null;
+  visibility: string;
+  status: MediaStatus;
+  altText: string | null;
+  uploadedAt: string;
+  publicUrl: string;
+  variants: MediaVariantResponse[];
+}
+
+export interface MediaAttachmentResponse {
+  id: string;
+  mediaId: string;
+  ownerType: string;
+  ownerId: string;
+  attachmentRole: AttachmentRole;
+  sortOrder: number;
+  url: string;
+  thumbnailUrl: string;
+  mimeType: string;
+  mediaType: string;
+  widthPx: number | null;
+  heightPx: number | null;
+  status: MediaStatus;
+}
+
+export interface MediaUploadIntentRequest {
+  ownerType: string;
+  ownerId: string;
+  attachmentRole: AttachmentRole;
+  originalName: string;
+  mimeType: string;
+  sizeBytes: number;
+  visibility?: 'PUBLIC' | 'PRIVATE' | 'SIGNED' | null;
+  sortOrder?: number;
+}
+
+export interface MediaUploadIntentResponse {
+  mediaId: string;
+  uploadUrl: string;
+  storageRef: string;
+  expiresAt: string;
+}
+
+export interface BulkImportErrorEntry {
+  filename: string;
+  reason: string;
+}
+
+export interface BulkImportJobResponse {
+  id: string;
+  jobType: string;
+  status: 'QUEUED' | 'PROCESSING' | 'COMPLETED' | 'COMPLETED_WITH_ERRORS' | 'FAILED';
+  totalFiles: number;
+  matched: number;
+  uploaded: number;
+  skipped: number;
+  failed: number;
+  errors: BulkImportErrorEntry[];
+  createdAt: string;
+  completedAt: string | null;
+}
+
