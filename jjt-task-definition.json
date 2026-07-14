@@ -1,0 +1,31 @@
+{
+  "family": "jjt-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::780065485609:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "jjt-backend",
+      "image": "780065485609.dkr.ecr.eu-central-1.amazonaws.com/jjt-backend:1.0",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "jjt-backend",
+          "awslogs-region": "eu-central-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
