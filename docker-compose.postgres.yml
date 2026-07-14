@@ -12,5 +12,26 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - jjt-network
+
+  backend:
+    image: jjt-backend:1.0
+    container_name: jjt-backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/jjt
+      SPRING_DATASOURCE_USERNAME: jjt
+      SPRING_DATASOURCE_PASSWORD: jjt
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - jjt-network
+
 volumes:
   postgres-data:
+
+networks:
+  jjt-network:
