@@ -7,6 +7,10 @@
   "cpu": "512",
   "memory": "1024",
   "executionRoleArn": "arn:aws:iam::780065485609:role/ecsTaskExecutionRole",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
   "containerDefinitions": [
     {
       "name": "jjt-backend",
@@ -14,8 +18,24 @@
       "essential": true,
       "portMappings": [
         {
+          "name": "http",
           "containerPort": 8080,
+          "hostPort": 8080,
           "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "SPRING_DATASOURCE_URL",
+          "value": "jdbc:postgresql://jjt-postgres.c7mg4g4wesqk.eu-central-1.rds.amazonaws.com:5432/jjt"
+        },
+        {
+          "name": "SPRING_DATASOURCE_USERNAME",
+          "value": "jjt"
+        },
+        {
+          "name": "SPRING_DATASOURCE_PASSWORD",
+          "value": "jjtjjt123!"
         }
       ],
       "logConfiguration": {
