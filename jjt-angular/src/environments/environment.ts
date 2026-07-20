@@ -1,4 +1,4 @@
 export const environment = {
-  apiBaseUrl: 'http://18.159.104.18:8080',
+  apiBaseUrl: 'http://jjt-alb-467912412.eu-central-1.elb.amazonaws.com',
 
 };
