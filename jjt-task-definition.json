@@ -7,6 +7,7 @@
   "cpu": "512",
   "memory": "1024",
   "executionRoleArn": "arn:aws:iam::780065485609:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::780065485609:role/jjtBackendTaskRole",
   "runtimePlatform": {
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
@@ -14,7 +15,7 @@
   "containerDefinitions": [
     {
       "name": "jjt-backend",
-      "image": "780065485609.dkr.ecr.eu-central-1.amazonaws.com/jjt-backend:1.0",
+      "image": "780065485609.dkr.ecr.eu-central-1.amazonaws.com/jjt-backend:v1.0.4",
       "essential": true,
       "portMappings": [
         {
@@ -36,6 +37,18 @@
         {
           "name": "SPRING_DATASOURCE_PASSWORD",
           "value": "jjtjjt123!"
+        },
+        {
+           "name": "MEDIA_STORAGE_PROVIDER",
+           "value": "s3"
+        },
+        {
+            "name": "MEDIA_S3_BUCKET",
+            "value": "jjt-media-prod"
+        },
+        {
+            "name": "MEDIA_S3_REGION",
+            "value": "eu-central-1"
         }
       ],
       "logConfiguration": {
