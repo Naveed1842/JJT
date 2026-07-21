@@ -1,11 +1,18 @@
 name: Backend CI/CD
 
 on:
+  push:
+    branches:
+      - dev
+
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout Repository
@@ -25,12 +32,10 @@ jobs:
         run: ./mvnw clean package -DskipTests
 
       - name: Build Docker Image
-        run: |
-          docker build -t jjt-backend:ci .
+        run: docker build -t jjt-backend:ci .
 
       - name: Verify Docker Image
-        run: |
-          docker images | grep jjt-backend
+        run: docker images | grep jjt-backend
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -43,7 +48,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Tag Docker Image
+      - name: Tag Docker Images
         run: |
           docker tag jjt-backend:ci ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
           docker tag jjt-backend:ci ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
@@ -52,3 +57,19 @@ jobs:
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
+
+      - name: Render Amazon ECS Task Definition
+        id: render-task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ secrets.CONTAINER_NAME }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
+
+      - name: Deploy Amazon ECS Task Definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render-task-definition.outputs.task-definition }}
+          cluster: ${{ secrets.ECS_CLUSTER }}
+          service: ${{ secrets.ECS_SERVICE }}
+          wait-for-service-stability: true
