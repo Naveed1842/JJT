@@ -11,6 +11,11 @@ import { AdminAlertsSectionComponent } from './sections/admin-alerts-section.com
 import { AdminAuditSectionComponent } from './sections/admin-audit-section.component';
 import { AdminDocsSectionComponent } from './sections/admin-docs-section.component';
 import { AdminZakatSectionComponent } from './sections/admin-zakat-section.component';
+import { AdminFinanceSectionComponent } from './sections/admin-finance-section.component';
+import { AdminPeopleSectionComponent } from './sections/admin-people-section.component';
+import { AdminApprovalsSectionComponent } from './sections/admin-approvals-section.component';
+import { AdminMissionsSectionComponent } from './sections/admin-missions-section.component';
+import { AdminExecutiveSectionComponent } from './sections/admin-executive-section.component';
 import { MediaUploadComponent } from '../../components/media-upload/media-upload.component';
 import { MediaGalleryComponent } from '../../components/media-gallery/media-gallery.component';
 import { BulkImportComponent } from '../../components/bulk-import/bulk-import.component';
@@ -43,7 +48,8 @@ const SECTION_IDS = [
   'dashboard', 'children', 'sponsors', 'commitments',
   'earlySupport', 'progress', 'users',
   'funds', 'reconciliation', 'alerts', 'reports', 'settings', 'docs',
-  'donors', 'donations', 'zakat', 'campaigns', 'audit', 'import'
+  'donors', 'donations', 'zakat', 'campaigns', 'audit', 'import',
+  'executive', 'finance', 'people', 'approvals', 'missions'
 ] as const;
 
 type SectionId = typeof SECTION_IDS[number];
@@ -60,7 +66,9 @@ type ModalType =
   imports: [
     CommonModule, FormsModule,
     AdminAlertsSectionComponent, AdminAuditSectionComponent, AdminDocsSectionComponent,
-    AdminZakatSectionComponent, MediaUploadComponent, MediaGalleryComponent, BulkImportComponent,
+    AdminZakatSectionComponent, AdminFinanceSectionComponent, AdminPeopleSectionComponent,
+    AdminApprovalsSectionComponent, AdminMissionsSectionComponent, AdminExecutiveSectionComponent,
+    MediaUploadComponent, MediaGalleryComponent, BulkImportComponent,
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'
