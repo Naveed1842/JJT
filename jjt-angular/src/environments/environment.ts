@@ -1,3 +1,3 @@
 export const environment = {
-  apiBaseUrl: 'https://api.sponsorone.app'
+  apiBaseUrl: 'http://localhost:8080',
 };

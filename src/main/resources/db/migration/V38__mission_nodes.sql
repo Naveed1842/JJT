@@ -31,14 +31,21 @@ CREATE TABLE IF NOT EXISTS impact_metrics (
 );
 
 -- Wire deferred FKs from earlier tables to mission_nodes
-ALTER TABLE expenses         ADD CONSTRAINT IF NOT EXISTS fk_expenses_mission
-    FOREIGN KEY (mission_node_id) REFERENCES mission_nodes(id);
-
-ALTER TABLE financial_transactions ADD CONSTRAINT IF NOT EXISTS fk_fin_tx_mission
-    FOREIGN KEY (mission_node_id) REFERENCES mission_nodes(id);
-
-ALTER TABLE budgets          ADD CONSTRAINT IF NOT EXISTS fk_budgets_mission
-    FOREIGN KEY (mission_node_id) REFERENCES mission_nodes(id);
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_expenses_mission') THEN
+        ALTER TABLE expenses ADD CONSTRAINT fk_expenses_mission
+            FOREIGN KEY (mission_node_id) REFERENCES mission_nodes(id);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_fin_tx_mission') THEN
+        ALTER TABLE financial_transactions ADD CONSTRAINT fk_fin_tx_mission
+            FOREIGN KEY (mission_node_id) REFERENCES mission_nodes(id);
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_budgets_mission') THEN
+        ALTER TABLE budgets ADD CONSTRAINT fk_budgets_mission
+            FOREIGN KEY (mission_node_id) REFERENCES mission_nodes(id);
+    END IF;
+END $$;
 
 -- Link existing campaigns to mission nodes (nullable seam)
 ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS mission_node_id UUID REFERENCES mission_nodes(id);

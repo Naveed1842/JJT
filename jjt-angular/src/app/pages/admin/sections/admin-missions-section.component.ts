@@ -91,7 +91,7 @@ import {
       </div>
 
       <!-- Inline children -->
-      <div *ngIf="childrenMap[node.id]?.length>0" style="margin-top:12px;margin-left:20px;display:flex;flex-direction:column;gap:8px;">
+      <div *ngIf="(childrenMap[node.id]?.length ?? 0) > 0" style="margin-top:12px;margin-left:20px;display:flex;flex-direction:column;gap:8px;">
         <div *ngFor="let c of childrenMap[node.id]" class="mission-node" style="background:#f9f5ef;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
             <div>

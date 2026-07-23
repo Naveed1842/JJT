@@ -37,7 +37,7 @@ import { ApprovalRequestResponse, ApprovalStatus } from '../../../services/api.m
       </div>
 
       <!-- AI checks -->
-      <div *ngIf="a.checks?.length>0" style="margin:10px 0;">
+      <div *ngIf="(a.checks?.length ?? 0) > 0" style="margin:10px 0;">
         <div *ngFor="let c of a.checks" style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
           <span class="badge" [ngClass]="checkVerdictClass(c.verdict)" style="font-size:11px;">{{c.verdict}}</span>
           <span style="font-size:13px;color:#54625b;">{{c.checkType}}</span>

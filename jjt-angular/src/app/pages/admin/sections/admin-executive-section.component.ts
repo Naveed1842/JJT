@@ -47,7 +47,7 @@ import { ExecutiveSummaryResponse } from '../../../services/api.models';
       Transparency snapshot: {{summary.transparencySnapshotDate}}
     </div>
 
-    <div *ngIf="summary.aiRecommendations?.length>0">
+    <div *ngIf="(summary.aiRecommendations?.length ?? 0) > 0">
       <h3 style="font-size:15px;font-weight:600;color:#1c352c;margin-bottom:12px;">AI Recommendations</h3>
       <div *ngFor="let r of summary.aiRecommendations" class="ai-rec">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">

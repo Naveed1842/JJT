@@ -397,7 +397,7 @@ export class AdminFinanceSectionComponent implements OnInit {
   loadingExpenses = false;
   expenseFilter = '';
   showExpenseForm = false;
-  expenseForm: CreateExpenseRequest & { vendorName?: string; categoryId?: any } = {
+  expenseForm: { title: string; amount: string; currency: string; expenseDate: string; vendorName: string; categoryId: string; description: string } = {
     title: '', amount: '', currency: 'PKR', expenseDate: new Date().toISOString().split('T')[0],
     vendorName: '', categoryId: '', description: ''
   };
@@ -419,7 +419,7 @@ export class AdminFinanceSectionComponent implements OnInit {
   showBudgetForm = false;
   budgetPeriodId = '';
   txPeriodId = '';
-  budgetForm: CreateBudgetRequest & { categoryId?: any } = {
+  budgetForm: { periodId: string; categoryId: string; budgetedAmount: string; currency: string; notes: string } = {
     periodId: '', categoryId: '', budgetedAmount: '', currency: 'PKR', notes: ''
   };
 
@@ -495,7 +495,7 @@ export class AdminFinanceSectionComponent implements OnInit {
       currency: this.expenseForm.currency,
       expenseDate: this.expenseForm.expenseDate,
       description: this.expenseForm.description || null,
-      vendorName: (this.expenseForm as any).vendorName || null,
+      vendorName: this.expenseForm.vendorName || null,
       categoryId: this.expenseForm.categoryId ? Number(this.expenseForm.categoryId) : null,
     };
     this.svc.createExpense(req).subscribe({

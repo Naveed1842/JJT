@@ -27,8 +27,13 @@ CREATE INDEX IF NOT EXISTS idx_fin_tx_fund_account  ON financial_transactions (f
 CREATE INDEX IF NOT EXISTS idx_fin_tx_metadata_gin  ON financial_transactions USING GIN (metadata);
 
 -- Wire expense.tx_id FK now that financial_transactions exists
-ALTER TABLE expenses ADD CONSTRAINT IF NOT EXISTS fk_expenses_tx
-    FOREIGN KEY (tx_id) REFERENCES financial_transactions(id);
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'fk_expenses_tx') THEN
+        ALTER TABLE expenses ADD CONSTRAINT fk_expenses_tx
+            FOREIGN KEY (tx_id) REFERENCES financial_transactions(id);
+    END IF;
+END $$;
 
 -- Backfill fund_transactions into financial_transactions as legacy rows
 INSERT INTO financial_transactions (id, org_id, fund_account_id, source_type, source_id, type,
