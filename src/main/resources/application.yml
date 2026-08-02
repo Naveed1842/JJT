@@ -58,7 +58,7 @@ admin:
 
 jjt:
   notifications:
-    enabled: ${NOTIFICATIONS_ENABLED:false}
+    enabled: ${NOTIFICATIONS_ENABLED:true}
     from-email: ${NOTIFICATION_FROM_EMAIL:noreply@sponsorone.app}
     from-name: ${NOTIFICATION_FROM_NAME:Junior Jinnah Trust}
 
