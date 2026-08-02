@@ -58,6 +58,16 @@ jobs:
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:latest
 
+      - name: Inject Mail Configuration
+        run: |
+          sed -i "s|\${MAIL_HOST}|${{ secrets.MAIL_HOST }}|g" task-definition.json
+          sed -i "s|\${MAIL_PORT}|${{ secrets.MAIL_PORT }}|g" task-definition.json
+          sed -i "s|\${MAIL_USERNAME}|${{ secrets.MAIL_USERNAME }}|g" task-definition.json
+
+      - name: Verify Mail Configuration
+        run: |
+          grep MAIL task-definition.json
+
       - name: Render Amazon ECS Task Definition
         id: render-task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1

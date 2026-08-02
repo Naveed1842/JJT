@@ -41,6 +41,24 @@
         {
           "name": "MEDIA_S3_REGION",
           "value": "eu-central-1"
+        },
+        {
+          "name": "MAIL_HOST",
+          "value": "${MAIL_HOST}"
+        },
+        {
+          "name": "MAIL_PORT",
+          "value": "${MAIL_PORT}"
+        },
+        {
+          "name": "MAIL_USERNAME",
+          "value": "${MAIL_USERNAME}"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "MAIL_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:eu-central-1:780065485609:secret:jjt/mail-password-vtnWdw"
         }
       ],
       "mountPoints": [],
