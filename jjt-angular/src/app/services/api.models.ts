@@ -695,6 +695,343 @@ export interface BulkImportErrorEntry {
   reason: string;
 }
 
+/* ── Roadmap 5 — Financial Operations & Transparency ─────────────── */
+
+// Enums
+export type ExpenseStatus       = 'DRAFT' | 'SUBMITTED' | 'APPROVED' | 'REJECTED' | 'PAID' | 'VOIDED';
+export type ApprovalStatus      = 'SUBMITTED' | 'RECOMMENDED_APPROVE' | 'RECOMMENDED_REVIEW' | 'RECOMMENDED_REJECT' | 'APPROVED' | 'REJECTED';
+export type ApprovalEntityType  = 'EXPENSE' | 'PAYROLL_RUN';
+export type ApprovalCheckType   = 'DUPLICATE_HEURISTIC' | 'BUDGET_THRESHOLD' | 'ANOMALY_DETECTION';
+export type ApprovalCheckVerdict= 'PASS' | 'WARN' | 'FAIL';
+export type FinancialTxType     = 'INCOME' | 'EXPENSE' | 'TRANSFER' | 'ADJUSTMENT';
+export type FinancialTxSource   = 'DONATION' | 'SPONSORSHIP_PAYMENT' | 'GRANT' | 'EXPENSE' | 'PAYROLL' | 'MANUAL';
+export type PersonKind          = 'STAFF' | 'CONTRACTOR' | 'VOLUNTEER';
+export type SalaryType          = 'MONTHLY_FIXED' | 'HOURLY' | 'PRO_RATA';
+export type PayrollRunStatus    = 'DRAFT' | 'PROCESSING' | 'PAID' | 'CANCELLED';
+export type FinancialPeriodType = 'MONTHLY' | 'QUARTERLY' | 'ANNUAL';
+export type FinancialPeriodStatus = 'OPEN' | 'CLOSED' | 'LOCKED';
+export type MissionNodeKind     = 'PROGRAMME' | 'PROJECT' | 'ACTIVITY' | 'OUTPUT';
+export type MissionNodeStatus   = 'PLANNED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+
+// Account categories (chart of accounts)
+export interface AccountCategoryResponse {
+  id: number;
+  code: string;
+  name: string;
+  reportingClass: string;
+  active: boolean;
+}
+
+// Cost centres
+export interface CostCentreResponse {
+  id: string;
+  orgId: string;
+  code: string;
+  name: string;
+  active: boolean;
+  createdAt: string;
+}
+
+// Financial periods
+export interface FinancialPeriodResponse {
+  id: string;
+  orgId: string;
+  periodType: FinancialPeriodType;
+  label: string;
+  startDate: string;
+  endDate: string;
+  status: FinancialPeriodStatus;
+  closedAt: string | null;
+  closedBy: string | null;
+}
+
+export interface CreateFinancialPeriodRequest {
+  periodType: FinancialPeriodType;
+  label: string;
+  startDate: string;
+  endDate: string;
+}
+
+// Vendors
+export interface VendorResponse {
+  id: string;
+  orgId: string;
+  name: string;
+  contactEmail: string | null;
+  contactPhone: string | null;
+  address: string | null;
+  taxReference: string | null;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface CreateVendorRequest {
+  name: string;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  address?: string | null;
+  taxReference?: string | null;
+}
+
+// People
+export interface PersonResponse {
+  id: string;
+  orgId: string;
+  kind: PersonKind;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  phone: string | null;
+  nationalId: string | null;
+  active: boolean;
+  createdAt: string;
+}
+
+export interface CreatePersonRequest {
+  kind: PersonKind;
+  firstName: string;
+  lastName: string;
+  email?: string | null;
+  phone?: string | null;
+  nationalId?: string | null;
+}
+
+// Payroll profile
+export interface PayrollProfileResponse {
+  id: string;
+  personId: string;
+  orgId: string;
+  salaryType: SalaryType;
+  baseAmount: string;
+  currency: string;
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  bankAccountRef: string | null;
+  active: boolean;
+}
+
+export interface UpsertPayrollProfileRequest {
+  salaryType: SalaryType;
+  baseAmount: string;
+  currency: string;
+  effectiveFrom: string;
+  effectiveTo?: string | null;
+  bankAccountRef?: string | null;
+}
+
+// Expenses
+export interface ExpenseResponse {
+  id: string;
+  orgId: string;
+  vendorId: string | null;
+  vendorName: string | null;
+  categoryId: number | null;
+  categoryName: string | null;
+  periodId: string | null;
+  missionNodeId: string | null;
+  submittedBy: string;
+  title: string;
+  description: string | null;
+  amount: string;
+  currency: string;
+  expenseDate: string;
+  status: ExpenseStatus;
+  paymentMethod: string | null;
+  paidAt: string | null;
+  txId: string | null;
+  createdAt: string;
+}
+
+export interface CreateExpenseRequest {
+  vendorId?: string | null;
+  vendorName?: string | null;
+  categoryId?: number | null;
+  periodId?: string | null;
+  missionNodeId?: string | null;
+  title: string;
+  description?: string | null;
+  amount: string;
+  currency: string;
+  expenseDate: string;
+  paymentMethod?: string | null;
+}
+
+// Approvals
+export interface ApprovalCheckResultResponse {
+  id: string;
+  checkType: ApprovalCheckType;
+  verdict: ApprovalCheckVerdict;
+  explanation: any;
+}
+
+export interface ApprovalRequestResponse {
+  id: string;
+  orgId: string;
+  entityType: ApprovalEntityType;
+  entityId: string;
+  status: ApprovalStatus;
+  submittedBy: string;
+  approvedBy: string | null;
+  reviewedAt: string | null;
+  notes: string | null;
+  aiRecommendation: string | null;
+  aiConfidence: string | null;
+  createdAt: string;
+  checks: ApprovalCheckResultResponse[];
+}
+
+// Financial transactions
+export interface FinancialTransactionResponse {
+  id: string;
+  orgId: string;
+  txType: FinancialTxType;
+  sourceType: FinancialTxSource;
+  sourceId: string | null;
+  categoryId: number | null;
+  periodId: string | null;
+  missionNodeId: string | null;
+  amount: string;
+  currency: string;
+  description: string;
+  reportingClass: string;
+  txDate: string;
+  createdBy: string;
+  createdAt: string;
+}
+
+// Budgets
+export interface BudgetResponse {
+  id: string;
+  orgId: string;
+  periodId: string;
+  categoryId: number;
+  categoryName: string | null;
+  missionNodeId: string | null;
+  budgetedAmount: string;
+  currency: string;
+  notes: string | null;
+}
+
+export interface CreateBudgetRequest {
+  periodId: string;
+  categoryId: number;
+  missionNodeId?: string | null;
+  budgetedAmount: string;
+  currency: string;
+  notes?: string | null;
+}
+
+export interface BudgetVarianceRow {
+  categoryId: number;
+  categoryName: string | null;
+  budgeted: string;
+  actual: string;
+  variance: string;
+  currency: string;
+}
+
+// Payroll
+export interface PayrollRunResponse {
+  id: string;
+  orgId: string;
+  periodLabel: string;
+  status: PayrollRunStatus;
+  totalAmount: string;
+  currency: string;
+  processedBy: string | null;
+  processedAt: string | null;
+  createdAt: string;
+}
+
+export interface PayrollItemResponse {
+  id: string;
+  runId: string;
+  personId: string;
+  personName: string | null;
+  grossAmount: string;
+  currency: string;
+  notes: string | null;
+  txId: string | null;
+}
+
+export interface CreatePayrollRunRequest {
+  periodLabel: string;
+  currency: string;
+}
+
+// Mission nodes
+export interface MissionNodeResponse {
+  id: string;
+  orgId: string;
+  parentId: string | null;
+  kind: MissionNodeKind;
+  name: string;
+  description: string | null;
+  status: MissionNodeStatus;
+  startDate: string | null;
+  endDate: string | null;
+  targetAmount: string | null;
+  createdAt: string;
+}
+
+export interface MissionFinancialsResponse {
+  nodeId: string;
+  totalExpense: string;
+  income: string;
+  surplus: string;
+}
+
+export interface CreateMissionNodeRequest {
+  kind: MissionNodeKind;
+  name: string;
+  description?: string | null;
+  parentId?: string | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  targetAmount?: string | null;
+}
+
+// Executive summary
+export interface AiRecommendationResponse {
+  requestId: string;
+  entityType: string;
+  entityRef: string;
+  recommendation: string;
+  confidence: string;
+  summary: string;
+}
+
+export interface ExecutiveSummaryResponse {
+  asOf: string;
+  mtdIncome: string;
+  mtdExpense: string;
+  pendingApprovalCount: number;
+  pendingApprovalValue: string;
+  programmePct: string;
+  transparencySnapshotDate: string | null;
+  aiRecommendations: AiRecommendationResponse[];
+}
+
+// Public transparency
+export interface TransparencyTrendPoint {
+  period: string;
+  programmePct: string;
+  totalIncome: string;
+}
+
+export interface TransparencyResponse {
+  asOf: string;
+  programmePct: string;
+  adminPct: string;
+  fundraisingPct: string;
+  totalIncome: string;
+  totalExpense: string;
+  beneficiaryCount: number;
+  costPerBeneficiary: string;
+  trend: TransparencyTrendPoint[];
+  published: boolean;
+}
+
 export interface BulkImportJobResponse {
   id: string;
   jobType: string;

@@ -3,18 +3,40 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
+  AccountCategoryResponse,
   AddProgressRequest,
   AddProgressResponse,
   AdminChildDetailResponse,
   AdminChildSummaryResponse,
   AlertResponse,
+  ApprovalRequestResponse,
+  ApprovalStatus,
   AuditEventResponse,
+  BudgetResponse,
+  BudgetVarianceRow,
   CampaignResponse,
   CashFlowReport,
   ChildDto,
+  CostCentreResponse,
+  CreateBudgetRequest,
   CreateCampaignRequest,
+  CreateExpenseRequest,
+  CreateFinancialPeriodRequest,
+  CreateMissionNodeRequest,
+  CreatePayrollRunRequest,
+  CreatePersonRequest,
+  CreateVendorRequest,
   DashboardResponse,
+  ExecutiveSummaryResponse,
+  ExpenseResponse,
+  FinancialPeriodResponse,
+  FinancialTransactionResponse,
   ImportChildrenResponse,
+  MissionFinancialsResponse,
+  MissionNodeResponse,
+  PayrollItemResponse,
+  PayrollRunResponse,
+  PersonResponse,
   PortfolioReport,
   CommitSponsorshipRequest,
   CommitSponsorshipResponse,
@@ -37,6 +59,7 @@ import {
   MonthlyReconciliationResponse,
   OrgConfigResponse,
   PageResponse,
+  PayrollProfileResponse,
   ProgressUpdateDto,
   RecordDonationRequest,
   RecordEarlySupportRequest,
@@ -46,8 +69,11 @@ import {
   SponsorPaymentResponse,
   SponsorshipSummaryResponse,
   SponsorshipStatus,
+  TransparencyResponse,
   UpdateOrgConfigRequest,
+  UpsertPayrollProfileRequest,
   UserResponse,
+  VendorResponse,
   WaivePaymentRequest,
   ZakatStats,
 } from './api.models';
@@ -405,5 +431,193 @@ export class AdminService {
     return this.http.get<PageResponse<AuditEventResponse>>(
       `${this.base}/api/admin/audit-log`, { params: { page, size } }
     );
+  }
+
+  // ── R5: Account categories ─────────────────────────────────────────────────
+
+  listAccountCategories(): Observable<AccountCategoryResponse[]> {
+    return this.http.get<AccountCategoryResponse[]>(`${this.base}/api/admin/finance/categories`);
+  }
+
+  // ── R5: Cost centres ───────────────────────────────────────────────────────
+
+  listCostCentres(): Observable<CostCentreResponse[]> {
+    return this.http.get<CostCentreResponse[]>(`${this.base}/api/admin/finance/cost-centres`);
+  }
+
+  // ── R5: Financial periods ──────────────────────────────────────────────────
+
+  listFinancialPeriods(): Observable<FinancialPeriodResponse[]> {
+    return this.http.get<FinancialPeriodResponse[]>(`${this.base}/api/admin/finance/periods`);
+  }
+
+  createFinancialPeriod(req: CreateFinancialPeriodRequest): Observable<FinancialPeriodResponse> {
+    return this.http.post<FinancialPeriodResponse>(`${this.base}/api/admin/finance/periods`, req);
+  }
+
+  closePeriod(id: string): Observable<FinancialPeriodResponse> {
+    return this.http.post<FinancialPeriodResponse>(`${this.base}/api/admin/finance/periods/${id}/close`, {});
+  }
+
+  lockPeriod(id: string): Observable<FinancialPeriodResponse> {
+    return this.http.post<FinancialPeriodResponse>(`${this.base}/api/admin/finance/periods/${id}/lock`, {});
+  }
+
+  // ── R5: Vendors ────────────────────────────────────────────────────────────
+
+  listVendors(): Observable<VendorResponse[]> {
+    return this.http.get<VendorResponse[]>(`${this.base}/api/admin/finance/vendors`);
+  }
+
+  createVendor(req: CreateVendorRequest): Observable<VendorResponse> {
+    return this.http.post<VendorResponse>(`${this.base}/api/admin/finance/vendors`, req);
+  }
+
+  deactivateVendor(id: string): Observable<VendorResponse> {
+    return this.http.post<VendorResponse>(`${this.base}/api/admin/finance/vendors/${id}/deactivate`, {});
+  }
+
+  // ── R5: Expenses ───────────────────────────────────────────────────────────
+
+  listExpenses(status?: string): Observable<ExpenseResponse[]> {
+    const params: any = {};
+    if (status) params['status'] = status;
+    return this.http.get<ExpenseResponse[]>(`${this.base}/api/admin/finance/expenses`, { params });
+  }
+
+  createExpense(req: CreateExpenseRequest): Observable<ExpenseResponse> {
+    return this.http.post<ExpenseResponse>(`${this.base}/api/admin/finance/expenses`, req);
+  }
+
+  submitExpense(id: string): Observable<ExpenseResponse> {
+    return this.http.post<ExpenseResponse>(`${this.base}/api/admin/finance/expenses/${id}/submit`, {});
+  }
+
+  approveExpense(id: string, notes?: string): Observable<ExpenseResponse> {
+    return this.http.post<ExpenseResponse>(`${this.base}/api/admin/finance/expenses/${id}/approve`, { notes });
+  }
+
+  rejectExpense(id: string, notes?: string): Observable<ExpenseResponse> {
+    return this.http.post<ExpenseResponse>(`${this.base}/api/admin/finance/expenses/${id}/reject`, { notes });
+  }
+
+  payExpense(id: string, paymentMethod: string): Observable<ExpenseResponse> {
+    return this.http.post<ExpenseResponse>(`${this.base}/api/admin/finance/expenses/${id}/pay`, { paymentMethod });
+  }
+
+  voidExpense(id: string): Observable<ExpenseResponse> {
+    return this.http.post<ExpenseResponse>(`${this.base}/api/admin/finance/expenses/${id}/void`, {});
+  }
+
+  // ── R5: Approvals ──────────────────────────────────────────────────────────
+
+  listApprovals(status?: ApprovalStatus): Observable<ApprovalRequestResponse[]> {
+    const params: any = {};
+    if (status) params['status'] = status;
+    return this.http.get<ApprovalRequestResponse[]>(`${this.base}/api/admin/approvals`, { params });
+  }
+
+  getApproval(id: string): Observable<ApprovalRequestResponse> {
+    return this.http.get<ApprovalRequestResponse>(`${this.base}/api/admin/approvals/${id}`);
+  }
+
+  resolveApproval(id: string, decision: 'APPROVED' | 'REJECTED', notes?: string): Observable<ApprovalRequestResponse> {
+    return this.http.post<ApprovalRequestResponse>(`${this.base}/api/admin/approvals/${id}/resolve`, { decision, notes });
+  }
+
+  // ── R5: Financial transactions ─────────────────────────────────────────────
+
+  listFinancialTransactions(periodId?: string): Observable<FinancialTransactionResponse[]> {
+    const params: any = {};
+    if (periodId) params['periodId'] = periodId;
+    return this.http.get<FinancialTransactionResponse[]>(`${this.base}/api/admin/finance/transactions`, { params });
+  }
+
+  // ── R5: Budgets ────────────────────────────────────────────────────────────
+
+  listBudgets(periodId?: string): Observable<BudgetResponse[]> {
+    const params: any = {};
+    if (periodId) params['periodId'] = periodId;
+    return this.http.get<BudgetResponse[]>(`${this.base}/api/admin/finance/budgets`, { params });
+  }
+
+  createBudget(req: CreateBudgetRequest): Observable<BudgetResponse> {
+    return this.http.post<BudgetResponse>(`${this.base}/api/admin/finance/budgets`, req);
+  }
+
+  getBudgetVariance(periodId: string): Observable<BudgetVarianceRow[]> {
+    return this.http.get<BudgetVarianceRow[]>(
+      `${this.base}/api/admin/finance/budgets/variance`, { params: { periodId } }
+    );
+  }
+
+  // ── R5: People ─────────────────────────────────────────────────────────────
+
+  listPeople(): Observable<PersonResponse[]> {
+    return this.http.get<PersonResponse[]>(`${this.base}/api/admin/people`);
+  }
+
+  createPerson(req: CreatePersonRequest): Observable<PersonResponse> {
+    return this.http.post<PersonResponse>(`${this.base}/api/admin/people`, req);
+  }
+
+  getPersonPayrollProfile(personId: string): Observable<PayrollProfileResponse> {
+    return this.http.get<PayrollProfileResponse>(`${this.base}/api/admin/people/${personId}/payroll`);
+  }
+
+  upsertPayrollProfile(personId: string, req: UpsertPayrollProfileRequest): Observable<PayrollProfileResponse> {
+    return this.http.put<PayrollProfileResponse>(`${this.base}/api/admin/people/${personId}/payroll`, req);
+  }
+
+  // ── R5: Payroll runs ───────────────────────────────────────────────────────
+
+  listPayrollRuns(): Observable<PayrollRunResponse[]> {
+    return this.http.get<PayrollRunResponse[]>(`${this.base}/api/admin/finance/payroll/runs`);
+  }
+
+  createPayrollRun(req: CreatePayrollRunRequest): Observable<PayrollRunResponse> {
+    return this.http.post<PayrollRunResponse>(`${this.base}/api/admin/finance/payroll/runs`, req);
+  }
+
+  getPayrollItems(runId: string): Observable<PayrollItemResponse[]> {
+    return this.http.get<PayrollItemResponse[]>(`${this.base}/api/admin/finance/payroll/runs/${runId}/items`);
+  }
+
+  processPayrollRun(runId: string): Observable<PayrollRunResponse> {
+    return this.http.post<PayrollRunResponse>(`${this.base}/api/admin/finance/payroll/runs/${runId}/process`, {});
+  }
+
+  // ── R5: Mission nodes ──────────────────────────────────────────────────────
+
+  listMissionRoots(): Observable<MissionNodeResponse[]> {
+    return this.http.get<MissionNodeResponse[]>(`${this.base}/api/admin/missions`);
+  }
+
+  getMissionNode(id: string): Observable<MissionNodeResponse> {
+    return this.http.get<MissionNodeResponse>(`${this.base}/api/admin/missions/${id}`);
+  }
+
+  getMissionChildren(id: string): Observable<MissionNodeResponse[]> {
+    return this.http.get<MissionNodeResponse[]>(`${this.base}/api/admin/missions/${id}/children`);
+  }
+
+  createMissionNode(req: CreateMissionNodeRequest): Observable<MissionNodeResponse> {
+    return this.http.post<MissionNodeResponse>(`${this.base}/api/admin/missions`, req);
+  }
+
+  getMissionFinancials(id: string): Observable<MissionFinancialsResponse> {
+    return this.http.get<MissionFinancialsResponse>(`${this.base}/api/admin/missions/${id}/financials`);
+  }
+
+  // ── R5: Executive summary ──────────────────────────────────────────────────
+
+  getExecutiveSummary(): Observable<ExecutiveSummaryResponse> {
+    return this.http.get<ExecutiveSummaryResponse>(`${this.base}/api/admin/finance/executive/summary`);
+  }
+
+  // ── R5: Public transparency ────────────────────────────────────────────────
+
+  getPublicTransparency(): Observable<TransparencyResponse> {
+    return this.http.get<TransparencyResponse>(`${this.base}/api/public/transparency`);
   }
 }
