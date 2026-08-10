@@ -1,4 +1,6 @@
+
 version: "3.9"
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -20,13 +22,28 @@ services:
     container_name: jjt-backend
     restart: unless-stopped
     environment:
+      # Database
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/jjt
       SPRING_DATASOURCE_USERNAME: jjt
       SPRING_DATASOURCE_PASSWORD: jjt
+
+      # Notifications
+      NOTIFICATIONS_ENABLED: "true"
+      NOTIFICATION_FROM_EMAIL: "noreply@sponsorone.app"
+      NOTIFICATION_FROM_NAME: "Junior Jinnah Trust"
+
+      # Resend SMTP
+      MAIL_HOST: "smtp.resend.com"
+      MAIL_PORT: "587"
+      MAIL_USERNAME: "resend"
+      MAIL_PASSWORD: "<YOUR_RESEND_API_KEY>"
+
     ports:
       - "8080:8080"
+
     depends_on:
       - postgres
+
     networks:
       - jjt-network
 
